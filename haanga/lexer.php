@@ -155,11 +155,13 @@ class TestLexer
     function yy_r1_1($yy_subpatterns)
     {
 
+    $this->token = Parser::T_OPEN_TAG;
     $this->yypushstate(self::IN_CODE);
     }
     function yy_r1_2($yy_subpatterns)
     {
 
+    $this->token = Parser::T_PRINT_OPEN;
     $this->yypushstate(self::IN_PRINT);
     }
     function yy_r1_3($yy_subpatterns)
@@ -298,6 +300,7 @@ class TestLexer
     function yy_r2_1($yy_subpatterns)
     {
 
+    $this->token = Parser::T_CLOSE_TAG;
     $this->yypopstate();
     }
     function yy_r2_2($yy_subpatterns)
@@ -318,7 +321,7 @@ class TestLexer
     function yy_r2_5($yy_subpatterns)
     {
 
-    $this->token = Parser::T_ENDFOR;
+    $this->token = Parser::T_CLOSEFOR;
     }
     function yy_r2_6($yy_subpatterns)
     {
@@ -454,12 +457,13 @@ class TestLexer
     function yy_r3_1($yy_subpatterns)
     {
 
+    $this->token = Parser::T_PRINT_CLOSE;
     $this->yypopstate();
     }
     function yy_r3_2($yy_subpatterns)
     {
 
-    
+    $this->token = Parser::T_ALPHA;
     }
     function yy_r3_4($yy_subpatterns)
     {
@@ -471,10 +475,13 @@ class TestLexer
 
 require "parser.php";
 $a = new TestLexer(file_get_contents('../template.tpl'));
-for($i=0; $i < 20; $i++) {
+
+$parser = new Parser;
+for($i=0; ; $i++) {
     if  (!$a->yylex()) {
         break;
     }
-    var_dump('advance: ' . $a->value);
+    $parser->doParse($a->token, $a->value);
 }
+$parser->doParse(0, 0);
 

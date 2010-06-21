@@ -8,7 +8,7 @@
 }
 
 %parse_accept {
-    var_dump($this->body);
+    var_dump(array('body' => $this->body));
 }
 
 
@@ -24,26 +24,33 @@
 
 start ::= body(B). { $this->body = B; }
 
-body(A) ::= body(B) stmt(C). { A=B; A[] = C; }
-body(A) ::= stmt(B). { A = array(B); }
+body(A) ::= body(B) stmts(C). { A=B; A[] = C; }
+body(A) ::= stmts(B). { A = array(B); }
+body(A) ::= . { A = array(); }
 
-/* FOR loop */
-stmt(A) ::= T_FOR varname(B) T_IN varname(C) body(D) T_ENDFOR.  { A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D); }
-/* HTML */
-stmt(A) ::= T_HTML(B).  { A = array('operation' => 'html', 'html' => B); }
+/* List of statements */
+stmts(A) ::= T_OPEN_TAG stmt(B) T_CLOSE_TAG. { A = array(B); }
+stmts(A) ::= T_PRINT_OPEN varname(B) T_PRINT_CLOSE.  { A = array('operation' => 'print', 'variable' => B); }
+stmts(A) ::= T_HTML(B). {A = array('operation' => 'html', 'html' => B); } 
+stmts(A) ::= for_stmt(B). { A = B; }
+
+/* Statement */
+
 /* Cycle */
 stmt(A) ::= cycle(B). { A = B; }
-/* Print variable */
-stmt(A) ::= T_PRINT_OPEN varname(B) T_PRINT_CLOSE.  { A = array('operation' => 'print', 'variable' => B); }
-/* Nothing */
-stmt(A) ::= . { A = NULL; }
 
-/* Cicle */ 
+/* FOR loop */
+for_stmt(A) ::= T_OPEN_TAG T_FOR varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
+    A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D); 
+}
+
+/* Cycle */ 
 cycle(A) ::= T_CYCLE vars(B). { A = array('operation' => 'cycle', 'vars' => B); } 
 cycle(A) ::= T_CYCLE vars(B) T_AS varname(C). { A = array('operation' => 'cycle', 'vars' => B, 'as' => C); } 
 
 /* List of variables */
 vars(A) ::= vars(B) varname(C). { A = B; A[] = C; }
+vars(A) ::= vars(B) T_STRING(C). { A = B; A[] = C; }
 vars(A) ::= T_STRING(C).  { A = array(C); }
 vars(A) ::= varname(B).   { A = array(B); }  
 

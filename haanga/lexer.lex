@@ -31,10 +31,12 @@ anything        = Z([^{{|{%]+)Z
 /*!lex2php
 %statename IN_HTML
 "{%" {
+    $this->token = Parser::T_OPEN_TAG;
     $this->yypushstate(self::IN_CODE);
 }
 
 "{{" {
+    $this->token = Parser::T_PRINT_OPEN;
     $this->yypushstate(self::IN_PRINT);
 }
 
@@ -50,6 +52,7 @@ anything {
 /*!lex2php
 %statename IN_CODE
 "%}" {
+    $this->token = Parser::T_CLOSE_TAG;
     $this->yypopstate();
 }
 
@@ -66,7 +69,7 @@ anything {
 }
 
 "endfor" {
-    $this->token = Parser::T_ENDFOR;
+    $this->token = Parser::T_CLOSEFOR;
 }
 
 alpha {
@@ -89,11 +92,12 @@ whitespace {
 /*!lex2php
 %statename IN_PRINT
 "}}" {
+    $this->token = Parser::T_PRINT_CLOSE;
     $this->yypopstate();
 }
 
 alpha {
-    
+    $this->token = Parser::T_ALPHA;
 }
 
 whitespace {
@@ -104,10 +108,13 @@ whitespace {
 
 require "parser.php";
 $a = new TestLexer(file_get_contents('../template.tpl'));
-for($i=0; $i < 20; $i++) {
+
+$parser = new Parser;
+for($i=0; ; $i++) {
     if  (!$a->yylex()) {
         break;
     }
-    var_dump('advance: ' . $a->value);
+    $parser->doParse($a->token, $a->value);
 }
+$parser->doParse(0, 0);
 
