@@ -33,12 +33,14 @@ stmt(A) ::= T_FOR varname(B) T_IN varname(C) body(D) T_ENDFOR.  { A = array('ope
 stmt(A) ::= T_HTML(B).  { A = array('operation' => 'html', 'html' => B); }
 /* Cycle */
 stmt(A) ::= cicle(B). { A = B; }
+/* Print variable */
+stmt(A) ::= T_PRINT_OPEN varname(B) T_PRINT_CLOSE.  { A = array('operation' => 'print', 'variable' => B); }
 /* Nothing */
-stmt(A) ::= . {A = NULL; }
+stmt(A) ::= . { A = NULL; }
 
 /* Cicle */ 
-cicle(A) ::= T_CICLE vars(B). { A = array('operation' => 'cicle', 'vars' => B);} 
-cicle(A) ::= T_CICLE vars(B) T_AS varname(C). { A = array('operation' => 'cicle', 'vars' => B, 'as' => C);} 
+cicle(A) ::= T_CICLE vars(B). { A = array('operation' => 'cicle', 'vars' => B); } 
+cicle(A) ::= T_CICLE vars(B) T_AS varname(C). { A = array('operation' => 'cicle', 'vars' => B, 'as' => C); } 
 
 /* List of variables */
 vars(A) ::= vars(B) varname(C). { A = B; A[] = C; }
