@@ -85,6 +85,10 @@ anything {
     $this->token = Parser::T_IFCHANGED;
 }
 
+"else" {
+    $this->token = Parser::T_ELSE;
+}
+
 "endifchanged" {
     $this->token = Parser::T_ENDIFCHANGED;
 }
