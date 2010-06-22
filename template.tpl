@@ -3,6 +3,8 @@
     <tr class="{% cycle 'row1 cesar' 'row2' %}">
         <td>
             Foobar {{ var }}
+
+            {% ifchanged %}{{ var }}{% endifchanged %}
         </td>
     </tr>
 {% empty %} 

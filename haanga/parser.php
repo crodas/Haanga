@@ -120,22 +120,25 @@ class Haanga_yyStackEntry
 ** Each symbol here is a terminal symbol in the grammar.
 */
     const TAGOPEN                        =  1;
-    const T_OPEN_TAG                     =  2;
-    const T_CLOSE_TAG                    =  3;
-    const T_PRINT_OPEN                   =  4;
-    const T_PRINT_CLOSE                  =  5;
-    const T_HTML                         =  6;
-    const T_FOR                          =  7;
-    const T_IN                           =  8;
-    const T_CLOSEFOR                     =  9;
-    const T_EMPTY                        = 10;
-    const T_CYCLE                        = 11;
-    const T_AS                           = 12;
-    const T_STRING                       = 13;
-    const T_ALPHA                        = 14;
-    const YY_NO_ACTION = 57;
-    const YY_ACCEPT_ACTION = 56;
-    const YY_ERROR_ACTION = 55;
+    const T_WHITESPACE                   =  2;
+    const T_OPEN_TAG                     =  3;
+    const T_CLOSE_TAG                    =  4;
+    const T_PRINT_OPEN                   =  5;
+    const T_PRINT_CLOSE                  =  6;
+    const T_HTML                         =  7;
+    const T_FOR                          =  8;
+    const T_IN                           =  9;
+    const T_CLOSEFOR                     = 10;
+    const T_EMPTY                        = 11;
+    const T_IFCHANGED                    = 12;
+    const T_ENDIFCHANGED                 = 13;
+    const T_CYCLE                        = 14;
+    const T_AS                           = 15;
+    const T_STRING                       = 16;
+    const T_ALPHA                        = 17;
+    const YY_NO_ACTION = 66;
+    const YY_ACCEPT_ACTION = 65;
+    const YY_ERROR_ACTION = 64;
 
 /* Next are that tables used to determine what action to take based on the
 ** current state and lookahead token.  These tables are used to implement
@@ -187,64 +190,66 @@ class Haanga_yyStackEntry
 **                          shifting non-terminals after a reduce.
 **  self::$yy_default       Default action for each state.
 */
-    const YY_SZ_ACTTAB = 55;
+    const YY_SZ_ACTTAB = 67;
 static public $yy_action = array(
- /*     0 */    13,   32,   19,   18,    3,   56,    8,   24,    9,   24,
- /*    10 */    25,   13,   25,   16,    4,    3,   11,    6,   23,   11,
- /*    20 */    10,   23,   11,   20,   23,   29,   12,   36,   35,   15,
- /*    30 */     1,   26,   30,   27,    7,   22,    5,   24,   28,   14,
- /*    40 */    25,   25,   36,   35,   13,   26,   31,    2,    3,   34,
- /*    50 */    35,   45,   17,   33,   21,
+ /*     0 */    16,   29,   24,   26,   20,   16,    5,   12,   32,   20,
+ /*    10 */    18,    5,   16,   41,   25,   21,   20,   32,    5,   36,
+ /*    20 */    16,    9,   28,   39,   20,   10,    5,   14,   37,   34,
+ /*    30 */    15,   43,   35,   31,   27,   65,    1,   33,   30,   43,
+ /*    40 */    35,    8,    7,   14,   14,   34,   34,    6,    3,   14,
+ /*    50 */    38,   34,   11,   42,   17,    4,   13,   35,   51,   23,
+ /*    60 */    22,    2,   51,   51,   51,   40,   19,
     );
     static public $yy_lookahead = array(
- /*     0 */     7,    3,    9,   10,   11,   16,   17,   18,   17,   18,
- /*    10 */    21,    7,   21,    9,    2,   11,    4,    2,    6,    4,
- /*    20 */     2,    6,    4,   20,    6,    3,   12,   13,   14,   19,
- /*    30 */     3,   20,   22,    5,   23,   24,   17,   18,   18,    8,
- /*    40 */    21,   21,   13,   14,    7,   20,    3,    3,   11,   24,
- /*    50 */    14,   25,   20,   20,   20,
+ /*     0 */     8,    6,   10,   11,   12,    8,   14,    4,   23,   12,
+ /*    10 */    13,   14,    8,   28,   10,   22,   12,   23,   14,   26,
+ /*    20 */     8,   27,   28,    4,   12,    3,   14,    5,    4,    7,
+ /*    30 */    15,   16,   17,    2,   21,   19,   20,   24,   25,   16,
+ /*    40 */    17,    3,    3,    5,    5,    7,    7,    3,   20,    5,
+ /*    50 */     4,    7,    4,    4,    4,   20,    9,   17,   29,   23,
+ /*    60 */    23,   20,   29,   29,   29,   23,   23,
 );
-    const YY_SHIFT_USE_DFLT = -8;
-    const YY_SHIFT_MAX = 21;
+    const YY_SHIFT_USE_DFLT = -9;
+    const YY_SHIFT_MAX = 26;
     static public $yy_shift_ofst = array(
- /*     0 */    18,   18,   18,   29,   -7,   12,    4,   14,   18,   15,
- /*    10 */    37,   36,   36,   36,   36,   22,   -2,   28,   44,   43,
- /*    20 */    27,   31,
+ /*     0 */    31,   22,   38,   44,   39,   23,   -8,   -3,    4,   15,
+ /*    10 */    12,   31,   31,   40,   40,   40,   40,   31,   24,   -5,
+ /*    20 */     3,   19,   47,   50,   46,   49,   48,
 );
-    const YY_REDUCE_USE_DFLT = -12;
-    const YY_REDUCE_MAX = 14;
+    const YY_REDUCE_USE_DFLT = -16;
+    const YY_REDUCE_MAX = 17;
     static public $yy_reduce_ofst = array(
- /*     0 */   -11,   19,   -9,   11,   10,   20,   10,   25,   20,   20,
- /*    10 */    10,   32,   33,   34,    3,
+ /*     0 */    16,   13,   13,   13,   13,   -6,   -7,   -7,   -7,  -15,
+ /*    10 */    -7,   41,   35,   36,   43,   42,   37,   28,
 );
     static public $yyExpectedTokens = array(
-        /* 0 */ array(2, 4, 6, ),
-        /* 1 */ array(2, 4, 6, ),
-        /* 2 */ array(2, 4, 6, ),
-        /* 3 */ array(13, 14, ),
-        /* 4 */ array(7, 9, 10, 11, ),
-        /* 5 */ array(2, 4, 6, ),
-        /* 6 */ array(7, 9, 11, ),
-        /* 7 */ array(12, 13, 14, ),
-        /* 8 */ array(2, 4, 6, ),
-        /* 9 */ array(2, 4, 6, ),
-        /* 10 */ array(7, 11, ),
-        /* 11 */ array(14, ),
-        /* 12 */ array(14, ),
-        /* 13 */ array(14, ),
-        /* 14 */ array(14, ),
-        /* 15 */ array(3, ),
-        /* 16 */ array(3, ),
-        /* 17 */ array(5, ),
-        /* 18 */ array(3, ),
-        /* 19 */ array(3, ),
-        /* 20 */ array(3, ),
-        /* 21 */ array(8, ),
-        /* 22 */ array(),
-        /* 23 */ array(),
-        /* 24 */ array(),
-        /* 25 */ array(),
-        /* 26 */ array(),
+        /* 0 */ array(2, ),
+        /* 1 */ array(3, 5, 7, ),
+        /* 2 */ array(3, 5, 7, ),
+        /* 3 */ array(3, 5, 7, ),
+        /* 4 */ array(3, 5, 7, ),
+        /* 5 */ array(16, 17, ),
+        /* 6 */ array(8, 10, 11, 12, 14, ),
+        /* 7 */ array(8, 12, 13, 14, ),
+        /* 8 */ array(8, 10, 12, 14, ),
+        /* 9 */ array(15, 16, 17, ),
+        /* 10 */ array(8, 12, 14, ),
+        /* 11 */ array(2, ),
+        /* 12 */ array(2, ),
+        /* 13 */ array(17, ),
+        /* 14 */ array(17, ),
+        /* 15 */ array(17, ),
+        /* 16 */ array(17, ),
+        /* 17 */ array(2, ),
+        /* 18 */ array(4, ),
+        /* 19 */ array(6, ),
+        /* 20 */ array(4, ),
+        /* 21 */ array(4, ),
+        /* 22 */ array(9, ),
+        /* 23 */ array(4, ),
+        /* 24 */ array(4, ),
+        /* 25 */ array(4, ),
+        /* 26 */ array(4, ),
         /* 27 */ array(),
         /* 28 */ array(),
         /* 29 */ array(),
@@ -255,12 +260,20 @@ static public $yy_action = array(
         /* 34 */ array(),
         /* 35 */ array(),
         /* 36 */ array(),
+        /* 37 */ array(),
+        /* 38 */ array(),
+        /* 39 */ array(),
+        /* 40 */ array(),
+        /* 41 */ array(),
+        /* 42 */ array(),
+        /* 43 */ array(),
 );
     static public $yy_default = array(
- /*     0 */    40,   55,   55,   55,   55,   55,   55,   48,   37,   55,
- /*    10 */    55,   55,   55,   55,   55,   55,   55,   55,   55,   55,
- /*    20 */    55,   55,   51,   43,   39,   44,   53,   42,   38,   41,
- /*    30 */    45,   46,   47,   49,   50,   54,   52,
+ /*     0 */    47,   44,   64,   64,   64,   64,   64,   64,   64,   57,
+ /*    10 */    64,   47,   47,   64,   64,   64,   64,   47,   64,   64,
+ /*    20 */    64,   64,   64,   64,   64,   64,   64,   45,   60,   49,
+ /*    30 */    52,   46,   62,   51,   50,   63,   53,   56,   54,   48,
+ /*    40 */    58,   59,   55,   61,
 );
 /* The next thing included is series of defines which control
 ** various aspects of the generated parser.
@@ -277,11 +290,11 @@ static public $yy_action = array(
 **    self::YYERRORSYMBOL is the code number of the error symbol.  If not
 **                        defined, then do no error processing.
 */
-    const YYNOCODE = 26;
+    const YYNOCODE = 30;
     const YYSTACKDEPTH = 100;
-    const YYNSTATE = 37;
-    const YYNRULE = 18;
-    const YYERRORSYMBOL = 15;
+    const YYNSTATE = 44;
+    const YYNRULE = 20;
+    const YYERRORSYMBOL = 18;
     const YYERRSYMDT = 'yy0';
     const YYFALLBACK = 0;
     /** The next table maps tokens into fallback tokens.  If a construct
@@ -363,12 +376,13 @@ static public $yy_action = array(
      * @var array
      */
     static public $yyTokenName = array( 
-  '$',             'TAGOPEN',       'T_OPEN_TAG',    'T_CLOSE_TAG', 
-  'T_PRINT_OPEN',  'T_PRINT_CLOSE',  'T_HTML',        'T_FOR',       
-  'T_IN',          'T_CLOSEFOR',    'T_EMPTY',       'T_CYCLE',     
-  'T_AS',          'T_STRING',      'T_ALPHA',       'error',       
-  'start',         'body',          'stmts',         'stmt',        
-  'varname',       'for_stmt',      'cycle',         'list',        
+  '$',             'TAGOPEN',       'T_WHITESPACE',  'T_OPEN_TAG',  
+  'T_CLOSE_TAG',   'T_PRINT_OPEN',  'T_PRINT_CLOSE',  'T_HTML',      
+  'T_FOR',         'T_IN',          'T_CLOSEFOR',    'T_EMPTY',     
+  'T_IFCHANGED',   'T_ENDIFCHANGED',  'T_CYCLE',       'T_AS',        
+  'T_STRING',      'T_ALPHA',       'error',         'start',       
+  'body',          'stmts',         'stmt',          'varname',     
+  'for_stmt',      'ifchanged_stmt',  'cycle',         'list',        
   'var_or_string',
     );
 
@@ -379,22 +393,24 @@ static public $yy_action = array(
     static public $yyRuleName = array(
  /*   0 */ "start ::= body",
  /*   1 */ "body ::= body stmts",
- /*   2 */ "body ::= stmts",
+ /*   2 */ "body ::= T_WHITESPACE",
  /*   3 */ "body ::=",
  /*   4 */ "stmts ::= T_OPEN_TAG stmt T_CLOSE_TAG",
  /*   5 */ "stmts ::= T_PRINT_OPEN varname T_PRINT_CLOSE",
  /*   6 */ "stmts ::= T_HTML",
  /*   7 */ "stmts ::= for_stmt",
- /*   8 */ "stmt ::= cycle",
- /*   9 */ "for_stmt ::= T_OPEN_TAG T_FOR varname T_IN varname T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG",
- /*  10 */ "for_stmt ::= T_OPEN_TAG T_FOR varname T_IN varname T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG",
- /*  11 */ "cycle ::= T_CYCLE list",
- /*  12 */ "cycle ::= T_CYCLE list T_AS varname",
- /*  13 */ "list ::= list var_or_string",
- /*  14 */ "list ::= var_or_string",
- /*  15 */ "var_or_string ::= T_STRING",
- /*  16 */ "var_or_string ::= varname",
- /*  17 */ "varname ::= T_ALPHA",
+ /*   8 */ "stmts ::= ifchanged_stmt",
+ /*   9 */ "stmt ::= cycle",
+ /*  10 */ "for_stmt ::= T_OPEN_TAG T_FOR varname T_IN varname T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG",
+ /*  11 */ "for_stmt ::= T_OPEN_TAG T_FOR varname T_IN varname T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG",
+ /*  12 */ "ifchanged_stmt ::= T_OPEN_TAG T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG",
+ /*  13 */ "cycle ::= T_CYCLE list",
+ /*  14 */ "cycle ::= T_CYCLE list T_AS varname",
+ /*  15 */ "list ::= list var_or_string",
+ /*  16 */ "list ::= var_or_string",
+ /*  17 */ "var_or_string ::= T_STRING",
+ /*  18 */ "var_or_string ::= varname",
+ /*  19 */ "varname ::= T_ALPHA",
     );
 
     /**
@@ -759,24 +775,26 @@ static public $yy_action = array(
      * </pre>
      */
     static public $yyRuleInfo = array(
-  array( 'lhs' => 16, 'rhs' => 1 ),
-  array( 'lhs' => 17, 'rhs' => 2 ),
-  array( 'lhs' => 17, 'rhs' => 1 ),
-  array( 'lhs' => 17, 'rhs' => 0 ),
-  array( 'lhs' => 18, 'rhs' => 3 ),
-  array( 'lhs' => 18, 'rhs' => 3 ),
-  array( 'lhs' => 18, 'rhs' => 1 ),
-  array( 'lhs' => 18, 'rhs' => 1 ),
   array( 'lhs' => 19, 'rhs' => 1 ),
-  array( 'lhs' => 21, 'rhs' => 10 ),
-  array( 'lhs' => 21, 'rhs' => 14 ),
-  array( 'lhs' => 22, 'rhs' => 2 ),
-  array( 'lhs' => 22, 'rhs' => 4 ),
-  array( 'lhs' => 23, 'rhs' => 2 ),
-  array( 'lhs' => 23, 'rhs' => 1 ),
-  array( 'lhs' => 24, 'rhs' => 1 ),
-  array( 'lhs' => 24, 'rhs' => 1 ),
+  array( 'lhs' => 20, 'rhs' => 2 ),
   array( 'lhs' => 20, 'rhs' => 1 ),
+  array( 'lhs' => 20, 'rhs' => 0 ),
+  array( 'lhs' => 21, 'rhs' => 3 ),
+  array( 'lhs' => 21, 'rhs' => 3 ),
+  array( 'lhs' => 21, 'rhs' => 1 ),
+  array( 'lhs' => 21, 'rhs' => 1 ),
+  array( 'lhs' => 21, 'rhs' => 1 ),
+  array( 'lhs' => 22, 'rhs' => 1 ),
+  array( 'lhs' => 24, 'rhs' => 10 ),
+  array( 'lhs' => 24, 'rhs' => 14 ),
+  array( 'lhs' => 25, 'rhs' => 7 ),
+  array( 'lhs' => 26, 'rhs' => 2 ),
+  array( 'lhs' => 26, 'rhs' => 4 ),
+  array( 'lhs' => 27, 'rhs' => 2 ),
+  array( 'lhs' => 27, 'rhs' => 1 ),
+  array( 'lhs' => 28, 'rhs' => 1 ),
+  array( 'lhs' => 28, 'rhs' => 1 ),
+  array( 'lhs' => 23, 'rhs' => 1 ),
     );
 
     /**
@@ -789,21 +807,23 @@ static public $yy_action = array(
         0 => 0,
         1 => 1,
         2 => 2,
-        14 => 2,
         3 => 3,
         4 => 4,
         5 => 5,
         6 => 6,
         7 => 7,
         8 => 7,
-        17 => 7,
-        9 => 9,
+        9 => 7,
+        19 => 7,
         10 => 10,
         11 => 11,
         12 => 12,
         13 => 13,
+        14 => 14,
         15 => 15,
         16 => 16,
+        17 => 17,
+        18 => 18,
     );
     /* Beginning here are the reduction cases.  A typical example
     ** follows:
@@ -813,53 +833,59 @@ static public $yy_action = array(
     */
 #line 23 "parser.y"
     function yy_r0(){ $this->body = $this->yystack[$this->yyidx + 0]->minor;     }
-#line 822 "parser.php"
+#line 842 "parser.php"
 #line 25 "parser.y"
     function yy_r1(){ $this->_retvalue=$this->yystack[$this->yyidx + -1]->minor; $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;     }
-#line 825 "parser.php"
+#line 845 "parser.php"
 #line 26 "parser.y"
-    function yy_r2(){ $this->_retvalue = array($this->yystack[$this->yyidx + 0]->minor);     }
-#line 828 "parser.php"
+    function yy_r2(){ $this->_retvalue = array('operation' => 'html', 'html' =>  $this->yystack[$this->yyidx + 0]->minor);     }
+#line 848 "parser.php"
 #line 27 "parser.y"
     function yy_r3(){ $this->_retvalue = array();     }
-#line 831 "parser.php"
+#line 851 "parser.php"
 #line 30 "parser.y"
     function yy_r4(){ $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;     }
-#line 834 "parser.php"
+#line 854 "parser.php"
 #line 31 "parser.y"
     function yy_r5(){ $this->_retvalue = array('operation' => 'print', 'variable' => $this->yystack[$this->yyidx + -1]->minor);     }
-#line 837 "parser.php"
+#line 857 "parser.php"
 #line 32 "parser.y"
     function yy_r6(){$this->_retvalue = array('operation' => 'html', 'html' => $this->yystack[$this->yyidx + 0]->minor);     }
-#line 840 "parser.php"
+#line 860 "parser.php"
 #line 33 "parser.y"
     function yy_r7(){ $this->_retvalue = $this->yystack[$this->yyidx + 0]->minor;     }
-#line 843 "parser.php"
-#line 41 "parser.y"
-    function yy_r9(){ 
+#line 863 "parser.php"
+#line 42 "parser.y"
+    function yy_r10(){ 
     $this->_retvalue = array('operation' => 'loop', 'variable' => $this->yystack[$this->yyidx + -7]->minor, 'array' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor); 
     }
-#line 848 "parser.php"
-#line 44 "parser.y"
-    function yy_r10(){ 
+#line 868 "parser.php"
+#line 45 "parser.y"
+    function yy_r11(){ 
     $this->_retvalue = array('operation' => 'loop', 'variable' => $this->yystack[$this->yyidx + -11]->minor, 'array' => $this->yystack[$this->yyidx + -9]->minor, 'body' => $this->yystack[$this->yyidx + -7]->minor, 'empty' => $this->yystack[$this->yyidx + -3]->minor); 
     }
-#line 853 "parser.php"
-#line 49 "parser.y"
-    function yy_r11(){ $this->_retvalue = array('operation' => 'cycle', 'vars' => $this->yystack[$this->yyidx + 0]->minor);     }
-#line 856 "parser.php"
+#line 873 "parser.php"
 #line 50 "parser.y"
-    function yy_r12(){ $this->_retvalue = array('operation' => 'cycle', 'vars' => $this->yystack[$this->yyidx + -2]->minor, 'as' => $this->yystack[$this->yyidx + 0]->minor);     }
-#line 859 "parser.php"
+    function yy_r12(){ $this->_retvalue = array('operation' => 'ifchanged', 'body' => $this->yystack[$this->yyidx + -3]->minor);     }
+#line 876 "parser.php"
 #line 53 "parser.y"
-    function yy_r13(){ $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor; $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;     }
-#line 862 "parser.php"
-#line 56 "parser.y"
-    function yy_r15(){ $this->_retvalue = array('string' => $this->yystack[$this->yyidx + 0]->minor);     }
-#line 865 "parser.php"
+    function yy_r13(){ $this->_retvalue = array('operation' => 'cycle', 'vars' => $this->yystack[$this->yyidx + 0]->minor);     }
+#line 879 "parser.php"
+#line 54 "parser.y"
+    function yy_r14(){ $this->_retvalue = array('operation' => 'cycle', 'vars' => $this->yystack[$this->yyidx + -2]->minor, 'as' => $this->yystack[$this->yyidx + 0]->minor);     }
+#line 882 "parser.php"
 #line 57 "parser.y"
-    function yy_r16(){ $this->_retvalue = array('var' => $this->yystack[$this->yyidx + 0]->minor);     }
-#line 868 "parser.php"
+    function yy_r15(){ $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor; $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;     }
+#line 885 "parser.php"
+#line 58 "parser.y"
+    function yy_r16(){ $this->_retvalue = array($this->yystack[$this->yyidx + 0]->minor);     }
+#line 888 "parser.php"
+#line 60 "parser.y"
+    function yy_r17(){ $this->_retvalue = array('string' => $this->yystack[$this->yyidx + 0]->minor);     }
+#line 891 "parser.php"
+#line 61 "parser.y"
+    function yy_r18(){ $this->_retvalue = array('var' => $this->yystack[$this->yyidx + 0]->minor);     }
+#line 894 "parser.php"
 
     /**
      * placeholder for the left hand side in a reduce operation.
@@ -978,7 +1004,7 @@ static public $yy_action = array(
         $expect[] = self::$yyTokenName[$token];
     }
     throw new Exception('Unexpected ' . $this->tokenName($yymajor) . '(' . $TOKEN. '), expected one of: ' . implode(',', $expect));
-#line 988 "parser.php"
+#line 1014 "parser.php"
     }
 
     /**
@@ -998,7 +1024,7 @@ static public $yy_action = array(
         ** parser accepts */
 #line 10 "parser.y"
 
-#line 1009 "parser.php"
+#line 1035 "parser.php"
     }
 
     /**

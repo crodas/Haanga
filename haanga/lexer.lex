@@ -57,10 +57,6 @@ anything        = Z([^{{|{%]+)Z
     $this->yypushstate(self::IN_PRINT);
 }
 
-whitespace {
-    return FALSE;
-}
-
 anything {
     $this->token = Parser::T_HTML;
 }
@@ -84,6 +80,15 @@ anything {
 "cycle" {
     $this->token = Parser::T_CYCLE;
 }
+
+"ifchanged" {
+    $this->token = Parser::T_IFCHANGED;
+}
+
+"endifchanged" {
+    $this->token = Parser::T_ENDIFCHANGED;
+}
+
 
 "in" {
     $this->token = Parser::T_IN;

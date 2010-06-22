@@ -23,7 +23,7 @@
 start ::= body(B). { $this->body = B; }
 
 body(A) ::= body(B) stmts(C). { A=B; A[] = C; }
-body(A) ::= stmts(B). { A = array(B); }
+body(A) ::= T_WHITESPACE(B). { A = array('operation' => 'html', 'html' =>  B); }
 body(A) ::= . { A = array(); }
 
 /* List of statements */
@@ -31,6 +31,7 @@ stmts(A) ::= T_OPEN_TAG stmt(B) T_CLOSE_TAG. { A = B; }
 stmts(A) ::= T_PRINT_OPEN varname(B) T_PRINT_CLOSE.  { A = array('operation' => 'print', 'variable' => B); }
 stmts(A) ::= T_HTML(B). {A = array('operation' => 'html', 'html' => B); } 
 stmts(A) ::= for_stmt(B). { A = B; }
+stmts(A) ::= ifchanged_stmt(B). { A = B; }
 
 /* Statement */
 
@@ -44,6 +45,9 @@ for_stmt(A) ::= T_OPEN_TAG T_FOR varname(B) T_IN varname(C) T_CLOSE_TAG body(D) 
 for_stmt(A) ::= T_OPEN_TAG T_FOR varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_EMPTY T_CLOSE_TAG body(E)  T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
     A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D, 'empty' => E); 
 }
+
+/* ifchanged */
+ifchanged_stmt(A) ::= T_OPEN_TAG T_IFCHANGED T_CLOSE_TAG body(B) T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG. { A = array('operation' => 'ifchanged', 'body' => B); }
 
 /* Cycle */ 
 cycle(A) ::= T_CYCLE list(B). { A = array('operation' => 'cycle', 'vars' => B); } 
