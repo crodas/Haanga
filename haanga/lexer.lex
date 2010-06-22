@@ -40,10 +40,11 @@ class Haanga_Lexer
 alpha           = /([a-zA-Z_][a-zA-Z_0-9]*)/
 number          = /[0-9]/
 numerals        = /([0-9])+/
-whitespace      = /[ \t\n]+/
+whitespace      = /[ \r\t\n]+/
 single_string   = /'[^']+'/
 double_string   = /"[^"]+"/
-anything        = Z([^{{|{%]+)Z
+html            = /([^{]+.[^%{#])+/
+comment         = /([^\#]+\#\})+/
 */
 /*!lex2php
 %statename IN_HTML
@@ -52,15 +53,24 @@ anything        = Z([^{{|{%]+)Z
     $this->yypushstate(self::IN_CODE);
 }
 
+"{#" {
+    $this->token = Parser::T_COMMENT_OPEN;
+    $this->yypushstate(self::IN_COMMENT);
+}
+
 "{{" {
     $this->token = Parser::T_PRINT_OPEN;
     $this->yypushstate(self::IN_PRINT);
 }
 
-anything {
+whitespace {
     $this->token = Parser::T_HTML;
 }
-    
+
+html {
+    $this->token = Parser::T_HTML;
+}
+
 */
 /*!lex2php
 %statename IN_CODE
@@ -134,5 +144,12 @@ whitespace {
     return FALSE;
 }
 */
-}
 
+/*!lex2php
+%statename IN_COMMENT
+comment {
+    $this->token = Parser::T_COMMENT;
+    $this->yypopstate();
+}
+*/
+}

@@ -88,6 +88,11 @@ class Haanga
         $cycle++;
     }
 
+    protected function generate_op_php($details, &$out)
+    {
+        $out[] = array('php', $details['php']);
+    }
+
     protected function generate_op_print($details, &$out)
     {
         $last    = count($out)-1;

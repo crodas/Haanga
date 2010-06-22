@@ -2,7 +2,15 @@
 function template($var) {
     extract($var);
 
-    echo "<table>
+    echo "<script>
+var i = 5 % 4;
+function foo_bar  () {
+    cesar
+}
+</script>
+";
+    /* Testing Comment */
+    echo "
 ";
     if (!is_array($some_list) OR count($some_list) == 0)
     {
@@ -18,13 +26,14 @@ function template($var) {
             $def_cycle_0 = Array('row1 cesar','row2',);
             $index_0 = (!isset($index_0) ? 0 : ($index_0 + 1) % sizeof($def_cycle_0));
             echo "
+<table>
     <tr class=\"{$def_cycle_0[$index_0]}\">
         <td style=\"background-color: ";
             if (!isset($ifchanged_0[0]) || $ifchanged_0[0] != $var)
             {
                 $def_cycle_1 = Array('red','back',);
                 $index_1 = (!isset($index_1) ? 0 : ($index_1 + 1) % sizeof($def_cycle_1));
-                echo " {$def_cycle_1[$index_1]} ";
+                echo " html {$def_cycle_1[$index_1]} ";
                 $ifchanged_0 = Array($var,);
                 
             }
@@ -51,13 +60,13 @@ function template($var) {
             echo "
         </td>
     </tr>
+</table>
 ";
             
         }
         
     }
     echo "
-</table>
 ";
 }
 

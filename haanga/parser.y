@@ -23,7 +23,6 @@
 start ::= body(B). { $this->body = B; }
 
 body(A) ::= body(B) stmts(C). { A=B; A[] = C; }
-body(A) ::= T_WHITESPACE(B). { A = array('operation' => 'html', 'html' =>  B); }
 body(A) ::= . { A = array(); }
 
 /* List of statements */
@@ -32,6 +31,7 @@ stmts(A) ::= T_PRINT_OPEN varname(B) T_PRINT_CLOSE.  { A = array('operation' => 
 stmts(A) ::= T_HTML(B). {A = array('operation' => 'html', 'html' => B); } 
 stmts(A) ::= for_stmt(B). { A = B; }
 stmts(A) ::= ifchanged_stmt(B). { A = B; }
+stmts(A) ::= T_COMMENT_OPEN T_COMMENT(B). { B=rtrim(B); A = array('operation' => 'php', 'php' => "/*".substr(B, 0, strlen(B)-2)."*/"); }
 
 /* Statement */
 

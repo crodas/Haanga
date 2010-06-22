@@ -30,6 +30,11 @@ class Haanga_CodeGenerator
         return "else";
     }
 
+    function php_php($op)
+    {
+        return $op[1];
+    }
+
     protected function ident()
     {
         $code  = "\n";
