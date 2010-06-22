@@ -1,7 +1,7 @@
 <script>
 var i = 5 % 4;
 function foo_bar  () {
-    cesar
+    cesar {$rodas}
 }
 </script>
 {# Testing Comment #}

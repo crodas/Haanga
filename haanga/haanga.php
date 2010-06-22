@@ -55,7 +55,7 @@ class Haanga
     protected function generate_op_html($details, &$out)
     {
         $last    = count($out)-1;
-        $content = addslashes($details['html']);
+        $content = str_replace('$', '\\$', addslashes($details['html']));
         if ($out[$last][0] == 'print') {
             /* try to append this to the previous print if it exists */
             $out[$last][] = $content;
