@@ -31,7 +31,8 @@ stmts(A) ::= T_PRINT_OPEN varname(B) T_PRINT_CLOSE.  { A = array('operation' => 
 stmts(A) ::= T_HTML(B). {A = array('operation' => 'html', 'html' => B); } 
 stmts(A) ::= for_stmt(B). { A = B; }
 stmts(A) ::= ifchanged_stmt(B). { A = B; }
-stmts(A) ::= T_COMMENT_OPEN T_COMMENT(B). { B=rtrim(B); A = array('operation' => 'php', 'php' => "/*".substr(B, 0, strlen(B)-2)."*/"); }
+stmts(A) ::= T_COMMENT_OPEN T_COMMENT(B). { B=rtrim(B); A = array('operation' => 'comment', 'php' => "/*".substr(B, 0, strlen(B)-2)."*/"); }
+stmts(A) ::= block_stmt(B). { A = B; }
 
 /* Statement */
 
@@ -61,6 +62,12 @@ ifchanged_stmt(A) ::= T_OPEN_TAG T_IFCHANGED T_CLOSE_TAG body(B) T_OPEN_TAG T_EL
 ifchanged_stmt(A) ::= T_OPEN_TAG T_IFCHANGED list(X) T_CLOSE_TAG body(B) T_OPEN_TAG T_ELSE T_CLOSE_TAG body(C) T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG. { 
     A = array('operation' => 'ifchanged', 'body' => B, 'check' => X, 'else' => C);
 }
+
+/* block stmt */
+
+block_stmt(A) ::= T_OPEN_TAG T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }
+
+block_stmt(A) ::= T_OPEN_TAG T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK var_name T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }
 
 /* Cycle */ 
 cycle(A) ::= T_CYCLE list(B). { A = array('operation' => 'cycle', 'vars' => B); } 

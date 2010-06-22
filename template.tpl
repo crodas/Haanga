@@ -12,6 +12,10 @@ function foo_bar  () {
             Foobar {{ var }}
 
             {% ifchanged %}{{ var }}{% endifchanged %}
+
+        </td>
+        <td>
+            {% block td %} Testing block {% endblock %}
         </td>
     </tr>
 </table>

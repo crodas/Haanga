@@ -91,6 +91,14 @@ html {
     $this->token = Parser::T_CYCLE;
 }
 
+"block" {
+    $this->token = Parser::T_BLOCK;
+}
+
+"endblock" {
+    $this->token = Parser::T_END_BLOCK;
+}
+
 "ifchanged" {
     $this->token = Parser::T_IFCHANGED;
 }

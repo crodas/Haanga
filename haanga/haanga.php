@@ -88,9 +88,25 @@ class Haanga
         $cycle++;
     }
 
+    protected function generate_op_comment($details, &$out)
+    {
+    }
+
     protected function generate_op_php($details, &$out)
     {
         $out[] = array('php', $details['php']);
+    }
+
+    protected function generate_op_block($details, &$out)
+    {
+        $out[] = array('if', '!isset($partial)', '||', '!isset($partial["'.$details['name'].'"])');
+        $out[] = array('ident');
+        $this->generate_op_code($details['body'], $out);
+        $out[] = array('ident_end');
+        $out[] = array('else');
+        $out[] = array('ident');
+        $out[] = array('print', array('var' => 'partial["'.$details['name'].'"]'));
+        $out[] = array('ident_end');
     }
 
     protected function generate_op_print($details, &$out)
@@ -174,7 +190,7 @@ $haanga = new Haanga;
 $code = $haanga->compile_file('../template.tpl');
 
 echo "<?php
-function template(\$var) {
+function template(\$var, \$partial=array()) {
     extract(\$var);
 $code
 }

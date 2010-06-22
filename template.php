@@ -1,5 +1,5 @@
 <?php
-function template($var) {
+function template($var, $partial=array()) {
     extract($var);
 
     echo "<script>
@@ -8,9 +8,7 @@ function foo_bar  () {
     cesar {\$rodas}
 }
 </script>
-";
-    /* Testing Comment */
-    echo "
+
 ";
     if (!is_array($some_list) OR count($some_list) == 0)
     {
@@ -55,6 +53,21 @@ function foo_bar  () {
             {
                 echo "{$output_1}";
                 $ifchanged_1 = $output_1;
+                
+            }
+            echo "
+
+        </td>
+        <td>
+            ";
+            if (!isset($partial) || !isset($partial["td"]))
+            {
+                echo " Testing block ";
+                
+            }
+            else
+            {
+                echo "{$partial["td"]}";
                 
             }
             echo "
