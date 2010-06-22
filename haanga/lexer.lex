@@ -1,5 +1,22 @@
 <?php
-class TestLexer
+
+require dirname(__FILE__)."/parser.php";
+
+function do_parsing($template)
+{
+    $a = new Haanga_Lexer($template);
+    $parser = new Parser;
+    for($i=0; ; $i++) {
+        if  (!$a->yylex()) {
+            break;
+        }
+        $parser->doParse($a->token, $a->value);
+    }
+    $parser->doParse(0, 0);
+    return $parser->body;
+}
+
+class Haanga_Lexer
 {
     private $data;
     private $N;
@@ -105,16 +122,4 @@ whitespace {
 }
 */
 }
-
-require "parser.php";
-$a = new TestLexer(file_get_contents('../template.tpl'));
-
-$parser = new Parser;
-for($i=0; ; $i++) {
-    if  (!$a->yylex()) {
-        break;
-    }
-    $parser->doParse($a->token, $a->value);
-}
-$parser->doParse(0, 0);
 

@@ -186,51 +186,51 @@ class Haanga_yyStackEntry
 **                          shifting non-terminals after a reduce.
 **  self::$yy_default       Default action for each state.
 */
-    const YY_SZ_ACTTAB = 42;
+    const YY_SZ_ACTTAB = 44;
 static public $yy_action = array(
- /*     0 */    49,    2,   19,   22,   29,   21,    8,   30,   29,    3,
- /*    10 */    20,   10,    6,   17,   10,   11,   17,   13,    5,    4,
- /*    20 */    19,   11,   23,   21,    5,   18,   24,   14,    7,   25,
- /*    30 */    26,    1,   21,   29,   15,    9,   12,   28,   42,   42,
- /*    40 */    27,   16,
+ /*     0 */    49,    3,   21,   30,   29,   22,    8,   30,   29,    5,
+ /*    10 */     7,   11,   11,   20,   20,   13,    9,   19,   14,    2,
+ /*    20 */     4,   17,    6,   21,    9,   24,   22,    2,   12,   25,
+ /*    30 */    19,   26,   22,   18,   28,   10,   29,   23,    1,   27,
+ /*    40 */    15,   43,   43,   16,
     );
     static public $yy_lookahead = array(
  /*     0 */    15,   16,   17,   12,   13,   20,   11,   12,   13,    2,
- /*    10 */     5,    4,    2,    6,    4,    7,    6,    9,   10,   16,
- /*    20 */    17,    7,    3,   20,   10,   19,    3,   18,   22,   17,
- /*    30 */    21,    3,   20,   13,   19,    8,   19,   19,   23,   23,
- /*    40 */    19,   19,
+ /*    10 */     2,    4,    4,    6,    6,   19,    7,   19,    9,   10,
+ /*    20 */    22,   23,   16,   17,    7,    3,   20,   10,   18,   17,
+ /*    30 */    19,   21,   20,    5,   23,    8,   13,    3,    3,   19,
+ /*    40 */    19,   24,   24,   19,
 );
     const YY_SHIFT_USE_DFLT = -10;
     const YY_SHIFT_MAX = 16;
     static public $yy_shift_ofst = array(
- /*     0 */    10,   10,   10,    8,    7,   -9,   14,   -5,   20,   20,
- /*    10 */    20,   20,    5,   19,   23,   27,   28,
+ /*     0 */     8,    8,   -9,    8,   -5,    9,    7,   17,   23,   23,
+ /*    10 */    23,   23,   22,   28,   34,   35,   27,
 );
     const YY_REDUCE_USE_DFLT = -16;
     const YY_REDUCE_MAX = 11;
     static public $yy_reduce_ofst = array(
- /*     0 */   -15,    3,   12,    9,   12,    6,    9,   18,   21,   22,
- /*    10 */    17,   15,
+ /*     0 */   -15,    6,   -2,   12,   11,   10,   12,   10,   20,   24,
+ /*    10 */    21,   -4,
 );
     static public $yyExpectedTokens = array(
         /* 0 */ array(2, 4, 6, ),
         /* 1 */ array(2, 4, 6, ),
-        /* 2 */ array(2, 4, 6, ),
-        /* 3 */ array(7, 9, 10, ),
-        /* 4 */ array(2, 4, 6, ),
-        /* 5 */ array(12, 13, ),
-        /* 6 */ array(7, 10, ),
-        /* 7 */ array(11, 12, 13, ),
+        /* 2 */ array(12, 13, ),
+        /* 3 */ array(2, 4, 6, ),
+        /* 4 */ array(11, 12, 13, ),
+        /* 5 */ array(7, 9, 10, ),
+        /* 6 */ array(2, 4, 6, ),
+        /* 7 */ array(7, 10, ),
         /* 8 */ array(13, ),
         /* 9 */ array(13, ),
         /* 10 */ array(13, ),
         /* 11 */ array(13, ),
-        /* 12 */ array(5, ),
-        /* 13 */ array(3, ),
+        /* 12 */ array(3, ),
+        /* 13 */ array(5, ),
         /* 14 */ array(3, ),
-        /* 15 */ array(8, ),
-        /* 16 */ array(3, ),
+        /* 15 */ array(3, ),
+        /* 16 */ array(8, ),
         /* 17 */ array(),
         /* 18 */ array(),
         /* 19 */ array(),
@@ -247,10 +247,10 @@ static public $yy_action = array(
         /* 30 */ array(),
 );
     static public $yy_default = array(
- /*     0 */    34,   48,   31,   48,   48,   48,   48,   41,   48,   48,
- /*    10 */    48,   48,   48,   48,   48,   48,   48,   37,   46,   33,
- /*    20 */    36,   38,   45,   40,   35,   32,   39,   42,   43,   47,
- /*    30 */    44,
+ /*     0 */    34,   48,   48,   31,   41,   48,   48,   48,   48,   48,
+ /*    10 */    48,   48,   48,   48,   48,   48,   48,   44,   36,   46,
+ /*    20 */    37,   33,   38,   40,   35,   32,   39,   42,   43,   47,
+ /*    30 */    45,
 );
 /* The next thing included is series of defines which control
 ** various aspects of the generated parser.
@@ -267,7 +267,7 @@ static public $yy_action = array(
 **    self::YYERRORSYMBOL is the code number of the error symbol.  If not
 **                        defined, then do no error processing.
 */
-    const YYNOCODE = 24;
+    const YYNOCODE = 25;
     const YYSTACKDEPTH = 100;
     const YYNSTATE = 31;
     const YYNRULE = 17;
@@ -358,7 +358,7 @@ static public $yy_action = array(
   'T_IN',          'T_CLOSEFOR',    'T_CYCLE',       'T_AS',        
   'T_STRING',      'T_ALPHA',       'error',         'start',       
   'body',          'stmts',         'stmt',          'varname',     
-  'for_stmt',      'cycle',         'vars',        
+  'for_stmt',      'cycle',         'list',          'var_or_string',
     );
 
     /**
@@ -376,12 +376,12 @@ static public $yy_action = array(
  /*   7 */ "stmts ::= for_stmt",
  /*   8 */ "stmt ::= cycle",
  /*   9 */ "for_stmt ::= T_OPEN_TAG T_FOR varname T_IN varname T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG",
- /*  10 */ "cycle ::= T_CYCLE vars",
- /*  11 */ "cycle ::= T_CYCLE vars T_AS varname",
- /*  12 */ "vars ::= vars varname",
- /*  13 */ "vars ::= vars T_STRING",
- /*  14 */ "vars ::= T_STRING",
- /*  15 */ "vars ::= varname",
+ /*  10 */ "cycle ::= T_CYCLE list",
+ /*  11 */ "cycle ::= T_CYCLE list T_AS varname",
+ /*  12 */ "list ::= list var_or_string",
+ /*  13 */ "list ::= var_or_string",
+ /*  14 */ "var_or_string ::= T_STRING",
+ /*  15 */ "var_or_string ::= varname",
  /*  16 */ "varname ::= T_ALPHA",
     );
 
@@ -760,9 +760,9 @@ static public $yy_action = array(
   array( 'lhs' => 21, 'rhs' => 2 ),
   array( 'lhs' => 21, 'rhs' => 4 ),
   array( 'lhs' => 22, 'rhs' => 2 ),
-  array( 'lhs' => 22, 'rhs' => 2 ),
   array( 'lhs' => 22, 'rhs' => 1 ),
-  array( 'lhs' => 22, 'rhs' => 1 ),
+  array( 'lhs' => 23, 'rhs' => 1 ),
+  array( 'lhs' => 23, 'rhs' => 1 ),
   array( 'lhs' => 19, 'rhs' => 1 ),
     );
 
@@ -776,8 +776,7 @@ static public $yy_action = array(
         0 => 0,
         1 => 1,
         2 => 2,
-        14 => 2,
-        15 => 2,
+        13 => 2,
         3 => 3,
         4 => 4,
         5 => 5,
@@ -789,7 +788,8 @@ static public $yy_action = array(
         10 => 10,
         11 => 11,
         12 => 12,
-        13 => 12,
+        14 => 14,
+        15 => 15,
     );
     /* Beginning here are the reduction cases.  A typical example
     ** follows:
@@ -797,44 +797,50 @@ static public $yy_action = array(
     **   function yy_r0($yymsp){ ... }           // User supplied code
     **  #line <lineno> <thisfile>
     */
-#line 25 "parser.y"
+#line 23 "parser.y"
     function yy_r0(){ $this->body = $this->yystack[$this->yyidx + 0]->minor;     }
 #line 808 "parser.php"
-#line 27 "parser.y"
+#line 25 "parser.y"
     function yy_r1(){ $this->_retvalue=$this->yystack[$this->yyidx + -1]->minor; $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;     }
 #line 811 "parser.php"
-#line 28 "parser.y"
+#line 26 "parser.y"
     function yy_r2(){ $this->_retvalue = array($this->yystack[$this->yyidx + 0]->minor);     }
 #line 814 "parser.php"
-#line 29 "parser.y"
+#line 27 "parser.y"
     function yy_r3(){ $this->_retvalue = array();     }
 #line 817 "parser.php"
-#line 32 "parser.y"
-    function yy_r4(){ $this->_retvalue = array($this->yystack[$this->yyidx + -1]->minor);     }
+#line 30 "parser.y"
+    function yy_r4(){ $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;     }
 #line 820 "parser.php"
-#line 33 "parser.y"
+#line 31 "parser.y"
     function yy_r5(){ $this->_retvalue = array('operation' => 'print', 'variable' => $this->yystack[$this->yyidx + -1]->minor);     }
 #line 823 "parser.php"
-#line 34 "parser.y"
+#line 32 "parser.y"
     function yy_r6(){$this->_retvalue = array('operation' => 'html', 'html' => $this->yystack[$this->yyidx + 0]->minor);     }
 #line 826 "parser.php"
-#line 35 "parser.y"
+#line 33 "parser.y"
     function yy_r7(){ $this->_retvalue = $this->yystack[$this->yyidx + 0]->minor;     }
 #line 829 "parser.php"
-#line 43 "parser.y"
+#line 41 "parser.y"
     function yy_r9(){ 
     $this->_retvalue = array('operation' => 'loop', 'variable' => $this->yystack[$this->yyidx + -7]->minor, 'array' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor); 
     }
 #line 834 "parser.php"
-#line 48 "parser.y"
+#line 46 "parser.y"
     function yy_r10(){ $this->_retvalue = array('operation' => 'cycle', 'vars' => $this->yystack[$this->yyidx + 0]->minor);     }
 #line 837 "parser.php"
-#line 49 "parser.y"
+#line 47 "parser.y"
     function yy_r11(){ $this->_retvalue = array('operation' => 'cycle', 'vars' => $this->yystack[$this->yyidx + -2]->minor, 'as' => $this->yystack[$this->yyidx + 0]->minor);     }
 #line 840 "parser.php"
-#line 52 "parser.y"
+#line 50 "parser.y"
     function yy_r12(){ $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor; $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;     }
 #line 843 "parser.php"
+#line 53 "parser.y"
+    function yy_r14(){ $this->_retvalue = array('string' => $this->yystack[$this->yyidx + 0]->minor);     }
+#line 846 "parser.php"
+#line 54 "parser.y"
+    function yy_r15(){ $this->_retvalue = array('var' => $this->yystack[$this->yyidx + 0]->minor);     }
+#line 849 "parser.php"
 
     /**
      * placeholder for the left hand side in a reduce operation.
@@ -946,14 +952,14 @@ static public $yy_action = array(
      */
     function yy_syntax_error($yymajor, $TOKEN)
     {
-#line 15 "parser.y"
+#line 13 "parser.y"
 
     $expect = array();
     foreach ($this->yy_get_expected_tokens($yymajor) as $token) {
         $expect[] = self::$yyTokenName[$token];
     }
     throw new Exception('Unexpected ' . $this->tokenName($yymajor) . '(' . $TOKEN. '), expected one of: ' . implode(',', $expect));
-#line 963 "parser.php"
+#line 969 "parser.php"
     }
 
     /**
@@ -973,8 +979,7 @@ static public $yy_action = array(
         ** parser accepts */
 #line 10 "parser.y"
 
-    var_dump(array('body' => $this->body));
-#line 985 "parser.php"
+#line 990 "parser.php"
     }
 
     /**
