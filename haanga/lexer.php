@@ -201,15 +201,16 @@ class Haanga_Lexer
               3 => 0,
               4 => 0,
               5 => 0,
-              6 => 1,
-              8 => 0,
+              6 => 0,
+              7 => 1,
               9 => 0,
               10 => 0,
+              11 => 0,
             );
         if ($this->N >= strlen($this->data)) {
             return false; // end of input
         }
-        $yy_global_pattern = "/^(%\\})|^(for)|^(cycle)|^(in)|^(endfor)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \t\n]+)/";
+        $yy_global_pattern = "/^(%\\})|^(for)|^(empty)|^(cycle)|^(in)|^(endfor)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \t\n]+)/";
 
         do {
             if (preg_match($yy_global_pattern, substr($this->data, $this->N), $yymatches)) {
@@ -249,15 +250,16 @@ class Haanga_Lexer
                     // skip this token
                     continue;
                 } else {                    $yy_yymore_patterns = array(
-        1 => array(0, "^(for)|^(cycle)|^(in)|^(endfor)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \t\n]+)"),
-        2 => array(0, "^(cycle)|^(in)|^(endfor)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \t\n]+)"),
-        3 => array(0, "^(in)|^(endfor)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \t\n]+)"),
-        4 => array(0, "^(endfor)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \t\n]+)"),
-        5 => array(0, "^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \t\n]+)"),
-        6 => array(1, "^('[^']+')|^(\"[^\"]+\")|^([ \t\n]+)"),
-        8 => array(1, "^(\"[^\"]+\")|^([ \t\n]+)"),
-        9 => array(1, "^([ \t\n]+)"),
-        10 => array(1, ""),
+        1 => array(0, "^(for)|^(empty)|^(cycle)|^(in)|^(endfor)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \t\n]+)"),
+        2 => array(0, "^(empty)|^(cycle)|^(in)|^(endfor)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \t\n]+)"),
+        3 => array(0, "^(cycle)|^(in)|^(endfor)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \t\n]+)"),
+        4 => array(0, "^(in)|^(endfor)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \t\n]+)"),
+        5 => array(0, "^(endfor)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \t\n]+)"),
+        6 => array(0, "^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \t\n]+)"),
+        7 => array(1, "^('[^']+')|^(\"[^\"]+\")|^([ \t\n]+)"),
+        9 => array(1, "^(\"[^\"]+\")|^([ \t\n]+)"),
+        10 => array(1, "^([ \t\n]+)"),
+        11 => array(1, ""),
     );
 
                     // yymore is needed
@@ -328,27 +330,27 @@ class Haanga_Lexer
     function yy_r2_3($yy_subpatterns)
     {
 
-    $this->token = Parser::T_CYCLE;
+    $this->token = Parser::T_EMPTY;
     }
     function yy_r2_4($yy_subpatterns)
     {
 
-    $this->token = Parser::T_IN;
+    $this->token = Parser::T_CYCLE;
     }
     function yy_r2_5($yy_subpatterns)
     {
 
-    $this->token = Parser::T_CLOSEFOR;
+    $this->token = Parser::T_IN;
     }
     function yy_r2_6($yy_subpatterns)
     {
 
-    $this->token = Parser::T_ALPHA;
+    $this->token = Parser::T_CLOSEFOR;
     }
-    function yy_r2_8($yy_subpatterns)
+    function yy_r2_7($yy_subpatterns)
     {
 
-    $this->token = Parser::T_STRING;
+    $this->token = Parser::T_ALPHA;
     }
     function yy_r2_9($yy_subpatterns)
     {
@@ -356,6 +358,11 @@ class Haanga_Lexer
     $this->token = Parser::T_STRING;
     }
     function yy_r2_10($yy_subpatterns)
+    {
+
+    $this->token = Parser::T_STRING;
+    }
+    function yy_r2_11($yy_subpatterns)
     {
 
     return FALSE;

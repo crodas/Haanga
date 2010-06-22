@@ -5,5 +5,7 @@
             Foobar {{ var }}
         </td>
     </tr>
+{% empty %} 
+    Dear {{user}} you found a bug ;-)
 {% endfor %}
 </table>

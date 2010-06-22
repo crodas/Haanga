@@ -77,6 +77,10 @@ anything {
     $this->token = Parser::T_FOR;
 }
 
+"empty" {
+    $this->token = Parser::T_EMPTY;
+}
+
 "cycle" {
     $this->token = Parser::T_CYCLE;
 }
