@@ -22,12 +22,9 @@ function foo_bar  () {
             {{ forloop.counter0 }}
         </td>
         <td>
-            {{ forloop.counter }}
-        </td>
-        <td>
         {% block td %} 
             {% filter strtolower|strtoupper %}
-                Testing block with filter 
+                Testing block with filter {{ forloop.counter }} :-)
             {% endfilter %}
         {% endblock %}
         </td>

@@ -11,8 +11,7 @@ function foo_bar  () {
 
 <table>
 ";
-    if (!is_array($some_list) OR count($some_list) == 0)
-    {
+    if (!is_array($some_list) OR count($some_list) == 0) {
         echo " 
 <tr> 
     <td>
@@ -20,24 +19,18 @@ function foo_bar  () {
     </td>
 </tr>
 ";
-        
-    }
-    else
-    {
+    } else  {
         $forcounter_1 = 1;
         $forcounter0_1 = 0;
-        foreach ($some_list as  $var)
-        {
+        foreach ($some_list as  $var) {
             echo "
     ";
             $forcounter0_2 = 0;
-            foreach ($some_list as  $var)
-            {
+            foreach ($some_list as  $var) {
                 echo "
         {$forcounter0_2}
     ";
                 $forcounter0_2 = $forcounter0_2 + 1;
-                
             }
             $def_cycle_0 = Array('row1 cesar','row2',);
             $index_0 = (!isset($index_0) ? 0 : ($index_0 + 1) % sizeof($def_cycle_0));
@@ -45,20 +38,15 @@ function foo_bar  () {
 
     <tr class=\"{$def_cycle_0[$index_0]}\">
         <td style=\"background-color: ";
-            if (!isset($ifchanged_0[0]) || $ifchanged_0[0] != $var)
-            {
+            if (!isset($ifchanged_0[0]) || $ifchanged_0[0] != $var) {
                 $def_cycle_1 = Array('red','back',);
                 $index_1 = (!isset($index_1) ? 0 : ($index_1 + 1) % sizeof($def_cycle_1));
                 echo " {$def_cycle_1[$index_1]} ";
                 $ifchanged_0 = Array($var,);
-                
-            }
-            else
-            {
+            } else  {
                 $def_cycle_2 = Array('gray','white',);
                 $index_2 = (!isset($index_2) ? 0 : ($index_2 + 1) % sizeof($def_cycle_2));
                 echo " {$def_cycle_2[$index_2]} ";
-                
             }
             echo "\">
             Foobar {$var}
@@ -69,11 +57,9 @@ function foo_bar  () {
             $block = ob_start();
             echo "Date {$var} foo ";
             $output_1 = ob_get_clean();
-            if (!isset($ifchanged_1) OR $output_1 != $ifchanged_1)
-            {
+            if (!isset($ifchanged_1) OR $output_1 != $ifchanged_1) {
                 echo "{$output_1}";
                 $ifchanged_1 = $output_1;
-                
             }
             echo "
             ";
@@ -83,35 +69,25 @@ function foo_bar  () {
             {$forcounter0_1}
         </td>
         <td>
-            {$forcounter_1}
-        </td>
-        <td>
         ";
-            if (!isset($partial) || !isset($partial["td"]))
-            {
+            if (!isset($partial) || !isset($partial["td"])) {
                 echo " 
             ";
                 ob_start();
                 echo "
-                Testing block with filter 
+                Testing block with filter {$forcounter_1} :-)
             ";
                 echo "".strtoupper(strtolower(ob_get_clean()))."
         ";
-                
-            }
-            else
-            {
+            } else  {
                 echo "{$partial["td"]}";
-                
             }
             echo "
         </td>
 ";
             $forcounter_1 = $forcounter_1 + 1;
             $forcounter0_1 = $forcounter0_1 + 1;
-            
         }
-        
     }
     echo "
     </tr>

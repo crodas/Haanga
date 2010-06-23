@@ -19,7 +19,14 @@ class Haanga_CodeGenerator
             if (!is_callable(array($this, $method))) {
                 throw new Exception("CodeGenerator: Missing method $method");
             }
-            $code .= $this->ident();
+            switch ($op[0]) {
+            case 'ident':
+            case 'ident_end':
+            case 'else':
+                break;
+            default:
+                $code .= $this->ident();
+            }
             $code .= $this->$method($op);
         }
         return $code;
@@ -27,7 +34,7 @@ class Haanga_CodeGenerator
 
     protected function php_else()
     {
-        return "else";
+        return " else ";
     }
 
     function php_php($op)
@@ -37,7 +44,7 @@ class Haanga_CodeGenerator
 
     protected function ident()
     {
-        $code  = "\n";
+        $code = "\n";
         $code .= str_repeat($this->tab, $this->ident);
 
         return $code;
@@ -46,13 +53,12 @@ class Haanga_CodeGenerator
     protected function php_ident($op)
     {
         $this->ident++;
-        return "{";
+        return " {";
     }
 
     protected function php_ident_end($op)
     {
         $this->ident--;
-        
         return $this->ident()."}";
     }
 
