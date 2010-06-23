@@ -28,7 +28,14 @@ function base_template($vars, $blocks=array()) {
             $buffer1  = "";
             $buffer1 .= "\n            ";
             $buffer2  = "";
-            $buffer2 .= "\n            Date {$var} foo \n            dasdasdasdasdasldaksdhasd\n            asdlkasjdlkasjdlkasjdlkajdas\n                        dasa\n            ";
+            $buffer2 .= "\n            cesar\n            ";
+            $buffer3  = "";
+            $buffer3 .= "\n            Date {$var} foo \n            dasdasdasdasdasldaksdhasd\n            asdlkasjdlkasjdlkasjdlkajdas\n                        dasa\n            ";
+            if (!isset($ifchanged3) OR $buffer3 != $ifchanged3) {
+                $buffer2 .= "{$buffer3}";
+                $ifchanged3  = $buffer3;
+            }
+            $buffer2 .= "\n            ";
             if (!isset($ifchanged2) OR $buffer2 != $ifchanged2) {
                 $buffer1 .= "{$buffer2}";
                 $ifchanged2  = $buffer2;
@@ -82,7 +89,7 @@ function subtemplate_template($vars, $blocks=array()) {
     base_template($vars, $blocks);
 }
 
-$arr = array('some_list' => array(1, 2, 3, 3, 4, 4, 5), 'user' => 'crodas');
+$arr = array('some_list' => array(1, 2, 3, 3, 4, 4, 4, 5), 'user' => 'crodas');
 base_template($arr);
 echo "\n\n------------------------------\n\n";
 subtemplate_template($arr);

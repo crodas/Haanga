@@ -340,7 +340,7 @@ echo <<<EOF
 <?php
 $code
 
-\$arr = array('some_list' => array(1, 2, 3, 3, 4, 4, 5), 'user' => 'crodas');
+\$arr = array('some_list' => array(1, 2, 3, 3, 4, 4, 4, 5), 'user' => 'crodas');
 base_template(\$arr);
 echo "\\n\\n------------------------------\\n\\n";
 subtemplate_template(\$arr);
