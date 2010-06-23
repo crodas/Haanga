@@ -15,6 +15,9 @@ function foo_bar  () {
             {% endfilter %}
         </td>
         <td>
+            {{ forloop.counter }}
+        </td>
+        <td>
         {% block td %} 
             {% filter strtolower|strtoupper %}
                 Testing block with filter 

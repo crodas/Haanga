@@ -161,6 +161,10 @@ whitespace {
     $this->token = Parser::T_PIPE;
 }
 
+"." {
+    $this->token = Parser::T_DOT;
+}
+
 alpha {
     $this->token = Parser::T_ALPHA;
 }

@@ -6,6 +6,8 @@ require "generator.php";
 class Haanga
 {
     protected $generator;
+    protected $forloop_counter;
+    protected $forid;
 
     function __construct()
     {
@@ -56,7 +58,7 @@ class Haanga
     {
         $last    = count($out)-1;
         $content = str_replace('$', '\\$', addslashes($details['html']));
-        if ($out[$last][0] == 'print') {
+        if ($last > 0  && $out[$last][0] == 'print') {
             /* try to append this to the previous print if it exists */
             $out[$last][] = $content;
         } else {
@@ -68,7 +70,7 @@ class Haanga
     {
         static $cycle = 0;
         $last = count($out)-1;
-        if ($out[$last][0] == 'print') {
+        if ($last > 0 && $out[$last][0] == 'print') {
             /* If there is a print declared previously, we pop it
                and add it after the cycle declaration
              */
@@ -109,11 +111,28 @@ class Haanga
         $out[] = array('ident_end');
     }
 
+    protected function generate_variable_name($variable)
+    {
+        if (is_array($variable)) {
+            if ($variable[0] == 'forloop') {
+                switch ($variable[1]) {
+                case 'counter':
+                    $this->forloop_counter[$this->forid] = TRUE; 
+                    $variable = 'forcounter_'.$this->forid;
+                    break;
+                default:
+                    throw new Exception("Unexpected forloop.{$variable[1]}");
+                }
+            }
+        }
+        return $variable;
+    }
+
     protected function generate_op_print($details, &$out)
     {
         $last    = count($out)-1;
-        $content = array('var' => $details['variable']);
-        if ($out[$last][0] == 'print') {
+        $content = array('var' => $this->generate_variable_name($details['variable']));
+        if ($last > 0 && $out[$last][0] == 'print') {
             /* try to append this to the previous print if it exists */
             $out[$last][] = $content;
         } else {
@@ -123,6 +142,8 @@ class Haanga
 
     protected function generate_op_loop($details, &$out)
     {
+        static $id = 0;
+        $id++;
         if (isset($details['empty'])) {
             $out[] = array('if', "!is_array(\${$details['array']})", "OR", "count(\${$details['array']}) == 0");
             $out[] = array('ident');
@@ -131,9 +152,26 @@ class Haanga
         }
         $out[] = array('else');
         $out[] = array('ident');
-        $out[] = array('foreach', $details['array'], $details['variable']);
+        $out[] = array('foreach', $details['array'], $this->generate_variable_name($details['variable']));
         $out[] = array('ident');
-        $this->generate_op_code($details['body'], $out);
+
+        /* ForID */
+        $oldid       = $this->forid;
+        $this->forid = $id;
+
+        /* Loop body */
+        $for_loop_body = array();
+        $this->generate_op_code($details['body'], $for_loop_body);
+
+        if (isset($this->forloop_counter[$id])) {
+            $out[] = array('declare', 'forcounter_'.$id, 'php', '!isset($forcounter_'.$id.') ? 1 : $forcounter_'.$id.' + 1');
+        }
+
+        /* Restore old ForID */
+        $this->forid = $oldid;
+
+        /* Merge loop body  */
+        $out   = array_merge($out, $for_loop_body);
         $out[] = array('ident_end');
         $out[] = array('ident_end');
     }

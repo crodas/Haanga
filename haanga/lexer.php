@@ -438,13 +438,14 @@ class Haanga_Lexer
         $tokenMap = array (
               1 => 0,
               2 => 0,
-              3 => 1,
-              5 => 0,
+              3 => 0,
+              4 => 1,
+              6 => 0,
             );
         if ($this->N >= strlen($this->data)) {
             return false; // end of input
         }
-        $yy_global_pattern = "/^(\\}\\})|^(\\|)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^([ \r\t\n]+)/";
+        $yy_global_pattern = "/^(\\}\\})|^(\\|)|^(\\.)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^([ \r\t\n]+)/";
 
         do {
             if (preg_match($yy_global_pattern, substr($this->data, $this->N), $yymatches)) {
@@ -484,10 +485,11 @@ class Haanga_Lexer
                     // skip this token
                     continue;
                 } else {                    $yy_yymore_patterns = array(
-        1 => array(0, "^(\\|)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^([ \r\t\n]+)"),
-        2 => array(0, "^(([a-zA-Z_][a-zA-Z_0-9]*))|^([ \r\t\n]+)"),
-        3 => array(1, "^([ \r\t\n]+)"),
-        5 => array(1, ""),
+        1 => array(0, "^(\\|)|^(\\.)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^([ \r\t\n]+)"),
+        2 => array(0, "^(\\.)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^([ \r\t\n]+)"),
+        3 => array(0, "^(([a-zA-Z_][a-zA-Z_0-9]*))|^([ \r\t\n]+)"),
+        4 => array(1, "^([ \r\t\n]+)"),
+        6 => array(1, ""),
     );
 
                     // yymore is needed
@@ -558,9 +560,14 @@ class Haanga_Lexer
     function yy_r3_3($yy_subpatterns)
     {
 
+    $this->token = Parser::T_DOT;
+    }
+    function yy_r3_4($yy_subpatterns)
+    {
+
     $this->token = Parser::T_ALPHA;
     }
-    function yy_r3_5($yy_subpatterns)
+    function yy_r3_6($yy_subpatterns)
     {
 
     return FALSE;

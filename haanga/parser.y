@@ -89,4 +89,5 @@ var_or_string(A) ::= T_STRING(C).  { A = array('string' => C); }
 var_or_string(A) ::= varname(B).   { A = array('var' => B); }  
 
 /* Variable name */
+varname(A) ::= varname(B) T_DOT T_ALPHA(C). { if (!is_array(B)) { A = array(B); } else { A = B; }  A[]=C;}
 varname(A) ::= T_ALPHA(B). { A = B; } 
