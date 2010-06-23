@@ -20,10 +20,12 @@ function foo_bar  () {
         </td>
         <td>
         {% for var in some_list %}
-        {% strtoupper %}
+        Strlen: {% strlen %}
+            {%strtoupper%}
             {# Define a custom filter (AKA call a PHP function #}
             i must be uppercase
-        {% endstrtoupper %}
+            {% endstrtoupper %}
+        {% endstrlen %}
             {{ forloop.counter }}<br/>
             {{ forloop.counter0 }}<br/>
         {% endfor %}

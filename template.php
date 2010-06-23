@@ -39,12 +39,15 @@ function base_template($vars, $blocks=array()) {
             $forcounter_2 = 1;
             $forcounter0_2 = 0;
             foreach ($some_list as  $var) {
-                echo "\n        ";
+                echo "\n        Strlen: ";
+                ob_start();
+                echo "\n            ";
                 ob_start();
                 echo "\n            ";
                 /* Define a custom filter (AKA call a PHP function */
-                echo "\n            i must be uppercase\n        ";
-                echo "".strtoupper(ob_get_clean())."\n            {$forcounter_2}<br/>\n            {$forcounter0_2}<br/>\n        ";
+                echo "\n            i must be uppercase\n            ";
+                echo "".strtoupper(ob_get_clean())."\n        ";
+                echo "".strlen(ob_get_clean())."\n            {$forcounter_2}<br/>\n            {$forcounter0_2}<br/>\n        ";
                 $forcounter_2 = $forcounter_2 + 1;
                 $forcounter0_2 = $forcounter0_2 + 1;
             }
