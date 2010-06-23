@@ -63,11 +63,20 @@ class Haanga_CodeGenerator
         for ($i=1; $i < $max; $i++) {
             if (is_string($op[$i])) {
                 $code .= $op[$i];
+            } else if (isset($op[$i]['php'])) {
+                if ($code != '' && $code[strlen($code)-1] != '.') {
+                    $code .= '".';
+                }
+                $code .= $op[$i]['php'];
+                $code .= '."';
             } else {
                 $code .= '{$'.$op[$i]['var'].'}';
             }
         }
-        return "$code\";";
+        if ($code[strlen($code)-1] != '"') {
+            $code .= '"';
+        }
+        return "$code;";
     }
 
     protected function php_if($op)

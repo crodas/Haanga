@@ -184,6 +184,26 @@ class Haanga
         $ifchanged++;
     }
 
+    function generate_op_filter($details, &$out)
+    {
+        $out[] = array('php', 'ob_start();');
+        $this->generate_op_code($details['body'], $out);
+        $details['functions'] = array_reverse($details['functions']);
+        $func = "";
+        foreach ($details['functions'] as $f) {
+            $func .= "{$f['var']}(";
+        }
+        $func   .= 'ob_get_clean()'.str_repeat(')', count($details['functions']));;
+        $content = array('php' => $func);
+        $last    = count($out)-1;
+        if ($out[$last][0] == 'print') {
+            /* try to append this to the previous print if it exists */
+            $out[$last][] = $content;
+        } else {
+            $out[] = array('print', $content);
+        }
+    }
+
 }
 
 $haanga = new Haanga;

@@ -5,20 +5,26 @@ function foo_bar  () {
 }
 </script>
 {# Testing Comment #}
-{% for var in some_list %}
 <table>
+{% for var in some_list %}
     <tr class="{% cycle 'row1 cesar' 'row2' %}">
-        <td style="background-color: {% ifchanged var %} html {%cycle 'red' 'back' %} {% else %} {%cycle 'gray' 'white' %} {% endifchanged %}">
+        <td style="background-color: {% ifchanged var %} {%cycle 'red' 'back' %} {% else %} {%cycle 'gray' 'white' %} {% endifchanged %}">
             Foobar {{ var }}
-
-            {% ifchanged %}{{ var }}{% endifchanged %}
-
+            {% filter strtolower|strtoupper %}
+            {% ifchanged %}Date {{ var }} foo {% endifchanged %}
+            {% endfilter %}
         </td>
         <td>
-            {% block td %} Testing block {% endblock %}
+        {% filter strtolower|strtoupper %}
+            {% block td %} Testing block with filter {% endblock %}
+        {% endfilter %}
         </td>
+{% empty %} 
+<tr> 
+    <td>
+        Dear {{user}} you found a bug ;-)
+    </td>
+</tr>
+{% endfor %}
     </tr>
 </table>
-{% empty %} 
-    Dear {{user}} you found a bug ;-)
-{% endfor %}

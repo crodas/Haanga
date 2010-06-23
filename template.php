@@ -9,11 +9,16 @@ function foo_bar  () {
 }
 </script>
 
+<table>
 ";
     if (!is_array($some_list) OR count($some_list) == 0)
     {
         echo " 
-    Dear {$user} you found a bug ;-)
+<tr> 
+    <td>
+        Dear {$user} you found a bug ;-)
+    </td>
+</tr>
 ";
         
     }
@@ -24,14 +29,13 @@ function foo_bar  () {
             $def_cycle_0 = Array('row1 cesar','row2',);
             $index_0 = (!isset($index_0) ? 0 : ($index_0 + 1) % sizeof($def_cycle_0));
             echo "
-<table>
     <tr class=\"{$def_cycle_0[$index_0]}\">
         <td style=\"background-color: ";
             if (!isset($ifchanged_0[0]) || $ifchanged_0[0] != $var)
             {
                 $def_cycle_1 = Array('red','back',);
                 $index_1 = (!isset($index_1) ? 0 : ($index_1 + 1) % sizeof($def_cycle_1));
-                echo " html {$def_cycle_1[$index_1]} ";
+                echo " {$def_cycle_1[$index_1]} ";
                 $ifchanged_0 = Array($var,);
                 
             }
@@ -44,10 +48,12 @@ function foo_bar  () {
             }
             echo "\">
             Foobar {$var}
-
+            ";
+            ob_start();
+            echo "
             ";
             $block = ob_start();
-            echo "{$var}";
+            echo "Date {$var} foo ";
             $output_1 = ob_get_clean();
             if (!isset($ifchanged_1) OR $output_1 != $ifchanged_1)
             {
@@ -56,13 +62,16 @@ function foo_bar  () {
                 
             }
             echo "
-
+            ".strtoupper(strtolower(ob_get_clean()))."
         </td>
         <td>
+        ";
+            ob_start();
+            echo "
             ";
             if (!isset($partial) || !isset($partial["td"]))
             {
-                echo " Testing block ";
+                echo " Testing block with filter ";
                 
             }
             else
@@ -71,15 +80,16 @@ function foo_bar  () {
                 
             }
             echo "
+        ".strtoupper(strtolower(ob_get_clean()))."
         </td>
-    </tr>
-</table>
 ";
             
         }
         
     }
     echo "
+    </tr>
+</table>
 ";
 }
 

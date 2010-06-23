@@ -95,6 +95,19 @@ html {
     $this->token = Parser::T_BLOCK;
 }
 
+"|" {
+    $this->token = Parser::T_PIPE;
+}
+
+"filter" {
+    $this->token = Parser::T_FILTER;
+}
+
+"endfilter" {
+    $this->token = Parser::T_END_FILTER;
+}
+
+
 "endblock" {
     $this->token = Parser::T_END_BLOCK;
 }
@@ -142,6 +155,10 @@ whitespace {
 "}}" {
     $this->token = Parser::T_PRINT_CLOSE;
     $this->yypopstate();
+}
+
+"|" {
+    $this->token = Parser::T_PIPE;
 }
 
 alpha {

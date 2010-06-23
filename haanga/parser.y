@@ -33,6 +33,7 @@ stmts(A) ::= for_stmt(B). { A = B; }
 stmts(A) ::= ifchanged_stmt(B). { A = B; }
 stmts(A) ::= T_COMMENT_OPEN T_COMMENT(B). { B=rtrim(B); A = array('operation' => 'comment', 'php' => "/*".substr(B, 0, strlen(B)-2)."*/"); }
 stmts(A) ::= block_stmt(B). { A = B; }
+stmts(A) ::= filter_stmt(B). { A = B; }
 
 /* Statement */
 
@@ -64,14 +65,21 @@ ifchanged_stmt(A) ::= T_OPEN_TAG T_IFCHANGED list(X) T_CLOSE_TAG body(B) T_OPEN_
 }
 
 /* block stmt */
-
 block_stmt(A) ::= T_OPEN_TAG T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }
 
 block_stmt(A) ::= T_OPEN_TAG T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK var_name T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }
 
+/* filter stmt */
+filter_stmt(A) ::= T_OPEN_TAG T_FILTER piped_list(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_FILTER T_CLOSE_TAG. { A = array('operation' => 'filter', 'functions' => B, 'body' => X); }
+
+
 /* Cycle */ 
 cycle(A) ::= T_CYCLE list(B). { A = array('operation' => 'cycle', 'vars' => B); } 
 cycle(A) ::= T_CYCLE list(B) T_AS varname(C). { A = array('operation' => 'cycle', 'vars' => B, 'as' => C); } 
+
+/* Piped filters */
+piped_list(A) ::= piped_list(B) T_PIPE var_or_string(C). { A = B; A[] = C; }
+piped_list(A) ::= var_or_string(B). { A = array(B); }
 
 /* List of variables */
 list(A) ::= list(B) var_or_string(C).  { A = B; A[] = C; }
