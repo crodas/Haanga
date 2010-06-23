@@ -1,5 +1,8 @@
 {% extends "base.html" %} 
 
 {% block td %}
-    New content
+    New content by {{ user }}
+    {% for var in some_list %} 
+        {{ forloop.counter }}
+    {% endfor %}
 {% endblock %}

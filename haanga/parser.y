@@ -32,9 +32,10 @@ stmts(A) ::= T_PRINT_OPEN varname(B) T_PRINT_CLOSE.  { A = array('operation' => 
 stmts(A) ::= T_HTML(B). {A = array('operation' => 'html', 'html' => B); } 
 stmts(A) ::= for_stmt(B). { A = B; }
 stmts(A) ::= ifchanged_stmt(B). { A = B; }
-stmts(A) ::= T_COMMENT_OPEN T_COMMENT(B). { B=rtrim(B); A = array('operation' => 'comment', 'php' => "/*".substr(B, 0, strlen(B)-2)."*/"); }
+stmts(A) ::= T_COMMENT_OPEN T_COMMENT(B). { B=rtrim(B); A = array('operation' => 'php', 'php' => "/*".substr(B, 0, strlen(B)-2)."*/"); }
 stmts(A) ::= block_stmt(B). { A = B; }
 stmts(A) ::= filter_stmt(B). { A = B; }
+stmts(A) ::= custom_stmt(B). { A = B; }
 
 /* Statement */
 
@@ -65,6 +66,9 @@ ifchanged_stmt(A) ::= T_OPEN_TAG T_IFCHANGED list(X) T_CLOSE_TAG body(B) T_OPEN_
     A = array('operation' => 'ifchanged', 'body' => B, 'check' => X, 'else' => C);
 }
 
+/* custom stmt */
+custom_stmt(A) ::= T_OPEN_TAG varname(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_CUSTOM_END(C) T_CLOSE_TAG. { if ('end'.B != C) { throw new Exception("Unexpected ".C); } A = array('operation' => 'filter', 'functions' => array(array('var'=>B)), 'body' => X);}
+ 
 /* block stmt */
 block_stmt(A) ::= T_OPEN_TAG T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }
 

@@ -72,11 +72,7 @@ class Haanga
         }
         $this->generate_op_code($parsed, $op_code);
         if ($this->subtemplate) {
-            $arr = '';
-            foreach ($this->blocks as $block) {
-                $arr .= "'$block' => \${$block}, ";
-            }
-            $op_code[] = array('php', $this->subtemplate.'_template($vars, array('.$arr.'));');
+            $op_code[] = array('php', $this->subtemplate.'_template($vars, $blocks);');
         }
 
         if ($name) {
@@ -144,10 +140,6 @@ class Haanga
         $cycle++;
     }
 
-    protected function generate_op_comment($details, &$out)
-    {
-    }
-
     protected function generate_op_php($details, &$out)
     {
         $out[] = array('php', $details['php']);
@@ -171,7 +163,7 @@ class Haanga
             $out[] = array('ident_end');
         } else {
             $this->blocks[] = $details['name'];
-            $out[] = array('declare', $details['name'], 'php', 'ob_get_clean()');
+            $out[] = array('declare', 'blocks["'.$details['name'].'"]', 'php', 'ob_get_clean()');
             $this->in_block--;
         }
     }
@@ -329,7 +321,7 @@ echo <<<EOF
 <?php
 $code
 
-\$arr = array('some_list' => array(1, 2, 3, 4, 5), 'user' => 'crodas');
+\$arr = array('some_list' => array(1, 2, 3, 3, 4, 4, 5), 'user' => 'crodas');
 base_template(\$arr);
 echo "\\n\\n------------------------------\\n\\n";
 subtemplate_template(\$arr);

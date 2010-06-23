@@ -45,6 +45,7 @@ single_string   = /'[^']+'/
 double_string   = /"[^"]+"/
 html            = /([^{]+.[^%{#])+/
 comment         = /([^\#]+\#\})+/
+custom_tag_end  = /end([a-zA-Z][a-zA-Z0-9]*)/
 */
 /*!lex2php
 %statename IN_HTML
@@ -131,6 +132,10 @@ html {
 
 "endfor" {
     $this->token = Parser::T_CLOSEFOR;
+}
+
+custom_tag_end {
+    $this->token = Parser::T_CUSTOM_END;
 }
 
 "extends" {

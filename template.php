@@ -2,7 +2,9 @@
 
 function base_template($vars, $blocks=array()) {
     extract($vars);
-    echo "<script>\nvar i = 5 % 4;\nfunction foo_bar  () {\n    cesar {\$rodas}\n}\n</script>\n\n<table>\n";
+    echo "<script>\nvar i = 5 % 4;\nfunction foo_bar  () {\n    cesar {\$rodas}\n}\n</script>\n";
+    /* Testing Comment */
+    echo "\n<table>\n";
     if (!is_array($some_list) OR count($some_list) == 0) {
         echo " \n<tr> \n    <td>\n        Dear {$user} you found a bug ;-)\n    </td>\n</tr>\n";
     } else  {
@@ -37,7 +39,12 @@ function base_template($vars, $blocks=array()) {
             $forcounter_2 = 1;
             $forcounter0_2 = 0;
             foreach ($some_list as  $var) {
-                echo "\n            {$forcounter_2}<br/>\n            {$forcounter0_2}<br/>\n        ";
+                echo "\n        ";
+                ob_start();
+                echo "\n            ";
+                /* Define a custom filter (AKA call a PHP function */
+                echo "\n            i must be uppercase\n        ";
+                echo "".strtoupper(ob_get_clean())."\n            {$forcounter_2}<br/>\n            {$forcounter0_2}<br/>\n        ";
                 $forcounter_2 = $forcounter_2 + 1;
                 $forcounter0_2 = $forcounter0_2 + 1;
             }
@@ -62,12 +69,18 @@ function base_template($vars, $blocks=array()) {
 function subtemplate_template($vars, $blocks=array()) {
     extract($vars);
     ob_start();
-    echo "\n    New content\n";
-    $td = ob_get_clean();
-    base_template($vars, array('td' => $td, ));
+    echo "\n    New content by {$user}\n    ";
+    $forcounter_3 = 1;
+    foreach ($some_list as  $var) {
+        echo " \n        {$forcounter_3}\n    ";
+        $forcounter_3 = $forcounter_3 + 1;
+    }
+    echo "\n";
+    $blocks["td"] = ob_get_clean();
+    base_template($vars, $blocks);
 }
 
-$arr = array('some_list' => array(1, 2, 3, 4, 5), 'user' => 'crodas');
+$arr = array('some_list' => array(1, 2, 3, 3, 4, 4, 5), 'user' => 'crodas');
 base_template($arr);
 echo "\n\n------------------------------\n\n";
 subtemplate_template($arr);
