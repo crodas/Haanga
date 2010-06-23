@@ -67,26 +67,6 @@ class Haanga_CodeGenerator
         return $this->ident()."}";
     }
 
-    protected function php_print($op)
-    {
-        $code = "echo \"";
-        $max  = count($op);
-        for ($i=1; $i < $max; $i++) {
-            if (is_string($op[$i])) {
-                $code .= $op[$i];
-            } else if (isset($op[$i]['php'])) {
-                if ($code != '' && $code[strlen($code)-1] != '.') {
-                    $code .= '".';
-                }
-                $code .= $op[$i]['php'];
-                $code .= '."';
-            } else {
-                $code .= '{$'.$op[$i]['var'].'}';
-            }
-        }
-        return "$code\";";
-    }
-
     protected function php_if($op)
     {
         unset($op[0]);
@@ -108,28 +88,72 @@ class Haanga_CodeGenerator
         return $code;
     }
 
-    protected function php_declare($op)
+    protected function php_append_var($op)
     {
-        $code = "\${$op[1]} = ";
-        switch ($op[2]) {
-        case 'array':
-            $code .= "Array(";
-            foreach ($op[3] as $value) {
-                if (isset($value['string'])) {
-                    $code .= $value['string'];
-                } else if (isset($value['var'])) {
-                    $code .= "\${$value['var']}";
+        return $this->php_declare($op, '.=');
+    }
+
+    protected function php_generate_string($op, $skip=2)
+    {
+        $code = "";
+        for ($i=$skip; $i < count($op); $i++) {
+            switch ($op[$i][0]) {
+            case 'array':
+                $code .= "Array(";
+                foreach ($op[$i][1] as $value) {
+                    if (isset($value['string'])) {
+                        $code .= $value['string'];
+                    } else if (isset($value['var'])) {
+                        $code .= "\${$value['var']}";
+                    }
+                    $code .= ",";
                 }
-                $code .= ",";
+                $code .= ")";
+                break;
+            case 'php':
+                if (strlen($code) != 0) {
+                    $code .= '.';
+                }
+                $code .= $op[$i][1].'.';
+                break;
+            case 'string':
+                if ($code != "" && $code[strlen($code)-1] == '"') {
+                    $code = substr($code, 0, strlen($code)-1);
+                } else {
+                    $code .= '"';
+                }
+                $html  = addslashes($op[$i][1]);
+                $html  = str_replace(array('$', "\r", "\t", "\n"), array('\\$', '\r', '\t', '\n'), $html);
+                $code .= $html.'"';
+                break;
+            case 'var':
+                if ($code != "" && $code[strlen($code)-1] == '"') {
+                    $code = substr($code, 0, strlen($code)-1);
+                } else {
+                    $code .= '"';
+                }
+                $code .= '{$'.$op[$i][0].'}"';
+                break;
+            default:
+                throw new Exception("Don't know how to declare {$op[$i][0]} = {$op[$i][1]}");
             }
-            $code .= ")";
-            break;
-        case 'php':
-            $code .= $op[3];
-            break;
-        default:
-            throw new Exception("Don't know how to declare {$op[2]}");
         }
-        return $code.";";
+
+        if ($code != "" && $code[strlen($code)-1] == '.') {
+            $code = substr($code, 0, strlen($code)-1);
+        }
+
+        return $code;
+    }
+
+    protected function php_print($op)
+    {
+        return 'echo '.$this->php_generate_string($op, 1).';';
+    }
+
+    protected function php_declare($op, $assign='=')
+    {
+        $code = "\${$op[1]} {$assign} ".$this->php_generate_string($op,2).";";
+        return $code;
     }
 }

@@ -13,6 +13,7 @@ class Haanga
     protected $name;
     protected $blocks=array();
     protected $in_block=0;
+    protected $ob_start=0;
 
     function __construct()
     {
@@ -105,15 +106,7 @@ class Haanga
 
     protected function generate_op_html($details, &$out)
     {
-        $last    = count($out)-1;
-        $content = str_replace('$', '\\$', addslashes($details['html']));
-        $content = str_replace(array("\r", "\t", "\n"), array('\r', '\t', '\n'), $content);
-        if ($last >= 0  && $out[$last][0] == 'print') {
-            /* try to append this to the previous print if it exists */
-            $out[$last][] = $content;
-        } else {
-            $out[] = array('print', $content);
-        }
+        $this->generate_op_print($details, $out);
     }
 
     protected function generate_op_cycle($details, &$out)
@@ -128,9 +121,9 @@ class Haanga
             array_pop($out);
         }
 
-        $out[] = array('declare', 'def_cycle_'.$cycle, 'array', $details['vars']);
-        $out[] = array('declare', 'index_'.$cycle, 'php', '(!isset($index_'.$cycle.') ? 0 : ($index_'.$cycle.' + 1) % sizeof($def_cycle_'.$cycle.'))' ); 
-        $var  = array('var' => "def_cycle_{$cycle}[\$index_{$cycle}]");
+        $out[] = array('declare', 'def_cycle_'.$cycle, array('array', $details['vars']));
+        $out[] = array('declare', 'index_'.$cycle, array('php', '(!isset($index_'.$cycle.') ? 0 : ($index_'.$cycle.' + 1) % sizeof($def_cycle_'.$cycle.'))')); 
+        $var  = array('var', "def_cycle_{$cycle}[\$index_{$cycle}]");
         if (isset($print)) {
             $print[] = $var;
             $out[]   = $print;
@@ -159,11 +152,11 @@ class Haanga
             $out[] = array('ident_end');
             $out[] = array('else');
             $out[] = array('ident');
-            $out[] = array('print', array('var' => 'blocks["'.$details['name'].'"]'));
+            $this->generate_op_print(array('variable' => 'blocks["'.$details['name'].'"]'), $out);
             $out[] = array('ident_end');
         } else {
             $this->blocks[] = $details['name'];
-            $out[] = array('declare', 'blocks["'.$details['name'].'"]', 'php', 'ob_get_clean()');
+            $out[] = array('declare', 'blocks["'.$details['name'].'"]', array('php', 'ob_get_clean()'));
             $this->in_block--;
         }
     }
@@ -194,13 +187,32 @@ class Haanga
 
     protected function generate_op_print($details, &$out)
     {
-        $last    = count($out)-1;
-        $content = array('var' => $this->generate_variable_name($details['variable']));
-        if ($last >= 0 && $out[$last][0] == 'print') {
+        $last = count($out)-1;
+        if (isset($details['variable'])) {
+            $content = array('var', $this->generate_variable_name($details['variable']));
+        } else if (isset($details['html']))  {
+            $content = array('string', $details['html']);
+        } else if (isset($details['php'])) {
+            $content = array('php', $details['php']);
+        } else {
+            throw new Exception("don't know how to generate code for ".print_r($details, TRUE));
+        }
+        
+        if ($this->ob_start == 0) {
+            $operation = 'print';
+        } else {
+            $operation = 'append_var';
+        }
+
+        if ($last >= 0 && $out[$last][0] == $operation && ($operation == 'append_var' && $out[$last][1] === 'ob_start_'.$this->ob_start)) {
             /* try to append this to the previous print if it exists */
             $out[$last][] = $content;
         } else {
-            $out[] = array('print', $content);
+            if ($this->ob_start == 0) {
+                $out[] = array('print', $content);
+            } else {
+                $out[] = array('append_var', 'ob_start_'.$this->ob_start, $content);
+            }
         }
     }
 
@@ -228,14 +240,14 @@ class Haanga
         $oid = $this->forid;
         if (isset($this->forloop_counter[$oid])) {
             $var   = 'forcounter_'.$oid;
-            $out[] = array('declare', $var, 'php', 1);
-            $for_loop_body[] = array('declare', $var, 'php', '$'.$var.' + 1');
+            $out[] = array('declare', $var, array('php', 1) );
+            $for_loop_body[] = array('declare', $var, array('php', '$'.$var.' + 1'));
 
         }
         if (isset($this->forloop_counter0[$oid])) {
             $var   = 'forcounter0_'.$oid;
-            $out[] = array('declare', $var, 'php', 0);
-            $for_loop_body[] = array('declare', $var, 'php', '$'.$var.' + 1');
+            $out[] = array('declare', $var, array('php', 0));
+            $for_loop_body[] = array('declare', $var, array('php', '$'.$var.' + 1'));
         }
 
         /* Restore old ForID */
@@ -259,13 +271,13 @@ class Haanga
         $var2 = 'output_'.$ifchanged;
         if (!isset($details['check'])) {
             /* ugly */
-            $out[] = array('declare', 'block', 'php', 'ob_start()');
+            $out[] = array('declare', 'block', array('php', 'ob_start()'));
             $this->generate_op_code($details['body'], $out);
-            $out[] = array('declare', $var2, 'php', 'ob_get_clean()');
+            $out[] = array('declare', $var2, array('php', 'ob_get_clean()'));
             $out[] = array('if', "!isset(\${$var1})", "OR", "\${$var2} != \${$var1}");
             $out[] = array('ident');
-            $out[] = array('print', array('var' => $var2));
-            $out[] = array('declare', $var1, 'php', "\${$var2}");
+            $out[] = array('print', array('var', $var2));
+            $out[] = array('declare', $var1, array('php', "\${$var2}"));
             $out[] = array('ident_end');
         } else {
             /* beauty :-) */
@@ -283,7 +295,7 @@ class Haanga
             $out[] = $if;
             $out[] = array('ident');
             $this->generate_op_code($details['body'], $out);
-            $out[] = array('declare', $var1, 'array', $details['check']);
+            $out[] = array('declare', $var1, array('array', $details['check']));
             $out[] = array('ident_end');
         }
 
@@ -299,16 +311,17 @@ class Haanga
 
     function generate_op_filter($details, &$out)
     {
-        $out[] = array('php', 'ob_start();');
+        $this->ob_start++;
+        $out[] = array('declare', 'ob_start_'.$this->ob_start, array('string', ''));
         $this->generate_op_code($details['body'], $out);
         $details['functions'] = array_reverse($details['functions']);
         $func = "";
         foreach ($details['functions'] as $f) {
             $func .= "{$f['var']}(";
         }
-        $func   .= 'ob_get_clean()'.str_repeat(')', count($details['functions']));;
-        $content = array('php' => $func);
-        $out[]   = array('print', $content);
+        $func   .= '$ob_start_'.$this->ob_start.str_repeat(')', count($details['functions']));;
+        $this->ob_start--;
+        $this->generate_op_print(array('php' => $func), $out);
     }
 
 }
