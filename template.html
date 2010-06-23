@@ -1,0 +1,29 @@
+<?php
+function template($var) {
+    extract($var);
+
+    echo "<table>
+";
+    if (count($some_list) == 0))
+    {
+        echo "Nothing in this way
+";
+        
+    }
+    foreach ($some_list as  $var)
+    {
+        $def_cycle_0 = Array('row1 cesar','row2',);
+        $index_0 = (!isset($index_0) ? 0 : ($index_0 + 1) % sizeof($def_cycle_0));
+        echo "<tr class=\"".$def_cycle_0[$index_0]."\">
+        <td>
+            Foobar ".$var."</td>
+    </tr>
+";
+        
+    }
+    echo "</table>
+";
+}
+
+template(array('some_list' => array(1, 2, 3, 4)));
+

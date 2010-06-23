@@ -322,14 +322,16 @@ class Haanga
 }
 
 $haanga = new Haanga;
-$code = $haanga->compile_file('../template.tpl');
+$code = $haanga->compile_file('../subtemplate.html');
 
 
 echo <<<EOF
 <?php
 $code
-    \$arr = array('some_list' => array(1, 2, 3, 4, 5), 'user' => 'crodas');
-    base_template(\$arr);
-    echo "\\n\\n------------------------------\\n\\n";
-    template_template(\$arr);
+
+\$arr = array('some_list' => array(1, 2, 3, 4, 5), 'user' => 'crodas');
+base_template(\$arr);
+echo "\\n\\n------------------------------\\n\\n";
+subtemplate_template(\$arr);
+
 EOF;

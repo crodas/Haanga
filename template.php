@@ -59,14 +59,15 @@ function base_template($vars, $blocks=array()) {
 }
 
 
-function template_template($vars, $blocks=array()) {
+function subtemplate_template($vars, $blocks=array()) {
     extract($vars);
     ob_start();
     echo "\n    New content\n";
     $td = ob_get_clean();
     base_template($vars, array('td' => $td, ));
 }
-    $arr = array('some_list' => array(1, 2, 3, 4, 5), 'user' => 'crodas');
-    base_template($arr);
-    echo "\n\n------------------------------\n\n";
-    template_template($arr);
+
+$arr = array('some_list' => array(1, 2, 3, 4, 5), 'user' => 'crodas');
+base_template($arr);
+echo "\n\n------------------------------\n\n";
+subtemplate_template($arr);
