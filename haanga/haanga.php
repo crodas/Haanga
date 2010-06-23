@@ -144,7 +144,7 @@ class Haanga
             $out[] = array('if', '!isset($blocks)', '||', '!isset($blocks["'.$details['name'].'"])');
             $out[] = array('ident');
         } else {
-            $out[] = array('php', 'ob_start();');
+            $this->ob_start($out);
             $this->in_block++;
         }
         $this->generate_op_code($details['body'], $out);
@@ -156,7 +156,8 @@ class Haanga
             $out[] = array('ident_end');
         } else {
             $this->blocks[] = $details['name'];
-            $out[] = array('declare', 'blocks["'.$details['name'].'"]', array('php', 'ob_get_clean()'));
+            $out[] = array('declare', 'blocks["'.$details['name'].'"]', array('var', 'ob_start'.$this->ob_start));
+            $this->ob_start--;
             $this->in_block--;
         }
     }
@@ -204,14 +205,14 @@ class Haanga
             $operation = 'append_var';
         }
 
-        if ($last >= 0 && $out[$last][0] == $operation && ($operation == 'append_var' && $out[$last][1] === 'ob_start_'.$this->ob_start)) {
+        if ($last >= 0 && $out[$last][0] == $operation && ($operation != 'append_var' || $out[$last][1] === 'buffer'.$this->ob_start)) {
             /* try to append this to the previous print if it exists */
             $out[$last][] = $content;
         } else {
             if ($this->ob_start == 0) {
                 $out[] = array('print', $content);
             } else {
-                $out[] = array('append_var', 'ob_start_'.$this->ob_start, $content);
+                $out[] = array('append_var', 'buffer'.$this->ob_start, $content);
             }
         }
     }
@@ -267,16 +268,17 @@ class Haanga
     {
         static $ifchanged = 0;
 
-        $var1 = 'ifchanged_'.$ifchanged;
-        $var2 = 'output_'.$ifchanged;
+        $ifchanged++;
+        $var1 = 'ifchanged'.$ifchanged;
         if (!isset($details['check'])) {
             /* ugly */
-            $out[] = array('declare', 'block', array('php', 'ob_start()'));
+            $this->ob_start($out);
+            $var2 = 'buffer'.$this->ob_start;
             $this->generate_op_code($details['body'], $out);
-            $out[] = array('declare', $var2, array('php', 'ob_get_clean()'));
+            $this->ob_start--;
             $out[] = array('if', "!isset(\${$var1})", "OR", "\${$var2} != \${$var1}");
             $out[] = array('ident');
-            $out[] = array('print', array('var', $var2));
+            $this->generate_op_print(array('variable' => $var2), $out);
             $out[] = array('declare', $var1, array('php', "\${$var2}"));
             $out[] = array('ident_end');
         } else {
@@ -306,20 +308,24 @@ class Haanga
             $out[] = array('ident_end');
         }
 
-        $ifchanged++;
+    }
+
+    function ob_start(&$out)
+    {
+        $this->ob_start++;
+        $out[] = array('declare', 'buffer'.$this->ob_start, array('string', ''));
     }
 
     function generate_op_filter($details, &$out)
     {
-        $this->ob_start++;
-        $out[] = array('declare', 'ob_start_'.$this->ob_start, array('string', ''));
+        $this->ob_start($out);
         $this->generate_op_code($details['body'], $out);
         $details['functions'] = array_reverse($details['functions']);
         $func = "";
         foreach ($details['functions'] as $f) {
             $func .= "{$f['var']}(";
         }
-        $func   .= '$ob_start_'.$this->ob_start.str_repeat(')', count($details['functions']));;
+        $func   .= '$buffer'.$this->ob_start.str_repeat(')', count($details['functions']));;
         $this->ob_start--;
         $this->generate_op_print(array('php' => $func), $out);
     }

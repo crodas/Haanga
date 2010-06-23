@@ -132,7 +132,7 @@ class Haanga_CodeGenerator
                 } else {
                     $code .= '"';
                 }
-                $code .= '{$'.$op[$i][0].'}"';
+                $code .= '{$'.$op[$i][1].'}"';
                 break;
             default:
                 throw new Exception("Don't know how to declare {$op[$i][0]} = {$op[$i][1]}");
@@ -151,7 +151,7 @@ class Haanga_CodeGenerator
         return 'echo '.$this->php_generate_string($op, 1).';';
     }
 
-    protected function php_declare($op, $assign='=')
+    protected function php_declare($op, $assign=' =')
     {
         $code = "\${$op[1]} {$assign} ".$this->php_generate_string($op,2).";";
         return $code;
