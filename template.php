@@ -8,8 +8,7 @@ function foo_bar  () {
     cesar {\$rodas}
 }
 </script>
-";
-    echo "
+
 <table>
 ";
     if (!is_array($some_list) OR count($some_list) == 0)
@@ -25,14 +24,26 @@ function foo_bar  () {
     }
     else
     {
+        $forcounter_1 = 1;
+        $forcounter0_1 = 0;
         foreach ($some_list as  $var)
         {
-            $forcounter_1 = !isset($forcounter_1) ? 1 : $forcounter_1 + 1;
             echo "
     ";
+            $forcounter0_2 = 0;
+            foreach ($some_list as  $var)
+            {
+                echo "
+        {$forcounter0_2}
+    ";
+                $forcounter0_2 = $forcounter0_2 + 1;
+                
+            }
             $def_cycle_0 = Array('row1 cesar','row2',);
             $index_0 = (!isset($index_0) ? 0 : ($index_0 + 1) % sizeof($def_cycle_0));
-            echo "<tr class=\"{$def_cycle_0[$index_0]}\">
+            echo "
+
+    <tr class=\"{$def_cycle_0[$index_0]}\">
         <td style=\"background-color: ";
             if (!isset($ifchanged_0[0]) || $ifchanged_0[0] != $var)
             {
@@ -69,6 +80,9 @@ function foo_bar  () {
             echo "".strtoupper(strtolower(ob_get_clean()))."
         </td>
         <td>
+            {$forcounter0_1}
+        </td>
+        <td>
             {$forcounter_1}
         </td>
         <td>
@@ -93,6 +107,8 @@ function foo_bar  () {
             echo "
         </td>
 ";
+            $forcounter_1 = $forcounter_1 + 1;
+            $forcounter0_1 = $forcounter0_1 + 1;
             
         }
         
