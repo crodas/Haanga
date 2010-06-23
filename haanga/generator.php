@@ -73,10 +73,7 @@ class Haanga_CodeGenerator
                 $code .= '{$'.$op[$i]['var'].'}';
             }
         }
-        if ($code[strlen($code)-1] != '"') {
-            $code .= '"';
-        }
-        return "$code;";
+        return "$code\";";
     }
 
     protected function php_if($op)

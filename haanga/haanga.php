@@ -195,13 +195,7 @@ class Haanga
         }
         $func   .= 'ob_get_clean()'.str_repeat(')', count($details['functions']));;
         $content = array('php' => $func);
-        $last    = count($out)-1;
-        if ($out[$last][0] == 'print') {
-            /* try to append this to the previous print if it exists */
-            $out[$last][] = $content;
-        } else {
-            $out[] = array('print', $content);
-        }
+        $out[]   = array('print', $content);
     }
 
 }

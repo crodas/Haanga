@@ -15,9 +15,11 @@ function foo_bar  () {
             {% endfilter %}
         </td>
         <td>
-        {% filter strtolower|strtoupper %}
-            {% block td %} Testing block with filter {% endblock %}
-        {% endfilter %}
+        {% block td %} 
+            {% filter strtolower|strtoupper %}
+                Testing block with filter 
+            {% endfilter %}
+        {% endblock %}
         </td>
 {% empty %} 
 <tr> 

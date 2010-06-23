@@ -62,16 +62,21 @@ function foo_bar  () {
                 
             }
             echo "
-            ".strtoupper(strtolower(ob_get_clean()))."
+            ";
+            echo "".strtoupper(strtolower(ob_get_clean()))."
         </td>
         <td>
         ";
-            ob_start();
-            echo "
-            ";
             if (!isset($partial) || !isset($partial["td"]))
             {
-                echo " Testing block with filter ";
+                echo " 
+            ";
+                ob_start();
+                echo "
+                Testing block with filter 
+            ";
+                echo "".strtoupper(strtolower(ob_get_clean()))."
+        ";
                 
             }
             else
@@ -80,7 +85,6 @@ function foo_bar  () {
                 
             }
             echo "
-        ".strtoupper(strtolower(ob_get_clean()))."
         </td>
 ";
             
