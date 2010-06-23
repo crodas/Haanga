@@ -20,6 +20,7 @@
 
 %right TAGOPEN.
 
+start ::= T_OPEN_TAG T_EXTENDS var_or_string(B) T_CLOSE_TAG body(A). { A['base'] = B; $this->body = A; }
 start ::= body(B). { $this->body = B; }
 
 body(A) ::= body(B) stmts(C). { A=B; A[] = C; }

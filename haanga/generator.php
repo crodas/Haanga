@@ -11,7 +11,7 @@ class Haanga_CodeGenerator
 
     function getCode($op_code)
     {
-        $this->ident = 1;
+        $this->ident = 0;
         $code = "";
         foreach ($op_code as $op) {
             $method = "php_{$op[0]}";
@@ -40,6 +40,11 @@ class Haanga_CodeGenerator
     function php_php($op)
     {
         return $op[1];
+    }
+
+    function php_function($op)
+    {
+        return "function {$op[1]}_template(\$vars, \$blocks=array())";
     }
 
     protected function ident()

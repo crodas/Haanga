@@ -133,6 +133,10 @@ html {
     $this->token = Parser::T_CLOSEFOR;
 }
 
+"extends" {
+    $this->token = Parser::T_EXTENDS;
+}
+
 alpha {
     $this->token = Parser::T_ALPHA;
 }

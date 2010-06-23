@@ -9,6 +9,10 @@ class Haanga
     protected $forloop_counter;
     protected $forloop_counter0;
     protected $forid = FALSE;
+    protected $sub_template = FALSE;
+    protected $name;
+    protected $blocks=array();
+    protected $in_block=0;
 
     function __construct()
     {
@@ -22,19 +26,64 @@ class Haanga
      *
      *  @return Generated PHP code
      */
-    function compile_file($file)
+    final function compile_file($file)
     {
         if (!is_readable($file)) {
             throw new Exception("$file is not a file");
         }
-        return $this->compile(file_get_contents($file));
+        $this->_base_dir = dirname($file);
+        $name = strstr(basename($file),'.', TRUE);
+        return $this->compile(file_get_contents($file), $name);
     }
 
-    function compile($code)
+    function get_template_name()
     {
+        return $this->name;
+    }
+
+    final function compile($code, $name=NULL)
+    {
+        $this->name = $name;
+
         $parsed = do_parsing($code);
+        $code   = "";
+        $this->subtemplate = FALSE;
+        if (isset($parsed['base'])) {
+            if (!isset($parsed['base']['string'])) {
+                throw new Exception("Dynamic inheritance is not supported yet");
+            }
+            $base = $parsed['base']['string'];
+            $base = substr($base, 1, strlen($base)-2);
+            if (isset($this->_base_dir)) {
+                $base = $this->_base_dir.'/'.$base;
+            }
+            if (!is_file($base)) {
+                throw new Exception("can't find {$base} base template");
+            }
+            $comp  = new Haanga;
+            $code .= $comp->compile_file($base)."\n\n";
+            unset($parsed['base']);
+            $this->subtemplate = $comp->get_template_name();
+        }
+        if ($name) {
+            $op_code[] = array('function', $name);
+            $op_code[] = array('ident');
+            $op_code[] = array('php', 'extract($vars);');
+        }
         $this->generate_op_code($parsed, $op_code);
-        return $this->generator->getCode($op_code);
+        if ($this->subtemplate) {
+            $arr = '';
+            foreach ($this->blocks as $block) {
+                $arr .= "'$block' => \${$block}, ";
+            }
+            $op_code[] = array('php', $this->subtemplate.'_template($vars, array('.$arr.'));');
+        }
+
+        if ($name) {
+            $op_code[] = array('ident_end');
+        }
+        $code .= $this->generator->getCode($op_code);
+        return $code;
     }
 
     protected function generate_op_code($parsed, &$out)
@@ -42,10 +91,13 @@ class Haanga
         if (!is_array($parsed)) {
             throw new Exception("Invalid \$parsed array");
         }
-
         foreach ($parsed as $op) {
             if (!isset($op['operation'])) {
                 throw new Exception("Malformed \$parsed array");
+            }
+            if ($this->subtemplate && $this->in_block == 0 && $op['operation'] != 'block') {
+                /* ignore most of tokens in subtemplates */
+                continue;
             }
             $method = "generate_op_".$op['operation'];
             if (!is_callable(array($this, $method))) {
@@ -59,6 +111,7 @@ class Haanga
     {
         $last    = count($out)-1;
         $content = str_replace('$', '\\$', addslashes($details['html']));
+        $content = str_replace(array("\r", "\t", "\n"), array('\r', '\t', '\n'), $content);
         if ($last >= 0  && $out[$last][0] == 'print') {
             /* try to append this to the previous print if it exists */
             $out[$last][] = $content;
@@ -102,14 +155,25 @@ class Haanga
 
     protected function generate_op_block($details, &$out)
     {
-        $out[] = array('if', '!isset($partial)', '||', '!isset($partial["'.$details['name'].'"])');
-        $out[] = array('ident');
+        if (!$this->subtemplate) {
+            $out[] = array('if', '!isset($blocks)', '||', '!isset($blocks["'.$details['name'].'"])');
+            $out[] = array('ident');
+        } else {
+            $out[] = array('php', 'ob_start();');
+            $this->in_block++;
+        }
         $this->generate_op_code($details['body'], $out);
-        $out[] = array('ident_end');
-        $out[] = array('else');
-        $out[] = array('ident');
-        $out[] = array('print', array('var' => 'partial["'.$details['name'].'"]'));
-        $out[] = array('ident_end');
+        if (!$this->subtemplate) {
+            $out[] = array('ident_end');
+            $out[] = array('else');
+            $out[] = array('ident');
+            $out[] = array('print', array('var' => 'blocks["'.$details['name'].'"]'));
+            $out[] = array('ident_end');
+        } else {
+            $this->blocks[] = $details['name'];
+            $out[] = array('declare', $details['name'], 'php', 'ob_get_clean()');
+            $this->in_block--;
+        }
     }
 
     protected function generate_variable_name($variable)
@@ -260,12 +324,12 @@ class Haanga
 $haanga = new Haanga;
 $code = $haanga->compile_file('../template.tpl');
 
-echo "<?php
-function template(\$var, \$partial=array()) {
-    extract(\$var);
+
+echo <<<EOF
+<?php
 $code
-}
-
-template(array('some_list' => array(1, 2,2, 3, 4, 4)));
-
-";
+    \$arr = array('some_list' => array(1, 2, 3, 4, 5), 'user' => 'crodas');
+    base_template(\$arr);
+    echo "\\n\\n------------------------------\\n\\n";
+    template_template(\$arr);
+EOF;
