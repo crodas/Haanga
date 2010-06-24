@@ -214,94 +214,96 @@ class Haanga_yyStackEntry
 **                          shifting non-terminals after a reduce.
 **  self::$yy_default       Default action for each state.
 */
-    const YY_SZ_ACTTAB = 300;
+    const YY_SZ_ACTTAB = 307;
 static public $yy_action = array(
- /*     0 */    32,   34,   35,   35,   37,   37,   36,   36,   36,   32,
- /*    10 */    34,   35,   35,   37,   37,   36,   36,   36,   31,   44,
- /*    20 */    94,   56,  112,   33,  119,   90,   26,   91,   44,   42,
- /*    30 */    48,   28,   33,   27,   72,   26,   71,   93,   42,   44,
- /*    40 */    28,  112,   27,   33,   78,   79,   26,   52,   95,   42,
- /*    50 */   112,   28,   44,   27,   84,   80,   33,   74,  173,   26,
- /*    60 */    11,  112,   42,   44,   28,  126,   27,   33,   86,   75,
- /*    70 */    26,   47,   44,   42,  112,   28,   33,   27,   92,   26,
- /*    80 */    66,   87,   42,   44,   28,  112,   27,   33,   96,  103,
- /*    90 */    26,   70,  104,   42,  112,   28,  108,   27,   74,  125,
- /*   100 */   120,  115,  114,  116,  117,  112,    5,   39,   34,   35,
- /*   110 */    35,   37,   37,   36,   36,   36,   40,   44,   50,  123,
- /*   120 */    25,   33,   74,   41,   26,  124,   73,   42,   82,   28,
- /*   130 */    88,   27,   75,   44,  101,   77,   74,   33,  121,  112,
- /*   140 */    26,  122,   75,   42,   74,   28,  112,   27,  105,   44,
- /*   150 */    43,   29,  122,   33,   54,  112,   26,  112,  102,   42,
- /*   160 */    45,   28,   57,   27,  113,   44,   83,   68,   75,   33,
- /*   170 */    81,  112,   26,   76,  109,   42,   44,   28,   63,   27,
- /*   180 */    33,   74,  100,   26,  122,  110,   42,  112,   28,  112,
- /*   190 */    27,   35,   35,   37,   37,   36,   36,   36,  112,   55,
- /*   200 */    15,   13,   89,   41,   19,  124,   73,   41,   24,  124,
- /*   210 */    73,   41,   17,  124,   73,   41,   21,  124,   73,   41,
- /*   220 */    23,  124,   73,   41,   22,  124,   73,   41,   14,  124,
- /*   230 */    73,   41,   18,  124,   73,   41,   20,  124,   73,   41,
- /*   240 */    16,  124,   73,   41,   51,  124,   73,   36,   36,   36,
- /*   250 */   121,   49,   81,  112,   75,  118,   81,  106,   81,   75,
- /*   260 */    60,   99,   81,   30,   58,   53,   62,  122,   81,  107,
- /*   270 */    59,   81,  112,   38,   46,  111,   97,   98,    8,   61,
- /*   280 */     7,    4,   12,  107,    6,  107,  107,  107,  107,   65,
- /*   290 */    67,   64,    1,   69,   85,   10,    9,  107,    2,    3,
+ /*     0 */    29,   32,   31,   31,   26,   26,   28,   28,   28,   28,
+ /*    10 */    28,   28,   56,   52,   29,   32,   31,   31,   26,   26,
+ /*    20 */    28,   28,   28,   44,   94,   49,  119,   30,   75,   91,
+ /*    30 */    33,   90,   54,   42,   44,   34,   59,   35,   30,   96,
+ /*    40 */    72,   33,   71,   48,   42,  112,   34,   38,   35,   47,
+ /*    50 */    44,   93,   81,   80,   30,  103,  112,   33,  122,   74,
+ /*    60 */    42,   44,   34,  112,   35,   30,   78,   79,   33,  123,
+ /*    70 */    74,   42,  112,   34,  108,   35,   74,  125,  120,  115,
+ /*    80 */   114,  116,  117,  112,   97,   89,   32,   31,   31,   26,
+ /*    90 */    26,   28,   28,   28,   74,   44,  126,  121,  105,   30,
+ /*   100 */    75,   75,   33,   76,  173,   42,   11,   34,   44,   35,
+ /*   110 */    37,   66,   30,   40,   43,   33,  122,  112,   42,   45,
+ /*   120 */    34,  112,   35,  122,   27,   82,   92,   44,  112,   75,
+ /*   130 */   112,   30,   85,   74,   33,   83,   68,   42,   44,   34,
+ /*   140 */   121,   35,   30,  109,   75,   33,   70,  104,   42,  112,
+ /*   150 */    34,   44,   35,   36,  102,   30,    5,   39,   33,  101,
+ /*   160 */   112,   42,   44,   34,   87,   35,   30,   57,  100,   33,
+ /*   170 */    74,   88,   42,  112,   34,   44,   35,   77,  107,   30,
+ /*   180 */     6,  111,   33,   99,  112,   42,   44,   34,  113,   35,
+ /*   190 */    30,  118,   75,   33,  112,   75,   42,  112,   34,   55,
+ /*   200 */    35,   31,   31,   26,   26,   28,   28,   28,  112,   53,
+ /*   210 */    17,   67,   69,   41,   16,  124,   73,   41,   25,  124,
+ /*   220 */    73,   41,   21,  124,   73,   41,   24,  124,   73,   41,
+ /*   230 */    20,  124,   73,   41,   19,  124,   73,   41,   23,  124,
+ /*   240 */    73,   41,   22,  124,   73,   41,   14,  124,   73,   41,
+ /*   250 */    18,  124,   73,   41,   15,  124,   73,   41,   94,  124,
+ /*   260 */    73,   50,   75,   51,   94,   94,   46,  110,   75,   75,
+ /*   270 */    61,  106,   98,   12,    4,    7,   62,   60,   94,  107,
+ /*   280 */    65,   94,   75,   13,  122,   75,  122,    8,   94,  112,
+ /*   290 */    63,  112,   75,   58,   86,   84,    9,   64,  107,  107,
+ /*   300 */    95,   10,    3,  107,  107,    2,    1,
     );
     static public $yy_lookahead = array(
- /*     0 */     1,    2,    3,    4,    5,    6,    7,    8,    9,    1,
- /*    10 */     2,    3,    4,    5,    6,    7,    8,    9,   37,   19,
- /*    20 */    39,   13,   41,   23,   18,   25,   26,   27,   19,   29,
- /*    30 */    13,   31,   23,   33,   25,   26,   27,   38,   29,   19,
- /*    40 */    31,   41,   33,   23,   24,   25,   26,   13,   13,   29,
- /*    50 */    41,   31,   19,   33,   21,   22,   23,   40,   43,   26,
- /*    60 */    45,   41,   29,   19,   31,   44,   33,   23,   24,   48,
- /*    70 */    26,   13,   19,   29,   41,   31,   23,   33,   11,   26,
- /*    80 */    59,   28,   29,   19,   31,   41,   33,   23,   13,   41,
- /*    90 */    26,   27,   13,   29,   41,   31,   46,   33,   40,   49,
- /*   100 */    50,   51,   52,   53,   54,   41,   45,   12,    2,    3,
- /*   110 */     4,    5,    6,    7,    8,    9,   20,   19,   13,   15,
- /*   120 */    11,   23,   40,   14,   26,   16,   17,   29,   44,   31,
- /*   130 */    32,   33,   48,   19,   13,   21,   40,   23,   44,   41,
- /*   140 */    26,   36,   48,   29,   40,   31,   41,   33,   13,   19,
- /*   150 */    34,   57,   36,   23,   13,   41,   26,   41,   13,   29,
- /*   160 */    30,   31,   13,   33,   44,   19,   47,   48,   48,   23,
- /*   170 */    48,   41,   26,   27,   55,   29,   19,   31,   56,   33,
- /*   180 */    23,   40,   13,   26,   36,   13,   29,   41,   31,   41,
- /*   190 */    33,    3,    4,    5,    6,    7,    8,    9,   41,   13,
- /*   200 */    11,   45,   58,   14,   11,   16,   17,   14,   11,   16,
- /*   210 */    17,   14,   11,   16,   17,   14,   11,   16,   17,   14,
- /*   220 */    11,   16,   17,   14,   11,   16,   17,   14,   11,   16,
- /*   230 */    17,   14,   11,   16,   17,   14,   11,   16,   17,   14,
- /*   240 */    11,   16,   17,   14,   13,   16,   17,    7,    8,    9,
- /*   250 */    44,   13,   48,   41,   48,   44,   48,   13,   48,   48,
- /*   260 */    56,   13,   48,   57,   56,   13,   56,   36,   48,   13,
- /*   270 */    56,   48,   41,   35,   13,   13,   56,   13,   45,   56,
- /*   280 */    45,   45,   45,   60,   45,   60,   60,   60,   60,   48,
- /*   290 */    48,   48,   45,   48,   48,   45,   45,   60,   45,   45,
+ /*     0 */     1,    2,    3,    4,    5,    6,    7,    8,    9,    7,
+ /*    10 */     8,    9,   13,   13,    1,    2,    3,    4,    5,    6,
+ /*    20 */     7,    8,    9,   19,   44,   13,   18,   23,   48,   25,
+ /*    30 */    26,   27,   13,   29,   19,   31,   56,   33,   23,   13,
+ /*    40 */    25,   26,   27,   13,   29,   41,   31,   35,   33,   13,
+ /*    50 */    19,   38,   21,   22,   23,   41,   41,   26,   36,   40,
+ /*    60 */    29,   19,   31,   41,   33,   23,   24,   25,   26,   15,
+ /*    70 */    40,   29,   41,   31,   46,   33,   40,   49,   50,   51,
+ /*    80 */    52,   53,   54,   41,   13,   11,    2,    3,    4,    5,
+ /*    90 */     6,    7,    8,    9,   40,   19,   44,   44,   13,   23,
+ /*   100 */    48,   48,   26,   27,   43,   29,   45,   31,   19,   33,
+ /*   110 */    57,   59,   23,   20,   34,   26,   36,   41,   29,   30,
+ /*   120 */    31,   41,   33,   36,   37,   44,   39,   19,   41,   48,
+ /*   130 */    41,   23,   24,   40,   26,   47,   48,   29,   19,   31,
+ /*   140 */    44,   33,   23,   55,   48,   26,   27,   13,   29,   41,
+ /*   150 */    31,   19,   33,   57,   13,   23,   45,   12,   26,   13,
+ /*   160 */    41,   29,   19,   31,   32,   33,   23,   13,   13,   26,
+ /*   170 */    40,   28,   29,   41,   31,   19,   33,   21,   13,   23,
+ /*   180 */    45,   13,   26,   13,   41,   29,   19,   31,   44,   33,
+ /*   190 */    23,   44,   48,   26,   41,   48,   29,   41,   31,   13,
+ /*   200 */    33,    3,    4,    5,    6,    7,    8,    9,   41,   13,
+ /*   210 */    11,   48,   48,   14,   11,   16,   17,   14,   11,   16,
+ /*   220 */    17,   14,   11,   16,   17,   14,   11,   16,   17,   14,
+ /*   230 */    11,   16,   17,   14,   11,   16,   17,   14,   11,   16,
+ /*   240 */    17,   14,   11,   16,   17,   14,   11,   16,   17,   14,
+ /*   250 */    11,   16,   17,   14,   11,   16,   17,   14,   44,   16,
+ /*   260 */    17,   13,   48,   13,   44,   44,   13,   13,   48,   48,
+ /*   270 */    56,   13,   13,   45,   45,   45,   56,   56,   44,   60,
+ /*   280 */    48,   44,   48,   45,   36,   48,   36,   45,   44,   41,
+ /*   290 */    56,   41,   48,   56,   58,   48,   45,   48,   60,   60,
+ /*   300 */    56,   45,   45,   60,   60,   45,   45,
 );
-    const YY_SHIFT_USE_DFLT = -20;
-    const YY_SHIFT_MAX = 92;
+    const YY_SHIFT_USE_DFLT = -2;
+    const YY_SHIFT_MAX = 91;
     static public $yy_shift_ofst = array(
- /*     0 */    67,  205,  201,  197,  189,  213,  193,  209,  221,  229,
- /*    10 */   225,  109,  217,  109,    9,    0,   33,   20,   53,   98,
- /*    20 */    44,   64,  146,  130,  114,  157,  231,  148,  148,  116,
- /*    30 */   105,  -19,  -19,  -19,  -19,  -19,  -19,  -19,  148,  148,
- /*    40 */   212,  212,  212,  212,  212,  264,  -20,  -20,  -20,  -20,
- /*    50 */   -20,  -20,  -20,  -20,  -20,  -20,  -20,  -20,   -1,    8,
- /*    60 */   106,  188,  188,  240,  141,   96,  238,  104,   58,   17,
- /*    70 */    75,   35,   34,    6,   48,   82,  248,  262,  244,  186,
- /*    80 */   252,   82,  261,  256,  172,   82,  135,  121,   79,  145,
- /*    90 */   149,  169,   95,
+ /*     0 */    74,  211,  199,  215,  243,  231,  223,  227,  239,  203,
+ /*    10 */   219,  207,  235,  207,   15,    4,   31,   42,  143,  132,
+ /*    20 */   108,  119,   76,   89,  156,  167,   87,   87,   87,   87,
+ /*    30 */    87,   87,   87,  250,   22,   22,  248,   80,   22,   22,
+ /*    40 */   153,  153,  153,  153,  153,  259,   -2,   -2,   -2,   -2,
+ /*    50 */    -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   13,   -1,
+ /*    60 */    84,  198,  198,    2,   19,   93,   12,   54,   36,   30,
+ /*    70 */    71,   26,    0,    8,   14,  130,  170,  168,  258,  186,
+ /*    80 */   196,  254,  253,  165,  130,   85,  141,  134,  146,  145,
+ /*    90 */   155,  154,
 );
-    const YY_REDUCE_USE_DFLT = -1;
+    const YY_REDUCE_USE_DFLT = -21;
     const YY_REDUCE_MAX = 57;
     static public $yy_reduce_ofst = array(
- /*     0 */    15,   50,   50,   50,   50,   50,   50,   50,   50,   50,
- /*    10 */    50,   50,   50,   50,  119,  119,  119,  119,  119,  119,
- /*    20 */   119,  119,  119,  119,  119,  119,  206,   94,   21,  120,
- /*    30 */   120,  208,  204,  214,  210,  223,  220,  122,  211,   84,
- /*    40 */   243,  242,  245,  246,  241,  144,  156,  233,  235,  239,
- /*    50 */   237,  236,  247,  254,  251,  250,  253,   61,
+ /*     0 */    61,   28,   28,   28,   28,   28,   28,   28,   28,   28,
+ /*    10 */    28,   28,   28,   28,   88,   88,   88,   88,   88,   88,
+ /*    20 */    88,   88,   88,   88,   88,   88,  234,  237,  244,  221,
+ /*    30 */   -20,  214,  220,   96,   52,   53,  144,  144,  147,   81,
+ /*    40 */   249,  163,  164,  247,  232,  236,  238,  242,  230,  135,
+ /*    50 */   228,  229,  261,  257,  251,  256,  260,  111,
 );
     static public $yyExpectedTokens = array(
         /* 0 */ array(11, ),
@@ -330,18 +332,18 @@ static public $yy_action = array(
         /* 23 */ array(19, 23, 26, 29, 30, 31, 33, 41, ),
         /* 24 */ array(19, 21, 23, 26, 29, 31, 33, 41, ),
         /* 25 */ array(19, 23, 26, 29, 31, 33, 41, ),
-        /* 26 */ array(13, 36, 41, ),
-        /* 27 */ array(36, 41, ),
-        /* 28 */ array(36, 41, ),
-        /* 29 */ array(34, 36, 41, ),
-        /* 30 */ array(13, 36, 41, ),
-        /* 31 */ array(37, 39, 41, ),
-        /* 32 */ array(37, 39, 41, ),
-        /* 33 */ array(37, 39, 41, ),
-        /* 34 */ array(37, 39, 41, ),
-        /* 35 */ array(37, 39, 41, ),
-        /* 36 */ array(37, 39, 41, ),
-        /* 37 */ array(37, 39, 41, ),
+        /* 26 */ array(36, 37, 39, 41, ),
+        /* 27 */ array(36, 37, 39, 41, ),
+        /* 28 */ array(36, 37, 39, 41, ),
+        /* 29 */ array(36, 37, 39, 41, ),
+        /* 30 */ array(36, 37, 39, 41, ),
+        /* 31 */ array(36, 37, 39, 41, ),
+        /* 32 */ array(36, 37, 39, 41, ),
+        /* 33 */ array(13, 36, 41, ),
+        /* 34 */ array(36, 41, ),
+        /* 35 */ array(36, 41, ),
+        /* 36 */ array(13, 36, 41, ),
+        /* 37 */ array(34, 36, 41, ),
         /* 38 */ array(36, 41, ),
         /* 39 */ array(36, 41, ),
         /* 40 */ array(41, ),
@@ -385,18 +387,18 @@ static public $yy_action = array(
         /* 78 */ array(13, ),
         /* 79 */ array(13, ),
         /* 80 */ array(13, ),
-        /* 81 */ array(40, ),
+        /* 81 */ array(13, ),
         /* 82 */ array(13, ),
         /* 83 */ array(13, ),
-        /* 84 */ array(13, ),
-        /* 85 */ array(40, ),
+        /* 84 */ array(40, ),
+        /* 85 */ array(13, ),
         /* 86 */ array(13, ),
         /* 87 */ array(13, ),
         /* 88 */ array(13, ),
-        /* 89 */ array(13, ),
+        /* 89 */ array(12, ),
         /* 90 */ array(13, ),
         /* 91 */ array(13, ),
-        /* 92 */ array(12, ),
+        /* 92 */ array(),
         /* 93 */ array(),
         /* 94 */ array(),
         /* 95 */ array(),
@@ -435,14 +437,14 @@ static public $yy_action = array(
     static public $yy_default = array(
  /*     0 */   130,  172,  172,  172,  172,  172,  172,  172,  172,  172,
  /*    10 */   172,  128,  172,  127,  172,  172,  172,  172,  172,  172,
- /*    20 */   172,  172,  172,  172,  172,  172,  172,  172,  172,  154,
- /*    30 */   172,  172,  172,  172,  172,  172,  172,  172,  172,  172,
+ /*    20 */   172,  172,  172,  172,  172,  172,  172,  172,  172,  172,
+ /*    30 */   172,  172,  172,  172,  172,  172,  172,  154,  172,  172,
  /*    40 */   172,  172,  172,  172,  172,  172,  130,  130,  130,  130,
  /*    50 */   130,  130,  130,  130,  130,  130,  130,  130,  172,  172,
  /*    60 */   163,  165,  164,  167,  172,  172,  172,  172,  172,  172,
  /*    70 */   172,  172,  172,  172,  172,  161,  172,  172,  172,  172,
- /*    80 */   172,  168,  172,  172,  172,  155,  172,  172,  172,  172,
- /*    90 */   172,  172,  172,  162,  169,  147,  149,  166,  151,  148,
+ /*    80 */   172,  172,  172,  172,  155,  172,  172,  172,  172,  172,
+ /*    90 */   172,  172,  169,  162,  168,  166,  147,  149,  151,  148,
  /*   100 */   146,  150,  152,  170,  153,  145,  144,  131,  129,  141,
  /*   110 */   142,  143,  171,  158,  138,  137,  139,  140,  156,  136,
  /*   120 */   135,  159,  160,  132,  133,  134,  157,
@@ -611,7 +613,7 @@ static public $yy_action = array(
  /*  38 */ "expr ::= expr T_EQ|T_NE expr",
  /*  39 */ "expr ::= expr T_TIMES|T_DIV|T_MOD expr",
  /*  40 */ "expr ::= expr T_PLUS|T_MINUS expr",
- /*  41 */ "expr ::= varname",
+ /*  41 */ "expr ::= var_or_string",
  /*  42 */ "expr ::= T_NUMERIC",
  /*  43 */ "varname ::= varname T_DOT T_ALPHA",
  /*  44 */ "varname ::= T_ALPHA",
@@ -1038,6 +1040,7 @@ static public $yy_action = array(
         2 => 2,
         3 => 3,
         4 => 4,
+        35 => 4,
         5 => 5,
         6 => 6,
         7 => 7,
@@ -1071,7 +1074,6 @@ static public $yy_action = array(
         31 => 31,
         33 => 33,
         34 => 34,
-        35 => 35,
         36 => 36,
         37 => 36,
         38 => 36,
@@ -1087,109 +1089,106 @@ static public $yy_action = array(
     */
 #line 30 "parser.y"
     function yy_r0(){ $this->yystack[$this->yyidx + 0]->minor['base'] = $this->yystack[$this->yyidx + -2]->minor; $this->body = $this->yystack[$this->yyidx + 0]->minor;     }
-#line 1096 "parser.php"
+#line 1098 "parser.php"
 #line 31 "parser.y"
     function yy_r1(){ $this->body = $this->yystack[$this->yyidx + 0]->minor;     }
-#line 1099 "parser.php"
+#line 1101 "parser.php"
 #line 33 "parser.y"
     function yy_r2(){ $this->_retvalue=$this->yystack[$this->yyidx + -1]->minor; $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;     }
-#line 1102 "parser.php"
+#line 1104 "parser.php"
 #line 34 "parser.y"
     function yy_r3(){ $this->_retvalue = array();     }
-#line 1105 "parser.php"
+#line 1107 "parser.php"
 #line 37 "parser.y"
     function yy_r4(){ $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;     }
-#line 1108 "parser.php"
+#line 1110 "parser.php"
 #line 38 "parser.y"
     function yy_r5(){ $this->_retvalue = array('operation' => 'print', 'variable' => $this->yystack[$this->yyidx + -1]->minor);     }
-#line 1111 "parser.php"
+#line 1113 "parser.php"
 #line 39 "parser.y"
     function yy_r6(){$this->_retvalue = array('operation' => 'html', 'html' => $this->yystack[$this->yyidx + 0]->minor);     }
-#line 1114 "parser.php"
+#line 1116 "parser.php"
 #line 40 "parser.y"
     function yy_r7(){ $this->_retvalue = $this->yystack[$this->yyidx + 0]->minor;     }
-#line 1117 "parser.php"
+#line 1119 "parser.php"
 #line 42 "parser.y"
     function yy_r9(){ $this->yystack[$this->yyidx + 0]->minor=rtrim($this->yystack[$this->yyidx + 0]->minor); $this->_retvalue = array('operation' => 'php', 'php' => "/*".substr($this->yystack[$this->yyidx + 0]->minor, 0, strlen($this->yystack[$this->yyidx + 0]->minor)-2)."*/");     }
-#line 1120 "parser.php"
+#line 1122 "parser.php"
 #line 54 "parser.y"
     function yy_r15(){ 
     $this->_retvalue = array('operation' => 'loop', 'variable' => $this->yystack[$this->yyidx + -7]->minor, 'array' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor); 
     }
-#line 1125 "parser.php"
+#line 1127 "parser.php"
 #line 57 "parser.y"
     function yy_r16(){ 
     $this->_retvalue = array('operation' => 'loop', 'variable' => $this->yystack[$this->yyidx + -11]->minor, 'array' => $this->yystack[$this->yyidx + -9]->minor, 'body' => $this->yystack[$this->yyidx + -7]->minor, 'empty' => $this->yystack[$this->yyidx + -3]->minor); 
     }
-#line 1130 "parser.php"
+#line 1132 "parser.php"
 #line 61 "parser.y"
     function yy_r17(){ $this->_retvalue = array('operation' => 'if', 'expr' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor);     }
-#line 1133 "parser.php"
+#line 1135 "parser.php"
 #line 62 "parser.y"
     function yy_r18(){ $this->_retvalue = array('operation' => 'if', 'expr' => $this->yystack[$this->yyidx + -9]->minor, 'body' => $this->yystack[$this->yyidx + -7]->minor, 'else' => $this->yystack[$this->yyidx + -3]->minor);     }
-#line 1136 "parser.php"
+#line 1138 "parser.php"
 #line 65 "parser.y"
     function yy_r19(){ 
     $this->_retvalue = array('operation' => 'ifchanged', 'body' => $this->yystack[$this->yyidx + -3]->minor); 
     }
-#line 1141 "parser.php"
+#line 1143 "parser.php"
 #line 69 "parser.y"
     function yy_r20(){ 
     $this->_retvalue = array('operation' => 'ifchanged', 'body' => $this->yystack[$this->yyidx + -3]->minor, 'check' => $this->yystack[$this->yyidx + -5]->minor);
     }
-#line 1146 "parser.php"
+#line 1148 "parser.php"
 #line 72 "parser.y"
     function yy_r21(){ 
     $this->_retvalue = array('operation' => 'ifchanged', 'body' => $this->yystack[$this->yyidx + -7]->minor, 'else' => $this->yystack[$this->yyidx + -3]->minor); 
     }
-#line 1151 "parser.php"
+#line 1153 "parser.php"
 #line 76 "parser.y"
     function yy_r22(){ 
     $this->_retvalue = array('operation' => 'ifchanged', 'body' => $this->yystack[$this->yyidx + -7]->minor, 'check' => $this->yystack[$this->yyidx + -9]->minor, 'else' => $this->yystack[$this->yyidx + -3]->minor);
     }
-#line 1156 "parser.php"
+#line 1158 "parser.php"
 #line 81 "parser.y"
     function yy_r23(){ if ('end'.$this->yystack[$this->yyidx + -5]->minor != $this->yystack[$this->yyidx + -1]->minor) { throw new Exception("Unexpected ".$this->yystack[$this->yyidx + -1]->minor); } $this->_retvalue = array('operation' => 'filter', 'functions' => array(array('var'=>$this->yystack[$this->yyidx + -5]->minor)), 'body' => $this->yystack[$this->yyidx + -3]->minor);    }
-#line 1159 "parser.php"
+#line 1161 "parser.php"
 #line 84 "parser.y"
     function yy_r24(){ $this->_retvalue = array('operation' => 'block', 'name' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor);     }
-#line 1162 "parser.php"
+#line 1164 "parser.php"
 #line 86 "parser.y"
     function yy_r25(){ $this->_retvalue = array('operation' => 'block', 'name' => $this->yystack[$this->yyidx + -6]->minor, 'body' => $this->yystack[$this->yyidx + -4]->minor);     }
-#line 1165 "parser.php"
+#line 1167 "parser.php"
 #line 89 "parser.y"
     function yy_r26(){ $this->_retvalue = array('operation' => 'filter', 'functions' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor);     }
-#line 1168 "parser.php"
+#line 1170 "parser.php"
 #line 93 "parser.y"
     function yy_r27(){ $this->_retvalue = array('operation' => 'cycle', 'vars' => $this->yystack[$this->yyidx + 0]->minor);     }
-#line 1171 "parser.php"
+#line 1173 "parser.php"
 #line 94 "parser.y"
     function yy_r28(){ $this->_retvalue = array('operation' => 'cycle', 'vars' => $this->yystack[$this->yyidx + -2]->minor, 'as' => $this->yystack[$this->yyidx + 0]->minor);     }
-#line 1174 "parser.php"
+#line 1176 "parser.php"
 #line 97 "parser.y"
     function yy_r29(){ $this->_retvalue = $this->yystack[$this->yyidx + -2]->minor; $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;     }
-#line 1177 "parser.php"
+#line 1179 "parser.php"
 #line 98 "parser.y"
     function yy_r30(){ $this->_retvalue = array($this->yystack[$this->yyidx + 0]->minor);     }
-#line 1180 "parser.php"
+#line 1182 "parser.php"
 #line 101 "parser.y"
     function yy_r31(){ $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor; $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;     }
-#line 1183 "parser.php"
+#line 1185 "parser.php"
 #line 104 "parser.y"
     function yy_r33(){ $this->_retvalue = array('string' => $this->yystack[$this->yyidx + 0]->minor);     }
-#line 1186 "parser.php"
+#line 1188 "parser.php"
 #line 105 "parser.y"
     function yy_r34(){ $this->_retvalue = array('var' => $this->yystack[$this->yyidx + 0]->minor);     }
-#line 1189 "parser.php"
-#line 108 "parser.y"
-    function yy_r35(){ $this->_retvalue[] = $this->yystack[$this->yyidx + -1]->minor;     }
-#line 1192 "parser.php"
+#line 1191 "parser.php"
 #line 109 "parser.y"
     function yy_r36(){ $this->_retvalue[] = array(@$this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);     }
-#line 1195 "parser.php"
+#line 1194 "parser.php"
 #line 119 "parser.y"
     function yy_r43(){ if (!is_array($this->yystack[$this->yyidx + -2]->minor)) { $this->_retvalue = array($this->yystack[$this->yyidx + -2]->minor); } else { $this->_retvalue = $this->yystack[$this->yyidx + -2]->minor; }  $this->_retvalue[]=$this->yystack[$this->yyidx + 0]->minor;    }
-#line 1198 "parser.php"
+#line 1197 "parser.php"
 
     /**
      * placeholder for the left hand side in a reduce operation.
@@ -1308,7 +1307,7 @@ static public $yy_action = array(
         $expect[] = self::$yyTokenName[$token];
     }
     throw new Exception('Unexpected ' . $this->tokenName($yymajor) . '(' . $TOKEN. '), expected one of: ' . implode(',', $expect));
-#line 1318 "parser.php"
+#line 1317 "parser.php"
     }
 
     /**
@@ -1328,7 +1327,7 @@ static public $yy_action = array(
         ** parser accepts */
 #line 11 "parser.y"
 
-#line 1339 "parser.php"
+#line 1338 "parser.php"
     }
 
     /**

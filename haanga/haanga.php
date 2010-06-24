@@ -71,10 +71,21 @@ class Haanga
             $op_code[] = array('ident');
             $op_code[] = array('php', 'extract($vars);');
         }
+        $this->ob_start($op_code);
         $this->generate_op_code($parsed, $op_code);
         if ($this->subtemplate) {
-            $op_code[] = array('php', $this->subtemplate.'_template($vars, $blocks);');
+            $this->generate_op_print(array('php' => $this->subtemplate.'_template($vars, $blocks);'), $op_code);
         }
+        $this->ob_start--;
+        /* Add last part */
+        $op_code[] = array('if', '$return');
+        $op_code[] = array('ident');
+        $op_code[] = array('php', 'return $buffer1;');
+        $op_code[] = array('ident_end');
+        $op_code[] = array('else');
+        $op_code[] = array('ident');
+        $this->generate_op_print(array('variable' => 'buffer1'), $op_code);
+        $op_code[] = array('ident_end');
 
         if ($name) {
             $op_code[] = array('ident_end');
@@ -104,10 +115,24 @@ class Haanga
         }
     }
 
+
     protected function generate_op_if($details, &$out)
     {
-        print_r($details);die();
+        //print_r($details['expr']);die();
+        $out[] = array('if', 'foobar');
+        $out[] = array('ident');
+        $this->generate_op_code($details['body'], $out);
+        $out[] = array('ident_end');
+        if (isset($details['else'])) {
+            $out[] = array('else');
+            $out[] = array('ident');
+            $this->generate_op_code($details['else'], $out);
+            $out[] = array('ident_end');
+        }
+
+
     }
+
 
     protected function generate_op_html($details, &$out)
     {
@@ -128,14 +153,17 @@ class Haanga
 
         $out[] = array('declare', 'def_cycle_'.$cycle, array('array', $details['vars']));
         $out[] = array('declare', 'index_'.$cycle, array('php', '(!isset($index_'.$cycle.') ? 0 : ($index_'.$cycle.' + 1) % sizeof($def_cycle_'.$cycle.'))')); 
-        $var  = array('var', "def_cycle_{$cycle}[\$index_{$cycle}]");
+        $var  = array('variable' => "def_cycle_{$cycle}[\$index_{$cycle}]");
+        $this->generate_op_print($var, $out);
+        $cycle++;
+        return;
+        var_dump($var);die();
         if (isset($print)) {
             $print[] = $var;
             $out[]   = $print;
         } else {
             $out[] = array('print', $var);
         }
-        $cycle++;
     }
 
     protected function generate_op_php($details, &$out)
@@ -161,7 +189,7 @@ class Haanga
             $out[] = array('ident_end');
         } else {
             $this->blocks[] = $details['name'];
-            $out[] = array('declare', 'blocks["'.$details['name'].'"]', array('var', 'ob_start'.$this->ob_start));
+            $out[] = array('declare', 'blocks["'.$details['name'].'"]', array('var', 'buffer'.$this->ob_start));
             $this->ob_start--;
             $this->in_block--;
         }
@@ -338,7 +366,7 @@ class Haanga
 }
 
 $haanga = new Haanga;
-$code = $haanga->compile_file('../subtemplate.html');
+$code = $haanga->compile_file('./subtemplate.html');
 
 
 echo <<<EOF

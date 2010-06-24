@@ -105,13 +105,13 @@ var_or_string(A) ::= T_STRING(C).  { A = array('string' => C); }
 var_or_string(A) ::= varname(B).   { A = array('var' => B); }  
 
 /* expr */
-expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A[] = B; }
+expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = B; }
 expr(A) ::= expr(B) T_AND(X)  expr(C).  { A[] = array(@X, B, C); }
 expr(A) ::= expr(B) T_OR(X)  expr(C).  { A[] = array(@X, B, C); }
 expr(A) ::= expr(B) T_EQ|T_NE(X)  expr(C).  { A[] = array(@X, B, C); }
 expr(A) ::= expr(B) T_TIMES|T_DIV|T_MOD(X)  expr(C).  { A[] = array(@X, B, C); }
 expr(A) ::= expr(B) T_PLUS|T_MINUS(X)  expr(C).  { A[] = array(@X, B, C); }
-expr(A) ::= varname(B).   { A = B; }
+expr(A) ::= var_or_string(B). { A = B; }
 expr(A) ::= T_NUMERIC(B). { A = B; }
 
 

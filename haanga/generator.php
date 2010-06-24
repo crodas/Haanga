@@ -44,7 +44,7 @@ class Haanga_CodeGenerator
 
     function php_function($op)
     {
-        return "function {$op[1]}_template(\$vars, \$blocks=array())";
+        return "function {$op[1]}_template(\$vars, \$blocks=array(), \$return=FALSE)";
     }
 
     protected function ident()
