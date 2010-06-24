@@ -180,8 +180,20 @@ html {
     $this->token = Parser::T_EQ;
 }
 
+"!=" {
+    $this->token = Parser::T_NE;
+}
+
 "+" {
     $this->token = Parser::T_PLUS;
+}
+
+"*" {
+    $this->token = Parser::T_TIMES;
+}
+
+"/" {
+    $this->token = Parser::T_DIV;
 }
 
 custom_tag_end {

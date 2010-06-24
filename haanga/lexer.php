@@ -237,19 +237,22 @@ class Haanga_Lexer
               22 => 0,
               23 => 0,
               24 => 0,
-              25 => 1,
+              25 => 0,
+              26 => 0,
               27 => 0,
               28 => 1,
-              30 => 2,
-              33 => 1,
-              35 => 0,
-              36 => 0,
-              37 => 0,
+              30 => 0,
+              31 => 1,
+              33 => 2,
+              36 => 1,
+              38 => 0,
+              39 => 0,
+              40 => 0,
             );
         if ($this->N >= strlen($this->data)) {
             return false; // end of input
         }
-        $yy_global_pattern = "/^(%\\})|^(\\.)|^(for[^a-zA-Z0-9])|^(empty[^a-zA-Z0-9])|^(cycle[^a-zA-Z0-9])|^(block[^a-zA-Z0-9])|^(\\|)|^(filter[^a-zA-Z0-9])|^(endfilter[^a-zA-Z0-9])|^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)/";
+        $yy_global_pattern = "/^(%\\})|^(\\.)|^(for[^a-zA-Z0-9])|^(empty[^a-zA-Z0-9])|^(cycle[^a-zA-Z0-9])|^(block[^a-zA-Z0-9])|^(\\|)|^(filter[^a-zA-Z0-9])|^(endfilter[^a-zA-Z0-9])|^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)/";
 
         do {
             if (preg_match($yy_global_pattern, substr($this->data, $this->N), $yymatches)) {
@@ -289,38 +292,41 @@ class Haanga_Lexer
                     // skip this token
                     continue;
                 } else {                    $yy_yymore_patterns = array(
-        1 => array(0, "^(\\.)|^(for[^a-zA-Z0-9])|^(empty[^a-zA-Z0-9])|^(cycle[^a-zA-Z0-9])|^(block[^a-zA-Z0-9])|^(\\|)|^(filter[^a-zA-Z0-9])|^(endfilter[^a-zA-Z0-9])|^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        2 => array(0, "^(for[^a-zA-Z0-9])|^(empty[^a-zA-Z0-9])|^(cycle[^a-zA-Z0-9])|^(block[^a-zA-Z0-9])|^(\\|)|^(filter[^a-zA-Z0-9])|^(endfilter[^a-zA-Z0-9])|^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        3 => array(0, "^(empty[^a-zA-Z0-9])|^(cycle[^a-zA-Z0-9])|^(block[^a-zA-Z0-9])|^(\\|)|^(filter[^a-zA-Z0-9])|^(endfilter[^a-zA-Z0-9])|^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        4 => array(0, "^(cycle[^a-zA-Z0-9])|^(block[^a-zA-Z0-9])|^(\\|)|^(filter[^a-zA-Z0-9])|^(endfilter[^a-zA-Z0-9])|^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        5 => array(0, "^(block[^a-zA-Z0-9])|^(\\|)|^(filter[^a-zA-Z0-9])|^(endfilter[^a-zA-Z0-9])|^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        6 => array(0, "^(\\|)|^(filter[^a-zA-Z0-9])|^(endfilter[^a-zA-Z0-9])|^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        7 => array(0, "^(filter[^a-zA-Z0-9])|^(endfilter[^a-zA-Z0-9])|^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        8 => array(0, "^(endfilter[^a-zA-Z0-9])|^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        9 => array(0, "^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        10 => array(0, "^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        11 => array(0, "^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        12 => array(0, "^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        13 => array(0, "^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        14 => array(0, "^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        15 => array(0, "^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        16 => array(0, "^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        17 => array(0, "^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        18 => array(0, "^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        19 => array(0, "^(\\))|^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        20 => array(0, "^(%)|^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        21 => array(0, "^(&&)|^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        22 => array(0, "^(==)|^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        23 => array(0, "^(\\+)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        24 => array(0, "^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        25 => array(1, "^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        27 => array(1, "^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        28 => array(2, "^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        30 => array(4, "^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        33 => array(5, "^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        35 => array(5, "^(\"[^\"]+\")|^([ \r\t\n]+)"),
-        36 => array(5, "^([ \r\t\n]+)"),
-        37 => array(5, ""),
+        1 => array(0, "^(\\.)|^(for[^a-zA-Z0-9])|^(empty[^a-zA-Z0-9])|^(cycle[^a-zA-Z0-9])|^(block[^a-zA-Z0-9])|^(\\|)|^(filter[^a-zA-Z0-9])|^(endfilter[^a-zA-Z0-9])|^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        2 => array(0, "^(for[^a-zA-Z0-9])|^(empty[^a-zA-Z0-9])|^(cycle[^a-zA-Z0-9])|^(block[^a-zA-Z0-9])|^(\\|)|^(filter[^a-zA-Z0-9])|^(endfilter[^a-zA-Z0-9])|^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        3 => array(0, "^(empty[^a-zA-Z0-9])|^(cycle[^a-zA-Z0-9])|^(block[^a-zA-Z0-9])|^(\\|)|^(filter[^a-zA-Z0-9])|^(endfilter[^a-zA-Z0-9])|^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        4 => array(0, "^(cycle[^a-zA-Z0-9])|^(block[^a-zA-Z0-9])|^(\\|)|^(filter[^a-zA-Z0-9])|^(endfilter[^a-zA-Z0-9])|^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        5 => array(0, "^(block[^a-zA-Z0-9])|^(\\|)|^(filter[^a-zA-Z0-9])|^(endfilter[^a-zA-Z0-9])|^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        6 => array(0, "^(\\|)|^(filter[^a-zA-Z0-9])|^(endfilter[^a-zA-Z0-9])|^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        7 => array(0, "^(filter[^a-zA-Z0-9])|^(endfilter[^a-zA-Z0-9])|^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        8 => array(0, "^(endfilter[^a-zA-Z0-9])|^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        9 => array(0, "^(endblock[^a-zA-Z0-9])|^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        10 => array(0, "^(ifchanged[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        11 => array(0, "^(else[^a-zA-Z0-9])|^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        12 => array(0, "^(endifchanged[^a-zA-Z0-9])|^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        13 => array(0, "^(in[^a-zA-Z0-9])|^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        14 => array(0, "^(endfor[^a-zA-Z0-9])|^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        15 => array(0, "^(if[^a-zA-Z0-9])|^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        16 => array(0, "^(else[^a-zA-Z0-9])|^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        17 => array(0, "^(endif[^a-zA-Z0-9])|^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        18 => array(0, "^(\\()|^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        19 => array(0, "^(\\))|^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        20 => array(0, "^(%)|^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        21 => array(0, "^(&&)|^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        22 => array(0, "^(==)|^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        23 => array(0, "^(!=)|^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        24 => array(0, "^(\\+)|^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        25 => array(0, "^(\\*)|^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        26 => array(0, "^(\/)|^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        27 => array(0, "^(end([a-zA-Z][a-zA-Z0-9]*))|^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        28 => array(1, "^(extends[^a-zA-Z0-9])|^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        30 => array(1, "^(([0-9])+)|^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        31 => array(2, "^(([0-9])+\\.([0-9])+)|^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        33 => array(4, "^(([a-zA-Z_][a-zA-Z_0-9]*))|^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        36 => array(5, "^('[^']+')|^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        38 => array(5, "^(\"[^\"]+\")|^([ \r\t\n]+)"),
+        39 => array(5, "^([ \r\t\n]+)"),
+        40 => array(5, ""),
     );
 
                     // yymore is needed
@@ -496,24 +502,34 @@ class Haanga_Lexer
     function yy_r2_24($yy_subpatterns)
     {
 
-    $this->token = Parser::T_PLUS;
+    $this->token = Parser::T_NE;
     }
     function yy_r2_25($yy_subpatterns)
     {
 
-    $this->token = Parser::T_CUSTOM_END;
+    $this->token = Parser::T_PLUS;
+    }
+    function yy_r2_26($yy_subpatterns)
+    {
+
+    $this->token = Parser::T_TIMES;
     }
     function yy_r2_27($yy_subpatterns)
     {
 
-    $this->token = Parser::T_EXTENDS;
+    $this->token = Parser::T_DIV;
     }
     function yy_r2_28($yy_subpatterns)
     {
 
-    $this->token = Parser::T_NUMERIC;
+    $this->token = Parser::T_CUSTOM_END;
     }
     function yy_r2_30($yy_subpatterns)
+    {
+
+    $this->token = Parser::T_EXTENDS;
+    }
+    function yy_r2_31($yy_subpatterns)
     {
 
     $this->token = Parser::T_NUMERIC;
@@ -521,19 +537,24 @@ class Haanga_Lexer
     function yy_r2_33($yy_subpatterns)
     {
 
-    $this->token = Parser::T_ALPHA;
-    }
-    function yy_r2_35($yy_subpatterns)
-    {
-
-    $this->token = Parser::T_STRING;
+    $this->token = Parser::T_NUMERIC;
     }
     function yy_r2_36($yy_subpatterns)
     {
 
+    $this->token = Parser::T_ALPHA;
+    }
+    function yy_r2_38($yy_subpatterns)
+    {
+
     $this->token = Parser::T_STRING;
     }
-    function yy_r2_37($yy_subpatterns)
+    function yy_r2_39($yy_subpatterns)
+    {
+
+    $this->token = Parser::T_STRING;
+    }
+    function yy_r2_40($yy_subpatterns)
     {
 
     return FALSE;

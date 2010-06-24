@@ -1,34 +1,75 @@
-array(3) {
-  ["operation"]=>
-  string(2) "if"
-  ["expr"]=>
-  array(1) {
-    [0]=>
-    array(3) {
-      [0]=>
-      string(2) "eq"
-      [1]=>
-      array(3) {
-        ["op"]=>
-        string(4) "plus"
-        [0]=>
-        NULL
-        [1]=>
-        string(1) "2"
-      }
-      [2]=>
-      string(1) "3"
-    }
-  }
-  ["body"]=>
-  array(1) {
-    [0]=>
-    array(2) {
-      ["operation"]=>
-      string(4) "html"
-      ["html"]=>
-      string(9) "
-        "
-    }
-  }
-}
+Array
+(
+    [operation] => if
+    [expr] => Array
+        (
+            [0] => Array
+                (
+                    [0] => &&
+                    [1] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [0] => ==
+                                    [1] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [0] => +
+                                                    [1] => 1
+                                                    [2] => 2
+                                                )
+
+                                        )
+
+                                    [2] => 3
+                                )
+
+                        )
+
+                    [2] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [0] => ==
+                                    [1] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [0] => %
+                                                            [1] => Array
+                                                                (
+                                                                    [0] => forloop
+                                                                    [1] => counter
+                                                                )
+
+                                                            [2] => 2
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [2] => 0
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [body] => Array
+        (
+            [0] => Array
+                (
+                    [operation] => html
+                    [html] => 
+        
+                )
+
+        )
+
+)
