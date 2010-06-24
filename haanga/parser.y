@@ -83,7 +83,7 @@ custom_stmt(A) ::= T_OPEN_TAG varname(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_CUSTOM
 /* block stmt */
 block_stmt(A) ::= T_OPEN_TAG T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }
 
-block_stmt(A) ::= T_OPEN_TAG T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK var_name T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }
+block_stmt(A) ::= T_OPEN_TAG T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }
 
 /* filter stmt */
 filter_stmt(A) ::= T_OPEN_TAG T_FILTER piped_list(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_FILTER T_CLOSE_TAG. { A = array('operation' => 'filter', 'functions' => B, 'body' => X); }
