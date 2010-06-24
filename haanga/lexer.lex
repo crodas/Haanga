@@ -6,11 +6,15 @@ function do_parsing($template)
 {
     $a = new Haanga_Lexer($template);
     $parser = new Parser;
-    for($i=0; ; $i++) {
-        if  (!$a->yylex()) {
-            break;
+    try {
+        for($i=0; ; $i++) {
+            if  (!$a->yylex()) {
+                break;
+            }
+            $parser->doParse($a->token, $a->value);
         }
-        $parser->doParse($a->token, $a->value);
+    } catch (Exception $e) {
+        throw new Exception($e->getMessage(). ' on line '.$a->getLine());
     }
     $parser->doParse(0, 0);
     return $parser->body;
@@ -31,6 +35,11 @@ class Haanga_Lexer
         $this->line = 1;
     }
 
+    function getLine()
+    {
+        return $this->line;
+    }
+
 /*!lex2php
 %input          $this->data
 %counter        $this->N
@@ -46,6 +55,7 @@ double_string   = /"[^"]+"/
 html            = /([^{]+.[^%{#])+/
 comment         = /([^\#]+\#\})+/
 custom_tag_end  = /end([a-zA-Z][a-zA-Z0-9]*)/
+token_end       = /[^a-zA-Z0-9]/
 */
 /*!lex2php
 %statename IN_HTML
@@ -80,19 +90,23 @@ html {
     $this->yypopstate();
 }
 
-"for" {
+"." {
+    $this->token = Parser::T_DOT;
+}
+
+"for" token_end {
     $this->token = Parser::T_FOR;
 }
 
-"empty" {
+"empty" token_end {
     $this->token = Parser::T_EMPTY;
 }
 
-"cycle" {
+"cycle" token_end {
     $this->token = Parser::T_CYCLE;
 }
 
-"block" {
+"block" token_end {
     $this->token = Parser::T_BLOCK;
 }
 
@@ -100,46 +114,90 @@ html {
     $this->token = Parser::T_PIPE;
 }
 
-"filter" {
+"filter" token_end {
     $this->token = Parser::T_FILTER;
 }
 
-"endfilter" {
+"endfilter" token_end {
     $this->token = Parser::T_END_FILTER;
 }
 
 
-"endblock" {
+"endblock" token_end {
     $this->token = Parser::T_END_BLOCK;
 }
 
-"ifchanged" {
+"ifchanged" token_end {
     $this->token = Parser::T_IFCHANGED;
 }
 
-"else" {
+"else" token_end {
     $this->token = Parser::T_ELSE;
 }
 
-"endifchanged" {
+"endifchanged" token_end {
     $this->token = Parser::T_ENDIFCHANGED;
 }
 
 
-"in" {
+"in" token_end {
     $this->token = Parser::T_IN;
 }
 
-"endfor" {
+"endfor" token_end {
     $this->token = Parser::T_CLOSEFOR;
+}
+
+"if" token_end {
+    $this->token = Parser::T_IF;
+} 
+
+"else" token_end {
+    $this->token = Parser::T_ELSE;
+}
+
+"endif" token_end {
+    $this->token = Parser::T_ENDIF;
+}
+
+"(" {
+    $this->token = Parser::T_LPARENT;
+}
+
+")" {
+    $this->token = Parser::T_RPARENT;
+}
+
+"%" {
+    $this->token = Parser::T_MOD;
+}
+
+"&&" { 
+    $this->token = Parser::T_AND;
+}
+
+"==" {
+    $this->token = Parser::T_EQ;
+}
+
+"+" {
+    $this->token = Parser::T_PLUS;
 }
 
 custom_tag_end {
     $this->token = Parser::T_CUSTOM_END;
 }
 
-"extends" {
+"extends" token_end {
     $this->token = Parser::T_EXTENDS;
+}
+
+numerals {
+    $this->token = Parser::T_NUMERIC;
+}
+
+numerals "."  numerals {
+    $this->token = Parser::T_NUMERIC;
 }
 
 alpha {

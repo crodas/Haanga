@@ -3,6 +3,13 @@
 {% block td %}
     New content by {{ user }}
     {% for var in some_list %} 
+        {% if 1+2 == 3 %}
+        {% endif %}
+        {% if 1+2 == 3 && (forloop.counter % 2) == 0 %}
+            Par
+        {% else %}
+            Inpar
+        {% endif %}
         {{ forloop.counter }}
     {% endfor %}
 {% endblock %}

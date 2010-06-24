@@ -104,6 +104,11 @@ class Haanga
         }
     }
 
+    protected function generate_op_if($details, &$out)
+    {
+        var_dump($details);die();
+    }
+
     protected function generate_op_html($details, &$out)
     {
         $this->generate_op_print($details, $out);
