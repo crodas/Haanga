@@ -44,7 +44,7 @@ class Haanga_CodeGenerator
 
     function php_function($op)
     {
-        return "function {$op[1]}_template(\$vars, \$blocks=array(), \$return=FALSE)";
+        return "function {$op[1]}_template(\$vars, \$blocks=array(), \$return=FALSE)\n";
     }
 
     protected function ident()
@@ -58,7 +58,7 @@ class Haanga_CodeGenerator
     protected function php_ident($op)
     {
         $this->ident++;
-        return " {";
+        return "{";
     }
 
     protected function php_ident_end($op)
@@ -70,7 +70,7 @@ class Haanga_CodeGenerator
     protected function php_if($op)
     {
         unset($op[0]);
-        $code  = "if (".implode(" ", $op).")";
+        $code  = "if (".implode(" ", $op).") ";
         return $code;
     }
 
@@ -84,7 +84,7 @@ class Haanga_CodeGenerator
             $code .= " \${$op[2]} => \${$op[3]}";
         }
 
-        $code .= ")";
+        $code .= ") ";
         return $code;
     }
 
