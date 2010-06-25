@@ -50,12 +50,12 @@ alpha           = /([a-zA-Z_][a-zA-Z_0-9]*)/
 number          = /[0-9]/
 numerals        = /([0-9])+/
 whitespace      = /[ \r\t\n]+/
-double_string   = /"[^"]+"/
 html            = /([^{]+(.[^%{#])?)+/
 comment         = /([^\#]+\#\})+/
 custom_tag_end  = /end([a-zA-Z][a-zA-Z0-9]*)/
 token_end       = /[^a-zA-Z0-9]/
 single_string   = /[^'\\]+/
+double_string   = /[^"\\]+/
 */
 /*!lex2php
 %statename IN_HTML
@@ -202,6 +202,11 @@ html {
     $this->yypushstate(self::IN_STRING_SINGLE);
 }
 
+"\"" {
+    $this->token = Parser::T_STRING_DOUBLE_INIT;
+    $this->yypushstate(self::IN_STRING_DOUBLE);
+}
+
 custom_tag_end {
     $this->token = Parser::T_CUSTOM_END;
 }
@@ -220,10 +225,6 @@ numerals "."  numerals {
 
 alpha {
     $this->token = Parser::T_ALPHA;
-}
-
-double_string {
-    $this->token = Parser::T_STRING;
 }
 
 whitespace {
@@ -256,11 +257,46 @@ whitespace {
 */
 
 /*!lex2php
+%statename IN_STRING_DOUBLE
+
+"\\" "\""  {
+    $this->token = Parser::T_STRING_CONTENT;
+    $this->value = "\"";
+    $this->N    += 1;
+}
+
+"\'"  {
+    $this->token = Parser::T_STRING_CONTENT;
+    $this->value = "'";
+    $this->N    += 1;
+}
+
+
+"\"" {
+    $this->token = Parser::T_STRING_DOUBLE_END;
+    $this->yypopstate();
+}
+
+double_string {
+    $this->token = Parser::T_STRING_CONTENT;
+}
+
+*/
+
+/*!lex2php
 %statename IN_STRING_SINGLE
 "\'"  {
     $this->token = Parser::T_STRING_CONTENT;
-    $this->value = " '";
+    $this->value = "'";
+    $this->N    += 1;
 }
+
+"\\" "\""  {
+    $this->token = Parser::T_STRING_CONTENT;
+    $this->value = "\"";
+    $this->N    += 1;
+}
+
 
 "'" {
     $this->token = Parser::T_STRING_SINGLE_END;

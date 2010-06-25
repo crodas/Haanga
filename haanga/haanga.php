@@ -55,7 +55,6 @@ class Haanga
                 throw new Exception("Dynamic inheritance is not supported yet");
             }
             $base = $parsed['base']['string'];
-            $base = substr($base, 1, strlen($base)-2);
             if (isset($this->_base_dir)) {
                 $base = $this->_base_dir.'/'.$base;
             }

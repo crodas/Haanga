@@ -101,11 +101,11 @@ piped_list(A) ::= var_or_string(B). { A = array(B); }
 list(A) ::= list(B) var_or_string(C).  { A = B; A[] = C; }
 list(A) ::= var_or_string(B). { A = array(B); }
 
-var_or_string(A) ::= T_STRING(C).  { A = array('string' => C); }
 var_or_string(A) ::= varname(B).   { A = array('var' => B); }  
 var_or_string(A) ::= string(B).    { A = array('string' => B); }
 
 string(A)    ::= T_STRING_SINGLE_INIT s_content(B)  T_STRING_SINGLE_END. {  A = B; }
+string(A)    ::= T_STRING_DOUBLE_INIT s_content(B)  T_STRING_DOUBLE_END. {  A = B; }
 s_content(A) ::= s_content(B) T_STRING_CONTENT(C). { A = B.C; }
 s_content(A) ::= T_STRING_CONTENT(B). { A = B; }
 
