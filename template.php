@@ -1,5 +1,6 @@
 <?php
 
+/* Generated from ./base.html */
 function base_template($vars, $blocks=array(), $return=FALSE)
 {
     extract($vars);
@@ -102,6 +103,7 @@ function base_template($vars, $blocks=array(), $return=FALSE)
 }
 
 
+/* Generated from ./subtemplate.html */
 function subtemplate_template($vars, $blocks=array(), $return=FALSE)
 {
     extract($vars);

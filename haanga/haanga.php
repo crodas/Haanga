@@ -34,6 +34,7 @@ class Haanga
             throw new Exception("$file is not a file");
         }
         $this->_base_dir = dirname($file);
+        $this->_file     = $file;
         $name = strstr(basename($file),'.', TRUE);
         return $this->compile(file_get_contents($file), $name);
     }
@@ -67,6 +68,9 @@ class Haanga
             $this->subtemplate = $comp->get_template_name();
         }
         if ($name) {
+            if (isset($this->_file)) {
+                $op_code[] = array('php', "/* Generated from {$this->_file} */");
+            }
             $op_code[] = array('function', $name);
             $op_code[] = array('ident');
             $op_code[] = array('php', 'extract($vars);');
