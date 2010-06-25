@@ -14,6 +14,7 @@ class Haanga
     protected $blocks=array();
     protected $in_block=0;
     protected $ob_start=0;
+    protected $block_super=0;
 
     function __construct()
     {
@@ -74,7 +75,7 @@ class Haanga
         $this->ob_start($op_code);
         $this->generate_op_code($parsed, $op_code);
         if ($this->subtemplate) {
-            $this->generate_op_print(array('php' => $this->subtemplate.'_template($vars, $blocks);'), $op_code);
+            $this->generate_op_print(array('php' => $this->subtemplate.'_template($vars, $blocks, TRUE)'), $op_code);
         }
         $this->ob_start--;
         /* Add last part */
@@ -173,24 +174,38 @@ class Haanga
 
     protected function generate_op_block($details, &$out)
     {
+        $this->ob_start($out);
+        $buffer_var = 'buffer'.$this->ob_start;
+        if ($this->subtemplate) {
+            $this->in_block++;
+        } 
+        $this->generate_op_code($details['body'], $out);
+        $this->ob_start--;
+
         if (!$this->subtemplate) {
             $out[] = array('if', '!isset($blocks)', '||', '!isset($blocks["'.$details['name'].'"])');
             $out[] = array('ident');
-        } else {
-            $this->ob_start($out);
-            $this->in_block++;
-        }
-        $this->generate_op_code($details['body'], $out);
-        if (!$this->subtemplate) {
+            $this->generate_op_print(array('variable' => $buffer_var), $out);
+            $var = 'blocks["'.$details['name'].'"]';
             $out[] = array('ident_end');
             $out[] = array('else');
             $out[] = array('ident');
-            $this->generate_op_print(array('variable' => 'blocks["'.$details['name'].'"]'), $out);
+
+            $out[] = array('if', 'is_array($'.$var.')');
+            $out[] = array('ident');
+            $out[] = array('declare', $var, array('function', 'str_replace', 'args' => array(array('string' => '$parent_value'), array('var' => $buffer_var), array('var'=> $var.'[0]')))); 
+            $out[] = array('ident_end');
+            $this->generate_op_print(array('variable' => $var), $out);
             $out[] = array('ident_end');
         } else {
             $this->blocks[] = $details['name'];
-            $out[] = array('declare', 'blocks["'.$details['name'].'"]', array('var', 'buffer'.$this->ob_start));
-            $this->ob_start--;
+            if ($this->block_super > 0) {
+                $out[] = array('php', '/* declared as array because this block it needs to access parent block\'s contents */');
+                $out[] = array('declare', 'blocks["'.$details['name'].'"]', array('array', array(array('var' => $buffer_var)) ) );
+                $this->block_super--;
+            } else {
+                $out[] = array('declare', 'blocks["'.$details['name'].'"]', array('var', 'buffer'.$this->ob_start));
+            }
             $this->in_block--;
         }
     }
@@ -198,7 +213,8 @@ class Haanga
     protected function generate_variable_name($variable)
     {
         if (is_array($variable)) {
-            if ($variable[0] == 'forloop') {
+            switch ($variable[0]) {
+            case 'forloop':
                 if ($this->forid === FALSE) {
                     throw new Exception("Invalid forloop reference outside of a loop");
                 }
@@ -214,7 +230,15 @@ class Haanga
                 default:
                     throw new Exception("Unexpected forloop.{$variable[1]}");
                 }
-            }
+                break;
+            case 'super':
+                if ($variable[1] == 'block') {
+                    $variable = '\\$parent_value';
+                    $this->block_super++;
+                }
+                break;
+            } 
+
         }
         return $variable;
     }
@@ -231,6 +255,8 @@ class Haanga
         } else {
             throw new Exception("don't know how to generate code for ".print_r($details, TRUE));
         }
+
+        $var_name = 'buffer'.$this->ob_start;
         
         if ($this->ob_start == 0) {
             $operation = 'print';
@@ -238,14 +264,21 @@ class Haanga
             $operation = 'append_var';
         }
 
-        if ($last >= 0 && $out[$last][0] == $operation && ($operation != 'append_var' || $out[$last][1] === 'buffer'.$this->ob_start)) {
+        if ($last >= 0 && $out[$last][0] == $operation && ($operation != 'append_var' || $out[$last][1] === $var_name)) {
             /* try to append this to the previous print if it exists */
             $out[$last][] = $content;
         } else {
             if ($this->ob_start == 0) {
                 $out[] = array('print', $content);
             } else {
-                $out[] = array('append_var', 'buffer'.$this->ob_start, $content);
+                if (isset($out[$last]) && $out[$last][0] == 'declare' && $out[$last][1] == $var_name) {
+                    /* override an empty declaration of a empty buffer 
+                       if the next operation is an 'append'
+                    */
+                    $out[$last][] = $content;
+                } else {
+                    $out[] = array('append_var', 'buffer'.$this->ob_start, $content);
+                }
             }
         }
     }

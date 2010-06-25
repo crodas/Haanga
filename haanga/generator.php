@@ -93,6 +93,31 @@ class Haanga_CodeGenerator
         return $this->php_declare($op, '.=');
     }
 
+    protected function php_generate_list($array)
+    {
+        $code = "";
+        foreach ($array as $value) {
+            if (isset($value['string'])) {
+                $string = addslashes($value['string']);
+                $string = str_replace('$', '\\$', $string);
+                $code .= '"'.$string.'"';
+            } else if (isset($value['var'])) {
+                if ($value['var'][0] == '\\') {
+                    $code .= $value['var'];
+                } else {
+                    $code .= "\${$value['var']}";
+                    if (isset($value['index'])) {
+                        $code .= '["'.addslashes($value['index']).'"]';
+                    }
+                }
+            } else {
+                throw new exception("Don't know how to generate array for ".print_r($value, TRUE));
+            }
+            $code .= ",";
+        }
+        return substr($code, 0, strlen($code)-1);
+    }
+
     protected function php_generate_string($op, $skip=2)
     {
         $code = "";
@@ -100,15 +125,13 @@ class Haanga_CodeGenerator
             switch ($op[$i][0]) {
             case 'array':
                 $code .= "Array(";
-                foreach ($op[$i][1] as $value) {
-                    if (isset($value['string'])) {
-                        $code .= $value['string'];
-                    } else if (isset($value['var'])) {
-                        $code .= "\${$value['var']}";
-                    }
-                    $code .= ",";
-                }
+                $code .= $this->php_generate_list($op[$i][1]);
                 $code .= ")";
+                break;
+            case 'function':
+                $code .= $op[$i][1].'(';
+                $code .= $this->php_generate_list($op[$i]['args']);
+                $code .= ')';
                 break;
             case 'php':
                 if (strlen($code) != 0) {
@@ -132,7 +155,11 @@ class Haanga_CodeGenerator
                 } else {
                     $code .= '"';
                 }
-                $code .= '{$'.$op[$i][1].'}"';
+                if ($op[$i][1][0] == '\\') {
+                    $code .= $op[$i][1].'"';
+                } else {
+                    $code .= '{$'.$op[$i][1].'}"';
+                }
                 break;
             default:
                 throw new Exception("Don't know how to declare {$op[$i][0]} = {$op[$i][1]}");

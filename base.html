@@ -28,6 +28,11 @@ function foo_bar  () {
             {{ forloop.counter0 }}
         </td>
         <td>
+        {% block test %}
+            test
+            {% block foo %}
+                foo
+            {% endblock foo %}
         {% for var in some_list %}
         Strlen: {% strlen %}
             {%strtoupper%}
@@ -38,6 +43,7 @@ function foo_bar  () {
             {{ forloop.counter }}<br/>
             {{ forloop.counter0 }}<br/>
         {% endfor %}
+        {% endblock test %}
         </td>
         <td>
         {% block td %} 

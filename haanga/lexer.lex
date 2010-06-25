@@ -52,7 +52,7 @@ numerals        = /([0-9])+/
 whitespace      = /[ \r\t\n]+/
 single_string   = /'[^']+'/
 double_string   = /"[^"]+"/
-html            = /([^{]+.[^%{#])+/
+html            = /([^{]+(.[^%{#])?)+/
 comment         = /([^\#]+\#\})+/
 custom_tag_end  = /end([a-zA-Z][a-zA-Z0-9]*)/
 token_end       = /[^a-zA-Z0-9]/
@@ -68,6 +68,7 @@ token_end       = /[^a-zA-Z0-9]/
     $this->token = Parser::T_COMMENT_OPEN;
     $this->yypushstate(self::IN_COMMENT);
 }
+
 
 "{{" {
     $this->token = Parser::T_PRINT_OPEN;
