@@ -52,21 +52,21 @@ function base_template($vars, $blocks=array(), $return=FALSE) {
                 }
                 $buffer2 .= "{$blocks["foo"]}";
             }
-            $buffer2 .= "\n        ";
+            $buffer2 .= "\n        Strlen: ";
+            $buffer3  = "\n        ";
             $forcounter_2  = 1;
             $forcounter0_2  = 0;
             foreach ($some_list as  $var) {
-                $buffer2 .= "\n        Strlen: ";
-                $buffer3  = "\n            ";
+                $buffer3 .= "\n            ";
                 $buffer4  = "\n            ";
                 /* Define a custom filter (AKA call a PHP function */
                 $buffer4 .= "\n            i must be uppercase\n            ";
-                $buffer3 .= strtoupper($buffer4)."\n        ";
-                $buffer2 .= strlen($buffer3)."\n            {$forcounter_2}<br/>\n            {$forcounter0_2}<br/>\n        ";
+                $buffer3 .= strtoupper($buffer4)."\n            {$forcounter_2}<br/>\n            {$forcounter0_2}<br/>\n        ";
                 $forcounter_2  = $forcounter_2 + 1;
                 $forcounter0_2  = $forcounter0_2 + 1;
             }
-            $buffer2 .= "\n        ";
+            $buffer3 .= "\n        ";
+            $buffer2 .= strlen($buffer3)."\n\n        ";
             if (!isset($blocks) || !isset($blocks["test"])) {
                 $buffer1 .= "{$buffer2}";
             } else  {
