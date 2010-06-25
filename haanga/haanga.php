@@ -186,7 +186,7 @@ class Haanga
         $this->ob_start--;
 
         if (!$this->subtemplate) {
-            $out[] = array('if', '!isset($blocks)', '||', '!isset($blocks["'.$details['name'].'"])');
+            $out[] = array('if', '!isset($blocks["'.$details['name'].'"])');
             $out[] = array('ident');
             $this->generate_op_print(array('variable' => $buffer_var), $out);
             $var = 'blocks["'.$details['name'].'"]';
@@ -207,7 +207,7 @@ class Haanga
                 $out[] = array('declare', 'blocks["'.$details['name'].'"]', array('array', array(array('var' => $buffer_var)) ) );
                 $this->block_super--;
             } else {
-                $out[] = array('declare', 'blocks["'.$details['name'].'"]', array('var', 'buffer'.$this->ob_start));
+                $out[] = array('declare', 'blocks["'.$details['name'].'"]', array('var', $buffer_var));
             }
             $this->in_block--;
         }
@@ -291,7 +291,7 @@ class Haanga
         static $id = 0;
         $id++;
         if (isset($details['empty'])) {
-            $out[] = array('if', "!is_array(\${$details['array']})", "OR", "count(\${$details['array']}) == 0");
+            $out[] = array('if', "count(\${$details['array']}) == 0");
             $out[] = array('ident');
             $this->generate_op_code($details['empty'], $out);
             $out[] = array('ident_end');
@@ -402,7 +402,7 @@ class Haanga
 }
 
 $haanga = new Haanga;
-$code = $haanga->compile_file('./subtemplate.html');
+$code = $haanga->compile_file('./subsubtemplate.html');
 
 
 echo <<<EOF
@@ -413,5 +413,7 @@ $code
 base_template(\$arr);
 echo "\\n\\n------------------------------\\n\\n";
 subtemplate_template(\$arr);
+echo "\\n\\n------------------------------\\n\\n";
+subsubtemplate_template(\$arr);
 
 EOF;

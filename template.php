@@ -7,7 +7,7 @@ function base_template($vars, $blocks=array(), $return=FALSE)
     $buffer1  = "<script>\nvar i = 5 % 4;\nfunction foo_bar  () {\n    cesar {\$rodas}\n}\n</script>\n";
     /* Testing Comment */
     $buffer1 .= "\n<table>\n";
-    if (!is_array($some_list) OR count($some_list) == 0) {
+    if (count($some_list) == 0) {
         $buffer1 .= " \n<tr> \n    <td>\n        Dear {$user} you found a bug ;-)\n    </td>\n</tr>\n";
     } else {
         $forcounter_1  = 1;
@@ -45,8 +45,8 @@ function base_template($vars, $blocks=array(), $return=FALSE)
             $buffer2 .= "\n            out of ifchanged\n            ";
             $buffer1 .= strtoupper(strtolower($buffer2))."\n        </td>\n        <td>\n            {$forcounter0_1}\n        </td>\n        <td>\n        ";
             $buffer2  = "\n            test\n            ";
-            $buffer3  = "\n                foo\n            ";
-            if (!isset($blocks) || !isset($blocks["foo"])) {
+            $buffer3  = "foo";
+            if (!isset($blocks["foo"])) {
                 $buffer2 .= "{$buffer3}";
             } else {
                 if (is_array($blocks["foo"])) {
@@ -61,7 +61,7 @@ function base_template($vars, $blocks=array(), $return=FALSE)
             foreach ($some_list as  $var) {
                 $buffer3 .= "\n            ";
                 $buffer4  = "\n            ";
-                /* Define a custom filter (AKA call a PHP function */
+                /* Define a custom filter (AKA call a PHP function) */
                 $buffer4 .= "\n            i must be uppercase\n            ";
                 $buffer3 .= strtoupper($buffer4)."\n            {$forcounter_2}<br/>\n            {$forcounter0_2}<br/>\n        ";
                 $forcounter_2  = $forcounter_2 + 1;
@@ -69,7 +69,7 @@ function base_template($vars, $blocks=array(), $return=FALSE)
             }
             $buffer3 .= "\n        ";
             $buffer2 .= strlen($buffer3)."\n\n        ";
-            if (!isset($blocks) || !isset($blocks["test"])) {
+            if (!isset($blocks["test"])) {
                 $buffer1 .= "{$buffer2}";
             } else {
                 if (is_array($blocks["test"])) {
@@ -81,7 +81,7 @@ function base_template($vars, $blocks=array(), $return=FALSE)
             $buffer2  = " \n            ";
             $buffer3  = "\n                Testing block with filter {$forcounter_1} :-)\n            ";
             $buffer2 .= strtoupper(strtolower($buffer3))."\n        ";
-            if (!isset($blocks) || !isset($blocks["td"])) {
+            if (!isset($blocks["td"])) {
                 $buffer1 .= "{$buffer2}";
             } else {
                 if (is_array($blocks["td"])) {
@@ -121,7 +121,7 @@ function subtemplate_template($vars, $blocks=array(), $return=FALSE)
         $forcounter_3  = $forcounter_3 + 1;
     }
     $buffer2 .= "\n";
-    $blocks["td"]  = "{$buffer1}";
+    $blocks["td"]  = "{$buffer2}";
     $buffer2  = "\n    simplest output\n    [\$parent_value]\n";
     /* declared as array because this block it needs to access parent block's contents */
     $blocks["foo"]  = Array($buffer2);
@@ -133,7 +133,25 @@ function subtemplate_template($vars, $blocks=array(), $return=FALSE)
     }
 }
 
+
+/* Generated from ./subsubtemplate.html */
+function subsubtemplate_template($vars, $blocks=array(), $return=FALSE)
+{
+    extract($vars);
+    $buffer1  = "";
+    $buffer2  = "\n    hello\n\n";
+    $blocks["test"]  = "{$buffer2}";
+    $buffer1 .= subtemplate_template($vars, $blocks, TRUE);
+    if ($return) {
+        return $buffer1;
+    } else {
+        echo "{$buffer1}";
+    }
+}
+
 $arr = array('some_list' => array(1, 2, 3, 3, 4, 4, 4, 5), 'user' => 'crodas');
 base_template($arr);
 echo "\n\n------------------------------\n\n";
 subtemplate_template($arr);
+echo "\n\n------------------------------\n\n";
+subsubtemplate_template($arr);

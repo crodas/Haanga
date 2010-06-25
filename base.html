@@ -30,13 +30,11 @@ function foo_bar  () {
         <td>
         {% block test %}
             test
-            {% block foo %}
-                foo
-            {% endblock foo %}
+            {% block foo %}foo{% endblock foo %}
         Strlen: {% strlen %}
         {% for var in some_list %}
             {%strtoupper%}
-            {# Define a custom filter (AKA call a PHP function #}
+            {# Define a custom filter (AKA call a PHP function) #}
             i must be uppercase
             {% endstrtoupper %}
             {{ forloop.counter }}<br/>
