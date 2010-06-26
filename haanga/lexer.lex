@@ -149,6 +149,10 @@ html {
     $this->token = Parser::T_CLOSEFOR;
 }
 
+"as" {
+    $this->token = Parser::T_AS;
+}
+
 "if" token_end {
     $this->token = Parser::T_IF;
 } 
@@ -179,6 +183,10 @@ html {
 
 "AND" {
     $this->token = Parser::T_AND;
+}
+
+"," {
+    $this->token = Parser::T_COMMA;
 }
 
 "==" {

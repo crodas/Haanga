@@ -58,12 +58,12 @@ class Haanga
             }
             $file = $parsed['base']['string'];
             list($this->subtemplate, $new_code) = $this->compile_required_template($file);
-            $code .= $new_code;
+            $code .= $new_code."\n\n";
             unset($parsed['base']);
         }
         if ($name) {
             if (isset($this->_file)) {
-                $op_code[] = array('php', "/* Generated from {$this->_file} */");
+                $op_code[] = array('php', "/* Generated from {$this->_base_dir}/{$this->_file} */");
             }
             $op_code[] = array('function', $name);
             $op_code[] = array('ident');
@@ -118,7 +118,6 @@ class Haanga
 
     protected function generate_expr($expr)
     {
-        //print_r($expr);die();
         $code = '';
         if (is_array($expr) && isset($expr['op'])) {
             $code .= $this->generate_expr($expr[0]);
@@ -163,7 +162,7 @@ class Haanga
             throw new Exception("can't find {$file} file template");
         }
         $comp = new Haanga;
-        $code = $comp->compile_file($file)."\n\n";
+        $code = $comp->compile_file($file);
         return array($comp->get_template_name(), $code);
     }
     
@@ -172,7 +171,8 @@ class Haanga
         if (!$details[0]['string']) {
             throw new Exception("Dynamic includes are not supported yet");
         }
-        list($name,$this->append) = $this->compile_required_template($details[0]['string']);
+        list($name,$code) = $this->compile_required_template($details[0]['string']);
+        $this->append .= "\n\n{$code}";
         $this->generate_op_print(array('php' => $name.'_template($vars, $blocks, TRUE)'), $out);
     }
 
@@ -199,14 +199,6 @@ class Haanga
         $var  = array('variable' => "def_cycle_{$cycle}[\$index_{$cycle}]");
         $this->generate_op_print($var, $out);
         $cycle++;
-        return;
-        var_dump($var);die();
-        if (isset($print)) {
-            $print[] = $var;
-            $out[]   = $print;
-        } else {
-            $out[] = array('print', $var);
-        }
     }
 
     protected function generate_op_php($details, &$out)
@@ -424,6 +416,16 @@ class Haanga
         $out[] = array('declare', 'buffer'.$this->ob_start, array('string', ''));
     }
 
+    function generate_op_function($details, &$out)
+    {
+        $var = isset($details['as']) ? $details['as'] : 'return';
+        $arr = array('function', $details['name'], 'args' => $details['list']);
+        $out[] = array('declare', $var, $arr);
+        return;
+        var_Dump($details, $arr);die();
+    }
+
+
     function generate_op_filter($details, &$out)
     {
         $this->ob_start($out);
@@ -452,7 +454,7 @@ base_template(\$arr);
 echo "\\n\\n------------------------------\\n\\n";
 subtemplate_template(\$arr);
 echo "\\n\\n------------------------------\\n\\n";
-subsubtemplate_template(\$arr);
+index_template(\$arr);
 
 EOF;
     }

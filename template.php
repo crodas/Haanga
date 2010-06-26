@@ -1,6 +1,6 @@
 <?php
 
-/* Generated from base.html */
+/* Generated from test/base.html */
 function base_template($vars, $blocks=array(), $return=FALSE)
 {
     extract($vars);
@@ -103,12 +103,14 @@ function base_template($vars, $blocks=array(), $return=FALSE)
 }
 
 
-/* Generated from subtemplate.html */
+/* Generated from test/subtemplate.html */
 function subtemplate_template($vars, $blocks=array(), $return=FALSE)
 {
     extract($vars);
     $buffer1  = "";
-    $buffer2  = "\n    New content by {$user}\n    ".include_template($vars, $blocks, TRUE)."\n";
+    $buffer2  = "\n    ";
+    $strlen  = strlen("cesar");
+    $buffer2 .= "\n    New content by {$user} (strlen return:{$strlen})\n    ".include_template($vars, $blocks, TRUE)."\n";
     $blocks["td"]  = "{$buffer2}";
     $buffer2  = "\n    simplest output\n    [\$parent_value]\n";
     /* declared as array because this block it needs to access parent block's contents */
@@ -120,7 +122,9 @@ function subtemplate_template($vars, $blocks=array(), $return=FALSE)
         echo "{$buffer1}";
     }
 }
-/* Generated from include.html */
+
+
+/* Generated from test/include.html */
 function include_template($vars, $blocks=array(), $return=FALSE)
 {
     extract($vars);
@@ -144,27 +148,9 @@ function include_template($vars, $blocks=array(), $return=FALSE)
     }
 }
 
-
-
-
-/* Generated from ./subsubtemplate.html */
-function subsubtemplate_template($vars, $blocks=array(), $return=FALSE)
-{
-    extract($vars);
-    $buffer1  = "";
-    $buffer2  = "\n    hello\n";
-    $blocks["test"]  = "{$buffer2}";
-    $buffer1 .= subtemplate_template($vars, $blocks, TRUE);
-    if ($return) {
-        return $buffer1;
-    } else {
-        echo "{$buffer1}";
-    }
-}
-
 $arr = array('some_list' => array(1, 2, 3, 3, 4, 4, 4, 5), 'user' => 'crodas');
 base_template($arr);
 echo "\n\n------------------------------\n\n";
 subtemplate_template($arr);
 echo "\n\n------------------------------\n\n";
-subsubtemplate_template($arr);
+index_template($arr);

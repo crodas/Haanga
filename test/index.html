@@ -1,10 +1,5 @@
-{% extends "base.html" %} 
+{% extends 'subtemplate.html' %}
 
-{% block td %}
-    New content by {{ user }}
-    {% include "include.html" %}
-{% endblock %}
-{% block foo %}
-    simplest output
-    [{{ super.block }}]
-{% endblock %}
+{% block test %}
+    hello
+{% endblock test %}

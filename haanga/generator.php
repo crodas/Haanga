@@ -74,13 +74,6 @@ class Haanga_CodeGenerator
         return $code;
     }
 
-    protected function php_if_expr($op)
-    {
-        $expr = $this->php_generate_expr($op[1]);
-        die($expr);
-    }
-
-
     protected function php_foreach($op)
     {
         $code = "foreach (\${$op[1]} as ";

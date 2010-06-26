@@ -45,8 +45,15 @@ stmts(A) ::= filter_stmt(B). { A = B; }
 stmts(A) ::= custom_stmt(B). { A = B; }
 stmts(A) ::= if_stmt(B). { A = B; }
 stmts(A) ::= T_OPEN_TAG T_INCLUDE var_or_string(B) T_CLOSE_TAG. { A = array('operation' => 'include', B); }
+stmts(A) ::= fnc_call_stmt(B). { A = B; }
 
 /* Statement */
+
+/* function call */
+fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B); }
+fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'as' => C); }
+fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) list(X) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'list' => X); }
+fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) list(X) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'as' => C, 'list' => X); }
 
 /* Cycle */
 stmt(A) ::= cycle(B). { A = B; }
@@ -100,6 +107,7 @@ piped_list(A) ::= var_or_string(B). { A = array(B); }
 
 /* List of variables */
 list(A) ::= list(B) var_or_string(C).  { A = B; A[] = C; }
+list(A) ::= list(B) T_COMMA var_or_string(C).  { A = B; A[] = C; }
 list(A) ::= var_or_string(B). { A = array(B); }
 
 var_or_string(A) ::= varname(B).   { A = array('var' => B); }  

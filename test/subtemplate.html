@@ -1,0 +1,12 @@
+{% extends "base.html" %} 
+
+
+{% block td %}
+    {% strlen 'cesar' as strlen %}
+    New content by {{ user }} (strlen return:{{strlen}})
+    {% include "include.html" %}
+{% endblock %}
+{% block foo %}
+    simplest output
+    [{{ super.block }}]
+{% endblock %}
