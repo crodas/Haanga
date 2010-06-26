@@ -158,7 +158,7 @@ class Haanga
     {
         if (isset($this->_base_dir)) {
             $file = $this->_base_dir.'/'.$file;
-        }
+       }
         if (!is_file($file)) {
             throw new Exception("can't find {$file} file template");
         }
@@ -428,8 +428,7 @@ class Haanga
     {
         $this->ob_start($out);
         $this->generate_op_code($details['body'], $out);
-        $details['functions'] = array_reverse($details['functions']);
-        $func = "";
+        $details['functions'] = array_reverse($details['functions']);        $func = "";
         foreach ($details['functions'] as $f) {
             $func .= "{$f['var']}(";
         }
@@ -438,11 +437,11 @@ class Haanga
         $this->generate_op_print(array('php' => $func), $out);
     }
 
-}
-
-$haanga = new Haanga;
-$code = $haanga->compile_file($argv[1]);
-
+    final static function main_cli()
+    {
+        $argv = $GLOBALS['argv'];
+        $haanga = new Haanga;
+        $code = $haanga->compile_file($argv[1]);
 
 echo <<<EOF
 <?php
@@ -456,3 +455,9 @@ echo "\\n\\n------------------------------\\n\\n";
 subsubtemplate_template(\$arr);
 
 EOF;
+    }
+
+}
+
+
+
