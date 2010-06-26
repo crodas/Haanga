@@ -16,6 +16,7 @@ class Haanga
     protected $ob_start=0;
     protected $block_super=0;
     protected $append;
+    protected $_var_alias;
 
     function __construct()
     {
@@ -273,6 +274,8 @@ class Haanga
                 break;
             } 
 
+        } else if (isset($this->_var_alias[$variable])) {
+            $variable = $this->_var_alias[$variable];
         }
         return $variable;
     }
@@ -421,8 +424,13 @@ class Haanga
         $var = isset($details['as']) ? $details['as'] : 'return';
         $arr = array('function', $details['name'], 'args' => $details['list']);
         $out[] = array('declare', $var, $arr);
-        return;
-        var_Dump($details, $arr);die();
+    }
+
+    function generate_op_alias($details, &$out)
+    {
+        $this->_var_alias[ $details['as'] ] = $details['var'];
+        $this->generate_op_code($details['body'], $out);
+        unset($this->_var_alias[ $details['as'] ] );
     }
 
 

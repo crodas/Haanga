@@ -149,6 +149,14 @@ html {
     $this->token = Parser::T_CLOSEFOR;
 }
 
+"with" token_end {
+    $this->token = Parser::T_WITH;
+}
+
+"endwith" token_end {
+    $this->token = Parser::T_ENDWITH;
+}
+
 "as" {
     $this->token = Parser::T_AS;
 }

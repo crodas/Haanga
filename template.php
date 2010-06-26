@@ -109,8 +109,8 @@ function subtemplate_template($vars, $blocks=array(), $return=FALSE)
     extract($vars);
     $buffer1  = "";
     $buffer2  = "\n    ";
-    $strlen  = strlen("cesar");
-    $buffer2 .= "\n    New content by {$user} (strlen return:{$strlen})\n    ".include_template($vars, $blocks, TRUE)."\n";
+    $reallyreallylongname  = strlen("cesar");
+    $buffer2 .= "\n    \n    New content by {$user} (strlen return:{$reallyreallylongname})\n    \n    ".include_template($vars, $blocks, TRUE)."\n";
     $blocks["td"]  = "{$buffer2}";
     $buffer2  = "\n    simplest output\n    [\$parent_value]\n";
     /* declared as array because this block it needs to access parent block's contents */

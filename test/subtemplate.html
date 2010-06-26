@@ -2,8 +2,10 @@
 
 
 {% block td %}
-    {% strlen 'cesar' as strlen %}
+    {% strlen 'cesar' as reallyreallylongname %}
+    {% with reallyreallylongname as strlen %}
     New content by {{ user }} (strlen return:{{strlen}})
+    {% endwith %}
     {% include "include.html" %}
 {% endblock %}
 {% block foo %}

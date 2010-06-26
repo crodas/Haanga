@@ -46,6 +46,7 @@ stmts(A) ::= custom_stmt(B). { A = B; }
 stmts(A) ::= if_stmt(B). { A = B; }
 stmts(A) ::= T_OPEN_TAG T_INCLUDE var_or_string(B) T_CLOSE_TAG. { A = array('operation' => 'include', B); }
 stmts(A) ::= fnc_call_stmt(B). { A = B; }
+stmts(A) ::= alias(B). { A = B; }
 
 /* Statement */
 
@@ -54,6 +55,9 @@ fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) T_CLOSE_TAG. { A = array('operation' 
 fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'as' => C); }
 fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) list(X) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'list' => X); }
 fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) list(X) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'as' => C, 'list' => X); }
+
+/* variable alias */
+alias(A) ::= T_OPEN_TAG T_WITH varname(B) T_AS varname(C) T_CLOSE_TAG body(X) T_OPEN_TAG T_ENDWITH T_CLOSE_TAG. { A = array('operation' => 'alias', 'var' => B, 'as' => C, 'body' => X); }
 
 /* Cycle */
 stmt(A) ::= cycle(B). { A = B; }
