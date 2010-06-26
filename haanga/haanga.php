@@ -289,6 +289,8 @@ class Haanga
             $content = array('string', $details['html']);
         } else if (isset($details['php'])) {
             $content = array('php', $details['php']);
+        } else if (isset($details['function'])) {
+            $content = array('function', $details['function'][0], 'args' => $details['function'][1]);
         } else {
             throw new Exception("don't know how to generate code for ".print_r($details, TRUE));
         }
@@ -421,9 +423,32 @@ class Haanga
 
     function generate_op_function($details, &$out)
     {
-        $var = isset($details['as']) ? $details['as'] : 'return';
-        $arr = array('function', $details['name'], 'args' => $details['list']);
-        $out[] = array('declare', $var, $arr);
+        $var   = isset($details['as']) ? $details['as'] : NULL;
+        $arr   = array('function', $details['name'], 'args' => $details['list']);
+        $print = array('function' => array($details['name'], $details['list']));
+        
+        if (isset($details['for'])) {
+            $new_args = array(array('var' => 'var'));
+            $print['function'][1] = $new_args;
+            $arr['args'] = $new_args;
+            if ($var) {
+                $out[] = array('declare', $var, array('string', ''));
+            }
+            $out[] = array('foreach', $this->generate_variable_name($details['for']), 'var');
+            $out[] = array('ident');
+            if ($var) {
+                $out[] = array('append_var', $var, $arr);
+            } else {
+                $this->generate_op_print($print, $out);
+            }
+            $out[] = array('ident_end');
+        } else {
+            if ($var) {
+                $out[] = array('declare', $var, $arr);
+            } else {
+                $this->generate_op_print($print, $out);
+            }
+        }
     }
 
     function generate_op_alias($details, &$out)

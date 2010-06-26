@@ -109,7 +109,7 @@ function subtemplate_template($vars, $blocks=array(), $return=FALSE)
     extract($vars);
     $buffer1  = "";
     $buffer2  = "\n    ";
-    $reallyreallylongname  = strlen("cesar");
+    $reallyreallylongname  = strlen($user);
     $buffer2 .= "\n    \n    New content by {$user} (strlen return:{$reallyreallylongname})\n    \n    ".include_template($vars, $blocks, TRUE)."\n";
     $blocks["td"]  = "{$buffer2}";
     $buffer2  = "\n    simplest output\n    [\$parent_value]\n";
@@ -128,7 +128,12 @@ function subtemplate_template($vars, $blocks=array(), $return=FALSE)
 function include_template($vars, $blocks=array(), $return=FALSE)
 {
     extract($vars);
-    $buffer1  = "    ";
+    $buffer1  = "    ===";
+    $something  = "";
+    foreach ($some_list as  $var) {
+        $something .= count($var);
+    }
+    $buffer1 .= "===\n    ===".print("cesar")."===\n    ";
     $forcounter_3  = 1;
     foreach ($some_list as  $var) {
         $buffer1 .= " \n        ";
@@ -141,6 +146,22 @@ function include_template($vars, $blocks=array(), $return=FALSE)
         $forcounter_3  = $forcounter_3 + 1;
     }
     $buffer1 .= "\n";
+    if ($return) {
+        return $buffer1;
+    } else {
+        echo "{$buffer1}";
+    }
+}
+
+
+/* Generated from test/index.html */
+function index_template($vars, $blocks=array(), $return=FALSE)
+{
+    extract($vars);
+    $buffer1  = "";
+    $buffer2  = "\n    hello\n";
+    $blocks["test"]  = "{$buffer2}";
+    $buffer1 .= subtemplate_template($vars, $blocks, TRUE);
     if ($return) {
         return $buffer1;
     } else {

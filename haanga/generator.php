@@ -128,9 +128,12 @@ class Haanga_CodeGenerator
                 $code .= ")";
                 break;
             case 'function':
+                if (strlen($code) != 0) {
+                    $code .= '.';
+                }
                 $code .= $op[$i][1].'(';
                 $code .= $this->php_generate_list($op[$i]['args']);
-                $code .= ')';
+                $code .= ').';
                 break;
             case 'php':
                 if (strlen($code) != 0) {

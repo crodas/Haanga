@@ -51,7 +51,9 @@ stmts(A) ::= alias(B). { A = B; }
 /* Statement */
 
 /* function call */
-fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B); }
+fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'list'=>array()); }
+fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) T_FOR varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'for' => C, 'list' => array()); }
+fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) T_FOR varname(C) T_AS varname(X) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'for' => C, 'list' => array(),'as' => X); }
 fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'as' => C); }
 fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) list(X) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'list' => X); }
 fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) list(X) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'as' => C, 'list' => X); }
