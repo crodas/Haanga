@@ -1,6 +1,6 @@
 <?php
 
-/* Generated from ./base.html */
+/* Generated from base.html */
 function base_template($vars, $blocks=array(), $return=FALSE)
 {
     extract($vars);
@@ -103,24 +103,12 @@ function base_template($vars, $blocks=array(), $return=FALSE)
 }
 
 
-/* Generated from ./subtemplate.html */
+/* Generated from subtemplate.html */
 function subtemplate_template($vars, $blocks=array(), $return=FALSE)
 {
     extract($vars);
     $buffer1  = "";
-    $buffer2  = "\n    New content by {$user}\n    ";
-    $forcounter_3  = 1;
-    foreach ($some_list as  $var) {
-        $buffer2 .= " \n        ";
-        /* if forloop.counter % 2 == 0 */
-        $buffer2 .= "\n            Par\n        ";
-        /* else */
-        $buffer2 .= "\n            Inpar\n        ";
-        /* endif */
-        $buffer2 .= "\n        {$forcounter_3}\n    ";
-        $forcounter_3  = $forcounter_3 + 1;
-    }
-    $buffer2 .= "\n";
+    $buffer2  = "\n    New content by {$user}\n    ".include_template($vars, $blocks, TRUE)."\n";
     $blocks["td"]  = "{$buffer2}";
     $buffer2  = "\n    simplest output\n    [\$parent_value]\n";
     /* declared as array because this block it needs to access parent block's contents */
@@ -132,6 +120,31 @@ function subtemplate_template($vars, $blocks=array(), $return=FALSE)
         echo "{$buffer1}";
     }
 }
+/* Generated from include.html */
+function include_template($vars, $blocks=array(), $return=FALSE)
+{
+    extract($vars);
+    $buffer1  = "    ";
+    $forcounter_3  = 1;
+    foreach ($some_list as  $var) {
+        $buffer1 .= " \n        ";
+        if ($forcounter_3 % 2 == 0 AND 1 == 1) {
+            $buffer1 .= "\n            Par\n        ";
+        } else {
+            $buffer1 .= "\n            Inpar\n        ";
+        }
+        $buffer1 .= "\n        {$forcounter_3}\n    ";
+        $forcounter_3  = $forcounter_3 + 1;
+    }
+    $buffer1 .= "\n";
+    if ($return) {
+        return $buffer1;
+    } else {
+        echo "{$buffer1}";
+    }
+}
+
+
 
 
 /* Generated from ./subsubtemplate.html */
@@ -139,7 +152,7 @@ function subsubtemplate_template($vars, $blocks=array(), $return=FALSE)
 {
     extract($vars);
     $buffer1  = "";
-    $buffer2  = "\n    hello\n\n";
+    $buffer2  = "\n    hello\n";
     $blocks["test"]  = "{$buffer2}";
     $buffer1 .= subtemplate_template($vars, $blocks, TRUE);
     if ($return) {

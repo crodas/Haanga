@@ -177,6 +177,10 @@ html {
     $this->token = Parser::T_AND;
 }
 
+"AND" {
+    $this->token = Parser::T_AND;
+}
+
 "==" {
     $this->token = Parser::T_EQ;
 }
@@ -188,7 +192,6 @@ html {
 "+" {
     $this->token = Parser::T_PLUS;
 }
-
 "*" {
     $this->token = Parser::T_TIMES;
 }
@@ -213,6 +216,10 @@ custom_tag_end {
 
 "extends" token_end {
     $this->token = Parser::T_EXTENDS;
+}
+
+"include" token_end {
+    $this->token = Parser::T_INCLUDE;
 }
 
 numerals {

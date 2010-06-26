@@ -15,6 +15,7 @@ class Haanga
     protected $in_block=0;
     protected $ob_start=0;
     protected $block_super=0;
+    protected $append;
 
     function __construct()
     {
@@ -34,7 +35,7 @@ class Haanga
             throw new Exception("$file is not a file");
         }
         $this->_base_dir = dirname($file);
-        $this->_file     = $file;
+        $this->_file     = basename($file);
         $name = strstr(basename($file),'.', TRUE);
         return $this->compile(file_get_contents($file), $name);
     }
@@ -55,17 +56,10 @@ class Haanga
             if (!isset($parsed['base']['string'])) {
                 throw new Exception("Dynamic inheritance is not supported yet");
             }
-            $base = $parsed['base']['string'];
-            if (isset($this->_base_dir)) {
-                $base = $this->_base_dir.'/'.$base;
-            }
-            if (!is_file($base)) {
-                throw new Exception("can't find {$base} base template");
-            }
-            $comp  = new Haanga;
-            $code .= $comp->compile_file($base)."\n\n";
+            $file = $parsed['base']['string'];
+            list($this->subtemplate, $new_code) = $this->compile_required_template($file);
+            $code .= $new_code;
             unset($parsed['base']);
-            $this->subtemplate = $comp->get_template_name();
         }
         if ($name) {
             if (isset($this->_file)) {
@@ -95,6 +89,9 @@ class Haanga
             $op_code[] = array('ident_end');
         }
         $code .= $this->generator->getCode($op_code);
+        if (!empty($this->append)) {
+            $code .= $this->append;
+        }
         return $code;
     }
 
@@ -119,11 +116,31 @@ class Haanga
         }
     }
 
+    protected function generate_expr($expr)
+    {
+        //print_r($expr);die();
+        $code = '';
+        if (is_array($expr) && isset($expr['op'])) {
+            $code .= $this->generate_expr($expr[0]);
+            $code .= " {$expr['op']} ";
+            $code .= $this->generate_expr($expr[1]);
+        } else {
+            if (is_array($expr)) {
+                if (isset($expr['var'])) {
+                    $code .= '$'.$this->generate_variable_name($expr['var']);
+                }
+            } else {
+                $code .= $expr;
+            }
+        }
+        return $code;
+    }
+
 
     protected function generate_op_if($details, &$out)
     {
-        //print_r($details['expr']);die();
-        $out[] = array('if', 'foobar');
+        $expr  = $this->generate_expr($details['expr']);
+        $out[] = array('if', $expr);
         $out[] = array('ident');
         $this->generate_op_code($details['body'], $out);
         $out[] = array('ident_end');
@@ -135,6 +152,28 @@ class Haanga
         }
 
 
+    }
+
+    protected function compile_required_template($file)
+    {
+        if (isset($this->_base_dir)) {
+            $file = $this->_base_dir.'/'.$file;
+        }
+        if (!is_file($file)) {
+            throw new Exception("can't find {$file} file template");
+        }
+        $comp = new Haanga;
+        $code = $comp->compile_file($file)."\n\n";
+        return array($comp->get_template_name(), $code);
+    }
+    
+    protected function generate_op_include($details, &$out)
+    {
+        if (!$details[0]['string']) {
+            throw new Exception("Dynamic includes are not supported yet");
+        }
+        list($name,$this->append) = $this->compile_required_template($details[0]['string']);
+        $this->generate_op_print(array('php' => $name.'_template($vars, $blocks, TRUE)'), $out);
     }
 
 
@@ -402,7 +441,7 @@ class Haanga
 }
 
 $haanga = new Haanga;
-$code = $haanga->compile_file('./subsubtemplate.html');
+$code = $haanga->compile_file($argv[1]);
 
 
 echo <<<EOF

@@ -44,6 +44,7 @@ stmts(A) ::= block_stmt(B). { A = B; }
 stmts(A) ::= filter_stmt(B). { A = B; }
 stmts(A) ::= custom_stmt(B). { A = B; }
 stmts(A) ::= if_stmt(B). { A = B; }
+stmts(A) ::= T_OPEN_TAG T_INCLUDE var_or_string(B) T_CLOSE_TAG. { A = array('operation' => 'include', B); }
 
 /* Statement */
 
@@ -111,11 +112,11 @@ s_content(A) ::= T_STRING_CONTENT(B). { A = B; }
 
 /* expr */
 expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = B; }
-expr(A) ::= expr(B) T_AND(X)  expr(C).  { A[] = array(@X, B, C); }
-expr(A) ::= expr(B) T_OR(X)  expr(C).  { A[] = array(@X, B, C); }
-expr(A) ::= expr(B) T_EQ|T_NE(X)  expr(C).  { A[] = array(@X, B, C); }
-expr(A) ::= expr(B) T_TIMES|T_DIV|T_MOD(X)  expr(C).  { A[] = array(@X, B, C); }
-expr(A) ::= expr(B) T_PLUS|T_MINUS(X)  expr(C).  { A[] = array(@X, B, C); }
+expr(A) ::= expr(B) T_AND(X)  expr(C).  { A = array('op' => @X, B, C); }
+expr(A) ::= expr(B) T_OR(X)  expr(C).  { A = array('op' => @X, B, C); }
+expr(A) ::= expr(B) T_EQ|T_NE(X)  expr(C).  { A = array('op' => @X, B, C); }
+expr(A) ::= expr(B) T_TIMES|T_DIV|T_MOD(X)  expr(C).  { A = array('op' => @X, B, C); }
+expr(A) ::= expr(B) T_PLUS|T_MINUS(X)  expr(C).  { A = array('op' => @X, B, C); }
 expr(A) ::= var_or_string(B). { A = B; }
 expr(A) ::= T_NUMERIC(B). { A = B; }
 
