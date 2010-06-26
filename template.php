@@ -131,9 +131,9 @@ function include_template($vars, $blocks=array(), $return=FALSE)
     $buffer1  = "    ===";
     $something  = "";
     foreach ($some_list as  $var) {
-        $something .= count($var);
+        $something .= strlen($var);
     }
-    $buffer1 .= "===\n    ===".print("cesar")."===\n    ";
+    $buffer1 .= "===\n    ";
     $forcounter_3  = 1;
     foreach ($some_list as  $var) {
         $buffer1 .= " \n        ";

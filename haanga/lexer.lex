@@ -2,19 +2,19 @@
 
 require dirname(__FILE__)."/parser.php";
 
-function do_parsing($template)
+function do_parsing($template, $ignore_whitespace=FALSE)
 {
-    $a = new Haanga_Lexer($template);
+    $lexer  = new Haanga_Lexer($template, $ignore_whitespace);
     $parser = new Parser;
     try {
         for($i=0; ; $i++) {
-            if  (!$a->yylex()) {
+            if  (!$lexer->yylex()) {
                 break;
             }
-            $parser->doParse($a->token, $a->value);
+            $parser->doParse($lexer->token, $lexer->value);
         }
     } catch (Exception $e) {
-        throw new Exception($e->getMessage(). ' on line '.$a->getLine());
+        throw new Exception($e->getMessage(). ' on line '.$lexer->getLine());
     }
     $parser->doParse(0, 0);
     return $parser->body;
@@ -28,11 +28,14 @@ class Haanga_Lexer
     public $value;
     private $line;
     private $state = 1;
-    function __construct($data)
+    private $ignore_whitespace;
+
+    function __construct($data, $whitespace=FALSE)
     {
-        $this->data = $data;
-        $this->N = 0;
-        $this->line = 1;
+        $this->data              = $data;
+        $this->N                 = 0;
+        $this->ignore_whitespace = $whitespace;
+        $this->line              = 1;
     }
 
     function getLine()
@@ -76,7 +79,14 @@ double_string   = /[^"\\]+/
 }
 
 whitespace {
-    $this->token = Parser::T_HTML;
+    if ($this->ignore_whitespace) {
+        $this->token = Parser::T_HTML;
+        $this->N    += strlen($this->value);
+        $this->value = ' ';
+        
+    } else {
+        $this->token = Parser::T_HTML;
+    }
 }
 
 html {
