@@ -3,7 +3,7 @@
 require "lexer.php";
 require "generator.php";
 
-class Haanga
+class Haanga_Main
 {
     protected $generator;
     protected $forloop_counter;
@@ -23,6 +23,15 @@ class Haanga
         $this->generator = new Haanga_CodeGenerator;
     }
 
+    function reset()
+    {
+        foreach (array_keys(get_object_vars($this)) as $key) {
+            $this->$key = NULL;
+        }
+        $this->generator = new Haanga_CodeGenerator;
+        $this->blocks = array();
+    }
+
     /**
      *  Compile a file
      *
@@ -30,7 +39,7 @@ class Haanga
      *
      *  @return Generated PHP code
      */
-    final function compile_file($file)
+    final function compile_file($file, $use_func = TRUE)
     {
         if (!is_readable($file)) {
             throw new Exception("$file is not a file");
@@ -38,7 +47,7 @@ class Haanga
         $this->_base_dir = dirname($file);
         $this->_file     = basename($file);
         $name = strstr(basename($file),'.', TRUE);
-        return $this->compile(file_get_contents($file), $name);
+        return $this->compile(file_get_contents($file), $use_func ? $name : NULL);
     }
 
     function get_template_name()
@@ -48,6 +57,7 @@ class Haanga
 
     final function compile($code, $name=NULL)
     {
+        $this->reset();
         $this->name = $name;
 
         $parsed = do_parsing($code);
@@ -76,6 +86,7 @@ class Haanga
             $this->generate_op_print(array('php' => $this->subtemplate.'_template($vars, $blocks, TRUE)'), $op_code);
         }
         $this->ob_start--;
+
         /* Add last part */
         $op_code[] = array('if', '$return');
         $op_code[] = array('ident');
@@ -162,7 +173,8 @@ class Haanga
         if (!is_file($file)) {
             throw new Exception("can't find {$file} file template");
         }
-        $comp = new Haanga;
+        $comp = clone $this;
+        $comp->reset();
         $code = $comp->compile_file($file);
         return array($comp->get_template_name(), $code);
     }
@@ -475,7 +487,7 @@ class Haanga
     final static function main_cli()
     {
         $argv = $GLOBALS['argv'];
-        $haanga = new Haanga;
+        $haanga = new Haanga_Main;
         $code = $haanga->compile_file($argv[1]);
 
 echo <<<EOF

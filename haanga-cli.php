@@ -3,4 +3,4 @@
 
 require "haanga/haanga.php";
 
-Haanga::main_cli();
+Haanga_Main::main_cli();
