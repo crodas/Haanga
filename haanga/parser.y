@@ -128,7 +128,7 @@ s_content(A) ::= s_content(B) T_STRING_CONTENT(C). { A = B.C; }
 s_content(A) ::= T_STRING_CONTENT(B). { A = B; }
 
 /* expr */
-expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = B; }
+expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = array('op' => 'expr', B); }
 expr(A) ::= expr(B) T_AND(X)  expr(C).  { A = array('op' => @X, B, C); }
 expr(A) ::= expr(B) T_OR(X)  expr(C).  { A = array('op' => @X, B, C); }
 expr(A) ::= expr(B) T_EQ|T_NE(X)  expr(C).  { A = array('op' => @X, B, C); }
