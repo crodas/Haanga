@@ -3,6 +3,7 @@
 /* Generated from test/base.html */
 function base_template($vars, $blocks=array(), $return=FALSE)
 {
+
     extract($vars);
     $buffer1  = "<script>\nvar i = 5 % 4;\nfunction foo_bar  () {\n    cesar {\$rodas}\n}\n</script>\n";
     /* Testing Comment */
@@ -106,6 +107,7 @@ function base_template($vars, $blocks=array(), $return=FALSE)
 /* Generated from test/subtemplate.html */
 function subtemplate_template($vars, $blocks=array(), $return=FALSE)
 {
+
     extract($vars);
     $buffer1  = "";
     $buffer2  = "\n    ";

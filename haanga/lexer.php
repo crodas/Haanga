@@ -11,6 +11,7 @@ function do_parsing($template, $ignore_whitespace=FALSE)
             if  (!$lexer->yylex()) {
                 break;
             }
+            //var_dump(array($lexer->token, $lexer->value));
             $parser->doParse($lexer->token, $lexer->value);
         }
     } catch (Exception $e) {
