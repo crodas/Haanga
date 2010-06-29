@@ -33,77 +33,79 @@ start ::= body(B). { $this->body = B; }
 extend(X) ::= T_OPEN_TAG T_EXTENDS var_or_string(B) T_CLOSE_TAG body(A). { A['base'] = B; X = A; }
 extend(X) ::= stmts(A) body(B). { X=array_merge(array(A),B); }
 
-body(A) ::= body(B) stmts(C). { A=B; A[] = C; }
+body(A) ::= body(B) code(C). { A=B; A[] = C; }
 body(A) ::= . { A = array(); }
 
 /* List of statements */
-stmts(A) ::= T_OPEN_TAG stmt(B) T_CLOSE_TAG. { A = B; }
-stmts(A) ::= T_PRINT_OPEN varname(B) T_PRINT_CLOSE.  { A = array('operation' => 'print', 'variable' => B); }
-stmts(A) ::= T_HTML(B). {A = array('operation' => 'html', 'html' => B); } 
+code(A) ::= T_OPEN_TAG stmts(B). { A = B; }
+code(A) ::= T_HTML(B). { A = array('operation' => 'html', 'html' => B); }
+code(A) ::= T_COMMENT_OPEN T_COMMENT(B). { B=rtrim(B); A = array('operation' => 'comment', 'comment' => substr(B, 0, strlen(B)-2)); } 
+code(A) ::= T_PRINT_OPEN varname(B) T_PRINT_CLOSE.  { A = array('operation' => 'print', 'variable' => B); }
+
+stmts(A) ::= stmt(B) T_CLOSE_TAG. { A = B; }
 stmts(A) ::= for_stmt(B). { A = B; }
 stmts(A) ::= ifchanged_stmt(B). { A = B; }
-stmts(A) ::= T_COMMENT_OPEN T_COMMENT(B). { B=rtrim(B); A = array('operation' => 'comment', 'comment' => substr(B, 0, strlen(B)-2)); }
 stmts(A) ::= block_stmt(B). { A = B; }
 stmts(A) ::= filter_stmt(B). { A = B; }
 stmts(A) ::= custom_stmt(B). { A = B; }
 stmts(A) ::= if_stmt(B). { A = B; }
-stmts(A) ::= T_OPEN_TAG T_INCLUDE var_or_string(B) T_CLOSE_TAG. { A = array('operation' => 'include', B); }
+stmts(A) ::= T_INCLUDE var_or_string(B) T_CLOSE_TAG. { A = array('operation' => 'include', B); }
 stmts(A) ::= fnc_call_stmt(B). { A = B; }
 stmts(A) ::= alias(B). { A = B; }
 
 /* Statement */
 
 /* function call */
-fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'list'=>array()); }
-fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) T_FOR varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'for' => C, 'list' => array()); }
-fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) T_FOR varname(C) T_AS varname(X) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'for' => C, 'list' => array(),'as' => X); }
-fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'as' => C); }
-fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) list(X) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'list' => X); }
-fnc_call_stmt(A) ::= T_OPEN_TAG varname(B) list(X) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'as' => C, 'list' => X); }
+fnc_call_stmt(A) ::= varname(B) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'list'=>array()); }
+fnc_call_stmt(A) ::= varname(B) T_FOR varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'for' => C, 'list' => array()); }
+fnc_call_stmt(A) ::= varname(B) T_FOR varname(C) T_AS varname(X) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'for' => C, 'list' => array(),'as' => X); }
+fnc_call_stmt(A) ::= varname(B) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'as' => C); }
+fnc_call_stmt(A) ::= varname(B) list(X) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'list' => X); }
+fnc_call_stmt(A) ::= varname(B) list(X) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'as' => C, 'list' => X); }
 
 /* variable alias */
-alias(A) ::= T_OPEN_TAG T_WITH varname(B) T_AS varname(C) T_CLOSE_TAG body(X) T_OPEN_TAG T_ENDWITH T_CLOSE_TAG. { A = array('operation' => 'alias', 'var' => B, 'as' => C, 'body' => X); }
+alias(A) ::= T_WITH varname(B) T_AS varname(C) T_CLOSE_TAG body(X) T_OPEN_TAG T_ENDWITH T_CLOSE_TAG. { A = array('operation' => 'alias', 'var' => B, 'as' => C, 'body' => X); }
 
 /* Cycle */
 stmt(A) ::= cycle(B). { A = B; }
 
 /* FOR loop */
-for_stmt(A) ::= T_OPEN_TAG T_FOR varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
+for_stmt(A) ::= T_FOR varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
     A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D); 
 }
-for_stmt(A) ::= T_OPEN_TAG T_FOR varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_EMPTY T_CLOSE_TAG body(E)  T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
+for_stmt(A) ::= T_FOR varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_EMPTY T_CLOSE_TAG body(E)  T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
     A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D, 'empty' => E); 
 }
 /* IF */
-if_stmt(A) ::= T_OPEN_TAG T_IF expr(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_ENDIF T_CLOSE_TAG. { A = array('operation' => 'if', 'expr' => B, 'body' => X); }
-if_stmt(A) ::= T_OPEN_TAG T_IF expr(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_ELSE T_CLOSE_TAG body(Y) T_OPEN_TAG T_ENDIF  T_CLOSE_TAG. { A = array('operation' => 'if', 'expr' => B, 'body' => X, 'else' => Y); }
+if_stmt(A) ::= T_IF expr(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_ENDIF T_CLOSE_TAG. { A = array('operation' => 'if', 'expr' => B, 'body' => X); }
+if_stmt(A) ::= T_IF expr(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_ELSE T_CLOSE_TAG body(Y) T_OPEN_TAG T_ENDIF  T_CLOSE_TAG. { A = array('operation' => 'if', 'expr' => B, 'body' => X, 'else' => Y); }
 
 /* ifchanged */
-ifchanged_stmt(A) ::= T_OPEN_TAG T_IFCHANGED T_CLOSE_TAG body(B) T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG. { 
+ifchanged_stmt(A) ::= T_IFCHANGED T_CLOSE_TAG body(B) T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG. { 
     A = array('operation' => 'ifchanged', 'body' => B); 
 }
 
-ifchanged_stmt(A) ::= T_OPEN_TAG T_IFCHANGED list(X) T_CLOSE_TAG body(B) T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG. { 
+ifchanged_stmt(A) ::= T_IFCHANGED list(X) T_CLOSE_TAG body(B) T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG. { 
     A = array('operation' => 'ifchanged', 'body' => B, 'check' => X);
 }
-ifchanged_stmt(A) ::= T_OPEN_TAG T_IFCHANGED T_CLOSE_TAG body(B) T_OPEN_TAG T_ELSE T_CLOSE_TAG body(C) T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG. { 
+ifchanged_stmt(A) ::= T_IFCHANGED T_CLOSE_TAG body(B) T_OPEN_TAG T_ELSE T_CLOSE_TAG body(C) T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG. { 
     A = array('operation' => 'ifchanged', 'body' => B, 'else' => C); 
 }
 
-ifchanged_stmt(A) ::= T_OPEN_TAG T_IFCHANGED list(X) T_CLOSE_TAG body(B) T_OPEN_TAG T_ELSE T_CLOSE_TAG body(C) T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG. { 
+ifchanged_stmt(A) ::= T_IFCHANGED list(X) T_CLOSE_TAG body(B) T_OPEN_TAG T_ELSE T_CLOSE_TAG body(C) T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG. { 
     A = array('operation' => 'ifchanged', 'body' => B, 'check' => X, 'else' => C);
 }
 
 /* custom stmt */
-custom_stmt(A) ::= T_OPEN_TAG varname(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_CUSTOM_END(C) T_CLOSE_TAG. { if ('end'.B != C) { throw new Exception("Unexpected ".C); } A = array('operation' => 'filter', 'functions' => array(array('var'=>B)), 'body' => X);}
+custom_stmt(A) ::= varname(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_CUSTOM_END(C) T_CLOSE_TAG. { if ('end'.B != C) { throw new Exception("Unexpected ".C); } A = array('operation' => 'filter', 'functions' => array(array('var'=>B)), 'body' => X);}
  
 /* block stmt */
-block_stmt(A) ::= T_OPEN_TAG T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }
+block_stmt(A) ::= T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }
 
-block_stmt(A) ::= T_OPEN_TAG T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }
+block_stmt(A) ::= T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }
 
 /* filter stmt */
-filter_stmt(A) ::= T_OPEN_TAG T_FILTER piped_list(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_FILTER T_CLOSE_TAG. { A = array('operation' => 'filter', 'functions' => B, 'body' => X); }
+filter_stmt(A) ::= T_FILTER piped_list(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_FILTER T_CLOSE_TAG. { A = array('operation' => 'filter', 'functions' => B, 'body' => X); }
 
 
 /* Cycle */ 
