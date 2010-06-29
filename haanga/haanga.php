@@ -17,6 +17,8 @@ class Haanga_Main
     protected $block_super=0;
     protected $append;
     protected $_var_alias;
+    protected $strip_whitespaces=TRUE;
+    protected $force_whitespaces=0;
 
     function __construct()
     {
@@ -25,7 +27,11 @@ class Haanga_Main
 
     function reset()
     {
+        $avoid_cleaning = array('strip_whitespaces' => 1);
         foreach (array_keys(get_object_vars($this)) as $key) {
+            if (isset($avoid_cleaning[$key])) {
+                continue;
+            }
             $this->$key = NULL;
         }
         $this->generator = new Haanga_CodeGenerator;
@@ -129,15 +135,15 @@ class Haanga_Main
         }
     }
 
-    protected function generate_expr($expr)
+    protected function check_expr(&$expr)
     {
         if (is_array($expr) && isset($expr['op'])) {
-            $this->generate_expr($expr[0]);
-            $this->generate_expr($expr[1]);
+            $this->check_expr($expr[0]);
+            $this->check_expr($expr[1]);
         } else {
             if (is_array($expr)) {
                 if (isset($expr['var'])) {
-                    $this->generate_variable_name($expr['var']);
+                    $expr['var'] = $this->generate_variable_name($expr['var']);
                 }
             } 
         }
@@ -146,7 +152,7 @@ class Haanga_Main
 
     protected function generate_op_if($details, &$out)
     {
-        $this->generate_expr($details['expr']);
+        $this->check_expr($details['expr']);
         $out[] = array('op' => 'if', 'expr' => $details['expr']);
         $this->generate_op_code($details['body'], $out);
         if (isset($details['else'])) {
@@ -336,7 +342,12 @@ class Haanga_Main
         if (isset($details['variable'])) {
             $content = array('var' => $this->generate_variable_name($details['variable']));
         } else if (isset($details['html']))  {
-            $content = array('string' => $details['html']);
+            $html = $details['html'];
+            if ($this->strip_whitespaces && $this->force_whitespaces == 0) {
+                $html = str_replace("\n", " ", $html);
+                $html = preg_replace("/\s\s+/", " ", $html);
+            }
+            $content = array('string' => $html);
         } else if (isset($details['php'])) {
             $content = array('php' => $details['php']);
         } else if (isset($details['function'])) {
