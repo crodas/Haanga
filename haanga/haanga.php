@@ -69,14 +69,16 @@ class Haanga_Main
         $parsed = do_parsing($code);
         $code   = "";
         $this->subtemplate = FALSE;
-        if (isset($parsed['base'])) {
-            if (!isset($parsed['base']['string'])) {
+        if ($parsed[0]['operation'] == 'base') {
+            $base = $parsed[0][0];
+
+            if (!isset($base['string'])) {
                 throw new Exception("Dynamic inheritance is not supported yet");
             }
-            $file = $parsed['base']['string'];
+            $file = $base['string'];
             list($this->subtemplate, $new_code) = $this->compile_required_template($file);
             $code .= $new_code."\n\n";
-            unset($parsed['base']);
+            unset($parsed[0]);
         }
         if ($name) {
             if (isset($this->_file)) {
@@ -112,6 +114,11 @@ class Haanga_Main
             $code .= $this->append;
         }
         return $code;
+    }
+
+    protected function generate_op_base()
+    {
+        throw new exception("{% base %} can be only as first statmenet");
     }
 
     protected function generate_op_code($parsed, &$out)

@@ -27,11 +27,7 @@
 
 %right TAGOPEN.
 
-start ::= extend(A). { $this->body = A;}
 start ::= body(B). { $this->body = B; }
-
-extend(X) ::= T_OPEN_TAG T_EXTENDS var_or_string(B) T_CLOSE_TAG body(A). { A['base'] = B; X = A; }
-extend(X) ::= stmts(A) body(B). { X=array_merge(array(A),B); }
 
 body(A) ::= body(B) code(C). { A=B; A[] = C; }
 body(A) ::= . { A = array(); }
@@ -42,6 +38,7 @@ code(A) ::= T_HTML(B). { A = array('operation' => 'html', 'html' => B); }
 code(A) ::= T_COMMENT_OPEN T_COMMENT(B). { B=rtrim(B); A = array('operation' => 'comment', 'comment' => substr(B, 0, strlen(B)-2)); } 
 code(A) ::= T_PRINT_OPEN varname(B) T_PRINT_CLOSE.  { A = array('operation' => 'print', 'variable' => B); }
 
+stmts(A) ::= T_EXTENDS var_or_string(B) T_CLOSE_TAG. { A = array('operation' => 'base', B); }
 stmts(A) ::= stmt(B) T_CLOSE_TAG. { A = B; }
 stmts(A) ::= for_stmt(B). { A = B; }
 stmts(A) ::= ifchanged_stmt(B). { A = B; }
