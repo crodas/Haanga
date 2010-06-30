@@ -207,6 +207,10 @@ class Haanga_Main
     }
     // }}}
 
+    /**
+     *
+     *
+     */
     function get_base_template($base)
     {
         if (!isset($base['string'])) {
@@ -712,7 +716,7 @@ final class Haanga_Main_Runtime extends Haanga_Main
     {
         return $this->expr_exec(
             'Haanga::Load',
-            $this->expr_str($this->subtemplate),
+            $this->subtemplate,
             $this->expr_var('vars'),
             $this->expr_var('blocks'),
             $this->expr_TRUE()
@@ -721,10 +725,7 @@ final class Haanga_Main_Runtime extends Haanga_Main
 
     function get_base_template($base)
     {
-        if (!isset($base['string'])) {
-            throw new Exception("Dynamic inheritance is not supported yet");
-        }
-        $this->subtemplate = $base['string'];
+        $this->subtemplate = $base;
     }
 }
 
