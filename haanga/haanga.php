@@ -238,12 +238,13 @@ class Haanga_Main
     protected function generate_op_cycle($details, &$out)
     {
         static $cycle = 0;
-        $last = count($out)-1;
-        if ($last >= 0 && $out[$last]['op'] == 'print') {
+        $last   = count($out)-1;
+        $sprint = array('print', 'declare', 'append_var');
+        if ($last >= 0 && array_search($out[$last]['op'], $sprint) !== FALSE) {
             /* If there is a print declared previously, we pop it
                and add it after the cycle declaration
              */
-            $print = $out[$last];
+            $old_print = $out[$last];
             array_pop($out);
         }
 
@@ -281,6 +282,9 @@ class Haanga_Main
         $out[] = array('op' => 'declare', 'name' => 'def_cycle_'.$cycle, array('array' => $details['vars']));
         $out[] = array('op' => 'cond_declare', 'name' => 'index_'.$cycle, 'expr' => $expr, 'true' => array(array('number' => 0)), 'false' => array($inc)); 
         $var  = array('variable' => "def_cycle_{$cycle}[\$index_{$cycle}]");
+        if (isset($old_print)) {
+            $out[] = $old_print;
+        }
         $this->generate_op_print($var, $out);
         $cycle++;
     }
@@ -328,7 +332,7 @@ class Haanga_Main
         } else {
             $this->blocks[] = $details['name'];
             if ($this->block_super > 0) {
-                $out[] = array('op'=> 'comment', 'comment' => 'declared as array because this block it needs to access parent block\'s contents');
+                $out[] = array('op'=> 'comment', 'comment' => 'declared as array because this block needs to access parent block\'s contents');
                 $out[] = array('op' => 'declare', 'name' => 'blocks["'.$details['name'].'"]', array('array' => array(array('var' => $buffer_var)) ) );
                 $this->block_super--;
             } else {
