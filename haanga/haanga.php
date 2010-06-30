@@ -52,7 +52,7 @@ class Haanga_Main
     protected $block_super=0;
     protected $append;
     protected $_var_alias;
-    protected $strip_whitespaces=TRUE;
+    protected $strip_whitespaces=FALSE;
     protected $force_whitespaces=0;
 
     function __construct()
@@ -97,12 +97,29 @@ class Haanga_Main
         return $this->name;
     }
 
-    final function expr_exec($function, $args=array(array()))
+    final function expr_TRUE()
     {
+        return array('expr' => TRUE);
+    }
+
+    final function expr_exec($function)
+    {
+        $args = func_get_args();
+        unset($args[0]);
         return array(
             'exec' => $function,
-            'args' => $args,
+            'args' => array_values($args)
         );
+    }
+
+    final function expr($operation, $expr1, $expr2) 
+    {
+        return array('op' => $operation, $expr1, $expr2);
+    }
+
+    final function expr_var($var)
+    {
+        return array('var' => $var);
     }
 
     final function compile($code, $name=NULL)
@@ -133,22 +150,18 @@ class Haanga_Main
         $this->ob_start($op_code);
         $this->generate_op_code($parsed, $op_code);
         if ($this->subtemplate) {
-            $args = array(
-                array('var' => 'vars'),
-                array('var' => 'blocks'),
-                array('expr' => TRUE),
+            $expr = $this->expr_exec(
+                $this->subtemplate.'_template',
+                $this->expr_var('vars'),
+                $this->expr_var('blocks'),
+                $this->expr_TRUE()
             );
-            $expr = $this->expr_exec($this->subtemplate.'_template', $args);
             $this->generate_op_print(array('expr' => $expr), $op_code);
         }
         $this->ob_start--;
 
         /* Add last part */
-        $expr = array(
-            'op' => '==',
-            array('var' => 'return'),
-            TRUE
-        );
+        $expr = $this->expr('==', $this->expr_var('return'), TRUE);
         $op_code[] = array('op' => 'if', 'expr' => $expr);
         $op_code[] = array('op' => 'return', array('var'=> 'buffer1'));
         $op_code[] = array('op' => 'else');
@@ -240,12 +253,13 @@ class Haanga_Main
         }
         list($name,$code) = $this->compile_required_template($details[0]['string']);
         $this->append .= "\n\n{$code}";
-        $args = array(
-            array('var' => 'vars'),
-            array('var' => 'blocks'),
-            array('expr' => TRUE),
+        $expr = $this->expr_exec(
+            $this->subtemplate.'_template',
+            $this->expr_var('vars'),
+            $this->expr_var('blocks'),
+            $this->expr_TRUE()
         );
-        $expr = $this->expr_exec($name.'_template', $args);
+        $this->generate_op_print(array('expr' => $expr), $op_code);
         $this->generate_op_print(array('expr' => $expr), $out);
     }
 
@@ -269,6 +283,7 @@ class Haanga_Main
         }
 
         /* isset($var) == FALSE */
+        $expr = $this->expr('==', $this->expr_exec('isset', $this->expr_var('index_'.$cycle)), FALSE);
         $expr = array(
             'op' => '==',
             array(
@@ -314,7 +329,7 @@ class Haanga_Main
         $out[] = array('op' => 'comment', 'comment' => $details['comment']);
     }
 
-    protected function get_isset_var_expr($var)
+    protected function get_isset_var_expr($var, $isset=TRUE)
     {
         return array(
                 'op' => '==',
@@ -324,7 +339,7 @@ class Haanga_Main
                         array('var' => $var),
                     ),
                 ),
-                TRUE
+                $isset
             );
     }
 
@@ -339,7 +354,7 @@ class Haanga_Main
         $this->ob_start--;
 
         if (!$this->subtemplate) {
-            $out[] = array('op' => 'if', 'expr' => $this->get_isset_var_expr("blocks['{$details['name']}']"));
+            $out[] = array('op' => 'if', 'expr' => $this->get_isset_var_expr("blocks['{$details['name']}']", FALSE));
             $this->generate_op_print(array('variable' => $buffer_var), $out);
             $var = 'blocks["'.$details['name'].'"]';
             $out[] = array('op' => 'else');
