@@ -333,8 +333,8 @@ class Haanga_CodeGenerator
     {
         $code  = "\${$op['name']} = ";
         $code .= $this->php_generate_expr($op['expr']); 
-        $code .= ' ? '.$this->php_generate_string($op['true']);
-        $code .= ' : '.$this->php_generate_string($op['false']);
+        $code .= ' ? '.$this->php_generate_string(array($op['true']));
+        $code .= ' : '.$this->php_generate_string(array($op['false']));
         $code .= ";";
         return $code;
     }

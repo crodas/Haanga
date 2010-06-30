@@ -97,11 +97,55 @@ class Haanga_Main
         return $this->name;
     }
 
+    // expr_* {{{
+    /**
+     *  return a function call for isset($var) === $isset
+     *
+     *  @return array
+     */
+    final function expr_isset($var, $isset=TRUE)
+    {
+        return $this->expr('==', $this->expr_exec('isset', $this->expr_var($var)), $isset);
+    }
+
+    /**
+     *  Generate expression that for
+     *  boolean TRUE
+     *
+     *  @return array
+     */
     final function expr_TRUE()
     {
         return array('expr' => TRUE);
     }
 
+    /**
+     *  Generate expression that for
+     *  boolean FALSE
+     *
+     *  @return array
+     */
+    final function expr_FALSE()
+    {
+        return array('expr' => FALSE);
+    }
+
+    /**
+     *  Return expr for variable reference
+     *
+     *  @return array
+     */
+    final function expr_var($var)
+    {
+        return array('var' => $var);
+    }
+
+    /**
+     *  Generate expression for
+     *  a function calling
+     *
+     *  @return array
+     */
     final function expr_exec($function)
     {
         $args = func_get_args();
@@ -112,15 +156,21 @@ class Haanga_Main
         );
     }
 
-    final function expr($operation, $expr1, $expr2) 
+    /**
+     *  Generate a generic expression
+     *  
+     *  @return array
+     */
+    final function expr($operation, $expr1, $expr2=NULL) 
     {
-        return array('op' => $operation, $expr1, $expr2);
-    }
+        $expr = array('op' => $operation, $expr1);
+        if ($expr2 !== NULL) {
+            $expr[] = $expr2;
+        }
 
-    final function expr_var($var)
-    {
-        return array('var' => $var);
+        return $expr;
     }
+    // }}}
 
     final function compile($code, $name=NULL)
     {
@@ -284,38 +334,17 @@ class Haanga_Main
 
         /* isset($var) == FALSE */
         $expr = $this->expr('==', $this->expr_exec('isset', $this->expr_var('index_'.$cycle)), FALSE);
-        $expr = array(
-            'op' => '==',
-            array(
-                'exec' => 'isset',
-                'args' => array(
-                    array('var' => 'index_'.$cycle)
-                )
-            ),
-            FALSE
-        );
 
         /* ($foo + 1) % count($bar) */
-        $inc = array('expr' => array(
-            'op' => '%',
-            array(
-                'op' => 'expr',
-                array(
-                    'op' => '+',
-                    array('var' => 'index_'.$cycle),
-                    1,
+        $inc = $this->expr('%',
+                $this->expr('expr',
+                    $this->expr('+', $this->expr_var('index_'.$cycle), 1)
                 ),
-            ),
-            array(
-                'exec' => 'count',
-                'args' => array(
-                    array('var' => 'def_cycle_'.$cycle),
-                ),
-            )
-        ));
+                $this->expr_exec('count', $this->expr_var('def_cycle_'.$cycle))
+        );
 
         $out[] = array('op' => 'declare', 'name' => 'def_cycle_'.$cycle, array('array' => $details['vars']));
-        $out[] = array('op' => 'cond_declare', 'name' => 'index_'.$cycle, 'expr' => $expr, 'true' => array(array('number' => 0)), 'false' => array($inc)); 
+        $out[] = array('op' => 'cond_declare', 'name' => 'index_'.$cycle, 'expr' => $expr, 'true' => array('number' => 0), 'false' => array('expr' => $inc)); 
         $var  = array('variable' => "def_cycle_{$cycle}[\$index_{$cycle}]");
         if (isset($old_print)) {
             $out[] = $old_print;
@@ -329,20 +358,6 @@ class Haanga_Main
         $out[] = array('op' => 'comment', 'comment' => $details['comment']);
     }
 
-    protected function get_isset_var_expr($var, $isset=TRUE)
-    {
-        return array(
-                'op' => '==',
-                array(
-                    'exec' => 'isset',
-                    'args' => array(
-                        array('var' => $var),
-                    ),
-                ),
-                $isset
-            );
-    }
-
     protected function generate_op_block($details, &$out)
     {
         $this->ob_start($out);
@@ -354,12 +369,12 @@ class Haanga_Main
         $this->ob_start--;
 
         if (!$this->subtemplate) {
-            $out[] = array('op' => 'if', 'expr' => $this->get_isset_var_expr("blocks['{$details['name']}']", FALSE));
+            $out[] = array('op' => 'if', 'expr' => $this->expr_isset("blocks['{$details['name']}']", FALSE));
             $this->generate_op_print(array('variable' => $buffer_var), $out);
             $var = 'blocks["'.$details['name'].'"]';
             $out[] = array('op' => 'else');
 
-            $out[] = array('op' => 'if', 'expr' => $this->get_isset_var_expr($var));
+            $out[] = array('op' => 'if', 'expr' => $this->expr_isset($var));
             $out[] = array('op' => 'declare', 'name' => $var, array('exec' => 'str_replace', 'args' => array(array('string' => '$parent_value'), array('var' => $buffer_var), array('var'=> $var.'[0]')))); 
             $out[] = array('op' => 'end_if');
             $this->generate_op_print(array('variable' => $var), $out);
@@ -462,13 +477,8 @@ class Haanga_Main
         static $id = 0;
         $id++;
         if (isset($details['empty'])) {
-            $expr = array('op' => '==', 
-                array(
-                    'exec' => 'count', 
-                    'args' => array(
-                        array('var' => "{$details['array']}"),
-                    )
-                ),
+            $expr = $this->expr('==',
+                $this->expr_exec('count', $this->expr_var($details['array'])),
                 0
             );
 
@@ -520,24 +530,15 @@ class Haanga_Main
             /* ugly */
             $this->ob_start($out);
             $var2 = 'buffer'.$this->ob_start;
-            $expr = array(
-                'op' => 'OR',
-                array(
-                    'op' => '==',
-                    array(
-                        'exec' => 'isset',
-                        'args' => array(
-                             array('var' => $var1)
-                        ),
-                    ),
-                    FALSE
-                ),
-                array(
-                    'op' => '!=',
-                    array('var' => $var1),
-                    array('var' => $var2),
+
+            $expr = $this->expr('OR',
+                $this->expr_isset($var1, FALSE),
+                $this->expr('!=', 
+                    $this->expr_var($var1),
+                    $this->expr_var($var2)
                 )
             );
+
             $this->generate_op_code($details['body'], $out);
             $this->ob_start--;
             $out[] = array('op' => 'if', 'expr' => $expr);
@@ -552,22 +553,11 @@ class Haanga_Main
                 if (!isset($type['var'])) {
                     throw new Exception("Invalid error {$type['var']}");
                 }
-                $expr = array(
-                    'op' => 'OR',
-                    array(
-                        'op' => '==',
-                        array(
-                            'exec' => 'isset',
-                            'args' => array(
-                                array('var' => "{$var1}[{$id}]")
-                            ),
-                        ),
-                        FALSE
-                    ),
-                    array(
-                        'op' => '!=',
-                        array('var' => "{$var1}[{$id}]"),
-                        array('var' => $type['var']),
+                $expr = $this->expr('OR',
+                    $this->expr_isset("{$var1}[{$id}]", FALSE),
+                    $this->expr('!=', 
+                        $this->expr_var("{$var1}[{$id}]"),
+                        $this->expr_var($type['var'])
                     )
                 );
             }
@@ -650,22 +640,18 @@ class Haanga_Main
         $argv = $GLOBALS['argv'];
         $haanga = new Haanga_Main;
         $code = $haanga->compile_file($argv[1]);
-
-echo <<<EOF
-<?php
-$code
-
-\$arr = array('some_list' => array(1, 2, 3, 3, 4, 4, 4, 5), 'user' => 'crodas');
-base_template(\$arr);
-echo "\\n\\n------------------------------\\n\\n";
-subtemplate_template(\$arr);
-echo "\\n\\n------------------------------\\n\\n";
-index_template(\$arr);
-
-EOF;
+        echo "<?php\n\n$code\n";
     }
 
 }
 
 
 
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: sw=4 ts=4 fdm=marker
+ * vim<600: sw=4 ts=4
+ */
