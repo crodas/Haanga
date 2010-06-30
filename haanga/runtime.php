@@ -46,7 +46,8 @@ class Haanga
             throw new Exception("Cache dir or template dir is missing");
         }
         $tpl = self::$templates_dir.'/'.$file;
-        $php = self::$cache_dir.'/'.$file.'.php';
+        $fnc = sha1($tpl);
+        $php = self::$cache_dir.'/'.$fnc.'.php';
 
         if (!is_file($php) && !is_file($tpl)) {
             throw new Exception("View {$file} doesn't exists");
@@ -60,7 +61,7 @@ class Haanga
             $code = $compiler->compile_file($tpl, $tpl);
             file_put_contents($php, "<?php\n\n".$code);
         }
-        $callback = "haanga_".sha1($tpl);
+        $callback = "haanga_".$fnc;
         if (!is_callable($callback)) {
             require_once $php;
         }
