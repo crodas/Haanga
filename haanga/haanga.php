@@ -73,6 +73,7 @@ class Haanga_Main
         $this->blocks = array();
     }
 
+    // compile_file($file) {{{
     /**
      *  Compile a file
      *
@@ -80,7 +81,7 @@ class Haanga_Main
      *
      *  @return Generated PHP code
      */
-    final function compile_file($file, $use_func = TRUE)
+    final function compile_file($file) 
     {
         $this->reset();
         if (!is_readable($file)) {
@@ -88,16 +89,40 @@ class Haanga_Main
         }
         $this->_base_dir = dirname($file);
         $this->_file     = basename($file);
-        $name = strstr(basename($file),'.', TRUE);
-        return $this->compile(file_get_contents($file), $use_func ? $name : NULL);
+        $name            = $this->set_template_name($file);
+        return $this->compile(file_get_contents($file), $name);
     }
+    // }}}
 
-    function get_template_name()
+    final function get_template_name()
     {
         return $this->name;
     }
 
-    // expr_* {{{
+    function set_template_name($path)
+    {
+        return strstr(basename($path),'.', TRUE);
+    }
+
+    function get_function_name($name)
+    {
+        return "{$name}_template";
+    }
+
+    // expr_* helper methods {{{
+    /**
+     *  Generate code to call base template
+     *
+     */
+    function expr_call_base_template()
+    {
+        return $this->expr_exec(
+            $this->get_function_name($this->subtemplate),
+            $this->expr_var('vars'),
+            $this->expr_var('blocks'),
+            $this->expr_TRUE()
+        );
+    }
     /**
      *  return a function call for isset($var) === $isset
      *
@@ -106,6 +131,16 @@ class Haanga_Main
     final function expr_isset($var, $isset=TRUE)
     {
         return $this->expr('==', $this->expr_exec('isset', $this->expr_var($var)), $isset);
+    }
+
+    /**
+     *  return an string definition of $str
+     *
+     *  @return array
+     */
+    final function expr_str($str)
+    {
+        return array('string' => $str);
     }
 
     /**
@@ -172,6 +207,16 @@ class Haanga_Main
     }
     // }}}
 
+    function get_base_template($base)
+    {
+        if (!isset($base['string'])) {
+            throw new Exception("Dynamic inheritance is not supported yet");
+        }
+        $file = $base['string'];
+        list($this->subtemplate, $new_code) = $this->compile_required_template($file);
+        return $new_code."\n\n";
+    }
+
     final function compile($code, $name=NULL)
     {
         $this->name = $name;
@@ -180,32 +225,21 @@ class Haanga_Main
         $code   = "";
         $this->subtemplate = FALSE;
         if ($parsed[0]['operation'] == 'base') {
-            $base = $parsed[0][0];
-
-            if (!isset($base['string'])) {
-                throw new Exception("Dynamic inheritance is not supported yet");
-            }
-            $file = $base['string'];
-            list($this->subtemplate, $new_code) = $this->compile_required_template($file);
-            $code .= $new_code."\n\n";
+            $base  = $parsed[0][0];
+            $code .= $this->get_base_template($base); 
             unset($parsed[0]);
         }
         if ($name) {
             if (isset($this->_file)) {
                 $op_code[] = array('op' => 'comment', 'comment' =>  "Generated from {$this->_base_dir}/{$this->_file}");
             }
-            $op_code[] = array('op' => 'function', 'name' => $name);
+            $op_code[] = array('op' => 'function', 'name' => $this->get_function_name($name));
             $op_code[] = array('op' => 'exec',  'name' =>  'extract', 'args' => array(array('var' => 'vars')) );
         }
         $this->ob_start($op_code);
         $this->generate_op_code($parsed, $op_code);
         if ($this->subtemplate) {
-            $expr = $this->expr_exec(
-                $this->subtemplate.'_template',
-                $this->expr_var('vars'),
-                $this->expr_var('blocks'),
-                $this->expr_TRUE()
-            );
+            $expr = $this->expr_call_base_template();
             $this->generate_op_print(array('expr' => $expr), $op_code);
         }
         $this->ob_start--;
@@ -304,7 +338,7 @@ class Haanga_Main
         list($name,$code) = $this->compile_required_template($details[0]['string']);
         $this->append .= "\n\n{$code}";
         $expr = $this->expr_exec(
-            $this->subtemplate.'_template',
+            $this->get_function_name($this->subtemplate),
             $this->expr_var('vars'),
             $this->expr_var('blocks'),
             $this->expr_TRUE()
@@ -646,6 +680,53 @@ class Haanga_Main
 }
 
 
+final class Haanga_Main_Runtime extends Haanga_Main
+{
+    function get_function_name($name)
+    {
+        return "haanga_".sha1($name);
+    }
+
+    function set_template_name($path)
+    {
+        return $path;
+    }
+
+    protected function generate_op_include($details, &$out)
+    {
+        if (!$details[0]['string']) {
+            throw new Exception("Dynamic includes are not supported yet");
+        }
+        $expr = $this->expr_exec(
+            'Haanga::Load', 
+            $details[0],
+            $this->expr_var('vars'),
+            $this->expr_var('blocks'),
+            $this->expr_TRUE()
+        );
+        $this->generate_op_print(array('expr' => $expr), $op_code);
+        $this->generate_op_print(array('expr' => $expr), $out);
+    }
+
+    function expr_call_base_template()
+    {
+        return $this->expr_exec(
+            'Haanga::Load',
+            $this->expr_str($this->subtemplate),
+            $this->expr_var('vars'),
+            $this->expr_var('blocks'),
+            $this->expr_TRUE()
+        );
+    }
+
+    function get_base_template($base)
+    {
+        if (!isset($base['string'])) {
+            throw new Exception("Dynamic inheritance is not supported yet");
+        }
+        $this->subtemplate = $base['string'];
+    }
+}
 
 /*
  * Local variables:

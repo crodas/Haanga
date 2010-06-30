@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  *  Haanga Runtime class
  *
@@ -54,11 +55,15 @@ class Haanga
         if (!is_file($php) || filemtime($tpl) > filemtime($php)) {
             if (!$compiler) {
                 require_once dirname(__FILE__)."/haanga.php";
-                $compiler = new Haanga_Main;
+                $compiler = new Haanga_Main_Runtime;
             }
-            $code = $compiler->compile_file($tpl, FALSE);
+            $code = $compiler->compile_file($tpl, $tpl);
             file_put_contents($php, "<?php\n\n".$code);
         }
-        require_once $php;
+        $callback = "haanga_".sha1($tpl);
+        if (!is_callable($callback)) {
+            require_once $php;
+        }
+        return $callback($vars, $blocks, $return);
     }
 }

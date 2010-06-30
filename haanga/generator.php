@@ -83,7 +83,7 @@ class Haanga_CodeGenerator
     function php_function($op)
     {
         $this->ident++;
-        return "function {$op['name']}_template(\$vars, \$blocks=array(), \$return=FALSE)\n{\n";
+        return "function {$op['name']}(\$vars, \$blocks=array(), \$return=FALSE)\n{\n";
     }
 
     protected function ident()
