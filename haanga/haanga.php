@@ -111,6 +111,15 @@ class Haanga_Main
 
     // expr_* helper methods {{{
     /**
+     *  Return an stand alone expression
+     *
+     */
+    function expr_expr($expr)
+    {
+        return array('op' => 'expr', $expr);
+
+    }
+    /**
      *  Generate code to call base template
      *
      */
@@ -238,7 +247,7 @@ class Haanga_Main
                 $op_code[] = array('op' => 'comment', 'comment' =>  "Generated from {$this->_base_dir}/{$this->_file}");
             }
             $op_code[] = array('op' => 'function', 'name' => $this->get_function_name($name));
-            $op_code[] = array('op' => 'exec',  'name' =>  'extract', 'args' => array(array('var' => 'vars')) );
+            $op_code[] = $this->expr_expr($this->expr_exec('extract', $this->expr_var('vars')));
         }
         $this->ob_start($op_code);
         $this->generate_op_code($parsed, $op_code);
@@ -251,7 +260,7 @@ class Haanga_Main
         /* Add last part */
         $expr = $this->expr('==', $this->expr_var('return'), TRUE);
         $op_code[] = array('op' => 'if', 'expr' => $expr);
-        $op_code[] = array('op' => 'return', array('var'=> 'buffer1'));
+        $op_code[] = array('op' => 'return', $this->expr_var('buffer1'));
         $op_code[] = array('op' => 'else');
         $this->generate_op_print(array('variable' => 'buffer1'), $op_code);
         $op_code[] = array('op' => 'end_if');
@@ -413,7 +422,7 @@ class Haanga_Main
             $out[] = array('op' => 'else');
 
             $out[] = array('op' => 'if', 'expr' => $this->expr_isset($var));
-            $out[] = array('op' => 'declare', 'name' => $var, array('exec' => 'str_replace', 'args' => array(array('string' => '$parent_value'), array('var' => $buffer_var), array('var'=> $var.'[0]')))); 
+            $out[] = array('op' => 'declare', 'name' => $var, array('exec' => 'str_replace', 'args' => array(array('string' => '$parent_value'), $this->expr_var($buffer_var), $this->expr_var($var.'[0]')))); 
             $out[] = array('op' => 'end_if');
             $this->generate_op_print(array('variable' => $var), $out);
             $out[] = array('op' => 'end_if');
@@ -421,10 +430,10 @@ class Haanga_Main
             $this->blocks[] = $details['name'];
             if ($this->block_super > 0) {
                 $out[] = array('op'=> 'comment', 'comment' => 'declared as array because this block needs to access parent block\'s contents');
-                $out[] = array('op' => 'declare', 'name' => 'blocks["'.$details['name'].'"]', array('array' => array(array('var' => $buffer_var)) ) );
+                $out[] = array('op' => 'declare', 'name' => 'blocks["'.$details['name'].'"]', array('array' => array($this->expr_var($buffer_var)) ) );
                 $this->block_super--;
             } else {
-                $out[] = array('op' => 'declare', 'name' => 'blocks["'.$details['name'].'"]', array('var' => $buffer_var));
+                $out[] = array('op' => 'declare', 'name' => 'blocks["'.$details['name'].'"]', $this->expr_var($buffer_var));
             }
             $this->in_block--;
         }
@@ -469,7 +478,7 @@ class Haanga_Main
     {
         $last = count($out)-1;
         if (isset($details['variable'])) {
-            $content = array('var' => $this->generate_variable_name($details['variable']));
+            $content = $this->expr_var($this->generate_variable_name($details['variable']));
         } else if (isset($details['html']))  {
             $html = $details['html'];
             if ($this->strip_whitespaces && $this->force_whitespaces == 0) {
@@ -581,7 +590,7 @@ class Haanga_Main
             $this->ob_start--;
             $out[] = array('op' => 'if', 'expr' => $expr);
             $this->generate_op_print(array('variable' => $var2), $out);
-            $out[] = array('op' => 'declare','name' => $var1, array('var' => $var2));
+            $out[] = array('op' => 'declare','name' => $var1, $this->expr_var($var2));
         } else {
             /* beauty :-) */
             if (count($details['check']) !== 1) {
@@ -624,7 +633,7 @@ class Haanga_Main
         $print = array('function' => array($details['name'], $details['list']));
         
         if (isset($details['for'])) {
-            $new_args = array(array('var' => 'var'));
+            $new_args = array($this->expr_var('var'));
             $print['function'][1] = $new_args;
             $arr['args'] = $new_args;
 
@@ -660,7 +669,7 @@ class Haanga_Main
     {
         $this->ob_start($out);
         $this->generate_op_code($details['body'], $out);
-        $target = array('var' => 'buffer'.$this->ob_start);
+        $target = $this->expr_var('buffer'.$this->ob_start);
         foreach ($details['functions'] as $f) {
             $exec = array(
                 'exec' => $f,

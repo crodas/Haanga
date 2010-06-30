@@ -113,6 +113,11 @@ class Haanga_CodeGenerator
         return $code;
     }
 
+    protected function php_expr($op)
+    {
+        return $this->php_generate_expr($op[0]).";";
+    }
+
 
     protected function php_end_block()
     {
