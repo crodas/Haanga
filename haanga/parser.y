@@ -128,7 +128,7 @@ ifchanged_stmt(A) ::= T_IFCHANGED list(X) T_CLOSE_TAG body(B) T_OPEN_TAG T_ELSE 
 }
 
 /* custom stmt */
-custom_stmt(A) ::= varname(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_CUSTOM_END(C) T_CLOSE_TAG. { if ('end'.B != C) { throw new Exception("Unexpected ".C); } A = array('operation' => 'filter', 'functions' => array(array('var'=>B)), 'body' => X);}
+custom_stmt(A) ::= varname(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_CUSTOM_END(C) T_CLOSE_TAG. { if ('end'.B != C) { throw new Exception("Unexpected ".C); } A = array('operation' => 'filter', 'functions' =>array(B), 'body' => X);}
  
 /* block stmt */
 block_stmt(A) ::= T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }
