@@ -366,17 +366,31 @@ class Haanga_Main
         $this->generate_op_print($details, $out);
     }
 
+    // is_last_op_print($out) {{{
+    /**
+     *  Return TRUE if the last stacked operation
+     *  is a print (declare or append_var).
+     *
+     *  @param array $out Stack of operations
+     *
+     *  @return bool
+     */
+    protected function is_last_op_print($out)
+    {
+        $last   = count($out)-1;
+        $sprint = array('print', 'declare', 'append_var');
+        return $last >= 0 && array_search($out[$last]['op'], $sprint) !== FALSE;
+    }
+    // }}}
+
     protected function generate_op_cycle($details, &$out)
     {
         static $cycle = 0;
-        $last   = count($out)-1;
-        $sprint = array('print', 'declare', 'append_var');
-        if ($last >= 0 && array_search($out[$last]['op'], $sprint) !== FALSE) {
+        if ($this->is_last_op_print($out)) {
             /* If there is a print declared previously, we pop it
                and add it after the cycle declaration
              */
-            $old_print = $out[$last];
-            array_pop($out);
+            $old_print = array_pop($out);
         }
 
         /* isset($var) == FALSE */
@@ -402,7 +416,16 @@ class Haanga_Main
 
     protected function generate_op_comment($details, &$out)
     {
+        if ($this->is_last_op_print($out)) {
+            /* If there is a print declared previously, we pop it
+               and add it after the cycle declaration
+             */
+            $old_print = array_pop($out);
+        }
         $out[] = array('op' => 'comment', 'comment' => $details['comment']);
+        if (isset($old_print)) {
+            $out[] = $old_print;
+        }
     }
 
     protected function generate_op_block($details, &$out)
