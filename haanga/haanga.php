@@ -97,6 +97,14 @@ class Haanga_Main
         return $this->name;
     }
 
+    final function expr_exec($function, $args=array(array()))
+    {
+        return array(
+            'exec' => $function,
+            'args' => $args,
+        );
+    }
+
     final function compile($code, $name=NULL)
     {
         $this->name = $name;
@@ -125,7 +133,13 @@ class Haanga_Main
         $this->ob_start($op_code);
         $this->generate_op_code($parsed, $op_code);
         if ($this->subtemplate) {
-            $this->generate_op_print(array('php' => $this->subtemplate.'_template($vars, $blocks, TRUE)'), $op_code);
+            $args = array(
+                array('var' => 'vars'),
+                array('var' => 'blocks'),
+                array('expr' => TRUE),
+            );
+            $expr = $this->expr_exec($this->subtemplate.'_template', $args);
+            $this->generate_op_print(array('expr' => $expr), $op_code);
         }
         $this->ob_start--;
 
@@ -226,7 +240,13 @@ class Haanga_Main
         }
         list($name,$code) = $this->compile_required_template($details[0]['string']);
         $this->append .= "\n\n{$code}";
-        $this->generate_op_print(array('php' => $name.'_template($vars, $blocks, TRUE)'), $out);
+        $args = array(
+            array('var' => 'vars'),
+            array('var' => 'blocks'),
+            array('expr' => TRUE),
+        );
+        $expr = $this->expr_exec($name.'_template', $args);
+        $this->generate_op_print(array('expr' => $expr), $out);
     }
 
 
@@ -389,12 +409,10 @@ class Haanga_Main
                 $html = preg_replace("/\s\s+/", " ", $html);
             }
             $content = array('string' => $html);
-        } else if (isset($details['php'])) {
-            $content = array('php' => $details['php']);
         } else if (isset($details['function'])) {
-            $content = array('function' =>  $details['function'][0], 'args' => $details['function'][1]);
+            $content = $this->expr_exec($details['function'][0], $details['function'][1]);
         } else {
-            throw new Exception("don't know how to generate code for ".print_r($details, TRUE));
+            $content = $details;
         }
 
         $var_name = 'buffer'.$this->ob_start;
@@ -599,13 +617,17 @@ class Haanga_Main
     {
         $this->ob_start($out);
         $this->generate_op_code($details['body'], $out);
-        $details['functions'] = array_reverse($details['functions']);        $func = "";
+        $target = array('var' => 'buffer'.$this->ob_start);
         foreach ($details['functions'] as $f) {
-            $func .= "{$f['var']}(";
+            $exec = array(
+                'exec' => $f,
+                'args' => array(
+                    (isset($exec) ? $exec : $target)
+                )
+            );
         }
-        $func   .= '$buffer'.$this->ob_start.str_repeat(')', count($details['functions']));;
         $this->ob_start--;
-        $this->generate_op_print(array('php' => $func), $out);
+        $this->generate_op_print(array('expr' => $exec), $out);
     }
 
     final static function main_cli()

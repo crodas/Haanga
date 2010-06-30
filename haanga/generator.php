@@ -207,14 +207,17 @@ class Haanga_CodeGenerator
     protected function php_generate_list($array)
     {
         $code = "";
-        if (!is_array($array)) {
-            var_dump(debug_backtrace());die();
-        }
         foreach ($array as $value) {
             if (isset($value['string'])) {
                 $string = addslashes($value['string']);
                 $string = str_replace('$', '\\$', $string);
                 $code .= '"'.$string.'"';
+
+            } else if (isset($value['exec'])) {
+                $value['name'] = $value['exec'];
+                $code .= $this->php_exec($value, FALSE);
+            } else if (isset($value['expr'])) {
+                $code .= $this->php_generate_expr($value['expr']);
             } else if (isset($value['var'])) {
                 if ($value['var'][0] == '\\') {
                     $code .= $value['var'];
@@ -252,17 +255,9 @@ class Haanga_CodeGenerator
                 if (strlen($code) != 0) {
                     $code .= '.';
                 }
-                $code .= $value.'(';
-                if (isset($op[$i]['args'])) {
-                    $code .= $this->php_generate_list($op[$i]['args']);
-                }
-                $code .= ').';
-                break;
-            case 'php':
-                if (strlen($code) != 0) {
-                    $code .= '.';
-                }
-                $code .= $value.'.';
+                $value = array('name' => $value, 'args' => $op[$i]['args']);
+                $code .= $this->php_exec($value, FALSE);
+                $code .= '.';
                 break;
             case 'string':
                 if ($code != "" && $code[strlen($code)-1] == '"') {
@@ -293,7 +288,11 @@ class Haanga_CodeGenerator
                 $code .= $value;
                 break;
             case 'expr':
+                if (strlen($code) != 0) {
+                    $code .= '.';
+                }
                 $code .= $this->php_generate_expr($value);
+                $code .= ".";
                 break;
             default:
                 throw new Exception("Don't know how to declare {$key} = {$value}");

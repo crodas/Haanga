@@ -144,8 +144,8 @@ cycle(A) ::= T_CYCLE list(B). { A = array('operation' => 'cycle', 'vars' => B); 
 cycle(A) ::= T_CYCLE list(B) T_AS varname(C). { A = array('operation' => 'cycle', 'vars' => B, 'as' => C); } 
 
 /* Piped filters */
-piped_list(A) ::= piped_list(B) T_PIPE var_or_string(C). { A = B; A[] = C; }
-piped_list(A) ::= var_or_string(B). { A = array(B); }
+piped_list(A) ::= piped_list(B) T_PIPE varname(C). { A = B; A[] = C; }
+piped_list(A) ::= varname(B). { A = array(B); }
 
 /* List of variables */
 list(A) ::= list(B) var_or_string(C).  { A = B; A[] = C; }
