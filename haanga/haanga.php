@@ -128,8 +128,8 @@ class Haanga_Main
         return $this->expr_exec(
             $this->get_function_name($this->subtemplate),
             $this->expr_var('vars'),
-            $this->expr_var('blocks'),
-            $this->expr_TRUE()
+            $this->expr_TRUE(),
+            $this->expr_var('blocks')
         );
     }
     /**
@@ -760,8 +760,8 @@ final class Haanga_Main_Runtime extends Haanga_Main
             'Haanga::Load',
             $this->subtemplate,
             $this->expr_var('vars'),
-            $this->expr_var('blocks'),
-            $this->expr_TRUE()
+            $this->expr_TRUE(),
+            $this->expr_var('blocks')
         );
     }
 

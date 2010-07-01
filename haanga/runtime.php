@@ -58,8 +58,9 @@ class Haanga
                 require_once dirname(__FILE__)."/haanga.php";
                 $compiler = new Haanga_Main_Runtime;
             }
+            $compiler->reset();
             $code = $compiler->compile_file($tpl, $tpl);
-            file_put_contents($php, "<?php\n\n".$code);
+            file_put_contents($php, "<?php".$code);
         }
         $callback = "haanga_".$fnc;
         if (!is_callable($callback)) {
