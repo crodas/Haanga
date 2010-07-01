@@ -406,11 +406,15 @@ class Haanga_Main
 
         $out[] = array('op' => 'declare', 'name' => 'def_cycle_'.$cycle, array('array' => $details['vars']));
         $out[] = array('op' => 'cond_declare', 'name' => 'index_'.$cycle, 'expr' => $expr, 'true' => array('number' => 0), 'false' => array('expr' => $inc)); 
-        $var  = array('variable' => "def_cycle_{$cycle}[\$index_{$cycle}]");
+        $var  = "def_cycle_{$cycle}[\$index_{$cycle}]";
         if (isset($old_print)) {
             $out[] = $old_print;
         }
-        $this->generate_op_print($var, $out);
+        if (!isset($details['as'])) {
+            $this->generate_op_print(array("variable" => $var), $out);
+        } else {
+            $out[] = array('op' => 'declare', 'name' => $details['as'], array("expr" => $this->expr_var($var)));
+        }
         $cycle++;
     }
 
@@ -616,20 +620,26 @@ class Haanga_Main
             $out[] = array('op' => 'declare','name' => $var1, $this->expr_var($var2));
         } else {
             /* beauty :-) */
-            if (count($details['check']) !== 1) {
-                throw new Exception("unexpected error");
-            }
             foreach ($details['check'] as $id=>$type) {
                 if (!isset($type['var'])) {
                     throw new Exception("Invalid error {$type['var']}");
                 }
-                $expr = $this->expr('OR',
+                $this_expr = $this->expr('OR',
                     $this->expr_isset("{$var1}[{$id}]", FALSE),
                     $this->expr('!=', 
                         $this->expr_var("{$var1}[{$id}]"),
                         $this->expr_var($type['var'])
                     )
                 );
+                if (isset($expr)) {
+                    $this_expr = $this->expr('AND', 
+                        $this->expr('expr', $this_expr),
+                        $expr
+                    );
+                }
+
+                $expr = $this_expr;
+
             }
             $out[] = array('op' => 'if', 'expr' => $expr);
             $this->generate_op_code($details['body'], $out);
