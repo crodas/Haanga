@@ -39,7 +39,7 @@ class Haanga
         self::$templates_dir = $dir;
     }
 
-    public static function Load($file, $vars = array(), $blocks=array(), $return=FALSE)
+    public static function Load($file, $vars = array(), $return=FALSE, $blocks=array())
     {
         static $compiler;
         if (empty(self::$cache_dir) || empty(self::$templates_dir)) {
@@ -66,6 +66,6 @@ class Haanga
         if (!is_callable($callback)) {
             require_once $php;
         }
-        return $callback($vars, $blocks, $return);
+        return $callback($vars, $return, $return);
     }
 }
