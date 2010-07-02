@@ -142,6 +142,11 @@ class Haanga_Main
         return $this->expr('==', $this->expr_exec('isset', $this->expr_var($var)), $isset);
     }
 
+    final function expr_isset_ex($var, $isset=TRUE)
+    {
+        return $this->expr('==', $this->expr_exec('isset', $var), $isset);
+    }
+
     protected function expr_array()
     {
         foreach (func_get_args() as $arg) {
@@ -475,22 +480,24 @@ class Haanga_Main
         $this->generate_op_code($details['body'], $out);
         $this->ob_start--;
 
+        $var   = $this->expr_var("blocks", $details['name']);
         if (!$this->subtemplate) {
-            $out[] = array('op' => 'if', 'expr' => $this->expr_isset("blocks['{$details['name']}']", FALSE));
+            $var1  = $this->expr_var("blocks", $details['name'], 0);
+
+            $out[] = array('op' => 'if', 'expr' => $this->expr_isset_ex($var, FALSE));
             $this->generate_op_print(array('variable' => $buffer_var), $out);
-            $var = 'blocks["'.$details['name'].'"]';
             $out[] = array('op' => 'else');
 
-            $out[] = array('op' => 'if', 'expr' => $this->expr("==", $this->expr_exec("is_array", $this->expr_var($var)), TRUE));
-            $out[] = array('op' => 'declare', 'name' => $var, array('exec' => 'str_replace', 'args' => array(array('string' => '$parent_value'), $this->expr_var($buffer_var), $this->expr_var($var.'[0]')))); 
+            $out[] = array('op' => 'if', 'expr' => $this->expr("==", $this->expr_exec("is_array", $var), TRUE));
+            $out[] = array('op' => 'declare', 'name' => $var['var'], array('exec' => 'str_replace', 'args' => array(array('string' => '$parent_value'), $this->expr_var($buffer_var), $var))); 
             $out[] = array('op' => 'end_if');
-            $this->generate_op_print(array('variable' => $var), $out);
+            $this->generate_op_print(array('variable' => $var['var']), $out);
             $out[] = array('op' => 'end_if');
         } else {
             $this->blocks[] = $details['name'];
             if ($this->block_super > 0) {
                 $out[] = array('op'=> 'comment', 'comment' => 'declared as array because this block needs to access parent block\'s contents');
-                $out[] = array('op' => 'declare', 'name' => 'blocks["'.$details['name'].'"]', array('array' => array($this->expr_var($buffer_var)) ) );
+                $out[] = array('op' => 'declare', 'name' => $var['var'], array('array' => array($this->expr_var($buffer_var)) ) );
                 $this->block_super--;
             } else {
                 $out[] = array('op' => 'declare', 'name' => 'blocks["'.$details['name'].'"]', $this->expr_var($buffer_var));
