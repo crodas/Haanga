@@ -142,6 +142,21 @@ class Haanga_Main
         return $this->expr('==', $this->expr_exec('isset', $this->expr_var($var)), $isset);
     }
 
+    protected function expr_array()
+    {
+        foreach (func_get_args() as $arg) {
+            if (count($arg) == 2) {
+                if (!is_array($arg[0])) {
+                    $arg[0] = $this->expr_str($arg[0]);
+                }
+                $arg = array('key' => $arg);
+            }
+            $def[] = $arg;
+        }
+        return array("array" => $def);
+    }
+
+
     /**
      *  return an string definition of $str
      *
@@ -181,7 +196,7 @@ class Haanga_Main
      */
     final function expr_var($var)
     {
-        return array('var' => $var);
+        return array('var' => func_get_args());
     }
 
     /**
@@ -194,6 +209,24 @@ class Haanga_Main
     {
         $args = func_get_args();
         unset($args[0]);
+        $function = strtolower($function);
+
+        switch ($function) {
+        case 'upper':
+            $function = 'strtoupper';
+            break;
+        case 'lower':
+            $function = 'strtolower';
+            break; 
+        default:
+            if (is_callable(array($this, 'is_function_safe'))) {
+                $function = $this->is_function_safe($function);
+            }
+        }
+
+        if (!is_string($function) || empty($function)) {
+            throw new Exception("{$function} filter is not allowed");
+        }
         return array(
             'exec' => $function,
             'args' => array_values($args)
@@ -448,7 +481,7 @@ class Haanga_Main
             $var = 'blocks["'.$details['name'].'"]';
             $out[] = array('op' => 'else');
 
-            $out[] = array('op' => 'if', 'expr' => $this->expr_isset($var));
+            $out[] = array('op' => 'if', 'expr' => $this->expr("==", $this->expr_exec("is_array", $this->expr_var($var)), TRUE));
             $out[] = array('op' => 'declare', 'name' => $var, array('exec' => 'str_replace', 'args' => array(array('string' => '$parent_value'), $this->expr_var($buffer_var), $this->expr_var($var.'[0]')))); 
             $out[] = array('op' => 'end_if');
             $this->generate_op_print(array('variable' => $var), $out);
@@ -464,6 +497,31 @@ class Haanga_Main
             }
             $this->in_block--;
         }
+    }
+
+    protected function generate_op_regroup($details, &$out)
+    {
+        $out[] = array('op' => 'declare', 'name' => $details['as'], array('array' => array()));
+        $var = $this->expr_var('item', $details['row']);
+
+        $out[] = array('op' => 'comment', 'comment' => "Temporary sorting");
+        $out[] = array('op' => 'foreach', 'array' => $details['array'], 'value' => 'item');
+
+
+        $out[] = array('op' => 'declare', 'name' => array('temp_group', $var, NULL),  $this->expr_var('item'));
+        $out[] = array('op' => 'end_foreach');
+        $out[] = array('op' => 'comment', 'comment' => "Proper format");
+
+        $out[] = array('op' => 'foreach', 'array' => 'temp_group', 'key' => 'group', 'value' => 'item');
+        $array = $this->expr_array(
+            array("grouper", $this->expr_var('group')),
+            array("list",    $this->expr_var('item'))
+        );
+        
+        $out[] = array('op' => 'declare', 'name' => array($details['as'], NULL), $array );
+
+        $out[] = array('op' => 'end_foreach');
+        $out[] = array('op' => 'comment', 'comment' => "Sorting done");
     }
 
     protected function generate_variable_name($variable)

@@ -12,7 +12,7 @@ function foo_bar  () {
     <tr class="{% cycle 'row1 \' cesar' 'row2' %}">
         <td style="background-color: {% ifchanged var %} {%cycle 'red' 'back' %} {% else %} {%cycle 'gray' 'white' %} {% endifchanged %}">
             Foobar {{ var }}
-            {% filter strtolower|strtoupper %}
+            {% filter lower|upper %}
             {% ifchanged %}
             cesar
             {% ifchanged %}
@@ -47,7 +47,7 @@ function foo_bar  () {
         </td>
         <td>
         {% block td %} 
-            {% filter strtolower|strtoupper %}
+            {% filter lower|upper %}
                 Testing block with filter {{ forloop.counter }} :-)
             {% endfilter %}
         {% endblock %}

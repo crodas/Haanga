@@ -83,7 +83,7 @@ class Haanga_CodeGenerator
     function php_function($op)
     {
         $this->ident++;
-        return "function {$op['name']}(\$vars,\$return=FALSE, \$blocks=array())\n{\n";
+        return "function {$op['name']}(\$vars, \$return=FALSE, \$blocks=array())\n{\n";
     }
 
     protected function ident()
@@ -142,11 +142,14 @@ class Haanga_CodeGenerator
 
     protected function php_foreach($op)
     {
-        $code = "foreach (\${$op['array']} as ";
+        $op['array'] = $this->php_get_varname($op['array']);
+        $op['value'] = $this->php_get_varname($op['value']);
+        $code = "foreach ({$op['array']} as ";
         if (!isset($op['key'])) {
-            $code .= " \${$op['value']}";
+            $code .= " {$op['value']}";
         } else {
-            $code .= " \${$op['key']} => \${$op['value']}";
+            $op['key'] = $this->php_get_varname($op['key']);
+            $code     .= " {$op['key']} => {$op['value']}";
         }
 
         $code .= ") {";
@@ -190,7 +193,7 @@ class Haanga_CodeGenerator
         } else {
             if (is_array($expr)) {
                 if (isset($expr['var'])) {
-                    $code .= '$'.$expr['var'];
+                    $code .= $this->php_get_varname($expr['var']);
                 } else if (isset($expr['exec'])) {
                     $expr['name'] = $expr['exec'];
                     $code .= $this->php_exec($expr, FALSE);
@@ -213,28 +216,7 @@ class Haanga_CodeGenerator
     {
         $code = "";
         foreach ($array as $value) {
-            if (isset($value['string'])) {
-                $string = addslashes($value['string']);
-                $string = str_replace('$', '\\$', $string);
-                $code .= '"'.$string.'"';
-
-            } else if (isset($value['exec'])) {
-                $value['name'] = $value['exec'];
-                $code .= $this->php_exec($value, FALSE);
-            } else if (isset($value['expr'])) {
-                $code .= $this->php_generate_expr($value['expr']);
-            } else if (isset($value['var'])) {
-                if ($value['var'][0] == '\\') {
-                    $code .= $value['var'];
-                } else {
-                    $code .= "\${$value['var']}";
-                    if (isset($value['index'])) {
-                        $code .= '["'.addslashes($value['index']).'"]';
-                    }
-                }
-            } else {
-                throw new exception("Don't know how to generate array for ".print_r($value, TRUE));
-            }
+            $code .= $this->php_generate_string(array($value));
             $code .= ",";
         }
         return substr($code, 0, strlen($code)-1);
@@ -264,6 +246,9 @@ class Haanga_CodeGenerator
                 $code .= $this->php_exec($value, FALSE);
                 $code .= '.';
                 break;
+            case 'key':
+                $code .= $this->php_generate_string(array($value[0]))." => ".$this->php_generate_string(array($value[1]));
+                break;
             case 'string':
                 if ($code != "" && $code[strlen($code)-1] == '"') {
                     $code = substr($code, 0, strlen($code)-1);
@@ -275,16 +260,10 @@ class Haanga_CodeGenerator
                 $code .= $html.'"';
                 break;
             case 'var':
-                if ($code != "" && $code[strlen($code)-1] == '"') {
-                    $code = substr($code, 0, strlen($code)-1);
-                } else {
-                    $code .= '"';
+                if (strlen($code) != 0) {
+                    $code .= '.';
                 }
-                if ($value[0] == '\\') {
-                    $code .= $value.'"';
-                } else {
-                    $code .= '{$'.$value.'}"';
-                }
+                $code .= $this->php_get_varname($value).'.';
                 break;
             case 'number':
                 if (!is_numeric($value)) {
@@ -323,8 +302,35 @@ class Haanga_CodeGenerator
 
     protected function php_declare($op, $assign=' =')
     {
-        $code = "\${$op['name']} {$assign} ".$this->php_generate_string($op).";";
+        $op['name'] = $this->php_get_varname($op['name']);
+        $code = "{$op['name']} {$assign} ".$this->php_generate_string($op).";";
         return $code;
+    }
+
+    protected function php_get_varname($var)
+    {
+        if (is_array($var)) {
+            if (!is_string($var[0])) {
+                if (count($var) == 1) {
+                    return $this->php_get_varname($var[0]);
+                } else {
+                    throw new Exception("Invalid variable definition ".print_r($var, TRUE));
+                }
+            } 
+            $var_str = $var[0];
+            for ($i=1; $i < count($var); $i++) {
+                $var_str .= "[";
+                if (is_string($var[$i])) {
+                    $var_str .= '"'.$var[$i].'"';
+                } else if (is_array($var[$i])) {
+                    $var_str .= $this->php_get_varname($var[$i]['var']);
+                }
+                $var_str .= "]";
+            }
+            return "\$".$var_str;
+        } else {
+            return "\$".$var;
+        }
     }
 
     protected function php_return($op)

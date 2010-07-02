@@ -165,6 +165,10 @@ html {
     $this->token = Parser::T_FILTER;
 }
 
+"regroup" token_end {
+    $this->token = Parser::T_REGROUP;
+}
+
 "endfilter" token_end {
     $this->token = Parser::T_END_FILTER;
 }
@@ -205,6 +209,10 @@ html {
 
 "as" {
     $this->token = Parser::T_AS;
+}
+
+"by" {
+    $this->token = Parser::T_BY;
 }
 
 "if" token_end {

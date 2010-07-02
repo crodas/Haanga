@@ -99,6 +99,7 @@ alias(A) ::= T_WITH varname(B) T_AS varname(C) T_CLOSE_TAG body(X) T_OPEN_TAG T_
 
 /* Cycle */
 stmt(A) ::= cycle(B). { A = B; }
+stmt(A) ::= regroup(B). { A = B; }
 
 /* FOR loop */
 for_stmt(A) ::= T_FOR varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
@@ -138,6 +139,8 @@ block_stmt(A) ::= T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK 
 /* filter stmt */
 filter_stmt(A) ::= T_FILTER piped_list(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_FILTER T_CLOSE_TAG. { A = array('operation' => 'filter', 'functions' => B, 'body' => X); }
 
+/* regroup stmt */
+regroup(A) ::= T_REGROUP varname(B) T_BY varname(C) T_AS varname(X). { A=array('operation' => 'regroup', 'array' => B, 'row' => C, 'as' => X); }
 
 /* Cycle */ 
 cycle(A) ::= T_CYCLE list(B). { A = array('operation' => 'cycle', 'vars' => B); } 
