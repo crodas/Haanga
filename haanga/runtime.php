@@ -45,6 +45,7 @@ class Haanga
         if (empty(self::$cache_dir) || empty(self::$templates_dir)) {
             throw new Exception("Cache dir or template dir is missing");
         }
+
         $tpl = self::$templates_dir.'/'.$file;
         $fnc = sha1($tpl);
         $php = self::$cache_dir.'/'.$fnc.'.php';
@@ -66,6 +67,7 @@ class Haanga
         if (!is_callable($callback)) {
             require_once $php;
         }
-        return $callback($vars, $return, $return);
+
+        return $callback($vars, $return, $blocks);
     }
 }

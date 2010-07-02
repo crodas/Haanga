@@ -477,7 +477,7 @@ class Haanga_Main
                 switch ($variable[1]) {
                 case 'counter':
                     $this->forloop_counter[$this->forid] = TRUE; 
-                    $variable = 'forcounter_'.$this->forid;
+                    $variable = 'forcounter1_'.$this->forid;
                     break;
                 case 'counter0':
                     $this->forloop_counter0[$this->forid] = TRUE; 
@@ -571,7 +571,7 @@ class Haanga_Main
 
         $oid = $this->forid;
         if (isset($this->forloop_counter[$oid])) {
-            $var   = 'forcounter_'.$oid;
+            $var   = 'forcounter1_'.$oid;
             $out[] = array('op' => 'declare', 'name' => $var, array('number' => 1) );
             $for_loop_body[] = array('op' => 'inc', 'name' => $var);
 
@@ -704,12 +704,7 @@ class Haanga_Main
         $this->generate_op_code($details['body'], $out);
         $target = $this->expr_var('buffer'.$this->ob_start);
         foreach ($details['functions'] as $f) {
-            $exec = array(
-                'exec' => $f,
-                'args' => array(
-                    (isset($exec) ? $exec : $target)
-                )
-            );
+            $exec = $this->expr_exec($f, (isset($exec) ? $exec : $target));
         }
         $this->ob_start--;
         $this->generate_op_print(array('expr' => $exec), $out);
