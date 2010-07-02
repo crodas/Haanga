@@ -260,10 +260,14 @@ class Haanga_CodeGenerator
                 $code .= $html.'"';
                 break;
             case 'var':
-                if (strlen($code) != 0) {
-                    $code .= '.';
+                if (is_array($value) && $value[0][0] == "\\") {
+                    $code .= $this->php_generate_string(array("string" => $value[0]));
+                } else {
+                    if (strlen($code) != 0) {
+                        $code .= '.';
+                    }
+                    $code .= $this->php_get_varname($value).'.';
                 }
-                $code .= $this->php_get_varname($value).'.';
                 break;
             case 'number':
                 if (!is_numeric($value)) {
