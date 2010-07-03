@@ -70,7 +70,7 @@ body(A) ::= . { A = array(); }
 code(A) ::= T_OPEN_TAG stmts(B). { A = B; }
 code(A) ::= T_HTML(B). { A = array('operation' => 'html', 'html' => B); }
 code(A) ::= T_COMMENT_OPEN T_COMMENT(B). { B=rtrim(B); A = array('operation' => 'comment', 'comment' => substr(B, 0, strlen(B)-2)); } 
-code(A) ::= T_PRINT_OPEN varname(B) T_PRINT_CLOSE.  { A = array('operation' => 'print', 'variable' => B); }
+code(A) ::= T_PRINT_OPEN piped_list(B) T_PRINT_CLOSE.  { A = array('operation' => 'print_var', 'variable' => B); }
 
 stmts(A) ::= T_EXTENDS var_or_string(B) T_CLOSE_TAG. { A = array('operation' => 'base', B); }
 stmts(A) ::= stmt(B) T_CLOSE_TAG. { A = B; }

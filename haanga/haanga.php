@@ -223,6 +223,9 @@ class Haanga_Main
         case 'lower':
             $function = 'strtolower';
             break; 
+        case 'safe':
+            $function = 'htmlentities';
+            break;
         default:
             if (is_callable(array($this, 'is_function_safe'))) {
                 $function = $this->is_function_safe($function);
@@ -401,6 +404,23 @@ class Haanga_Main
 
     protected function generate_op_html($details, &$out)
     {
+        $this->generate_op_print($details, $out);
+    }
+
+    protected function generate_op_print_var($details, &$out)
+    {
+        if (count($details['variable']) > 1) {
+            $count  = count($details['variable']);
+            $target = call_user_func_array(array($this, 'expr_var'), $details['variable'][0]);
+            for ($i=1; $i < $count; $i++) {
+                $exec = $this->expr_exec($details['variable'][$i], (isset($exec) ? $exec : $target));
+            }
+            unset($details['variable']);
+            $details = $exec;
+        } else {
+            $details['variable'] = $details['variable'][0];
+        }
+
         $this->generate_op_print($details, $out);
     }
 

@@ -77,7 +77,7 @@ class Haanga_CodeGenerator
 
     function php_comment($op)
     {
-        return "/*{$op['comment']}*/";
+        return "/* {$op['comment']} */";
     }
 
     function php_function($op)
@@ -239,7 +239,7 @@ class Haanga_CodeGenerator
                 break;
             case 'function':
             case 'exec':
-                if (strlen($code) != 0) {
+                if (strlen($code) != 0 && $code[strlen($code) -1] != '.') {
                     $code .= '.';
                 }
                 $value = array('name' => $value, 'args' => $op[$i]['args']);
@@ -263,7 +263,7 @@ class Haanga_CodeGenerator
                 if (is_array($value) && $value[0][0] == "\\") {
                     $code .= $this->php_generate_string(array("string" => $value[0]));
                 } else {
-                    if (strlen($code) != 0) {
+                    if (strlen($code) != 0 && $code[strlen($code) -1] != '.') {
                         $code .= '.';
                     }
                     $code .= $this->php_get_varname($value).'.';
