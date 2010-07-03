@@ -161,6 +161,45 @@ html {
     $this->token = Parser::T_BLOCK;
 }
 
+"&&" { 
+    $this->token = Parser::T_AND;
+}
+
+"AND" {
+    $this->token = Parser::T_AND;
+}
+
+"||" {
+    $this->token = Parser::T_OR;
+}
+
+"OR" {
+    $this->token = Parser::T_OR;
+}
+
+"==" {
+    $this->token = Parser::T_EQ;
+}
+
+"!=" {
+    $this->token = Parser::T_NE;
+}
+
+">=" {
+    $this->token = Parser::T_GE;
+}
+
+">" {
+    $this->token = Parser::T_GT;
+}
+
+"<" {
+    $this->token = Parser::T_LT;
+}
+"=<" {
+    $this->token = Parser::T_LE;
+}
+
 "|" {
     $this->token = Parser::T_PIPE;
 }
@@ -243,24 +282,8 @@ html {
     $this->token = Parser::T_MOD;
 }
 
-"&&" { 
-    $this->token = Parser::T_AND;
-}
-
-"AND" {
-    $this->token = Parser::T_AND;
-}
-
 "," {
     $this->token = Parser::T_COMMA;
-}
-
-"==" {
-    $this->token = Parser::T_EQ;
-}
-
-"!=" {
-    $this->token = Parser::T_NE;
 }
 
 "+" {

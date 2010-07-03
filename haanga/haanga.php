@@ -231,6 +231,9 @@ class Haanga_Main
         case 'upper':
             $function = 'strtoupper';
             break;
+        case 'length':
+            $function = 'strlen';
+            break;
         case 'lower':
             $function = 'strtolower';
             break; 
@@ -365,6 +368,15 @@ class Haanga_Main
             if (is_array($expr)) {
                 if (isset($expr['var'])) {
                     $expr['var'] = $this->generate_variable_name($expr['var']);
+                } else if (isset($expr['var_filter'])) {
+                    foreach ($expr['var_filter'] as $id => $f) {
+                        if ($id == 0) {
+                            $exec = array('var' => $this->generate_variable_name($f));
+                        } else {
+                            $exec = $this->expr_exec($f, $exec);
+                        }
+                    }
+                    $expr = $exec;
                 }
             } 
         }
