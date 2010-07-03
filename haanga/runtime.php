@@ -33,9 +33,6 @@ class Haanga
         if (!is_dir($dir)) {
             throw new Exception("{$dir} is not a valid directory");
         }
-        if (!is_writable($dir)) {
-            throw new Exception("{$dir} can't be written");
-        }
         self::$templates_dir = $dir;
     }
 
@@ -60,6 +57,7 @@ class Haanga
                 $compiler = new Haanga_Main_Runtime;
             }
             $compiler->reset();
+            $compiler->setDebug($php.".dump");
             $code = $compiler->compile_file($tpl, $tpl);
             file_put_contents($php, "<?php".$code);
         }

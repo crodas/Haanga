@@ -97,16 +97,23 @@ fnc_call_stmt(A) ::= varname(B) list(X) T_AS varname(C) T_CLOSE_TAG. { A = array
 /* variable alias */
 alias(A) ::= T_WITH varname(B) T_AS varname(C) T_CLOSE_TAG body(X) T_OPEN_TAG T_ENDWITH T_CLOSE_TAG. { A = array('operation' => 'alias', 'var' => B, 'as' => C, 'body' => X); }
 
-/* Cycle */
+/* Simple statements (don't require a end_tag or a body ) */
 stmt(A) ::= cycle(B). { A = B; }
 stmt(A) ::= regroup(B). { A = B; }
+stmt(A) ::= first_of(B). { A = B; }
 
 /* FOR loop */
 for_stmt(A) ::= T_FOR varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
     A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D); 
 }
+for_stmt(A) ::= T_FOR varname(I) T_COMMA varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
+    A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D, 'index' => I); 
+}
 for_stmt(A) ::= T_FOR varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_EMPTY T_CLOSE_TAG body(E)  T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
     A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D, 'empty' => E); 
+}
+for_stmt(A) ::= T_FOR varname(I) T_COMMA varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_EMPTY T_CLOSE_TAG body(E)  T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
+    A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D, 'empty' => E, 'index' => I); 
 }
 /* IF */
 if_stmt(A) ::= T_IF expr(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_ENDIF T_CLOSE_TAG. { A = array('operation' => 'if', 'expr' => B, 'body' => X); }
@@ -145,6 +152,10 @@ regroup(A) ::= T_REGROUP varname(B) T_BY varname(C) T_AS varname(X). { A=array('
 /* Cycle */ 
 cycle(A) ::= T_CYCLE list(B). { A = array('operation' => 'cycle', 'vars' => B); } 
 cycle(A) ::= T_CYCLE list(B) T_AS varname(C). { A = array('operation' => 'cycle', 'vars' => B, 'as' => C); } 
+
+/* first_of */
+first_of(A) ::= T_FIRST_OF list(B). { A = array('operation' => 'first_of', 'vars' => B); }
+
 
 /* Piped filters */
 piped_list(A) ::= piped_list(B) T_PIPE varname(C). { A = B; A[] = C; }

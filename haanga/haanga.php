@@ -54,10 +54,16 @@ class Haanga_Main
     protected $_var_alias;
     protected $strip_whitespaces=FALSE;
     protected $force_whitespaces=0;
+    protected $debug;
 
     function __construct()
     {
         $this->generator = new Haanga_CodeGenerator;
+    }
+
+    function setDebug($file)
+    {
+        $this->debug = $file;
     }
 
     function reset()
@@ -83,7 +89,6 @@ class Haanga_Main
      */
     final function compile_file($file) 
     {
-        $this->reset();
         if (!is_readable($file)) {
             throw new Exception("$file is not a file");
         }
@@ -119,6 +124,12 @@ class Haanga_Main
         return array('op' => 'expr', $expr);
 
     }
+
+    function expr_cond($expr, $true, $false)
+    {
+        return array('expr_cond' => $expr, 'true' => $true, 'false' => $false);
+    }
+
     /**
      *  Generate code to call base template
      *
@@ -313,6 +324,9 @@ class Haanga_Main
         if (!empty($this->append)) {
             $code .= $this->append;
         }
+        if (!empty($this->debug)) {
+            file_put_contents($this->debug, print_r($op_code, TRUE));
+        }
         return $code;
     }
 
@@ -441,6 +455,29 @@ class Haanga_Main
     }
     // }}}
 
+    protected function generate_op_first_of($details, &$out)
+    {
+        $texpr = array();
+        foreach ($details['vars'] as $var) {
+            if (isset($var['string'])) {
+                $texpr[] = $var;
+                break;
+            }
+            $texpr[] = $this->expr_cond(
+                $this->expr_isset($var['var']),
+                $var,
+                FALSE
+            );
+        }
+        $texpr = array_reverse($texpr);
+        for ($i=1; $i < count($texpr); $i++) {
+           $texpr[$i]['false'] = $texpr[$i-1]; 
+        }
+        $expr = $texpr[$i-1];
+
+        $this->generate_op_print($expr, $out);
+    }
+
     protected function generate_op_cycle($details, &$out)
     {
         static $cycle = 0;
@@ -463,15 +500,16 @@ class Haanga_Main
         );
 
         $out[] = array('op' => 'declare', 'name' => 'def_cycle_'.$cycle, array('array' => $details['vars']));
-        $out[] = array('op' => 'cond_declare', 'name' => 'index_'.$cycle, 'expr' => $expr, 'true' => array('number' => 0), 'false' => array('expr' => $inc)); 
-        $var  = "def_cycle_{$cycle}[\$index_{$cycle}]";
+        $out[] = array('op' => 'declare', 'name' => 'index_'.$cycle, $this->expr_cond($expr, array('number' => 0), array('expr' => $inc))); 
+        $var  = $this->expr_var("def_cycle_{$cycle}", $this->expr_var("index_{$cycle}"));
         if (isset($old_print)) {
             $out[] = $old_print;
         }
         if (!isset($details['as'])) {
-            $this->generate_op_print(array("variable" => $var), $out);
+            $this->generate_op_print(array("variable" => $var['var']), $out);
         } else {
-            $out[] = array('op' => 'declare', 'name' => $details['as'], array("expr" => $this->expr_var($var)));
+            $out[] = array('op' => 'declare', 'name' => $details['as'], $this->expr($var));
+            
         }
         $cycle++;
     }
@@ -671,7 +709,11 @@ class Haanga_Main
         $this->forid = $oldid;
 
         /* Merge loop body  */
-        $out[] = array('op' => 'foreach', 'array' => $details['array'], 'value' => $details['variable']);
+        $loop = array('op' => 'foreach', 'array' => $details['array'], 'value' => $details['variable']);
+        if (isset($details['index'])) {
+            $loop['key'] = $details['index'];
+        }
+        $out[] = $loop;
         $out   = array_merge($out, $for_loop_body);
         $out[] = array('op' => 'end_foreach');
         if (isset($details['empty'])) {

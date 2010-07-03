@@ -282,6 +282,18 @@ class Haanga_CodeGenerator
                 $code .= $this->php_generate_expr($value);
                 $code .= ".";
                 break;
+            case 'expr_cond':
+                if (strlen($code) != 0) {
+                    $code .= '.';
+                }
+                $code .= "(";
+                $code .= $this->php_generate_expr($value);
+                $code .= " ? ";
+                $code .= $this->php_generate_string(array($op[$i]['true']));
+                $code .= " : ";
+                $code .= $this->php_generate_string(array($op[$i]['false']));
+                $code .= ").";
+                break;
             default:
                 throw new Exception("Don't know how to declare {$key} = {$value}");
             }
@@ -340,17 +352,6 @@ class Haanga_CodeGenerator
     protected function php_return($op)
     {
         $code = "return ".$this->php_generate_string($op).";";
-        return $code;
-    }
-
-
-    protected function php_cond_declare($op)
-    {
-        $code  = "\${$op['name']} = ";
-        $code .= $this->php_generate_expr($op['expr']); 
-        $code .= ' ? '.$this->php_generate_string(array($op['true']));
-        $code .= ' : '.$this->php_generate_string(array($op['false']));
-        $code .= ";";
         return $code;
     }
 

@@ -10,7 +10,7 @@ function foo_bar  () {
 {% for var in some_list %}
 
     <tr class="{% cycle 'row1 \' cesar' 'row2' %}">
-        <td style="background-color: {% ifchanged var %} {%cycle 'red' 'back' %} {% else %} {%cycle 'gray' 'white' %} {% endifchanged %}">
+        <td style="background-color: {% ifchanged var %}{%cycle 'red' '#c0c0c0' %}{% else %}{%cycle 'gray' 'white' %}{% endifchanged %}">
             Foobar {{ var }}
             {% filter lower|upper %}
             {% ifchanged %}

@@ -153,6 +153,10 @@ html {
     $this->token = Parser::T_CYCLE;
 }
 
+"firstof" token_end {
+    $this->token = Parser::T_FIRST_OF;
+}
+
 "block" token_end {
     $this->token = Parser::T_BLOCK;
 }
