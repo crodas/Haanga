@@ -225,14 +225,12 @@ class Haanga_Main
     {
         $args = func_get_args();
         unset($args[0]);
+        $args = array_values($args);
         $function = strtolower($function);
 
         switch ($function) {
         case 'upper':
             $function = 'strtoupper';
-            break;
-        case 'length':
-            $function = 'strlen';
             break;
         case 'lower':
             $function = 'strtolower';
@@ -240,7 +238,17 @@ class Haanga_Main
         case 'safe':
             $function = 'htmlentities';
             break;
+        case 'striptags':
+            $function = 'strip_tags';
+            break;
+        case 'linebreaksbr':
+            $function = 'nl2br';
+            break;
         default:
+            $override = array($this, 'override_function_'.$function);
+            if (is_callable($override)) {
+                return call_user_func($override, $args);
+            }
             if (is_callable(array($this, 'is_function_safe'))) {
                 $function = $this->is_function_safe($function);
             }
@@ -251,7 +259,7 @@ class Haanga_Main
         }
         return array(
             'exec' => $function,
-            'args' => array_values($args)
+            'args' => $args
         );
     }
 
@@ -439,7 +447,18 @@ class Haanga_Main
             $count  = count($details['variable']);
             $target = call_user_func_array(array($this, 'expr_var'), $details['variable'][0]);
             for ($i=1; $i < $count; $i++) {
-                $exec = $this->expr_exec($details['variable'][$i], (isset($exec) ? $exec : $target));
+                $func_name = $details['variable'][$i];
+                $args      = (isset($exec) ? $exec : $target);
+                if (is_array($func_name)) {
+                    /* prepare array for ($func_name, $arg1, $arg2 ... ) 
+                       where $arg1 = last expression and $arg2.. $argX is 
+                       defined in the template */
+                    $nargs = array($func_name[0]);
+                    $nargs = array_merge($nargs, array($args), $func_name['args']);
+                    $exec = call_user_func_array(array($this ,'expr_exec'), $nargs);
+                } else {
+                    $exec = $this->expr_exec($func_name, $args);
+                }
             }
             unset($details['variable']);
             $details = $exec;
@@ -478,7 +497,7 @@ class Haanga_Main
             $texpr[] = $this->expr_cond(
                 $this->expr_isset($var['var']),
                 $var,
-                FALSE
+                ""
             );
         }
         $texpr = array_reverse($texpr);
@@ -903,6 +922,44 @@ final class Haanga_Main_Runtime extends Haanga_Main
     {
         $this->subtemplate = $base;
     }
+
+    /* Custom functions (which generate PHP code)  {{{ */
+
+    // default() {{{ 
+    /**
+     *  Default gets one paramenter 
+     *
+     */
+    function override_function_default($args)
+    {
+        return $this->expr_cond(
+            $this->expr('==', array('exec' => 'empty', 'args' => array($args[0])), TRUE),
+            $args[1],
+            $args[0]
+        );
+    }
+    // }}}
+
+    // length() {{{
+    /**
+     *  length() 
+     *
+     *  Length() should return the size of a string 
+     *  and an array.
+     *
+     */
+    function override_function_length($args)
+    {
+        return $this->expr_cond(
+            $this->expr('==', array('exec' => 'is_array', 'args' => $args), TRUE),
+            array('exec' => 'count', 'args' => $args),
+            array('exec' => 'strlen', 'args' => $args)
+        );
+    }
+    // }}}
+
+    /* }}} */
+
 }
 
 /*

@@ -192,14 +192,7 @@ class Haanga_CodeGenerator
             }
         } else {
             if (is_array($expr)) {
-                if (isset($expr['var'])) {
-                    $code .= $this->php_get_varname($expr['var']);
-                } else if (isset($expr['exec'])) {
-                    $expr['name'] = $expr['exec'];
-                    $code .= $this->php_exec($expr, FALSE);
-                } else {
-                    throw new Exception("don't know how to generate code for ".print_r($expr, TRUE));
-                }
+                $code .= $this->php_generate_string(array($expr));
             } else {
                 if ($expr === FALSE) {
                     $expr = 'FALSE';

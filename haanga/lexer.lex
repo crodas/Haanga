@@ -204,6 +204,10 @@ html {
     $this->token = Parser::T_PIPE;
 }
 
+":" {
+    $this->token = Parser::T_COLON;
+}
+
 "filter" token_end {
     $this->token = Parser::T_FILTER;
 }
@@ -347,8 +351,23 @@ whitespace {
     $this->token = Parser::T_PIPE;
 }
 
+":" {
+    $this->token = Parser::T_COLON;
+}
+
+
 "." {
     $this->token = Parser::T_DOT;
+}
+
+"'" {
+    $this->token = Parser::T_STRING_SINGLE_INIT;
+    $this->yypushstate(self::IN_STRING_SINGLE);
+}
+
+"\"" {
+    $this->token = Parser::T_STRING_DOUBLE_INIT;
+    $this->yypushstate(self::IN_STRING_DOUBLE);
 }
 
 alpha {

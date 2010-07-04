@@ -159,8 +159,11 @@ first_of(A) ::= T_FIRST_OF list(B). { A = array('operation' => 'first_of', 'vars
 
 
 /* Piped filters */
-piped_list(A) ::= piped_list(B) T_PIPE varname(C). { A = B; A[] = C; }
-piped_list(A) ::= varname(B). { A = array(B); }
+piped_list(A) ::= piped_list(B) T_PIPE varname_args(C). { A = B; A[] = C; }
+piped_list(A) ::= varname_args(B). { A = array(B); }
+
+varname_args(A) ::= varname(B) T_COLON var_or_string(X) . { A = array(B, 'args'=>array(X)); }
+varname_args(A) ::= varname(B). { A = B; }
 
 /* List of variables */
 list(A) ::= list(B) var_or_string(C).  { A = B; A[] = C; }
