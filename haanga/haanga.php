@@ -235,6 +235,11 @@ class Haanga_Main
         case 'lower':
             $function = 'strtolower';
             break; 
+        case 'capfirst':
+            $function = "ucfirst";
+            break;
+        case 'addslashes':
+            break;
         case 'safe':
             $function = 'htmlentities';
             break;
@@ -637,6 +642,11 @@ class Haanga_Main
                     $this->forloop_counter0[$this->forid] = TRUE; 
                     $variable = 'forcounter0_'.$this->forid;
                     break;
+                case 'last':
+                    $this->forloop_last[$this->forid]    = TRUE;
+                    $this->forloop_counter[$this->forid] = TRUE; 
+                    $variable = 'forlast_'.$this->forid;
+                    break;
                 default:
                     throw new Exception("Unexpected forloop.{$variable[1]}");
                 }
@@ -734,6 +744,17 @@ class Haanga_Main
             $var   = 'forcounter0_'.$oid;
             $out[] = array('op' => 'declare', 'name' => $var, array('number' => 0) );
             $for_loop_body[] = array('op' => 'inc', 'name' => $var);
+        }
+        if (isset($this->forloop_last[$oid])) {
+            //throw new Exception("Working on this")
+            $cnt   = 'psize_'.$oid;
+            $var   = 'forlast_'.$oid;
+            $expr  = array('op' => 'declare', 'name' => $var, array('expr' => $this->expr("==", $this->expr_var('forcounter1_'.$oid), $this->expr_var($cnt))));
+
+            $out[] = array('op' => 'declare', 'name' => $cnt, $this->expr_exec('count', $this->expr_var($details['array'])) );
+            $out[] = $expr;
+
+            $for_loop_body[] = $expr;
         }
 
         /* Restore old ForID */

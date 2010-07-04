@@ -114,17 +114,6 @@ double_string   = /[^"\\]+/
     $this->yypushstate(self::IN_PRINT);
 }
 
-whitespace {
-    if ($this->ignore_whitespace) {
-        $this->token = Parser::T_HTML;
-        $this->N    += strlen($this->value);
-        $this->value = ' ';
-        
-    } else {
-        $this->token = Parser::T_HTML;
-    }
-}
-
 html {
     $this->token = Parser::T_HTML;
 }

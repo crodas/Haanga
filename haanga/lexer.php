@@ -112,13 +112,12 @@ class Haanga_Lexer
               1 => 0,
               2 => 0,
               3 => 0,
-              4 => 0,
-              5 => 2,
+              4 => 2,
             );
         if ($this->N >= strlen($this->data)) {
             return false; // end of input
         }
-        $yy_global_pattern = "/^(\\{%)|^(\\{#)|^(\\{\\{)|^([ \r\t\n]+)|^(([^{]+(.[^%{#])?)+)/";
+        $yy_global_pattern = "/^(\\{%)|^(\\{#)|^(\\{\\{)|^(([^{]+(.[^%{#])?)+)/";
 
         do {
             if (preg_match($yy_global_pattern, substr($this->data, $this->N), $yymatches)) {
@@ -158,11 +157,10 @@ class Haanga_Lexer
                     // skip this token
                     continue;
                 } else {                    $yy_yymore_patterns = array(
-        1 => array(0, "^(\\{#)|^(\\{\\{)|^([ \r\t\n]+)|^(([^{]+(.[^%{#])?)+)"),
-        2 => array(0, "^(\\{\\{)|^([ \r\t\n]+)|^(([^{]+(.[^%{#])?)+)"),
-        3 => array(0, "^([ \r\t\n]+)|^(([^{]+(.[^%{#])?)+)"),
-        4 => array(0, "^(([^{]+(.[^%{#])?)+)"),
-        5 => array(2, ""),
+        1 => array(0, "^(\\{#)|^(\\{\\{)|^(([^{]+(.[^%{#])?)+)"),
+        2 => array(0, "^(\\{\\{)|^(([^{]+(.[^%{#])?)+)"),
+        3 => array(0, "^(([^{]+(.[^%{#])?)+)"),
+        4 => array(2, ""),
     );
 
                     // yymore is needed
@@ -238,18 +236,6 @@ class Haanga_Lexer
     $this->yypushstate(self::IN_PRINT);
     }
     function yy_r1_4($yy_subpatterns)
-    {
-
-    if ($this->ignore_whitespace) {
-        $this->token = Parser::T_HTML;
-        $this->N    += strlen($this->value);
-        $this->value = ' ';
-        
-    } else {
-        $this->token = Parser::T_HTML;
-    }
-    }
-    function yy_r1_5($yy_subpatterns)
     {
 
     $this->token = Parser::T_HTML;
