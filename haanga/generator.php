@@ -192,7 +192,7 @@ class Haanga_CodeGenerator
             }
         } else {
             if (is_array($expr)) {
-                $code .= $this->php_generate_string(array($expr));
+                $code .= $this->php_generate_declare(array($expr));
             } else {
                 if ($expr === FALSE) {
                     $expr = 'FALSE';
@@ -209,13 +209,13 @@ class Haanga_CodeGenerator
     {
         $code = "";
         foreach ($array as $value) {
-            $code .= $this->php_generate_string(array($value));
+            $code .= $this->php_generate_declare(array($value));
             $code .= ",";
         }
         return substr($code, 0, strlen($code)-1);
     }
 
-    protected function php_generate_string($op, $skip=0)
+    protected function php_generate_declare($op, $skip=0)
     {
         $code = "";
         for ($i=$skip; $i < count($op); $i++) {
@@ -240,7 +240,7 @@ class Haanga_CodeGenerator
                 $code .= '.';
                 break;
             case 'key':
-                $code .= $this->php_generate_string(array($value[0]))." => ".$this->php_generate_string(array($value[1]));
+                $code .= $this->php_generate_declare(array($value[0]))." => ".$this->php_generate_declare(array($value[1]));
                 break;
             case 'string':
                 if ($code != "" && $code[strlen($code)-1] == '"') {
@@ -254,7 +254,7 @@ class Haanga_CodeGenerator
                 break;
             case 'var':
                 if (is_array($value) && $value[0][0] == "\\") {
-                    $code .= $this->php_generate_string(array("string" => $value[0]));
+                    $code .= $this->php_generate_declare(array("string" => $value[0]));
                 } else {
                     if (strlen($code) != 0 && $code[strlen($code) -1] != '.') {
                         $code .= '.';
@@ -282,9 +282,9 @@ class Haanga_CodeGenerator
                 $code .= "(";
                 $code .= $this->php_generate_expr($value);
                 $code .= " ? ";
-                $code .= $this->php_generate_string(array($op[$i]['true']));
+                $code .= $this->php_generate_declare(array($op[$i]['true']));
                 $code .= " : ";
-                $code .= $this->php_generate_string(array($op[$i]['false']));
+                $code .= $this->php_generate_declare(array($op[$i]['false']));
                 $code .= ").";
                 break;
             default:
@@ -301,7 +301,7 @@ class Haanga_CodeGenerator
 
     protected function php_print($op)
     {
-        return 'echo '.$this->php_generate_string($op).';';
+        return 'echo '.$this->php_generate_declare($op).';';
     }
 
     protected function php_inc($op)
@@ -312,7 +312,7 @@ class Haanga_CodeGenerator
     protected function php_declare($op, $assign=' =')
     {
         $op['name'] = $this->php_get_varname($op['name']);
-        $code = "{$op['name']} {$assign} ".$this->php_generate_string($op).";";
+        $code = "{$op['name']} {$assign} ".$this->php_generate_declare($op).";";
         return $code;
     }
 
@@ -348,7 +348,7 @@ class Haanga_CodeGenerator
 
     protected function php_return($op)
     {
-        $code = "return ".$this->php_generate_string($op).";";
+        $code = "return ".$this->php_generate_declare($op).";";
         return $code;
     }
 
