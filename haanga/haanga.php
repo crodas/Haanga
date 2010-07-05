@@ -450,7 +450,13 @@ class Haanga_Main
     {
         if (count($details['variable']) > 1) {
             $count  = count($details['variable']);
-            $target = call_user_func_array(array($this, 'expr_var'), $details['variable'][0]);
+
+            if (is_array($details['variable'][0])) {
+                $target = call_user_func_array(array($this, 'expr_var'), $details['variable'][0]);
+            } else {
+                $target = $this->expr_var($details['variable'][0]);
+            }
+
             for ($i=1; $i < $count; $i++) {
                 $func_name = $details['variable'][$i];
                 $args      = (isset($exec) ? $exec : $target);
@@ -645,7 +651,7 @@ class Haanga_Main
                 case 'last':
                     $this->forloop_last[$this->forid]    = TRUE;
                     $this->forloop_counter[$this->forid] = TRUE; 
-                    $variable = 'forlast_'.$this->forid;
+                    $variable = 'islast_'.$this->forid;
                     break;
                 default:
                     throw new Exception("Unexpected forloop.{$variable[1]}");
@@ -746,9 +752,8 @@ class Haanga_Main
             $for_loop_body[] = array('op' => 'inc', 'name' => $var);
         }
         if (isset($this->forloop_last[$oid])) {
-            //throw new Exception("Working on this")
             $cnt   = 'psize_'.$oid;
-            $var   = 'forlast_'.$oid;
+            $var   = 'islast_'.$oid;
             $expr  = array('op' => 'declare', 'name' => $var, array('expr' => $this->expr("==", $this->expr_var('forcounter1_'.$oid), $this->expr_var($cnt))));
 
             $out[] = array('op' => 'declare', 'name' => $cnt, $this->expr_exec('count', $this->expr_var($details['array'])) );
