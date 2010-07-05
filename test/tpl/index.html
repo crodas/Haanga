@@ -25,5 +25,10 @@
     <h1>here</h1>
 {% endif %}
 
+{# Show list of dates #}
+{% for date in days %}
+    {% ifchanged %}<h3>{{ date|date:"F" }}</h3>{% endifchanged %}
+    <a href="{{ date|date:"M/d"|lower }}/">{{ date|date:"j" }}</a>
+{% endfor %}
 
 {% include "index-test.html" %}

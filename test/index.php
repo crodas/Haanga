@@ -19,6 +19,12 @@ $vars = array(
     'user' => 'crodas',
     'base_template' => 'subtemplate.html',
     'people' => $people,
+    'days' => array(
+        strtotime("01/27/2010"),
+        strtotime("01/28/2010"),
+        strtotime("02/22/2010"),
+        strtotime("02/28/2010"),
+    )
 );
 
 

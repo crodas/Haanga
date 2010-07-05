@@ -978,6 +978,17 @@ final class Haanga_Main_Runtime extends Haanga_Main
 
     /* Custom functions (which generate PHP code)  {{{ */
 
+    // date() {{{
+    /**
+     *  Change parameters order for calling date()
+     *
+     */
+    function override_function_date($args)
+    {
+        return array('exec' => 'date', 'args' => array($args[1], $args[0]));
+    }
+    // }}}
+
     // default() {{{ 
     /**
      *  Default gets one paramenter 
@@ -1009,7 +1020,7 @@ final class Haanga_Main_Runtime extends Haanga_Main
             array('exec' => 'strlen', 'args' => $args)
         );
     }
-    // }}}
+    // }}} 
 
     /* }}} */
 
