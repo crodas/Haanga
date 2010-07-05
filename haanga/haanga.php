@@ -375,6 +375,22 @@ class Haanga_Main
     protected function check_expr(&$expr)
     {
         if (is_array($expr) && isset($expr['op'])) {
+            if ($expr['op'] == 'in') {
+                if (isset($expr[1]['string'])) {
+                    $expr = $this->expr("!==",
+                        $this->expr_exec("strpos", $expr[1], $expr[0]),
+                        FALSE
+                    );
+                } else {
+                    $expr = $this->expr("!==", $this->expr_cond(
+                        $this->expr("==", $this->expr_exec("is_array", $expr[1]), TRUE),
+                        $this->expr_exec("array_search", $expr[0], $expr[1]),
+                        $this->expr_exec("strpos", $expr[1], $expr[0])
+                    ), FALSE);
+                    //echo "<pre>".print_r($expr, TRUE)."</pre>";
+
+                }
+            }
             $this->check_expr($expr[0]);
             $this->check_expr($expr[1]);
         } else {
@@ -390,6 +406,17 @@ class Haanga_Main
                         }
                     }
                     $expr = $exec;
+                } else if (isset($expr['args'])) {
+                    /* check eveyr arguments */
+                    foreach ($expr['args'] as &$v) {
+                        $this->check_expr($v);
+                    }
+                    unset($v);
+                } else  if (isset($expr['expr_cond'])) {
+                    /* Check expr conditions */
+                    $this->check_expr($expr['expr_cond']);
+                    $this->check_expr($expr['true']);
+                    $this->check_expr($expr['false']);
                 }
             } 
         }

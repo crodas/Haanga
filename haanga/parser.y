@@ -50,6 +50,7 @@
 %left T_OR.
 %nonassoc T_EQ T_NE.
 %nonassoc T_GT T_GE T_LT T_LE.
+%nonassoc T_IN.
 %left T_PLUS T_MINUS.
 %left T_TIMES T_DIV T_MOD.
 
@@ -182,7 +183,7 @@ s_content(A) ::= T_STRING_CONTENT(B). { A = B; }
 expr(A) ::= expr(B) T_AND(X)  expr(C).  { A = array('op' => @X, B, C); }
 expr(A) ::= expr(B) T_OR(X)  expr(C).  { A = array('op' => @X, B, C); }
 expr(A) ::= expr(B) T_PLUS|T_MINUS(X)  expr(C).  { A = array('op' => @X, B, C); }
-expr(A) ::= expr(B) T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE(X)  expr(C).  { A = array('op' => @X, B, C); }
+expr(A) ::= expr(B) T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN(X)  expr(C).  { A = array('op' => trim(@X), B, C); }
 expr(A) ::= expr(B) T_TIMES|T_DIV|T_MOD(X)  expr(C).  { A = array('op' => @X, B, C); }
 expr(A) ::= piped_list(B). {A = array('var_filter' => B);}
 expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = array('op' => 'expr', B); }
