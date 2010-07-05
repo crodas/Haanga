@@ -332,7 +332,11 @@ class Haanga_CodeGenerator
                 if (is_string($var[$i])) {
                     $var_str .= '"'.$var[$i].'"';
                 } else if (is_array($var[$i])) {
-                    $var_str .= $this->php_get_varname($var[$i]['var']);
+                    if (isset($var[$i]['var'])) {
+                        $var_str .= $this->php_get_varname($var[$i]['var']);
+                    } else if (isset($var[$i]['string'])) {
+                        $var_str .= '"'.addslashes($var[$i]['string']).'"';
+                    }
                 }
                 $var_str .= "]";
             }

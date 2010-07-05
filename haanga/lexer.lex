@@ -178,6 +178,14 @@ html {
     $this->token = Parser::T_GE;
 }
 
+"[" {
+    $this->token = Parser::T_BRACKETS_OPEN;
+}
+
+"]" {
+    $this->token = Parser::T_BRACKETS_CLOSE;
+}
+
 ">" {
     $this->token = Parser::T_GT;
 }
@@ -347,6 +355,14 @@ whitespace {
 
 "." {
     $this->token = Parser::T_DOT;
+}
+
+"[" {
+    $this->token = Parser::T_BRACKETS_OPEN;
+}
+
+"]" {
+    $this->token = Parser::T_BRACKETS_CLOSE;
 }
 
 "'" {

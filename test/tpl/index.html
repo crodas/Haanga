@@ -1,12 +1,12 @@
 {% regroup people by gender as gender_list %}
 
-<h1>Users ({{ people|length }})</h1>
+<h1>Users ({{ people|length }} in {{ gender_list|length }} genders)</h1>
 <ul>
 {% for i,gender in gender_list %}
-    <li>{{ gender.grouper }}
+    <li>"{{ gender.grouper }}" is equals to "{{ gender_list[i]["grouper"] }}"
     <ul>
         {% for item in gender.list %}
-        <li>{{ item.first_name|upper|safe }} {{ item.last_name }} ({% firstof item.foobar item.bar "unset both" %}) {{ item.bar|default:"bar"|upper }} 
+        <li>{{ item.first_name|upper|safe }} {{ item.last_name|safe }} ({% firstof item.foobar item.bar "unset both" %}) {{ item.bar|default:"default value"|upper }} 
         {% if forloop.last %} 
              { Last item }
         {% endif %}</li>

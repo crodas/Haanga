@@ -193,4 +193,5 @@ expr(A) ::= T_NUMERIC(B). { A = B; }
 
 /* Variable name */
 varname(A) ::= varname(B) T_DOT T_ALPHA(C). { if (!is_array(B)) { A = array(B); } else { A = B; }  A[]=C;}
+varname(A) ::= varname(B) T_BRACKETS_OPEN var_or_string(C) T_BRACKETS_CLOSE. { if (!is_array(B)) { A = array(B); } else { A = B; }  A[]=C;}
 varname(A) ::= T_ALPHA(B). { A = B; } 

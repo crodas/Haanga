@@ -11,6 +11,7 @@ $people =  array(
     array('first_name' => 'Margaret', 'last_name' => 'Thatcher', 'gender' => 'Female'),
     array('first_name' => 'Condoleezza', 'last_name' => 'Rice', 'gender' => 'Female'),
     array('first_name' => 'Pat', 'last_name' => 'Smith', 'gender' => 'Unknown', 'bar' => 'foo'),
+    array('first_name' => '"Cesar', 'last_name' => 'Rodas"', 'gender' => 'Male'),
 );
 
 $vars = array(
