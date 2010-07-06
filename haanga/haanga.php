@@ -226,42 +226,18 @@ class Haanga_Main
         $args = func_get_args();
         unset($args[0]);
         $args = array_values($args);
-        $function = strtolower($function);
 
-        switch ($function) {
-        case 'upper':
-            $function = 'strtoupper';
-            break;
-        case 'lower':
-            $function = 'strtolower';
-            break; 
-        case 'capfirst':
-            $function = "ucfirst";
-            break;
-        case 'addslashes':
-            break;
-        case 'safe':
-            $function = 'htmlentities';
-            break;
-        case 'striptags':
-            $function = 'strip_tags';
-            break;
-        case 'linebreaksbr':
-            $function = 'nl2br';
-            break;
-        default:
-            $override = array($this, 'override_function_'.$function);
-            if (is_callable($override)) {
-                return call_user_func($override, $args);
-            }
-            if (is_callable(array($this, 'is_function_safe'))) {
-                $function = $this->is_function_safe($function);
-            }
+        $override = array($this, 'override_function_'.$function);
+        if (is_callable($override)) {
+            return call_user_func($override, $args);
         }
+
+        $function = $this->is_function_safe($function);
 
         if (!is_string($function) || empty($function)) {
             throw new Exception("{$function} filter is not allowed");
         }
+
         return array(
             'exec' => $function,
             'args' => $args
@@ -929,54 +905,37 @@ class Haanga_Main
         echo "<?php\n\n$code\n";
     }
 
-}
-
-
-final class Haanga_Main_Runtime extends Haanga_Main
-{
-    function get_function_name($name)
-    {
-        return "haanga_".sha1($name);
-    }
-
-    function set_template_name($path)
-    {
-        return $path;
-    }
-
-    protected function generate_op_include($details, &$out)
-    {
-        if (!$details[0]['string']) {
-            throw new Exception("Dynamic includes are not supported yet");
-        }
-        $expr = $this->expr_exec(
-            'Haanga::Load', 
-            $details[0],
-            $this->expr_var('vars'),
-            $this->expr_TRUE(),
-            $this->expr_var('blocks')
-        );
-        $this->generate_op_print(array('expr' => $expr), $op_code);
-        $this->generate_op_print(array('expr' => $expr), $out);
-    }
-
-    function expr_call_base_template()
-    {
-        return $this->expr_exec(
-            'Haanga::Load',
-            $this->subtemplate,
-            $this->expr_var('vars'),
-            $this->expr_TRUE(),
-            $this->expr_var('blocks')
-        );
-    }
-
-    function get_base_template($base)
-    {
-        $this->subtemplate = $base;
-    }
 
     /* Custom functions (which generate PHP code)  {{{ */
+
+    function is_function_safe($function)
+    {
+        switch ($function) {
+        case 'upper':
+            $function = 'strtoupper';
+            break;
+        case 'lower':
+            $function = 'strtolower';
+            break; 
+        case 'capfirst':
+            $function = "ucfirst";
+            break;
+        case 'addslashes':
+            break;
+        case 'safe':
+            $function = 'htmlentities';
+            break;
+        case 'striptags':
+            $function = 'strip_tags';
+            break;
+        case 'linebreaksbr':
+            $function = 'nl2br';
+            break;
+        }
+
+        return $function;
+
+    }
 
     // date() {{{
     /**
@@ -1024,6 +983,52 @@ final class Haanga_Main_Runtime extends Haanga_Main
 
     /* }}} */
 
+}
+
+
+final class Haanga_Main_Runtime extends Haanga_Main
+{
+    function get_function_name($name)
+    {
+        return "haanga_".sha1($name);
+    }
+
+    function set_template_name($path)
+    {
+        return $path;
+    }
+
+    protected function generate_op_include($details, &$out)
+    {
+        if (!$details[0]['string']) {
+            throw new Exception("Dynamic includes are not supported yet");
+        }
+        $expr = $this->expr_exec(
+            'Haanga::Load', 
+            $details[0],
+            $this->expr_var('vars'),
+            $this->expr_TRUE(),
+            $this->expr_var('blocks')
+        );
+        $this->generate_op_print(array('expr' => $expr), $op_code);
+        $this->generate_op_print(array('expr' => $expr), $out);
+    }
+
+    function expr_call_base_template()
+    {
+        return $this->expr_exec(
+            'Haanga::Load',
+            $this->subtemplate,
+            $this->expr_var('vars'),
+            $this->expr_TRUE(),
+            $this->expr_var('blocks')
+        );
+    }
+
+    function get_base_template($base)
+    {
+        $this->subtemplate = $base;
+    }
 }
 
 /*

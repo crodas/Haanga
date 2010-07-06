@@ -24,6 +24,8 @@ $vars = array(
         strtotime("01/28/2010"),
         strtotime("02/22/2010"),
         strtotime("02/28/2010"),
+        strtotime("08/25/2010"),
+        strtotime("08/30/2010"),
     )
 );
 
