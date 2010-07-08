@@ -57,6 +57,7 @@ class Haanga_CodeGenerator
             switch ($op['op']) {
             case 'end_foreach':
             case 'end_if':
+            case 'end_function':
             case 'else':
                 break;
             default:
@@ -83,7 +84,7 @@ class Haanga_CodeGenerator
     function php_function($op)
     {
         $this->ident++;
-        return "function {$op['name']}(\$vars, \$return=FALSE, \$blocks=array())\n{\n";
+        return "function {$op['name']}(\$vars, \$return=FALSE, \$blocks=array())\n{";
     }
 
     protected function ident()
@@ -210,9 +211,9 @@ class Haanga_CodeGenerator
         $code = "";
         foreach ($array as $value) {
             $code .= $this->php_generate_declare(array($value));
-            $code .= ",";
+            $code .= ", ";
         }
-        return substr($code, 0, strlen($code)-1);
+        return substr($code, 0, strlen($code)-2);
     }
 
     protected function php_generate_declare($op, $skip=0)

@@ -49,7 +49,7 @@ class Haanga_Main
     protected $blocks=array();
     protected $in_block=0;
     protected $ob_start=0;
-    protected $block_var=NULL;
+    protected static $block_var=NULL;
     protected $block_super=0;
     protected $append;
     protected $_var_alias;
@@ -60,6 +60,9 @@ class Haanga_Main
     function __construct()
     {
         $this->generator = new Haanga_CodeGenerator;
+        if (self::$block_var===NULL) {
+            self::$block_var = '$'.sha1(time());
+        }
     }
 
     function setDebug($file)
@@ -69,14 +72,13 @@ class Haanga_Main
 
     function reset()
     {
-        $avoid_cleaning = array('strip_whitespaces' => 1);
+        $avoid_cleaning = array('strip_whitespaces' => 1, 'block_var' => 1);
         foreach (array_keys(get_object_vars($this)) as $key) {
             if (isset($avoid_cleaning[$key])) {
                 continue;
             }
             $this->$key = NULL;
         }
-        $this->block_var = '$'.sha1(time());
         $this->generator = new Haanga_CodeGenerator;
         $this->blocks = array();
     }
@@ -602,7 +604,7 @@ class Haanga_Main
         $var   = $this->expr_var("blocks", $details['name']);
         /* str_replace('$parent_value', $buffer, $block['id']) */
         $exec  = $this->expr_exec('str_replace', 
-            array('string' => $this->block_var),
+            array('string' => self::$block_var),
             $this->expr_var($buffer_var),
             $var
         );
@@ -685,7 +687,7 @@ class Haanga_Main
                 }
                 break;
             case 'block':
-                $variable = $this->block_var;
+                $variable = self::$block_var;
                 break;
             } 
 
