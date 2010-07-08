@@ -61,7 +61,7 @@ class Haanga_Main
     {
         $this->generator = new Haanga_CodeGenerator;
         if (self::$block_var===NULL) {
-            self::$block_var = '$'.sha1(time());
+            self::$block_var = '$$==parent_content==$$';
         }
     }
 
@@ -601,34 +601,43 @@ class Haanga_Main
         $this->generate_op_code($details['body'], $out);
         $this->ob_start--;
 
-        $var   = $this->expr_var("blocks", $details['name']);
-        /* str_replace('$parent_value', $buffer, $block['id']) */
-        $exec  = $this->expr_exec('str_replace', 
-            array('string' => self::$block_var),
-            $this->expr_var($buffer_var),
-            $var
+        $var    = $this->expr_var("blocks", $details['name']);
+        $buffer = $this->expr_var($buffer_var);
+
+        /**
+         *  isset previous block (parent block)?
+         *  TRUE
+         *      has reference to self::$block_var ?
+         *      TRUE    
+         *          replace self::$block_var for current block value (buffer)
+         *      FALSE
+         *          print parent block
+         *  FALSE
+         *      print current block
+         *
+         */
+        $declare = $this->expr_cond(
+            $this->expr_isset($var['var']),
+            $this->expr_cond(
+                $this->expr("===", $this->expr_exec('strpos', $var, 
+                        array('string' => self::$block_var)
+                    ), FALSE
+                ),
+                $var,
+                $this->expr_exec('str_replace', 
+                    array('string' => self::$block_var),
+                    $buffer,
+                    $var
+                )
+            ),
+            $buffer
         );
+
         if (!$this->subtemplate) {
-            $var1  = $this->expr_var("blocks", $details['name'], 0);
-
-            $out[] = array('op' => 'if', 'expr' => $this->expr_isset_ex($var, FALSE));
-            $this->generate_op_print(array('variable' => $buffer_var), $out);
-            $out[] = array('op' => 'declare', 'name' => $var['var'],  $this->expr_var($buffer_var)); 
-            $out[] = array('op' => 'else');
-
-
-            $out[] = array('op' => 'declare', 'name' => $var['var'], $exec); 
-
-            $this->generate_op_print(array('variable' => $var['var']), $out);
-            $out[] = array('op' => 'end_if');
+            $this->generate_op_print($declare, $out);
         } else {
             $this->blocks[] = $details['name'];
 
-            $declare =  $this->expr_cond(
-                $this->expr_isset($var['var']),
-                $exec,
-                $this->expr_var($buffer_var)
-            );
             $out[] = array('op' => 'declare', 'name' => 'blocks["'.$details['name'].'"]', $declare);
             $this->in_block--;
         }
