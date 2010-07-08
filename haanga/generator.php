@@ -253,14 +253,10 @@ class Haanga_CodeGenerator
                 $code .= $html.'"';
                 break;
             case 'var':
-                if (is_array($value) && $value[0][0] == "\\") {
-                    $code .= $this->php_generate_declare(array("string" => $value[0]));
-                } else {
-                    if (strlen($code) != 0 && $code[strlen($code) -1] != '.') {
-                        $code .= '.';
-                    }
-                    $code .= $this->php_get_varname($value).'.';
+                if (strlen($code) != 0 && $code[strlen($code) -1] != '.') {
+                    $code .= '.';
                 }
+                $code .= $this->php_get_varname($value).'.';
                 break;
             case 'number':
                 if (!is_numeric($value)) {
@@ -326,7 +322,7 @@ class Haanga_CodeGenerator
                     throw new Exception("Invalid variable definition ".print_r($var, TRUE));
                 }
             } 
-            $var_str = $var[0];
+            $var_str = $this->php_get_varname($var[0]);
             for ($i=1; $i < count($var); $i++) {
                 $var_str .= "[";
                 if (is_string($var[$i])) {
@@ -340,8 +336,12 @@ class Haanga_CodeGenerator
                 }
                 $var_str .= "]";
             }
-            return "\$".$var_str;
+            return $var_str;
         } else {
+            if ($var[0] == "\$") {
+                /* hack to the system */
+                return $this->php_generate_declare(array(array('string' => $var)));
+            }
             return "\$".$var;
         }
     }

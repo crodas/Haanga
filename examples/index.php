@@ -2,8 +2,8 @@
 
 require "../haanga/runtime.php";
 
-Haanga::setCacheDir('tmp/');
-Haanga::setTEmplateDir('tpl/');
+Haanga::setCacheDir('complex/tmp/');
+Haanga::setTEmplateDir('complex/');
 
 $people =  array(
     array('first_name' => 'George </br>', 'last_name' => 'Bush', 'gender' => 'Male', 'foobar' => 'extra'),

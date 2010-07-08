@@ -49,6 +49,7 @@ class Haanga_Main
     protected $blocks=array();
     protected $in_block=0;
     protected $ob_start=0;
+    protected $block_var=NULL;
     protected $block_super=0;
     protected $append;
     protected $_var_alias;
@@ -75,6 +76,7 @@ class Haanga_Main
             }
             $this->$key = NULL;
         }
+        $this->block_var = '$'.sha1(time());
         $this->generator = new Haanga_CodeGenerator;
         $this->blocks = array();
     }
@@ -348,7 +350,7 @@ class Haanga_Main
         }
         foreach ($parsed as $op) {
             if (!isset($op['operation'])) {
-                throw new Exception("Malformed \$parsed array");
+                throw new Exception("Malformed $parsed array");
             }
             if ($this->subtemplate && $this->in_block == 0 && $op['operation'] != 'block') {
                 /* ignore most of tokens in subtemplates */
@@ -377,7 +379,6 @@ class Haanga_Main
                         $this->expr_exec("array_search", $expr[0], $expr[1]),
                         $this->expr_exec("strpos", $expr[1], $expr[0])
                     ), FALSE);
-                    //echo "<pre>".print_r($expr, TRUE)."</pre>";
 
                 }
             }
@@ -386,11 +387,11 @@ class Haanga_Main
         } else {
             if (is_array($expr)) {
                 if (isset($expr['var'])) {
-                    $expr['var'] = $this->generate_variable_name($expr['var']);
+                    $expr = $this->generate_variable_name($expr['var']);
                 } else if (isset($expr['var_filter'])) {
                     foreach ($expr['var_filter'] as $id => $f) {
                         if ($id == 0) {
-                            $exec = array('var' => $this->generate_variable_name($f));
+                            $exec = $this->generate_variable_name($f);
                         } else {
                             $exec = $this->expr_exec($f, $exec);
                         }
@@ -594,33 +595,42 @@ class Haanga_Main
         if ($this->subtemplate) {
             $this->in_block++;
         } 
+
         $this->generate_op_code($details['body'], $out);
         $this->ob_start--;
 
         $var   = $this->expr_var("blocks", $details['name']);
+        /* str_replace('$parent_value', $buffer, $block['id']) */
+        $exec  = $this->expr_exec('str_replace', 
+            array('string' => $this->block_var),
+            $this->expr_var($buffer_var),
+            $var
+        );
         if (!$this->subtemplate) {
             $var1  = $this->expr_var("blocks", $details['name'], 0);
 
             $out[] = array('op' => 'if', 'expr' => $this->expr_isset_ex($var, FALSE));
             $this->generate_op_print(array('variable' => $buffer_var), $out);
+            $out[] = array('op' => 'declare', 'name' => $var['var'],  $this->expr_var($buffer_var)); 
             $out[] = array('op' => 'else');
 
-            $out[] = array('op' => 'if', 'expr' => $this->expr("==", $this->expr_exec("is_array", $var), TRUE));
-            $out[] = array('op' => 'declare', 'name' => $var['var'], array('exec' => 'str_replace', 'args' => array(array('string' => '$parent_value'), $this->expr_var($buffer_var), $var))); 
-            $out[] = array('op' => 'end_if');
+
+            $out[] = array('op' => 'declare', 'name' => $var['var'], $exec); 
+
             $this->generate_op_print(array('variable' => $var['var']), $out);
             $out[] = array('op' => 'end_if');
         } else {
             $this->blocks[] = $details['name'];
-            if ($this->block_super > 0) {
-                $out[] = array('op'=> 'comment', 'comment' => 'declared as array because this block needs to access parent block\'s contents');
-                $out[] = array('op' => 'declare', 'name' => $var['var'], array('array' => array($this->expr_var($buffer_var)) ) );
-                $this->block_super--;
-            } else {
-                $out[] = array('op' => 'declare', 'name' => 'blocks["'.$details['name'].'"]', $this->expr_var($buffer_var));
-            }
+
+            $declare =  $this->expr_cond(
+                $this->expr_isset($var['var']),
+                $exec,
+                $this->expr_var($buffer_var)
+            );
+            $out[] = array('op' => 'declare', 'name' => 'blocks["'.$details['name'].'"]', $declare);
             $this->in_block--;
         }
+
     }
 
     protected function generate_op_regroup($details, &$out)
@@ -674,25 +684,23 @@ class Haanga_Main
                     throw new Exception("Unexpected forloop.{$variable[1]}");
                 }
                 break;
-            case 'super':
-                if ($variable[1] == 'block') {
-                    $variable = '\\$parent_value';
-                    $this->block_super++;
-                }
+            case 'block':
+                $variable = $this->block_var;
                 break;
             } 
 
         } else if (isset($this->_var_alias[$variable])) {
             $variable = $this->_var_alias[$variable];
         }
-        return $variable;
+
+        return $this->expr_var($variable);
     }
 
     protected function generate_op_print($details, &$out)
     {
         $last = count($out)-1;
         if (isset($details['variable'])) {
-            $content = $this->expr_var($this->generate_variable_name($details['variable']));
+            $content = $this->generate_variable_name($details['variable']);
         } else if (isset($details['html']))  {
             $html = $details['html'];
             if ($this->strip_whitespaces && $this->force_whitespaces == 0) {

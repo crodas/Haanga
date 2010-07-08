@@ -1,0 +1,18 @@
+{% extends 'section.html' %}
+
+
+{% block title %}Userlist | {{ block.super }}{% endblock %}
+
+{% block content %}
+<h2>Userlist</h2>
+<ul>
+{% for user in users %}
+  <li><a href="/users/{{ user.username|urlencode|safe }}">{{ user.username|escape }}</a></li>
+  
+  {% if user.username != 'foobar' %}
+      haha
+  {% endif %}
+  
+{% endfor %}
+</ul>
+{% endblock %}
