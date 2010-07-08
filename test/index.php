@@ -26,7 +26,8 @@ $vars = array(
         strtotime("02/28/2010"),
         strtotime("08/25/2010"),
         strtotime("08/30/2010"),
-    )
+    ),
+    'templates' => array('base' => 'index-test.html'),
 );
 
 

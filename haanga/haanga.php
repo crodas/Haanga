@@ -260,19 +260,29 @@ class Haanga_Main
     }
     // }}}
 
+    // get_base_template($base) {{{
     /**
+     *  Handle {% base  "" %} definition. By default only 
+     *  static (string) are supported, but this can be overrided
+     *  on subclasses.
      *
+     *  This method load the base class, compile it and return
+     *  the generated code.
      *
+     *  @param array $base Base structure
+     *
+     *  @return string Generated source code
      */
     function get_base_template($base)
     {
         if (!isset($base['string'])) {
-            throw new Exception("Dynamic inheritance is not supported yet");
+            throw new Exception("Dynamic inheritance is not supported for compilated templates");
         }
         $file = $base['string'];
         list($this->subtemplate, $new_code) = $this->compile_required_template($file);
         return $new_code."\n\n";
     }
+    // }}}
 
     final function compile($code, $name=NULL)
     {
@@ -281,11 +291,14 @@ class Haanga_Main
         $parsed = do_parsing($code);
         $code   = "";
         $this->subtemplate = FALSE;
+
         if ($parsed[0]['operation'] == 'base') {
+            /* {% base ... %} found */
             $base  = $parsed[0][0];
             $code .= $this->get_base_template($base); 
             unset($parsed[0]);
         }
+
         if ($name) {
             if (isset($this->_file)) {
                 $op_code[] = array('op' => 'comment', 'comment' =>  "Generated from {$this->_base_dir}/{$this->_file}");
@@ -293,6 +306,7 @@ class Haanga_Main
             $op_code[] = array('op' => 'function', 'name' => $this->get_function_name($name));
             $op_code[] = $this->expr_expr($this->expr_exec('extract', $this->expr_var('vars')));
         }
+
         $this->ob_start($op_code);
         $this->generate_op_code($parsed, $op_code);
         if ($this->subtemplate) {
@@ -429,7 +443,7 @@ class Haanga_Main
     protected function generate_op_include($details, &$out)
     {
         if (!$details[0]['string']) {
-            throw new Exception("Dynamic includes are not supported yet");
+            throw new Exception("Dynamic inheritance is not supported for compilated templates");
         }
         list($name,$code) = $this->compile_required_template($details[0]['string']);
         $this->append .= "\n\n{$code}";
@@ -1000,9 +1014,6 @@ final class Haanga_Main_Runtime extends Haanga_Main
 
     protected function generate_op_include($details, &$out)
     {
-        if (!$details[0]['string']) {
-            throw new Exception("Dynamic includes are not supported yet");
-        }
         $expr = $this->expr_exec(
             'Haanga::Load', 
             $details[0],
