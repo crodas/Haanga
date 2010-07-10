@@ -741,7 +741,6 @@ class Haanga_Main
                 if ($this->in_block == 0) {
                     throw new Exception("Can't use block.super outside a block");
                 }
-                var_dump($this);
                 $variable = self::$block_var;
                 break;
             } 
