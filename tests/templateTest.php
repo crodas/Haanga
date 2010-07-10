@@ -21,6 +21,9 @@ class templateTest extends PHPUnit_Framework_TestCase
             $data = array();
             $data_file = substr($test_file, 0, -3)."php";
             $expected  = substr($test_file, 0, -3)."html";
+            if (!is_file($expected)) {
+                continue;
+            }
             if (is_file($data_file)) {
                 include $data_file;
             }
