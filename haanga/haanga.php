@@ -52,7 +52,17 @@ class Haanga_Main
     protected static $block_var=NULL;
     protected $block_super=0;
     protected $append;
-    protected $_var_alias;
+    /**
+     *  Table which contains all variables 
+     *  aliases defined in the template
+     */
+    protected $var_alias;
+    /**
+     *  Flag the current variable as safe. This means
+     *  that escape won't be called if autoescape is 
+     *  activated (which is activated by default)
+     */
+    protected $var_is_safe=FALSE;
     protected $strip_whitespaces=FALSE;
     protected $force_whitespaces=0;
     protected $debug;
@@ -342,7 +352,7 @@ class Haanga_Main
 
     protected function generate_op_base()
     {
-        throw new exception("{% base %} can be only as first statmenet");
+        throw new exception("{% base %} can be only as first statement");
     }
 
     protected function generate_op_code($parsed, &$out)
@@ -400,7 +410,7 @@ class Haanga_Main
                     }
                     $expr = $exec;
                 } else if (isset($expr['args'])) {
-                    /* check eveyr arguments */
+                    /* check every arguments */
                     foreach ($expr['args'] as &$v) {
                         $this->check_expr($v);
                     }
@@ -466,19 +476,31 @@ class Haanga_Main
         $this->generate_op_print($details, $out);
     }
 
+    // generate_op_print_var {{{
+    /**
+     *  Generate code to print a variable with its filters, if there is any.
+     *
+     *  All variable (except those flagged as |safe) are automatically 
+     *  escaped if autoescape is "on".
+     *
+     */
     protected function generate_op_print_var($details, &$out)
     {
         if (count($details['variable']) > 1) {
             $count  = count($details['variable']);
-
-            if (is_array($details['variable'][0])) {
-                $target = call_user_func_array(array($this, 'expr_var'), $details['variable'][0]);
-            } else {
-                $target = $this->expr_var($details['variable'][0]);
+            $target = $this->generate_variable_name($details['variable'][0]);
+            
+            if (is_string($target['var'][0]) && strpos($target['var'][0], self::$block_var) !== FALSE) {
+                /* block.super can't have any filter */
+                throw new Exception("{{super.block}} can't have any filter");
             }
 
             for ($i=1; $i < $count; $i++) {
                 $func_name = $details['variable'][$i];
+                if ($func_name == 'escape') {
+                    /* to avoid double cleaning */
+                    $this->var_is_safe = TRUE;
+                }
                 $args      = (isset($exec) ? $exec : $target);
                 if (is_array($func_name)) {
                     /* prepare array for ($func_name, $arg1, $arg2 ... ) 
@@ -494,11 +516,30 @@ class Haanga_Main
             unset($details['variable']);
             $details = $exec;
         } else {
-            $details['variable'] = $details['variable'][0];
+            $details = $this->generate_variable_name($details['variable'][0]);
+        }
+
+        /* check if variable is a reference to parent block (which can't
+           have any filter */
+        $is_super = !isset($target) && is_string($details['var'][0]) && strpos($details['var'][0], self::$block_var) !== FALSE;
+
+        if (!$this->var_is_safe && !$is_super) {
+            if (!isset($target)) {
+                $target = $details;
+            }
+            $args = (isset($exec) ? $exec : $target);
+            $exec = $this->expr_exec('escape', $args);
+            $details = $exec;
+        }
+
+        if ($this->var_is_safe) {
+            /* restore var_is_safe to FALSE for next variables to print */
+            $this->var_is_safe = FALSE;
         }
 
         $this->generate_op_print($details, $out);
     }
+    // }}}
 
     // is_last_op_print($out) {{{
     /**
@@ -594,9 +635,7 @@ class Haanga_Main
     {
         $this->ob_start($out);
         $buffer_var = 'buffer'.$this->ob_start;
-        if ($this->subtemplate) {
-            $this->in_block++;
-        } 
+        $this->in_block++;
 
         $this->generate_op_code($details['body'], $out);
         $this->ob_start--;
@@ -639,8 +678,8 @@ class Haanga_Main
             $this->blocks[] = $details['name'];
 
             $out[] = array('op' => 'declare', 'name' => 'blocks["'.$details['name'].'"]', $declare);
-            $this->in_block--;
         }
+        $this->in_block--;
 
     }
 
@@ -696,12 +735,19 @@ class Haanga_Main
                 }
                 break;
             case 'block':
+                if (!$this->subtemplate) {
+                    throw new Exception("Only subtemplates can call block.super");
+                }
+                if ($this->in_block == 0) {
+                    throw new Exception("Can't use block.super outside a block");
+                }
+                var_dump($this);
                 $variable = self::$block_var;
                 break;
             } 
 
-        } else if (isset($this->_var_alias[$variable])) {
-            $variable = $this->_var_alias[$variable];
+        } else if (isset($this->var_alias[$variable])) {
+            $variable = $this->var_alias[$variable];
         }
 
         return $this->expr_var($variable);
@@ -912,9 +958,9 @@ class Haanga_Main
 
     function generate_op_alias($details, &$out)
     {
-        $this->_var_alias[ $details['as'] ] = $details['var'];
+        $this->var_alias[ $details['as'] ] = $details['var'];
         $this->generate_op_code($details['body'], $out);
-        unset($this->_var_alias[ $details['as'] ] );
+        unset($this->var_alias[ $details['as'] ] );
     }
 
 
@@ -951,11 +997,12 @@ class Haanga_Main
             $function = 'strtolower';
             break; 
         case 'capfirst':
+        case 'capitalize':
             $function = "ucfirst";
             break;
         case 'addslashes':
             break;
-        case 'safe':
+        case 'escape':
             $function = 'htmlentities';
             break;
         case 'striptags':
@@ -968,6 +1015,12 @@ class Haanga_Main
 
         return $function;
 
+    }
+
+    function override_function_safe($args)
+    {
+        $this->var_is_safe = TRUE;
+        return current($args);
     }
 
     // date() {{{

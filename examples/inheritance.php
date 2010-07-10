@@ -12,11 +12,6 @@ Haanga::setTEmplateDir('inheritance/');
 
 $time_start = microtime(true);
 
-function escape($html)
-{
-    return $html;
-}
-
 Haanga::Load('page.html', array(
     'title' => microtime(TRUE),
     'users' => array(
