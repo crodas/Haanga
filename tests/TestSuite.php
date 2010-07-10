@@ -6,14 +6,6 @@ require "errorTest.php";
 
 class TestSuite extends PHPUnit_Framework_TestSuite
 {
-    function __construct()
-    {
-        /* setup */
-        @mkdir("tmp/");
-        Haanga::setCacheDir("tmp/");
-        Haanga::setTemplateDir(".");
-    }
-
     function __destruct()
     {
         foreach (glob("tmp/*") as $file) {

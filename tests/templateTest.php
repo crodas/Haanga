@@ -2,6 +2,15 @@
 
 class templateTest extends PHPUnit_Framework_TestCase
 {
+    public function testInit()
+    {
+        /* setup */
+        @mkdir("tmp/");
+        Haanga::setCacheDir("tmp/");
+        Haanga::setTemplateDir(".");
+    }
+
+
     /** 
      * @dataProvider tplProvider
      */
