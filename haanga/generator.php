@@ -250,7 +250,7 @@ class Haanga_CodeGenerator
                     $code .= '"';
                 }
                 $html  = addslashes($value);
-                $html  = str_replace(array('$', "\r", "\t", "\n"), array('\\$', '\r', '\t', '\n'), $html);
+                $html  = str_replace(array('$', "\r", "\t", "\n","\\'"), array('\\$', '\r', '\t', '\n',"'"), $html);
                 $code .= $html.'"';
                 break;
             case 'var':

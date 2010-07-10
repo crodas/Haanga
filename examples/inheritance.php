@@ -18,6 +18,7 @@ function escape($html)
 }
 
 Haanga::Load('page.html', array(
+    'title' => microtime(TRUE),
     'users' => array(
         array(
             'username' =>           'peter',

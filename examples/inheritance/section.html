@@ -8,3 +8,8 @@
 {% block content %}
 cesar
 {% endblock content %}
+
+{% block body %}
+<h1>new Body</h1>
+{{ block.super }}
+{% endblock body %}
