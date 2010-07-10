@@ -12,5 +12,6 @@
         {% endfor %}
     </ul>
     {% endblock %}
+    {% include "assert_templates/partial.tpl" %}
 </body>
 </html>

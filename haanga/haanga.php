@@ -1104,7 +1104,6 @@ final class Haanga_Main_Runtime extends Haanga_Main
             $this->expr_TRUE(),
             $this->expr_var('blocks')
         );
-        $this->generate_op_print(array('expr' => $expr), $op_code);
         $this->generate_op_print(array('expr' => $expr), $out);
     }
 
