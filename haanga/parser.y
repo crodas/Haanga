@@ -85,6 +85,7 @@ stmts(A) ::= if_stmt(B). { A = B; }
 stmts(A) ::= T_INCLUDE var_or_string(B) T_CLOSE_TAG. { A = array('operation' => 'include', B); }
 stmts(A) ::= fnc_call_stmt(B). { A = B; }
 stmts(A) ::= alias(B). { A = B; }
+stmts(A) ::= T_AUTOESCAPE T_OFF|T_ON(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG. { A = array('operation' => 'autoescape', 'value' => @B, 'body' => X); }
 
 /* Statement */
 

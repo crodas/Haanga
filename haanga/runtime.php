@@ -57,7 +57,7 @@ class Haanga
                 $compiler = new Haanga_Main_Runtime;
             }
             $compiler->reset();
-            $compiler->setDebug($php.".dump");
+            //$compiler->setDebug($php.".dump");
             $code = $compiler->compile_file($tpl, $tpl);
             file_put_contents($php, "<?php".$code);
         }

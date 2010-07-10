@@ -2,6 +2,7 @@
 
 require "../haanga/runtime.php";
 require "templateTest.php";
+require "errorTest.php";
 
 class TestSuite extends PHPUnit_Framework_TestSuite
 {
@@ -24,6 +25,7 @@ class TestSuite extends PHPUnit_Framework_TestSuite
     {
         $suite = new TestSuite('Haanga test suite');
         $suite->addTestSuite('templateTest');
+        $suite->addTestSuite('errorTest');
 
         return $suite;
     }

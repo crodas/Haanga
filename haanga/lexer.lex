@@ -217,6 +217,15 @@ html {
     $this->token = Parser::T_END_FILTER;
 }
 
+"autoescape" token_end {
+    $this->token = Parser::T_AUTOESCAPE;
+}
+
+
+"endautoescape" token_end {
+    $this->token = Parser::T_END_AUTOESCAPE;
+}
+
 
 "endblock" token_end {
     $this->token = Parser::T_END_BLOCK;
@@ -253,6 +262,14 @@ html {
 
 "as" {
     $this->token = Parser::T_AS;
+}
+
+"on" {
+    $this->token = Parser::T_ON;
+}
+
+"off" {
+    $this->token = Parser::T_OFF;
 }
 
 "by" {

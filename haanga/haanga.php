@@ -38,6 +38,9 @@
 require "lexer.php";
 require "generator.php";
 
+class CompileException extends Exception {
+}
+
 class Haanga_Main
 {
     protected $generator;
@@ -63,6 +66,7 @@ class Haanga_Main
      *  activated (which is activated by default)
      */
     protected $var_is_safe=FALSE;
+    protected $autoescape=TRUE;
     protected $strip_whitespaces=FALSE;
     protected $force_whitespaces=0;
     protected $debug;
@@ -82,7 +86,7 @@ class Haanga_Main
 
     function reset()
     {
-        $avoid_cleaning = array('strip_whitespaces' => 1, 'block_var' => 1);
+        $avoid_cleaning = array('strip_whitespaces' => 1, 'block_var' => 1, 'autoescape'=>1);
         foreach (array_keys(get_object_vars($this)) as $key) {
             if (isset($avoid_cleaning[$key])) {
                 continue;
@@ -104,7 +108,7 @@ class Haanga_Main
     final function compile_file($file) 
     {
         if (!is_readable($file)) {
-            throw new Exception("$file is not a file");
+            throw new CompileException("$file is not a file");
         }
         $this->_base_dir = dirname($file);
         $this->_file     = basename($file);
@@ -249,7 +253,7 @@ class Haanga_Main
         $function = $this->is_function_safe($function);
 
         if (!is_string($function) || empty($function)) {
-            throw new Exception("{$function} filter is not allowed");
+            throw new CompileException("{$function} filter is not allowed");
         }
 
         return array(
@@ -290,7 +294,7 @@ class Haanga_Main
     function get_base_template($base)
     {
         if (!isset($base['string'])) {
-            throw new Exception("Dynamic inheritance is not supported for compilated templates");
+            throw new CompileException("Dynamic inheritance is not supported for compilated templates");
         }
         $file = $base['string'];
         list($this->subtemplate, $new_code) = $this->compile_required_template($file);
@@ -358,11 +362,11 @@ class Haanga_Main
     protected function generate_op_code($parsed, &$out)
     {
         if (!is_array($parsed)) {
-            throw new Exception("Invalid \$parsed array");
+            throw new CompileException("Invalid \$parsed array");
         }
         foreach ($parsed as $op) {
             if (!isset($op['operation'])) {
-                throw new Exception("Malformed $parsed array");
+                throw new CompileException("Malformed $parsed array");
             }
             if ($this->subtemplate && $this->in_block == 0 && $op['operation'] != 'block') {
                 /* ignore most of tokens in subtemplates */
@@ -370,7 +374,7 @@ class Haanga_Main
             }
             $method = "generate_op_".$op['operation'];
             if (!is_callable(array($this, $method))) {
-                throw new Exception("Compiler: Missing method $method");
+                throw new CompileException("Compiler: Missing method $method");
             }
             $this->$method($op, $out);
         }
@@ -444,7 +448,7 @@ class Haanga_Main
             $file = $this->_base_dir.'/'.$file;
         }
         if (!is_file($file)) {
-            throw new Exception("can't find {$file} file template");
+            throw new CompileException("can't find {$file} file template");
         }
         $class = get_class($this);
         $comp  = new  $class;
@@ -456,7 +460,7 @@ class Haanga_Main
     protected function generate_op_include($details, &$out)
     {
         if (!$details[0]['string']) {
-            throw new Exception("Dynamic inheritance is not supported for compilated templates");
+            throw new CompileException("Dynamic inheritance is not supported for compilated templates");
         }
         list($name,$code) = $this->compile_required_template($details[0]['string']);
         $this->append .= "\n\n{$code}";
@@ -492,7 +496,7 @@ class Haanga_Main
             
             if (is_string($target['var'][0]) && strpos($target['var'][0], self::$block_var) !== FALSE) {
                 /* block.super can't have any filter */
-                throw new Exception("{{super.block}} can't have any filter");
+                throw new CompileException("{{super.block}} can't have any filter");
             }
 
             for ($i=1; $i < $count; $i++) {
@@ -523,7 +527,7 @@ class Haanga_Main
            have any filter */
         $is_super = !isset($target) && is_string($details['var'][0]) && strpos($details['var'][0], self::$block_var) !== FALSE;
 
-        if (!$this->var_is_safe && !$is_super) {
+        if (!$this->var_is_safe && $this->autoescape &&!$is_super) {
             if (!isset($target)) {
                 $target = $details;
             }
@@ -713,8 +717,8 @@ class Haanga_Main
         if (is_array($variable)) {
             switch ($variable[0]) {
             case 'forloop':
-                if ($this->forid === FALSE) {
-                    throw new Exception("Invalid forloop reference outside of a loop");
+                if (!$this->forid) {
+                    throw new CompileException("Invalid forloop reference outside of a loop");
                 }
                 switch ($variable[1]) {
                 case 'counter':
@@ -731,15 +735,15 @@ class Haanga_Main
                     $variable = 'islast_'.$this->forid;
                     break;
                 default:
-                    throw new Exception("Unexpected forloop.{$variable[1]}");
+                    throw new CompileException("Unexpected forloop.{$variable[1]}");
                 }
                 break;
             case 'block':
                 if (!$this->subtemplate) {
-                    throw new Exception("Only subtemplates can call block.super");
+                    throw new CompileException("Only subtemplates can call block.super");
                 }
                 if ($this->in_block == 0) {
-                    throw new Exception("Can't use block.super outside a block");
+                    throw new CompileException("Can't use block.super outside a block");
                 }
                 $variable = self::$block_var;
                 break;
@@ -887,7 +891,7 @@ class Haanga_Main
             /* beauty :-) */
             foreach ($details['check'] as $id=>$type) {
                 if (!isset($type['var'])) {
-                    throw new Exception("Invalid error {$type['var']}");
+                    throw new CompileException("Invalid error {$type['var']}");
                 }
                 $this_expr = $this->expr('OR',
                     $this->expr_isset("{$var1}[{$id}]", FALSE),
@@ -916,6 +920,14 @@ class Haanga_Main
             $this->generate_op_code($details['else'], $out);
         }
         $out[] = array('op' => 'end_if');
+    }
+
+    function generate_op_autoescape($details, &$out)
+    {
+        $old_autoescape   = $this->autoescape;
+        $this->autoescape = strtolower($details['value']) == 'on';
+        $this->generate_op_code($details['body'], $out);
+        $this->autoescape = $old_autoescape;
     }
 
     function ob_start(&$out)
