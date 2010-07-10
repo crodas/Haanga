@@ -1,4 +1,5 @@
 {{ variable }}
+{{ variable|escape }}
 {{ variable|safe }}
 {% autoescape off %}
     {{ variable }}
