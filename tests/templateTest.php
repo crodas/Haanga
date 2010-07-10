@@ -2,13 +2,21 @@
 
 class templateTest extends PHPUnit_Framework_TestCase
 {
-    function testCompilation()
+    /** 
+     * @dataProvider tplProvider
+     */
+    public function testCompilation($test_file, $data, $expected)
     {
-        /* setup */
-        @mkdir("tmp/");
-        Haanga::setCacheDir("tmp/");
-        Haanga::setTemplateDir(".");
+        $output = Haanga::Load($test_file, $data, TRUE);
+        $this->assertEquals($output, file_get_contents($expected));
+    }
 
+    /**
+     *  @return array
+     */
+    public static function tplProvider()
+    {
+        $datas = array();
         foreach (glob("templates/*.tpl") as $test_file) {
             $data = array();
             $data_file = substr($test_file, 0, -3)."php";
@@ -16,12 +24,9 @@ class templateTest extends PHPUnit_Framework_TestCase
             if (is_file($data_file)) {
                 include $data_file;
             }
-            $output = Haanga::Load($test_file, $data, TRUE);
-            $this->assertEquals($output, file_get_contents($expected));
+            $datas[] = array($test_file, $data, $expected);
         }
 
-        foreach (glob("tmp/*") as $file) {
-            unlink($file);
-        }
+        return $datas;
     }
 }
