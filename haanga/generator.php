@@ -213,7 +213,7 @@ class Haanga_CodeGenerator
             $code .= $this->php_generate_declare(array($value));
             $code .= ", ";
         }
-        return substr($code, 0, strlen($code)-2);
+        return substr($code, 0, -2);
     }
 
     protected function php_generate_declare($op, $skip=0)
@@ -245,7 +245,7 @@ class Haanga_CodeGenerator
                 break;
             case 'string':
                 if ($code != "" && $code[strlen($code)-1] == '"') {
-                    $code = substr($code, 0, strlen($code)-1);
+                    $code = substr($code, 0, -1);
                 } else {
                     $code .= '"';
                 }
@@ -290,7 +290,7 @@ class Haanga_CodeGenerator
         }
 
         if ($code != "" && $code[strlen($code)-1] == '.') {
-            $code = substr($code, 0, strlen($code)-1);
+            $code = substr($code, 0, -1);
         }
 
         return $code;
