@@ -3,5 +3,6 @@
 {{ var|length }}
 {{ foobar|default:"default value"|upper}}
 {% upper %}
-    hola que tal{%if 1==2 %}{% endif %}
+    hola que 
 {% endupper %}
+{% lower %}TAL{% endlower %}
