@@ -80,22 +80,23 @@ stmts(A) ::= for_stmt(B). { A = B; }
 stmts(A) ::= ifchanged_stmt(B). { A = B; }
 stmts(A) ::= block_stmt(B). { A = B; }
 stmts(A) ::= filter_stmt(B). { A = B; }
-stmts(A) ::= custom_stmt(B). { A = B; }
 stmts(A) ::= if_stmt(B). { A = B; }
 stmts(A) ::= T_INCLUDE var_or_string(B) T_CLOSE_TAG. { A = array('operation' => 'include', B); }
-stmts(A) ::= fnc_call_stmt(B). { A = B; }
+stmts(A) ::= custom_tag(B). { A = B; }
 stmts(A) ::= alias(B). { A = B; }
 stmts(A) ::= T_AUTOESCAPE T_OFF|T_ON(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG. { A = array('operation' => 'autoescape', 'value' => @B, 'body' => X); }
 
 /* Statement */
 
 /* function call */
-fnc_call_stmt(A) ::= varname(B) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'list'=>array()); }
-fnc_call_stmt(A) ::= varname(B) T_FOR varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'for' => C, 'list' => array()); }
-fnc_call_stmt(A) ::= varname(B) T_FOR varname(C) T_AS varname(X) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'for' => C, 'list' => array(),'as' => X); }
-fnc_call_stmt(A) ::= varname(B) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'as' => C, 'list'=>array()); }
-fnc_call_stmt(A) ::= varname(B) list(X) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'list' => X); }
-fnc_call_stmt(A) ::= varname(B) list(X) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'as' => C, 'list' => X); }
+custom_tag(A) ::= CUSTOM_TAG(B) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'list'=>array()); }
+custom_tag(A) ::= CUSTOM_TAG(B) T_FOR varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'for' => C, 'list' => array()); }
+custom_tag(A) ::= CUSTOM_TAG(B) T_FOR varname(C) T_AS varname(X) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'for' => C, 'list' => array(),'as' => X); }
+custom_tag(A) ::= CUSTOM_TAG(B) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'as' => C, 'list'=>array()); }
+custom_tag(A) ::= CUSTOM_TAG(B) list(X) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'list' => X); }
+custom_tag(A) ::= CUSTOM_TAG(B) list(X) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'function', 'name' => B, 'as' => C, 'list' => X); }
+/* custom block  */
+custom_tag(A) ::= T_CUSTOM_BLOCK(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_CUSTOM_END(C) T_CLOSE_TAG. { if ('end'.B != C) { throw new Exception("Unexpected ".C); } A = array('operation' => 'filter', 'functions' =>array(B), 'body' => X);}
 
 /* variable alias */
 alias(A) ::= T_WITH varname(B) T_AS varname(C) T_CLOSE_TAG body(X) T_OPEN_TAG T_ENDWITH T_CLOSE_TAG. { A = array('operation' => 'alias', 'var' => B, 'as' => C, 'body' => X); }
@@ -138,8 +139,6 @@ ifchanged_stmt(A) ::= T_IFCHANGED list(X) T_CLOSE_TAG body(B) T_OPEN_TAG T_ELSE 
     A = array('operation' => 'ifchanged', 'body' => B, 'check' => X, 'else' => C);
 }
 
-/* custom stmt */
-custom_stmt(A) ::= varname(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_CUSTOM_END(C) T_CLOSE_TAG. { if ('end'.B != C) { throw new Exception("Unexpected ".C); } A = array('operation' => 'filter', 'functions' =>array(B), 'body' => X);}
  
 /* block stmt */
 block_stmt(A) ::= T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }

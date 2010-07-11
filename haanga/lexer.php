@@ -79,6 +79,36 @@ class Haanga_Lexer
         return $this->line;
     }
 
+    public $custom_tags=array();
+
+    function is_custom_tag()
+    {
+        static $cache;
+        $tag = $this->value;
+        if (!isset($cache[$tag])) {
+            $cache[$tag] = Parser::T_ALPHA;
+
+            $file  = dirname(__FILE__)."/custom_tags/".strtolower($tag).".php";
+            $class = "{$tag}_Tag"; 
+            if (is_file($file)) {
+                require_once $file;
+                if (!class_exists($class)) {
+                throw new CompilerException("Internal Error, can't find class {$class} in {$file}");
+                }
+                if (!is_subclass_of($class, 'Custom_Tag')) {
+                    throw new CompilerException("Invalid class {$class}, it must be a subclass of Custom_Tag");
+                }
+                $obj = new $class;
+                if ($obj->is_block) {
+                    $cache[$tag] = Parser::T_CUSTOM_BLOCK;
+                } else {
+                    $cache[$tag] = Parser::T_CUSTOM_TAG;
+                }
+            }
+        }
+        $this->token = $cache[$tag];
+    }
+
 
     private $_yy_state = 1;
     private $_yy_stack = array();
@@ -740,7 +770,7 @@ class Haanga_Lexer
     function yy_r2_60($yy_subpatterns)
     {
 
-    $this->token = Parser::T_ALPHA;
+    $this->is_custom_tag();
     }
     function yy_r2_62($yy_subpatterns)
     {

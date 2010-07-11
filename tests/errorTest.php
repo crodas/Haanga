@@ -8,7 +8,7 @@ class errorTest extends PHPUnit_Framework_TestCase
      */
     function testInvalidForloop($tpl)
     {
-        $this->setExpectedException('CompileException');
+        $this->setExpectedException('CompilerException');
         Haanga::Load($tpl);
     }
 

@@ -3,5 +3,5 @@
 {{ var|length }}
 {{ foobar|default:"default value"|upper}}
 {% upper %}
-    hola que tal
+    hola que tal{%if 1==2 %}{% endif %}
 {% endupper %}
