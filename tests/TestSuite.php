@@ -6,13 +6,6 @@ require "errorTest.php";
 
 class TestSuite extends PHPUnit_Framework_TestSuite
 {
-    function __destruct()
-    {
-        foreach (glob("tmp/*") as $file) {
-            unlink($file);
-        }
-    }
-
     public static function suite()
     {
         $suite = new TestSuite('Haanga test suite');

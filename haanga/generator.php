@@ -339,10 +339,6 @@ class Haanga_CodeGenerator
             }
             return $var_str;
         } else {
-            if ($var[0] == "\$") {
-                /* hack to the system */
-                return $this->php_generate_declare(array(array('string' => $var)));
-            }
             return "\$".$var;
         }
     }

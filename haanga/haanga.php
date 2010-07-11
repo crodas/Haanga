@@ -75,7 +75,7 @@ class Haanga_Main
     {
         $this->generator = new Haanga_CodeGenerator;
         if (self::$block_var===NULL) {
-            self::$block_var = '$$==parent_content==$$';
+            self::$block_var = '{{block.'.md5('super').'}}';
         }
     }
 
@@ -494,9 +494,9 @@ class Haanga_Main
             $count  = count($details['variable']);
             $target = $this->generate_variable_name($details['variable'][0]);
             
-            if (is_string($target['var'][0]) && strpos($target['var'][0], self::$block_var) !== FALSE) {
+            if (!isset($target['var'])) {
                 /* block.super can't have any filter */
-                throw new CompileException("{{super.block}} can't have any filter");
+                throw new CompileException("This variable can't have any filter");
             }
 
             for ($i=1; $i < $count; $i++) {
@@ -521,6 +521,14 @@ class Haanga_Main
             $details = $exec;
         } else {
             $details = $this->generate_variable_name($details['variable'][0]);
+
+            if (!isset($details['var'])) {
+                /* generate_variable_name didn't replied a variable, weird case
+                   currently just used for {{block.super}}.
+                */
+                $this->generate_op_print($details, $out);
+                return;
+            }
         }
 
         /* check if variable is a reference to parent block (which can't
@@ -745,7 +753,7 @@ class Haanga_Main
                 if ($this->in_block == 0) {
                     throw new CompileException("Can't use block.super outside a block");
                 }
-                $variable = self::$block_var;
+                return $this->expr_str(self::$block_var);
                 break;
             } 
 

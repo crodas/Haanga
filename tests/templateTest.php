@@ -8,6 +8,9 @@ class templateTest extends PHPUnit_Framework_TestCase
         @mkdir("tmp/");
         Haanga::setCacheDir("tmp/");
         Haanga::setTemplateDir(".");
+        foreach (glob("tmp/*") as $file) {
+            unlink($file);
+        }
     }
 
 
