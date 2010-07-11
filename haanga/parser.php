@@ -180,7 +180,7 @@ class Haanga_yyStackEntry
     const T_OFF                          = 25;
     const T_ON                           = 26;
     const T_END_AUTOESCAPE               = 27;
-    const CUSTOM_TAG                     = 28;
+    const T_CUSTOM_TAG                   = 28;
     const T_FOR                          = 29;
     const T_AS                           = 30;
     const T_CUSTOM_BLOCK                 = 31;
@@ -797,7 +797,7 @@ static public $yy_action = array(
   'T_HTML',        'T_COMMENT_OPEN',  'T_COMMENT',     'T_PRINT_OPEN',
   'T_PRINT_CLOSE',  'T_EXTENDS',     'T_CLOSE_TAG',   'T_INCLUDE',   
   'T_AUTOESCAPE',  'T_OFF',         'T_ON',          'T_END_AUTOESCAPE',
-  'CUSTOM_TAG',    'T_FOR',         'T_AS',          'T_CUSTOM_BLOCK',
+  'T_CUSTOM_TAG',  'T_FOR',         'T_AS',          'T_CUSTOM_BLOCK',
   'T_CUSTOM_END',  'T_WITH',        'T_ENDWITH',     'T_CLOSEFOR',  
   'T_COMMA',       'T_EMPTY',       'T_IF',          'T_ENDIF',     
   'T_ELSE',        'T_IFCHANGED',   'T_ENDIFCHANGED',  'T_BLOCK',     
@@ -838,12 +838,12 @@ static public $yy_action = array(
  /*  15 */ "stmts ::= custom_tag",
  /*  16 */ "stmts ::= alias",
  /*  17 */ "stmts ::= T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG",
- /*  18 */ "custom_tag ::= CUSTOM_TAG T_CLOSE_TAG",
- /*  19 */ "custom_tag ::= CUSTOM_TAG T_FOR varname T_CLOSE_TAG",
- /*  20 */ "custom_tag ::= CUSTOM_TAG T_FOR varname T_AS varname T_CLOSE_TAG",
- /*  21 */ "custom_tag ::= CUSTOM_TAG T_AS varname T_CLOSE_TAG",
- /*  22 */ "custom_tag ::= CUSTOM_TAG list T_CLOSE_TAG",
- /*  23 */ "custom_tag ::= CUSTOM_TAG list T_AS varname T_CLOSE_TAG",
+ /*  18 */ "custom_tag ::= T_CUSTOM_TAG T_CLOSE_TAG",
+ /*  19 */ "custom_tag ::= T_CUSTOM_TAG T_FOR varname T_CLOSE_TAG",
+ /*  20 */ "custom_tag ::= T_CUSTOM_TAG T_FOR varname T_AS varname T_CLOSE_TAG",
+ /*  21 */ "custom_tag ::= T_CUSTOM_TAG T_AS varname T_CLOSE_TAG",
+ /*  22 */ "custom_tag ::= T_CUSTOM_TAG list T_CLOSE_TAG",
+ /*  23 */ "custom_tag ::= T_CUSTOM_TAG list T_AS varname T_CLOSE_TAG",
  /*  24 */ "custom_tag ::= T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
  /*  25 */ "alias ::= T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG",
  /*  26 */ "stmt ::= cycle",
@@ -1447,25 +1447,25 @@ static public $yy_action = array(
     function yy_r17(){ $this->_retvalue = array('operation' => 'autoescape', 'value' => @$this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor);     }
 #line 1454 "parser.php"
 #line 91 "parser.y"
-    function yy_r18(){ $this->_retvalue = array('operation' => 'function', 'name' => $this->yystack[$this->yyidx + -1]->minor, 'list'=>array());     }
+    function yy_r18(){ $this->_retvalue = array('operation' => 'custom_tag', 'name' => $this->yystack[$this->yyidx + -1]->minor, 'list'=>array());     }
 #line 1457 "parser.php"
 #line 92 "parser.y"
-    function yy_r19(){ $this->_retvalue = array('operation' => 'function', 'name' => $this->yystack[$this->yyidx + -3]->minor, 'for' => $this->yystack[$this->yyidx + -1]->minor, 'list' => array());     }
+    function yy_r19(){ $this->_retvalue = array('operation' => 'custom_tag', 'name' => $this->yystack[$this->yyidx + -3]->minor, 'for' => $this->yystack[$this->yyidx + -1]->minor, 'list' => array());     }
 #line 1460 "parser.php"
 #line 93 "parser.y"
-    function yy_r20(){ $this->_retvalue = array('operation' => 'function', 'name' => $this->yystack[$this->yyidx + -5]->minor, 'for' => $this->yystack[$this->yyidx + -3]->minor, 'list' => array(),'as' => $this->yystack[$this->yyidx + -1]->minor);     }
+    function yy_r20(){ $this->_retvalue = array('operation' => 'custom_tag', 'name' => $this->yystack[$this->yyidx + -5]->minor, 'for' => $this->yystack[$this->yyidx + -3]->minor, 'list' => array(),'as' => $this->yystack[$this->yyidx + -1]->minor);     }
 #line 1463 "parser.php"
 #line 94 "parser.y"
-    function yy_r21(){ $this->_retvalue = array('operation' => 'function', 'name' => $this->yystack[$this->yyidx + -3]->minor, 'as' => $this->yystack[$this->yyidx + -1]->minor, 'list'=>array());     }
+    function yy_r21(){ $this->_retvalue = array('operation' => 'custom_tag', 'name' => $this->yystack[$this->yyidx + -3]->minor, 'as' => $this->yystack[$this->yyidx + -1]->minor, 'list'=>array());     }
 #line 1466 "parser.php"
 #line 95 "parser.y"
-    function yy_r22(){ $this->_retvalue = array('operation' => 'function', 'name' => $this->yystack[$this->yyidx + -2]->minor, 'list' => $this->yystack[$this->yyidx + -1]->minor);     }
+    function yy_r22(){ $this->_retvalue = array('operation' => 'custom_tag', 'name' => $this->yystack[$this->yyidx + -2]->minor, 'list' => $this->yystack[$this->yyidx + -1]->minor);     }
 #line 1469 "parser.php"
 #line 96 "parser.y"
-    function yy_r23(){ $this->_retvalue = array('operation' => 'function', 'name' => $this->yystack[$this->yyidx + -4]->minor, 'as' => $this->yystack[$this->yyidx + -1]->minor, 'list' => $this->yystack[$this->yyidx + -3]->minor);     }
+    function yy_r23(){ $this->_retvalue = array('operation' => 'custom_tag', 'name' => $this->yystack[$this->yyidx + -4]->minor, 'as' => $this->yystack[$this->yyidx + -1]->minor, 'list' => $this->yystack[$this->yyidx + -3]->minor);     }
 #line 1472 "parser.php"
 #line 98 "parser.y"
-    function yy_r24(){ if ('end'.$this->yystack[$this->yyidx + -5]->minor != $this->yystack[$this->yyidx + -1]->minor) { throw new Exception("Unexpected ".$this->yystack[$this->yyidx + -1]->minor); } $this->_retvalue = array('operation' => 'filter', 'functions' =>array($this->yystack[$this->yyidx + -5]->minor), 'body' => $this->yystack[$this->yyidx + -3]->minor);    }
+    function yy_r24(){ if ('end'.$this->yystack[$this->yyidx + -5]->minor != $this->yystack[$this->yyidx + -1]->minor) { throw new Exception("Unexpected ".$this->yystack[$this->yyidx + -1]->minor); } $this->_retvalue = array('operation' => 'custom_tag', 'name' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor, 'list' => array());    }
 #line 1475 "parser.php"
 #line 101 "parser.y"
     function yy_r25(){ $this->_retvalue = array('operation' => 'alias', 'var' => $this->yystack[$this->yyidx + -7]->minor, 'as' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor);     }

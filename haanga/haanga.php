@@ -43,7 +43,12 @@ class CompilerException extends Exception {
 
 class Custom_Tag
 {
-    public $is_block = FALSE;
+    public static $is_block  = FALSE;
+    public static $php_alias = NULL;
+
+    function main()
+    {
+    }
 }
 
 class Haanga_Main
@@ -949,11 +954,29 @@ class Haanga_Main
         $out[] = array('op' => 'declare', 'name' => 'buffer'.$this->ob_start, array('string' => ''));
     }
 
-    function generate_op_function($details, &$out)
+    function generate_op_custom_tag($details, &$out)
     {
-        $var   = isset($details['as']) ? $details['as'] : NULL;
-        $arr   = array('function' =>  $details['name'], 'args' => $details['list']);
-        $print = array('function' => array($details['name'], $details['list']));
+        $custom_tag = $details['name'];
+        $class      = "{$custom_tag}_Tag";
+        if (isset($class::$php_alias)) {
+            $function = $class::$php_alias;
+        } else {
+            throw new Exception("not yet implemented");
+        }
+
+        if (isset($details['body'])) {
+            /* 
+               if the custom tag has 'body' 
+               then it behave the same way as a filter
+            */
+            $details['functions'] = array($function);
+            $this->generate_op_filter($details, $out);
+            return;
+        }
+
+        $var  = isset($details['as']) ? $details['as'] : NULL;
+        $args = array_merge(array($function), $details['list']);
+        $exec = call_user_func_array(array($this, 'expr_exec'), $args);
         
         if (isset($details['for'])) {
             $new_args = array($this->expr_var('var'));
@@ -966,16 +989,16 @@ class Haanga_Main
 
             $out[] = array('op' => 'foreach', 'array' => $details['for'], 'value' => 'var');
             if ($var) {
-                $out[] = array('op' => 'append_var', 'name' => $var, $arr);
+                $out[] = array('op' => 'append_var', 'name' => $var, $exec);
             } else {
-                $this->generate_op_print($print, $out);
+                $this->generate_op_print($exec, $out);
             }
             $out[] = array('op' => 'end_foreach');
         } else {
             if ($var) {
-                $out[] = array('op' => 'declare', 'name' => $var, $arr);
+                $out[] = array('op' => 'declare', 'name' => $var, $exec);
             } else {
-                $this->generate_op_print($print, $out);
+                $this->generate_op_print($exec, $out);
             }
         }
     }
@@ -1052,7 +1075,7 @@ class Haanga_Main
      *  Change parameters order for calling date()
      *
      */
-    function override_function_date($args)
+    function override_function_xdate($args)
     {
         return array('exec' => 'date', 'args' => array($args[1], $args[0]));
     }

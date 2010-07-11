@@ -99,8 +99,7 @@ class Haanga_Lexer
                 if (!is_subclass_of($class, 'Custom_Tag')) {
                     throw new CompilerException("Invalid class {$class}, it must be a subclass of Custom_Tag");
                 }
-                $obj = new $class;
-                if ($obj->is_block) {
+                if ($class::$is_block) {
                     $cache[$tag] = Parser::T_CUSTOM_BLOCK;
                 } else {
                     $cache[$tag] = Parser::T_CUSTOM_TAG;

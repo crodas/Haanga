@@ -223,6 +223,9 @@ class Haanga_CodeGenerator
             if (!isset($op[$i])) {
                 continue;
             }
+            if (!is_Array($op[$i])) {
+                var_dump($op);die();
+            }
             $key   = key($op[$i]);
             $value = current($op[$i]); 
             switch ($key) {
@@ -285,6 +288,7 @@ class Haanga_CodeGenerator
                 $code .= ").";
                 break;
             default:
+                var_dump($op);die();
                 throw new Exception("Don't know how to declare {$key} = {$value}");
             }
         }

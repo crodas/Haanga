@@ -20,7 +20,6 @@ class templateTest extends PHPUnit_Framework_TestCase
     public function testCompilation($test_file, $data, $expected)
     {
         $output   = Haanga::Load($test_file, $data, TRUE);
-        $expected = file_get_contents($expected);
         /*$output   = str_replace(" ", '\s', $output);
         $expected = str_replace(" ", '\s', $expected);*/
         $this->assertEquals($output, $expected);
@@ -34,8 +33,17 @@ class templateTest extends PHPUnit_Framework_TestCase
             $data_file = substr($test_file, 0, -3)."php";
             $expected  = substr($test_file, 0, -3)."html";
             if (!is_file($expected)) {
-                continue;
+                if (!is_file($expected.".php")) {
+                    continue;
+                } 
+                $expected .= ".php";
+                ob_start();
+                require $expected;
+                $expected = ob_get_clean();
+            } else {
+                $expected = file_get_contents($expected);
             }
+
             if (is_file($data_file)) {
                 include $data_file;
             }
