@@ -20,8 +20,8 @@ class templateTest extends PHPUnit_Framework_TestCase
     public function testCompilation($test_file, $data, $expected)
     {
         $output   = Haanga::Load($test_file, $data, TRUE);
-        /*$output   = str_replace(" ", '\s', $output);
-        $expected = str_replace(" ", '\s', $expected);*/
+        /**/$output   = str_replace(" ", '\s', $output);
+        $expected = str_replace(" ", '\s', $expected);/**/
         $this->assertEquals($output, $expected);
     }
 
