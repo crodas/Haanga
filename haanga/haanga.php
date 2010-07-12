@@ -135,8 +135,8 @@ class Haanga_Main
             if (isset($this->_file)) {
                 $op_code[] = $this->op_comment("Generated from {$this->_base_dir}/{$this->_file}");
             }
-            $op_code[] = array('op' => 'function', 'name' => $this->get_function_name($name));
-            $op_code[] = $this->expr_expr($this->expr_exec('extract', $this->expr_var('vars')));
+            $op_code[] = $this->op_declare_function($this->get_function_name($name));
+            $op_code[] = $this->op_expr($this->expr_exec('extract', $this->expr_var('vars')));
         }
 
         $this->ob_start($op_code);
@@ -149,8 +149,8 @@ class Haanga_Main
 
         /* Add last part */
         $expr = $this->expr('==', $this->expr_var('return'), TRUE);
-        $op_code[] = array('op' => 'if', 'expr' => $expr);
-        $op_code[] = array('op' => 'return', $this->expr_var('buffer1'));
+        $op_code[] = $this->op_if($expr);
+        $op_code[] = $this->op_return($this->expr_var('buffer1'));
         $op_code[] = $this->op_else();
         $this->generate_op_print(array('variable' => 'buffer1'), $op_code);
         $op_code[] = $this->op_end('if');
@@ -212,6 +212,15 @@ class Haanga_Main
     // }}}
 
     // op_* helper methods {{{
+    /**
+     *  Return an stand alone expression
+     *
+     */
+    function op_expr($expr)
+    {
+        return array('op' => 'expr', $expr);
+    }
+
     function op_comment($comment)
     {
         return array('op' => 'comment', 'comment' => $comment);
@@ -226,9 +235,19 @@ class Haanga_Main
         return $def;
     }
 
+    function op_if($expr)
+    {
+        return array('op' => 'if', 'expr' => $expr);
+    }
+
     function op_else()
     {
         return array('op' => 'else');
+    }
+
+    function op_return($expr)
+    {
+        return array('op' => 'return', $expr);
     }
 
     function op_end($op)
@@ -241,24 +260,25 @@ class Haanga_Main
         return array('op' => 'declare', 'name' => $name, $value);
     }
 
+    function op_append($name, $expr)
+    {
+        return array('op' => 'append_var', 'name' => $name, $expr);
+    }
+
+
     function op_inc($name)
     {
         return array('op' => 'inc', 'name' => $name);
     }
 
+    function op_declare_function($name)
+    {
+        return array('op' => 'function', 'name' => $name);
+    }
+
     //}}}
 
     // expr_* helper methods {{{
-    /**
-     *  Return an stand alone expression
-     *
-     */
-    function expr_expr($expr)
-    {
-        return array('op' => 'expr', $expr);
-
-    }
-
     function expr_cond($expr, $true, $false)
     {
         return array('expr_cond' => $expr, 'true' => $true, 'false' => $false);
@@ -525,7 +545,7 @@ class Haanga_Main
     protected function generate_op_if($details, &$out)
     {
         $this->check_expr($details['expr']);
-        $out[] = array('op' => 'if', 'expr' => $details['expr']);
+        $out[] = $this->op_if($details['expr']);
         $this->generate_op_code($details['body'], $out);
         if (isset($details['else'])) {
             $out[] = $this->op_else();
@@ -794,7 +814,7 @@ class Haanga_Main
 
     protected function generate_op_regroup($details, &$out)
     {
-        $out[] = $this->op_declare($details['as'], array('array' => array()));
+        $out[] = $this->op_declare($details['as'], $this->expr_array_first(array()));
         $var = $this->expr_var('item', $details['row']);
 
         $out[] = $this->op_comment("Temporary sorting");
@@ -902,7 +922,7 @@ class Haanga_Main
                     */
                     $out[$last][] = $content;
                 } else {
-                    $out[] = array('op' => 'append_var', 'name' => 'buffer'.$this->ob_start, $content);
+                    $out[] = $this->op_append('buffer'.$this->ob_start, $content);
                 }
             }
         }
@@ -918,7 +938,7 @@ class Haanga_Main
                 0
             );
 
-            $out[] = array('op' => 'if', "expr" => $expr);
+            $out[] = $this->op_if($expr);
             $this->generate_op_code($details['empty'], $out);
             $out[] = $this->op_else();
         }
@@ -989,7 +1009,7 @@ class Haanga_Main
 
             $this->generate_op_code($details['body'], $out);
             $this->ob_start--;
-            $out[] = array('op' => 'if', 'expr' => $expr);
+            $out[] = $this->op_if($expr);
             $this->generate_op_print(array('variable' => $var2), $out);
             $out[] = $this->op_declare($var1, $this->expr_var($var2));
         } else {
@@ -1015,9 +1035,9 @@ class Haanga_Main
                 $expr = $this_expr;
 
             }
-            $out[] = array('op' => 'if', 'expr' => $expr);
+            $out[] = $this->op_if($expr);
             $this->generate_op_code($details['body'], $out);
-            $out[] = $this->op_declare($var1, array('array' => $details['check']));
+            $out[] = $this->op_declare($var1, $this->expr_array_first($details['check']));
         }
 
         if (isset($details['else'])) {
@@ -1084,7 +1104,7 @@ class Haanga_Main
 
             $out[] = $this->op_foreach($details['for'], 'var');
             if ($var) {
-                $out[] = array('op' => 'append_var', 'name' => $var, $exec);
+                $out[] = $this->append_var($var, $exec);
             } else {
                 $this->generate_op_print($exec, $out);
             }
@@ -1264,7 +1284,7 @@ final class Haanga_Main_Runtime extends Haanga_Main
     function append_custom_tag($name)
     {
         $this->prepend_op[] = $this->op_comment("Load custom tag definition");
-        $this->prepend_op[] = $this->expr_expr($this->expr_exec("require_once", $this->Expr_str(Custom_Tag::getFilePath($name)))); 
+        $this->prepend_op[] = $this->op_expr($this->expr_exec("require_once", $this->Expr_str(Custom_Tag::getFilePath($name)))); 
 
         $name = ucfirst($name);
 
