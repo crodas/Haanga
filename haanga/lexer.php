@@ -83,30 +83,8 @@ class Haanga_Lexer
 
     function is_custom_tag()
     {
-        static $cache;
-        $tag = $this->value;
-        if (!isset($cache[$tag])) {
-            /* by default alpha is T_ALPHA */
-            $cache[$tag] = Parser::T_ALPHA;
-
-            $file  = dirname(__FILE__)."/custom_tags/".strtolower($tag).".php";
-            $class = "{$tag}_Tag"; 
-            if (is_file($file)) {
-                require_once $file;
-                if (!class_exists($class)) {
-                throw new CompilerException("Internal Error, can't find class {$class} in {$file}");
-                }
-                if (!is_subclass_of($class, 'Custom_Tag')) {
-                    throw new CompilerException("Invalid class {$class}, it must be a subclass of Custom_Tag");
-                }
-                if ($class::$is_block) {
-                    $cache[$tag] = Parser::T_CUSTOM_BLOCK;
-                } else {
-                    $cache[$tag] = Parser::T_CUSTOM_TAG;
-                }
-            }
-        }
-        $this->token = $cache[$tag];
+        $value = Custom_Tag::isTag($this->value);
+        $this->token = $value ? $value : Parser::T_ALPHA;
     }
 
 

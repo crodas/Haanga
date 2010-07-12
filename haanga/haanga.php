@@ -37,19 +37,11 @@
 
 require "lexer.php";
 require "generator.php";
+require "tags.php";
 
 class CompilerException extends Exception {
 }
 
-class Custom_Tag
-{
-    public static $is_block  = FALSE;
-    public static $php_alias = NULL;
-
-    function main()
-    {
-    }
-}
 
 class Haanga_Main
 {
