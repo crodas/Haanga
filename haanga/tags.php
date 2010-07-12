@@ -57,11 +57,11 @@ class Custom_Tag
         $tag = strtolower($tag);
 
         if (!isset($cache[$tag])) {
-            $file = dirname(__FILE__)."/custom_tags/{$tag}.php";
+            $file = self::getFilePath($tag);
             if (is_readable($file)) {
                 /* Load custom tag definition */
                 require_once $file;
-                $class_name = "{$tag}_Tag";
+                $class_name = self::getClassName($tag);
                 if (class_exists($class_name)) {
                     if (is_subclass_of($class_name, __CLASS__)) {
                         $properties = get_class_vars($class_name);
@@ -79,6 +79,51 @@ class Custom_Tag
         }
 
         return $cache[$tag];
+    }
+
+    final static function getFilePath($tag)
+    {
+        return dirname(__FILE__)."/custom_tags/{$tag}.php";
+    }
+
+    final  static function getClassName($tag)
+    {
+        return "{$tag}_tag";
+    }
+
+    final public static function getFunctionBody($tag, $name)
+    {
+        if (!self::isTag($tag)) {
+            return NULL;
+        }
+        $zclass     = self::getClassName($tag);
+        if (!is_callable(array($zclass, 'main'))) {
+            throw new CompilerException("{$tag}: missing main method in {$zclass} class");
+        }
+        
+        $reflection = new ReflectionMethod($zclass, 'main');
+        $content    = file(self::getFilePath($tag));
+
+        $start   = $reflection->getStartLine()-1;
+        $end     = $reflection->getEndLine();
+        $content = array_slice($content, $start, $end-$start); 
+
+        $content[0] = str_replace("main", $name, $content[0]);
+
+        return implode("", $content);
+    }
+
+    final public static function getFunctionAlias($tag)
+    {
+        if (!self::isTag($tag)) {
+            return NULL;
+        }
+        $zclass     = self::getClassName($tag);
+        $properties = get_class_vars($zclass);
+        if (isset($properties['php_alias'])) {
+            return array('name' => $properties['php_alias']);
+        }
+        return array();
     }
 }
 

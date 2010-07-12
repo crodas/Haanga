@@ -126,7 +126,7 @@ class Haanga_Main
 
     function set_template_name($path)
     {
-        return strstr(basename($path),'.', TRUE);
+        return ($this->name = strstr(basename($path),'.', TRUE));
     }
 
     function get_function_name($name)
@@ -948,12 +948,14 @@ class Haanga_Main
 
     function generate_op_custom_tag($details, &$out)
     {
-        $custom_tag = $details['name'];
-        $class      = "{$custom_tag}_Tag";
-        if (isset($class::$php_alias)) {
-            $function = $class::$php_alias;
+        $tag_name    = $details['name'];
+        $tagFunction = Custom_Tag::getFunctionAlias($tag_name); 
+
+        if (!isset($tagFunction['name'])) {
+            $function      = $this->get_function_name().'_filter_'.$tag_name;
+            $this->append .= "\n\n".Custom_Tag::getFunctionBody($tag_name, $function);
         } else {
-            throw new Exception("not yet implemented");
+            $function = $tagFunction['name'];
         }
 
         if (isset($details['body'])) {
@@ -1113,8 +1115,11 @@ class Haanga_Main
 
 final class Haanga_Main_Runtime extends Haanga_Main
 {
-    function get_function_name($name)
+    function get_function_name($name=NULL)
     {
+        if ($name === NULL) {
+            $name = $this->name;
+        }
         return "haanga_".sha1($name);
     }
 

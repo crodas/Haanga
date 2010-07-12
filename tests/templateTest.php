@@ -22,7 +22,7 @@ class templateTest extends PHPUnit_Framework_TestCase
         $output   = Haanga::Load($test_file, $data, TRUE);
         /**/$output   = str_replace(" ", '\s', $output);
         $expected = str_replace(" ", '\s', $expected);/**/
-        $this->assertEquals($output, $expected);
+        $this->assertEquals($expected, $output);
     }
 
     public function tplProvider()
