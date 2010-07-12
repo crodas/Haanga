@@ -57,6 +57,8 @@ class Haanga_Main
     protected static $block_var=NULL;
     protected $block_super=0;
     protected $append;
+    protected $prepend_op;
+
     /**
      *  Table which contains all variables 
      *  aliases defined in the template
@@ -99,6 +101,79 @@ class Haanga_Main
         $this->blocks = array();
     }
 
+    final function get_template_name()
+    {
+        return $this->name;
+    }
+
+    function set_template_name($path)
+    {
+        return ($this->name = strstr(basename($path),'.', TRUE));
+    }
+
+    function get_function_name($name)
+    {
+        return "{$name}_template";
+    }
+
+    final function compile($code, $name=NULL)
+    {
+        $this->name = $name;
+
+        $parsed = do_parsing($code);
+        $code   = "";
+        $this->subtemplate = FALSE;
+
+        if ($parsed[0]['operation'] == 'base') {
+            /* {% base ... %} found */
+            $base  = $parsed[0][0];
+            $code .= $this->get_base_template($base); 
+            unset($parsed[0]);
+        }
+
+        if ($name) {
+            if (isset($this->_file)) {
+                $op_code[] = $this->op_comment("Generated from {$this->_base_dir}/{$this->_file}");
+            }
+            $op_code[] = array('op' => 'function', 'name' => $this->get_function_name($name));
+            $op_code[] = $this->expr_expr($this->expr_exec('extract', $this->expr_var('vars')));
+        }
+
+        $this->ob_start($op_code);
+        $this->generate_op_code($parsed, $op_code);
+        if ($this->subtemplate) {
+            $expr = $this->expr_call_base_template();
+            $this->generate_op_print(array('expr' => $expr), $op_code);
+        }
+        $this->ob_start--;
+
+        /* Add last part */
+        $expr = $this->expr('==', $this->expr_var('return'), TRUE);
+        $op_code[] = array('op' => 'if', 'expr' => $expr);
+        $op_code[] = array('op' => 'return', $this->expr_var('buffer1'));
+        $op_code[] = array('op' => 'else');
+        $this->generate_op_print(array('variable' => 'buffer1'), $op_code);
+        $op_code[] = $this->op_end('if');
+
+        if ($name) {
+            $op_code[] = $this->op_end('function');
+        }
+        
+        if (count($this->prepend_op)) {
+            $op_code = array_merge($this->prepend_op, $op_code);
+        }
+
+        $code .= $this->generator->getCode($op_code);
+        if (!empty($this->append)) {
+            $code .= $this->append;
+        }
+        if (!empty($this->debug)) {
+            file_put_contents($this->debug, print_r($op_code, TRUE));
+        }
+        return $code;
+    }
+
+
     // compile_file($file) {{{
     /**
      *  Compile a file
@@ -119,20 +194,43 @@ class Haanga_Main
     }
     // }}}
 
-    final function get_template_name()
+    // is_expr methods {{{
+    function is_expr(Array $cmd, $type=NULL)
     {
-        return $this->name;
+        if (isset($cmd['op'])) {
+            if (!$type || $type == $cmd['op']) {
+                return TRUE;
+            }
+        }
+        return FALSE;
     }
 
-    function set_template_name($path)
+    function is_exec(Array $cmd)
     {
-        return ($this->name = strstr(basename($path),'.', TRUE));
+        return $this->is_expr($cmd, 'exec');
+    }
+    // }}}
+
+    // op_* helper methods {{{
+    function op_comment($comment)
+    {
+        return array('op' => 'comment', 'comment' => $comment);
     }
 
-    function get_function_name($name)
+    function op_foreach($array, $value, $key=NULL)
     {
-        return "{$name}_template";
+        $def = array('op' => 'foreach', 'array' => $array, 'value' => $value);
+        if ($key) {
+            $def['key'] = $key;
+        }
+        return $def;
     }
+
+    function op_end($op)
+    {
+        return array('op' => "end_{$op}");
+    }
+    //}}}
 
     // expr_* helper methods {{{
     /**
@@ -237,7 +335,7 @@ class Haanga_Main
 
     /**
      *  Generate expression for
-     *  a function calling
+     *  a function calling inside an expression
      *
      *  @return array
      */
@@ -263,6 +361,8 @@ class Haanga_Main
             'args' => $args
         );
     }
+
+
 
     /**
      *  Generate a generic expression
@@ -303,58 +403,6 @@ class Haanga_Main
         return $new_code."\n\n";
     }
     // }}}
-
-    final function compile($code, $name=NULL)
-    {
-        $this->name = $name;
-
-        $parsed = do_parsing($code);
-        $code   = "";
-        $this->subtemplate = FALSE;
-
-        if ($parsed[0]['operation'] == 'base') {
-            /* {% base ... %} found */
-            $base  = $parsed[0][0];
-            $code .= $this->get_base_template($base); 
-            unset($parsed[0]);
-        }
-
-        if ($name) {
-            if (isset($this->_file)) {
-                $op_code[] = array('op' => 'comment', 'comment' =>  "Generated from {$this->_base_dir}/{$this->_file}");
-            }
-            $op_code[] = array('op' => 'function', 'name' => $this->get_function_name($name));
-            $op_code[] = $this->expr_expr($this->expr_exec('extract', $this->expr_var('vars')));
-        }
-
-        $this->ob_start($op_code);
-        $this->generate_op_code($parsed, $op_code);
-        if ($this->subtemplate) {
-            $expr = $this->expr_call_base_template();
-            $this->generate_op_print(array('expr' => $expr), $op_code);
-        }
-        $this->ob_start--;
-
-        /* Add last part */
-        $expr = $this->expr('==', $this->expr_var('return'), TRUE);
-        $op_code[] = array('op' => 'if', 'expr' => $expr);
-        $op_code[] = array('op' => 'return', $this->expr_var('buffer1'));
-        $op_code[] = array('op' => 'else');
-        $this->generate_op_print(array('variable' => 'buffer1'), $op_code);
-        $op_code[] = array('op' => 'end_if');
-
-        if ($name) {
-            $op_code[] = array('op' => 'end_function');
-        }
-        $code .= $this->generator->getCode($op_code);
-        if (!empty($this->append)) {
-            $code .= $this->append;
-        }
-        if (!empty($this->debug)) {
-            file_put_contents($this->debug, print_r($op_code, TRUE));
-        }
-        return $code;
-    }
 
     protected function generate_op_base()
     {
@@ -441,7 +489,7 @@ class Haanga_Main
             $out[] = array('op' => 'else');
             $this->generate_op_code($details['else'], $out);
         }
-        $out[] = array('op' => 'end_if');
+        $out[] = $this->op_end('if');
     }
 
     protected function compile_required_template($file)
@@ -639,7 +687,7 @@ class Haanga_Main
              */
             $old_print = array_pop($out);
         }
-        $out[] = array('op' => 'comment', 'comment' => $details['comment']);
+        $out[] = $this->op_comment($details['comment']);
         if (isset($old_print)) {
             $out[] = $old_print;
         }
@@ -695,7 +743,9 @@ class Haanga_Main
         }
         $this->in_block--;
 
-    }
+    } 
+
+
 
     protected function generate_op_regroup($details, &$out)
     {
@@ -703,14 +753,15 @@ class Haanga_Main
         $var = $this->expr_var('item', $details['row']);
 
         $out[] = array('op' => 'comment', 'comment' => "Temporary sorting");
-        $out[] = array('op' => 'foreach', 'array' => $details['array'], 'value' => 'item');
+        $out[] = $this->op_foreach($details['array'], 'item');
 
 
         $out[] = array('op' => 'declare', 'name' => array('temp_group', $var, NULL),  $this->expr_var('item'));
-        $out[] = array('op' => 'end_foreach');
+        $out[] = $this->op_end('foreach');
         $out[] = array('op' => 'comment', 'comment' => "Proper format");
 
-        $out[] = array('op' => 'foreach', 'array' => 'temp_group', 'key' => 'group', 'value' => 'item');
+        $out[] = $this->op_foreach('temp_group', 'item', 'group');
+
         $array = $this->expr_array(
             array("grouper", $this->expr_var('group')),
             array("list",    $this->expr_var('item'))
@@ -718,7 +769,7 @@ class Haanga_Main
         
         $out[] = array('op' => 'declare', 'name' => array($details['as'], NULL), $array );
 
-        $out[] = array('op' => 'end_foreach');
+        $out[] = $this->op_end('foreach');
         $out[] = array('op' => 'comment', 'comment' => "Sorting done");
     }
 
@@ -861,15 +912,13 @@ class Haanga_Main
         $this->forid = $oldid;
 
         /* Merge loop body  */
-        $loop = array('op' => 'foreach', 'array' => $details['array'], 'value' => $details['variable']);
-        if (isset($details['index'])) {
-            $loop['key'] = $details['index'];
-        }
+        $loop = $this->op_foreach($details['array'], $details['variable'], $details['index']);
+
         $out[] = $loop;
         $out   = array_merge($out, $for_loop_body);
-        $out[] = array('op' => 'end_foreach');
+        $out[] = $this->op_end('foreach');
         if (isset($details['empty'])) {
-            $out[] = array('op' => 'end_if');
+            $out[] = $this->op_end('if');
         }
     }
 
@@ -929,7 +978,7 @@ class Haanga_Main
             $out[] = array('op' => 'else');
             $this->generate_op_code($details['else'], $out);
         }
-        $out[] = array('op' => 'end_if');
+        $out[] = $this->op_end('if');
     }
 
     function generate_op_autoescape($details, &$out)
@@ -946,14 +995,20 @@ class Haanga_Main
         $out[] = array('op' => 'declare', 'name' => 'buffer'.$this->ob_start, array('string' => ''));
     }
 
+    function append_custom_tag($name)
+    {
+        $function = $this->get_function_name().'_filter_'.$name;
+        $this->append .= "\n\n".Custom_Tag::getFunctionBody($name, $function);
+        return $function;
+    }
+
     function generate_op_custom_tag($details, &$out)
     {
         $tag_name    = $details['name'];
         $tagFunction = Custom_Tag::getFunctionAlias($tag_name); 
 
         if (!isset($tagFunction['name'])) {
-            $function      = $this->get_function_name().'_filter_'.$tag_name;
-            $this->append .= "\n\n".Custom_Tag::getFunctionBody($tag_name, $function);
+            $function = $this->append_custom_tag($tag_name);
         } else {
             $function = $tagFunction['name'];
         }
@@ -981,13 +1036,13 @@ class Haanga_Main
                 $out[] = array('op' => 'declare', 'name' => $var, array('string' => ''));
             }
 
-            $out[] = array('op' => 'foreach', 'array' => $details['for'], 'value' => 'var');
+            $out[] = $this->op_foreach($details['for'], 'var');
             if ($var) {
                 $out[] = array('op' => 'append_var', 'name' => $var, $exec);
             } else {
                 $this->generate_op_print($exec, $out);
             }
-            $out[] = array('op' => 'end_foreach');
+            $out[] = $this->op_end('foreach');
         } else {
             if ($var) {
                 $out[] = array('op' => 'declare', 'name' => $var, $exec);
@@ -1154,6 +1209,20 @@ final class Haanga_Main_Runtime extends Haanga_Main
     function get_base_template($base)
     {
         $this->subtemplate = $base;
+    }
+
+    /**
+     *  
+     *
+     */
+    function append_custom_tag($name)
+    {
+        $this->prepend_op[] = $this->op_comment("Load custom tag definition");
+        $this->prepend_op[] = $this->expr_expr($this->expr_exec("require_once", $this->Expr_str(Custom_Tag::getFilePath($name)))); 
+
+        $name = ucfirst($name);
+
+        return "{$name}_Tag::main";
     }
 }
 

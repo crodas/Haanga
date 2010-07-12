@@ -91,6 +91,15 @@ class Custom_Tag
         return "{$tag}_tag";
     }
 
+    // getFunctionBody(string $tag, string $name) {{{
+    /**
+     *  Return the body function of the custom tag main method.
+     *
+     *  @param string $tag
+     *  @param string $name
+     *
+     *  @return string
+     */
     final public static function getFunctionBody($tag, $name)
     {
         if (!self::isTag($tag)) {
@@ -112,6 +121,7 @@ class Custom_Tag
 
         return implode("", $content);
     }
+    // }}}
 
     final public static function getFunctionAlias($tag)
     {
@@ -127,3 +137,11 @@ class Custom_Tag
     }
 }
 
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: sw=4 ts=4 fdm=marker
+ * vim<600: sw=4 ts=4
+ */

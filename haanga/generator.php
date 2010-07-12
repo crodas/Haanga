@@ -219,12 +219,13 @@ class Haanga_CodeGenerator
     protected function php_generate_declare($op, $skip=0)
     {
         $code = "";
+
         for ($i=$skip; $i < count($op); $i++) {
             if (!isset($op[$i])) {
                 continue;
             }
             if (!is_Array($op[$i])) {
-                var_dump($op);die();
+                var_dump($op);die('error1');
             }
             $key   = key($op[$i]);
             $value = current($op[$i]); 
@@ -239,6 +240,7 @@ class Haanga_CodeGenerator
                 if (strlen($code) != 0 && $code[strlen($code) -1] != '.') {
                     $code .= '.';
                 }
+
                 $value = array('name' => $value, 'args' => $op[$i]['args']);
                 $code .= $this->php_exec($value, FALSE);
                 $code .= '.';
@@ -288,7 +290,7 @@ class Haanga_CodeGenerator
                 $code .= ").";
                 break;
             default:
-                var_dump($op);die();
+                var_dump($op);die('error');
                 throw new Exception("Don't know how to declare {$key} = {$value}");
             }
         }
