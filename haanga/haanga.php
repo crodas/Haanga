@@ -1283,8 +1283,13 @@ final class Haanga_Main_Runtime extends Haanga_Main
      */
     function append_custom_tag($name)
     {
-        $this->prepend_op[] = $this->op_comment("Load custom tag definition");
-        $this->prepend_op[] = $this->op_expr($this->expr_exec("require_once", $this->Expr_str(Custom_Tag::getFilePath($name)))); 
+        static $loaded = array();
+
+        if (!isset($loaded[$name])) {
+            $this->prepend_op[] = $this->op_comment("Load custom tag definition");
+            $this->prepend_op[] = $this->op_expr($this->expr_exec("require_once", $this->Expr_str(Custom_Tag::getFilePath($name)))); 
+            $loaded[$name] = TRUE;
+        }
 
         $name = ucfirst($name);
 
