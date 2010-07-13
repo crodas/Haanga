@@ -58,6 +58,7 @@ class CompilerException extends Exception
 
 class Haanga_Main
 {
+    // properties {{{
     protected static $block_var=NULL;
     protected $generator;
     protected $forloop_counter;
@@ -76,6 +77,7 @@ class Haanga_Main
     protected $ob_start=0;
     protected $append;
     protected $prepend_op;
+    protected $cycle;
     /**
      *  Table which contains all variables 
      *  aliases defined in the template
@@ -90,7 +92,11 @@ class Haanga_Main
     protected $autoescape=TRUE;
     protected $strip_whitespaces=FALSE;
     protected $force_whitespaces=0;
+    /**
+     *  Debug file
+     */
     protected $debug;
+    // }}}
 
     function __construct()
     {
@@ -119,6 +125,7 @@ class Haanga_Main
         }
         $this->generator = new Haanga_CodeGenerator;
         $this->blocks = array();
+        $this->cycle  = array();
     }
     // }}}
 
@@ -738,38 +745,38 @@ class Haanga_Main
     protected function generate_op_cycle($details, &$out)
     {
         static $cycle = 0;
-        if ($this->is_last_op_print($out)) {
-            /* If there is a print declared previously, we pop it
-               and add it after the cycle declaration
-             */
-            $old_print = array_pop($out);
+
+        $index = 'index_'.$cycle;
+        $def   = 'def_cycle_'.$cycle; 
+
+        if (count($details['vars']) == 1 && isset($details['vars'][0]['var']) && isset($this->cycle[$details['vars'][0]['var']])) {
+            $id    = $this->cycle[$details['vars'][0]['var']];
+            $index = 'index_'.$id;
+            $def   = 'def_cycle_'.$id; 
+        } else {
+            $out[] = $this->op_declare($def, $this->expr_array_first($details['vars']));
         }
 
         /* isset($var) == FALSE */
-        $expr = $this->expr('==', $this->expr_exec('isset', $this->expr_var('index_'.$cycle)), FALSE);
+        $expr = $this->expr('==', $this->expr_exec('isset', $this->expr_var($index)), FALSE);
 
         /* ($foo + 1) % count($bar) */
         $inc = $this->expr('%',
-                $this->expr('expr',
-                    $this->expr('+', $this->expr_var('index_'.$cycle), 1)
-                ),
-                $this->expr_exec('count', $this->expr_var('def_cycle_'.$cycle))
+            $this->expr('expr',
+                $this->expr('+', $this->expr_var($index), 1)
+            ),
+            $this->expr_exec('count', $this->expr_var($def))
         );
 
-        $out[] = $this->op_declare('def_cycle_'.$cycle, $this->expr_array_first($details['vars']));
 
-        $out[] = $this->op_declare('index_'.$cycle, $this->expr_cond($expr, array('number' => 0), array('expr' => $inc))); 
 
-        $var  = $this->expr_var("def_cycle_{$cycle}", $this->expr_var("index_{$cycle}"));
 
-        if (isset($old_print)) {
-            $out[] = $old_print;
-        }
         if (!isset($details['as'])) {
+            $out[] = $this->op_declare($index, $this->expr_cond($expr, $this->expr_number(0), array('expr' => $inc))); 
+            $var   = $this->expr_var($def, $this->expr_var($index));
             $this->generate_op_print(array("variable" => $var['var']), $out);
         } else {
-            $out[] = $this->op_declare($details['as'], $this->expr($var));
-            
+            $this->cycle[$details['as']] = $cycle;
         }
         $cycle++;
     }

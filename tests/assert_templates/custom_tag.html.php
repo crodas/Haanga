@@ -1,2 +1,1 @@
-<?php echo date("Y");?>
-
+<?php echo date("Y")."\n".date("Y")."\n";?>
