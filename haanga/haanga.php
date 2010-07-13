@@ -934,7 +934,7 @@ class Haanga_Main
                 $html = str_replace("\n", " ", $html);
                 $html = preg_replace("/\s\s+/", " ", $html);
             }
-            $content = array('string' => $html);
+            $content = $this->expr_str($html);
         } else if (isset($details['function'])) {
             $content = $this->expr_exec($details['function'][0], $details['function'][1]);
         } else {
