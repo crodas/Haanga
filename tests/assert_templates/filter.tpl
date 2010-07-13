@@ -7,6 +7,6 @@
     hola que 
 {% endupper %}
 {% lower %}TAL{% endlower %}
-{% filter upper|lower %}
+{% filter upper|lower|cut:"e" %}
     hello world
 {% endfilter %}

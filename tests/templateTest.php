@@ -13,11 +13,10 @@ class templateTest extends PHPUnit_Framework_TestCase
         }
     }
 
-
     /** 
      * @dataProvider tplProvider
      */
-    public function testCompilation($test_file, $data, $expected)
+    public function testRuntime($test_file, $data, $expected)
     {
         $output   = Haanga::Load($test_file, $data, TRUE);
         /**/$output   = str_replace(" ", '\s', $output);

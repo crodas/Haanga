@@ -86,6 +86,25 @@ Abstract Class Extensions
         return NULL;
     }
 
+    function generator($name, $compiler, $args)
+    {
+        if (!$this->hasGenerator($name)) {
+            return array();
+        }
+        $zclass = $this->getClassName($name);
+        return $zclass::generator($compiler, $args);
+    }
+
+    function hasGenerator($name)
+    {
+        if (!$this->isValid($name)) {
+            return NULL;
+        }
+        $zclass = $this->getClassName($name);
+        return is_callable(array($zclass, 'generator'));
+    }
+
+
     // getFunctionBody(string $name, string $name) {{{
     /**
      *  Return the body function of the custom extension main method.
