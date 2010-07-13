@@ -88,7 +88,7 @@ class Haanga_Main
      *  that escape won't be called if autoescape is 
      *  activated (which is activated by default)
      */
-    protected $var_is_safe=FALSE;
+    public $var_is_safe=FALSE;
     protected $autoescape=TRUE;
     protected $strip_whitespaces=FALSE;
     protected $force_whitespaces=0;
@@ -1221,23 +1221,19 @@ class Haanga_Main
             $name = $name[0]; 
         }
 
-        if (is_callable(array($this, 'filter_'.$name))) {
-            /* Filter has generator defined in Haanga itself */
-            $exec = call_user_func(array($this, 'filter_'.$name), $args);
-        } else {
-            if (!$filter->isValid($name)) {
-                throw new CompilerException("{$name} is an invalid filter");
-            }
-            if ($filter->hasGenerator($name)) {
-                return $filter->generator($name, $this, $args);
-            }
-            $fnc = $filter->getFunctionAlias($name);
-            if (!$fnc) {
-                $fnc = $this->get_custom_filter($name);
-            }
-            $args = array_merge(array($fnc), $args);
-            $exec = call_user_func_array(array($this, 'expr_exec'), $args);
+        if (!$filter->isValid($name)) {
+            throw new CompilerException("{$name} is an invalid filter");
         }
+        if ($filter->hasGenerator($name)) {
+            return $filter->generator($name, $this, $args);
+        }
+        $fnc = $filter->getFunctionAlias($name);
+        if (!$fnc) {
+            $fnc = $this->get_custom_filter($name);
+        }
+        $args = array_merge(array($fnc), $args);
+        $exec = call_user_func_array(array($this, 'expr_exec'), $args);
+
         return $exec;
     }
 
@@ -1254,63 +1250,6 @@ class Haanga_Main
         $this->generate_op_print($exec, $out);
     }
     // }}}
-
-    /* Custom functions (which generate PHP code)  {{{ */
-
-    function filter_safe($args)
-    {
-        $this->var_is_safe = TRUE;
-        return current($args);
-    }
-
-    // date() {{{
-    /**
-     *  Change parameters order for calling date()
-     *
-     */
-    function filter_date($args)
-    {
-        return $this->expr_exec('date', $args[1], $args[0]);
-    }
-    // }}}
-
-    // default() {{{ 
-    /**
-     *  Default gets one paramenter 
-     *
-     */
-    function filter_default($args)
-    {
-        return $this->expr_cond(
-            $this->expr('==', $this->expr_exec('empty',$args[0]), TRUE),
-            $args[1],
-            $args[0]
-        );
-    }
-    // }}}
-
-    // length() {{{
-    /**
-     *  length() 
-     *
-     *  Length() should return the size of a string 
-     *  and an array.
-     *
-     */
-    function filter_length($args)
-    {
-        if (isset($args[0]['string'])) {
-            return $this->expr_exec('strlen', $args[0]);
-        }
-        return $this->expr_cond(
-            $this->expr('==',  $this->expr_exec('is_array', $args[0]), TRUE),
-            $this->expr_exec('count', $args[0]),
-            $this->expr_exec('strlen', $args[0])
-        );
-    }
-    // }}} 
-
-    /* }}} */
 
     final static function main_cli()
     {
