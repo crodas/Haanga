@@ -88,7 +88,7 @@ class Haanga_Main
      *  that escape won't be called if autoescape is 
      *  activated (which is activated by default)
      */
-    protected $var_is_safe=FALSE;
+    public $var_is_safe=FALSE;
     protected $autoescape=TRUE;
     protected $strip_whitespaces=FALSE;
     protected $force_whitespaces=0;
@@ -347,7 +347,7 @@ class Haanga_Main
         return $this->expr('==', $this->expr_exec('isset', $var), $isset);
     }
 
-    protected function expr_array()
+    final function expr_array()
     {
         $def = array();
         foreach (func_get_args() as $arg) {
@@ -362,7 +362,7 @@ class Haanga_Main
         return array("array" => $def);
     }
 
-    protected function expr_array_first($values)
+    final function expr_array_first($values)
     {
         $def = array();
         foreach ($values as $arg) {
@@ -934,7 +934,7 @@ class Haanga_Main
                 $html = str_replace("\n", " ", $html);
                 $html = preg_replace("/\s\s+/", " ", $html);
             }
-            $content = array('string' => $html);
+            $content = $this->expr_str($html);
         } else if (isset($details['function'])) {
             $content = $this->expr_exec($details['function'][0], $details['function'][1]);
         } else {
@@ -1060,7 +1060,7 @@ class Haanga_Main
             /* beauty :-) */
             foreach ($details['check'] as $id=>$type) {
                 if (!isset($type['var'])) {
-                    throw new CompilerException("Invalid error {$type['var']}");
+                    throw new CompilerException("Invalid error {$type['string']}");
                 }
                 $this_expr = $this->expr('OR',
                     $this->expr_isset("{$var1}[{$id}]", FALSE),
@@ -1129,10 +1129,15 @@ class Haanga_Main
      */
     function generate_op_custom_tag($details, &$out)
     {
-        $tag_name    = $details['name'];
-        $tagFunction = Extensions::getInstance('Haanga_Tag')->getFunctionAlias($tag_name); 
+        static $tags;
+        if (!$tags) {
+            $tags = Extensions::getInstance('Haanga_Tag');
+        }
 
-        if (!$tagFunction) {
+        $tag_name    = $details['name'];
+        $tagFunction = $tags->getFunctionAlias($tag_name); 
+
+        if (!$tagFunction && !$tags->hasGenerator($tag_name)) {
             $function = $this->get_custom_tag($tag_name);
         } else {
             $function = $tagFunction;
@@ -1146,7 +1151,11 @@ class Haanga_Main
             $this->ob_start($out);
             $this->generate_op_code($details['body'], $out);
             $target = $this->expr_var('buffer'.$this->ob_start);
-            $exec   = $this->expr_exec($function, $target);
+            if ($tags->hasGenerator($tag_name)) {
+                $exec = $tags->generator($tag_name, $this, array($target));
+            } else {
+                $exec = $this->expr_exec($function, $target);
+            }
             $this->ob_start--;
             $this->generate_op_print($exec, $out);
             return;
@@ -1154,7 +1163,12 @@ class Haanga_Main
 
         $var  = isset($details['as']) ? $details['as'] : NULL;
         $args = array_merge(array($function), $details['list']);
-        $exec = call_user_func_array(array($this, 'expr_exec'), $args);
+
+        if ($tags->hasGenerator($tag_name)) {
+            $exec = $tags->generator($tag_name, $this, $args);
+        } else {
+            $exec = call_user_func_array(array($this, 'expr_exec'), $args);
+        }
         
         if (isset($details['for'])) {
             $new_args = array($this->expr_var('var'));
@@ -1221,23 +1235,19 @@ class Haanga_Main
             $name = $name[0]; 
         }
 
-        if (is_callable(array($this, 'filter_'.$name))) {
-            /* Filter has generator defined in Haanga itself */
-            $exec = call_user_func(array($this, 'filter_'.$name), $args);
-        } else {
-            if (!$filter->isValid($name)) {
-                throw new CompilerException("{$name} is an invalid filter");
-            }
-            if ($filter->hasGenerator($name)) {
-                return $filter->generator($name, $this, $args);
-            }
-            $fnc = $filter->getFunctionAlias($name);
-            if (!$fnc) {
-                $fnc = $this->get_custom_filter($name);
-            }
-            $args = array_merge(array($fnc), $args);
-            $exec = call_user_func_array(array($this, 'expr_exec'), $args);
+        if (!$filter->isValid($name)) {
+            throw new CompilerException("{$name} is an invalid filter");
         }
+        if ($filter->hasGenerator($name)) {
+            return $filter->generator($name, $this, $args);
+        }
+        $fnc = $filter->getFunctionAlias($name);
+        if (!$fnc) {
+            $fnc = $this->get_custom_filter($name);
+        }
+        $args = array_merge(array($fnc), $args);
+        $exec = call_user_func_array(array($this, 'expr_exec'), $args);
+
         return $exec;
     }
 
@@ -1254,63 +1264,6 @@ class Haanga_Main
         $this->generate_op_print($exec, $out);
     }
     // }}}
-
-    /* Custom functions (which generate PHP code)  {{{ */
-
-    function filter_safe($args)
-    {
-        $this->var_is_safe = TRUE;
-        return current($args);
-    }
-
-    // date() {{{
-    /**
-     *  Change parameters order for calling date()
-     *
-     */
-    function filter_date($args)
-    {
-        return $this->expr_exec('date', $args[1], $args[0]);
-    }
-    // }}}
-
-    // default() {{{ 
-    /**
-     *  Default gets one paramenter 
-     *
-     */
-    function filter_default($args)
-    {
-        return $this->expr_cond(
-            $this->expr('==', $this->expr_exec('empty',$args[0]), TRUE),
-            $args[1],
-            $args[0]
-        );
-    }
-    // }}}
-
-    // length() {{{
-    /**
-     *  length() 
-     *
-     *  Length() should return the size of a string 
-     *  and an array.
-     *
-     */
-    function filter_length($args)
-    {
-        if (isset($args[0]['string'])) {
-            return $this->expr_exec('strlen', $args[0]);
-        }
-        return $this->expr_cond(
-            $this->expr('==',  $this->expr_exec('is_array', $args[0]), TRUE),
-            $this->expr_exec('count', $args[0]),
-            $this->expr_exec('strlen', $args[0])
-        );
-    }
-    // }}} 
-
-    /* }}} */
 
     final static function main_cli()
     {

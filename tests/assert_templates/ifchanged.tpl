@@ -4,6 +4,6 @@
 {% endfor %}
 
 {% for user in users %}
-    {% ifchanged user.age %}Users with {{user.age}} years{% endifchanged %}
+    {% ifchanged user.age user.foo %}Users with {{user.age}} years{% else %}continue{% endifchanged %}
     {{ user.name }}
 {% endfor %}
