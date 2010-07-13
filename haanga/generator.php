@@ -209,6 +209,9 @@ class Haanga_CodeGenerator
     protected function php_generate_list($array)
     {
         $code = "";
+        if (!is_array($array)) {
+            var_dump(debug_backtrace());die();
+        }
         foreach ($array as $value) {
             $code .= $this->php_generate_declare(array($value));
             $code .= ", ";

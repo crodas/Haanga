@@ -35,88 +35,47 @@
   +---------------------------------------------------------------------------------+
 */
 
-Abstract Class Extensions
+class Haanga_Filter extends Extensions
 {
-    private static $_instances;
-
-    final private function __construct()
-    {
-    }
-
-    final static function getInstance($name)
-    {
-        if (!class_exists($name)) {
-            throw new CompilerExeception("{$name} is not a class");
-        }
-        if (!is_subclass_of($name, __CLASS__)) {
-            throw new CompilerExeception("{$name} is not a sub-class of ".__CLASS__);
-        }
-
-        if (!isset(self::$_instances[$name])) {
-            self::$_instances[$name] = new $name;
-        }
-        return self::$_instances[$name];
-    }
-
-    abstract function isValid($name);
-    abstract function getClassName($name);
-
-    function getFilePath($file, $rel=TRUE, $pref=NULL)
-    {
-        if (!$pref) {
-            $pref = strtolower(get_class($this));
-        }
-        $file = "/{$pref}/{$file}.php";
-        if ($rel) {
-            $file = dirname(__FILE__).$file;
-        }
-        return $file;
-    }
-
-    final public function getFunctionAlias($name)
-    {
-        if (!$this->isValid($name)) {
-            return NULL;
-        }
-        $zclass     = $this->getClassName($name);
-        $properties = get_class_vars($zclass);
-        if (isset($properties['php_alias'])) {
-            return $properties['php_alias'];
-        }
-        return NULL;
-    }
-
-    // getFunctionBody(string $name, string $name) {{{
     /**
-     *  Return the body function of the custom tag main method.
+     *  isValid
      *
-     *  @param string $name
-     *  @param string $name
      *
-     *  @return string
      */
-    static function getFunctionBody($name, $name)
+    final public function isValid($filter)
     {
-        if (!$this->isValid($name)) {
-            return NULL;
+        static $cache = array();
+        $filter = strtolower($filter);
+
+        if (!isset($cache[$filter])) {
+            $file = $this->getFilePath($filter);
+            if (is_readable($file)) {
+                /* Load custom filter definition */
+                require_once $file;
+                $class_name = $this->getClassName($filter);
+                if (class_exists($class_name)) {
+                    $cache[$filter] = TRUE;
+                }
+            }
+            if (!isset($cache[$filter])) {
+                $cache[$filter] = FALSE;
+            }
         }
-        $zclass     = $this->getClassName($name);
-        if (!is_callable(array($zclass, 'main'))) {
-            throw new CompilerException("{$name}: missing main method in {$zclass} class");
-        }
-        
-        $reflection = new ReflectionMethod($zclass, 'main');
-        $content    = file($this->getFilePath($name));
 
-        $start   = $reflection->getStartLine()-1;
-        $end     = $reflection->getEndLine();
-        $content = array_slice($content, $start, $end-$start); 
-
-        $content[0] = str_replace("main", $name, $content[0]);
-
-        return implode("", $content);
+        return $cache[$filter];
     }
-    // }}}
+
+    final function getFilePath($file, $rel=TRUE)
+    {
+        return parent::getFilePath($file, $rel, 'filters');
+    }
+
+    final function getClassName($filter)
+    {
+        return "{$filter}_filter";
+    }
+
+
 }
 
 /*
@@ -127,3 +86,4 @@ Abstract Class Extensions
  * vim600: sw=4 ts=4 fdm=marker
  * vim<600: sw=4 ts=4
  */
+

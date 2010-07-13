@@ -57,11 +57,11 @@ class Haanga_Tag extends Extensions
         $tag = strtolower($tag);
 
         if (!isset($cache[$tag])) {
-            $file = self::getFilePath($tag);
+            $file = $this->getFilePath($tag);
             if (is_readable($file)) {
                 /* Load custom tag definition */
                 require_once $file;
-                $class_name = self::getClassName($tag);
+                $class_name = $this->getClassName($tag);
                 if (class_exists($class_name)) {
                     $properties = get_class_vars($class_name);
                     $is_block   = FALSE;

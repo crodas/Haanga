@@ -39,8 +39,10 @@ require "lexer.php";
 require "generator.php";
 require "extensions.php";
 require "tags.php";
+require "filters.php";
 
-class CompilerException extends Exception {
+class CompilerException extends Exception
+{
 }
 
 
@@ -408,17 +410,6 @@ class Haanga_Main
         unset($args[0]);
         $args = array_values($args);
 
-        $override = array($this, 'override_function_'.$function);
-        if (is_callable($override)) {
-            return call_user_func($override, $args);
-        }
-
-        $function = $this->is_function_safe($function);
-
-        if (!is_string($function) || empty($function)) {
-            throw new CompilerException("{$function} filter is not allowed");
-        }
-
         return array(
             'exec' => $function,
             'args' => $args
@@ -618,17 +609,15 @@ class Haanga_Main
                     /* to avoid double cleaning */
                     $this->var_is_safe = TRUE;
                 }
-                $args      = (isset($exec) ? $exec : $target);
+                $args = array(isset($exec) ? $exec : $target);
                 if (is_array($func_name)) {
                     /* prepare array for ($func_name, $arg1, $arg2 ... ) 
                        where $arg1 = last expression and $arg2.. $argX is 
                        defined in the template */
-                    $nargs = array($func_name[0]);
-                    $nargs = array_merge($nargs, array($args), $func_name['args']);
-                    $exec = call_user_func_array(array($this ,'expr_exec'), $nargs);
-                } else {
-                    $exec = $this->expr_exec($func_name, $args);
+                    $args      = array_merge($args, $func_name['args']);
+                    $func_name = $func_name[0]; 
                 }
+                $exec = $this->do_filtering($func_name, $args);
             }
             unset($details['variable']);
             $details = $exec;
@@ -652,8 +641,8 @@ class Haanga_Main
             if (!isset($target)) {
                 $target = $details;
             }
-            $args = (isset($exec) ? $exec : $target);
-            $exec = $this->expr_exec('escape', $args);
+            $args = array(isset($exec) ? $exec : $target);
+            $exec = $this->do_filtering('escape', $args);
             $details = $exec;
         }
 
@@ -1062,22 +1051,28 @@ class Haanga_Main
         $out[] = $this->op_declare('buffer'.$this->ob_start, array('string' => ''));
     }
 
-    function append_custom_tag($name)
+    // Custom Tags {{{
+    function get_custom_tag($name)
     {
-        $function = $this->get_function_name().'_filter_'.$name;
+        $function = $this->get_function_name().'_tag_'.$name;
         $this->append .= "\n\n".Extensions::getInstance('Haanga_Tag')->getFunctionBody($name, $function);
         return $function;
     }
 
+    /**
+     *  Generate needed code for custom tags (tags that aren't
+     *  handled by the compiler).
+     *
+     */
     function generate_op_custom_tag($details, &$out)
     {
         $tag_name    = $details['name'];
         $tagFunction = Extensions::getInstance('Haanga_Tag')->getFunctionAlias($tag_name); 
 
-        if (!isset($tagFunction['name'])) {
-            $function = $this->append_custom_tag($tag_name);
+        if (!$tagFunction) {
+            $function = $this->get_custom_tag($tag_name);
         } else {
-            $function = $tagFunction['name'];
+            $function = $tagFunction;
         }
 
         if (isset($details['body'])) {
@@ -1085,8 +1080,12 @@ class Haanga_Main
                if the custom tag has 'body' 
                then it behave the same way as a filter
             */
-            $details['functions'] = array($function);
-            $this->generate_op_filter($details, $out);
+            $this->ob_start($out);
+            $this->generate_op_code($details['body'], $out);
+            $target = $this->expr_var('buffer'.$this->ob_start);
+            $exec   = $this->expr_exec($function, $target);
+            $this->ob_start--;
+            $this->generate_op_print($exec, $out);
             return;
         }
 
@@ -1118,6 +1117,7 @@ class Haanga_Main
             }
         }
     }
+    // }}}
 
     function generate_op_alias($details, &$out)
     {
@@ -1126,6 +1126,36 @@ class Haanga_Main
         unset($this->var_alias[ $details['as'] ] );
     }
 
+    function get_custom_filter($name)
+    {
+        $function = $this->get_function_name().'_filter_'.$name;
+        $this->append .= "\n\n".Extensions::getInstance('Haanga_Filter')->getFunctionBody($name, $function);
+        return $function;
+    }
+
+
+    function do_filtering($name, $args)
+    {
+        static $filter;
+        if (!$filter) {
+            $filter = Extensions::getInstance('Haanga_Filter');
+        }
+        if (is_callable(array($this, 'filter_'.$name))) {
+            /* Filter is defined in the compiler */
+            $exec = call_user_func(array($this, 'filter_'.$name), $args);
+        } else {
+            if (!$filter->isValid($name)) {
+                throw new CompilerException("{$name} is an invalid filter");
+            }
+            $fnc = $filter->getFunctionAlias($name);
+            if (!$fnc) {
+                $fnc = $this->get_custom_filter($name);
+            }
+            $args = array_merge(array($fnc), $args);
+            $exec = call_user_func_array(array($this, 'expr_exec'), $args);
+        }
+        return $exec;
+    }
 
     function generate_op_filter($details, &$out)
     {
@@ -1133,10 +1163,11 @@ class Haanga_Main
         $this->generate_op_code($details['body'], $out);
         $target = $this->expr_var('buffer'.$this->ob_start);
         foreach ($details['functions'] as $f) {
-            $exec = $this->expr_exec($f, (isset($exec) ? $exec : $target));
+            $param = (isset($exec) ? $exec : $target);
+            $exec  = $this->op_filtering(array($param));
         }
         $this->ob_start--;
-        $this->generate_op_print(array('expr' => $exec), $out);
+        $this->generate_op_print($exec, $out);
     }
 
     final static function main_cli()
@@ -1150,37 +1181,7 @@ class Haanga_Main
 
     /* Custom functions (which generate PHP code)  {{{ */
 
-    function is_function_safe($function)
-    {
-        switch ($function) {
-        case 'upper':
-            $function = 'strtoupper';
-            break;
-        case 'lower':
-            $function = 'strtolower';
-            break; 
-        case 'capfirst':
-        case 'capitalize':
-            $function = "ucfirst";
-            break;
-        case 'addslashes':
-            break;
-        case 'escape':
-            $function = 'htmlentities';
-            break;
-        case 'striptags':
-            $function = 'strip_tags';
-            break;
-        case 'linebreaksbr':
-            $function = 'nl2br';
-            break;
-        }
-
-        return $function;
-
-    }
-
-    function override_function_safe($args)
+    function filter_safe($args)
     {
         $this->var_is_safe = TRUE;
         return current($args);
@@ -1191,7 +1192,7 @@ class Haanga_Main
      *  Change parameters order for calling date()
      *
      */
-    function override_function_xdate($args)
+    function filter_xdate($args)
     {
         return array('exec' => 'date', 'args' => array($args[1], $args[0]));
     }
@@ -1202,10 +1203,10 @@ class Haanga_Main
      *  Default gets one paramenter 
      *
      */
-    function override_function_default($args)
+    function filter_default($args)
     {
         return $this->expr_cond(
-            $this->expr('==', array('exec' => 'empty', 'args' => array($args[0])), TRUE),
+            $this->expr('==', $this->expr_exec('empty',$args[0]), TRUE),
             $args[1],
             $args[0]
         );
@@ -1220,12 +1221,15 @@ class Haanga_Main
      *  and an array.
      *
      */
-    function override_function_length($args)
+    function filter_length($args)
     {
+        if (isset($args[0]['string'])) {
+            return $this->expr_exec('strlen', $args[0]);
+        }
         return $this->expr_cond(
-            $this->expr('==', array('exec' => 'is_array', 'args' => $args), TRUE),
-            array('exec' => 'count', 'args' => $args),
-            array('exec' => 'strlen', 'args' => $args)
+            $this->expr('==',  $this->expr_exec('is_array', $args[0]), TRUE),
+            $this->expr_exec('count', $args[0]),
+            $this->expr_exec('strlen', $args[0])
         );
     }
     // }}} 
@@ -1282,9 +1286,9 @@ final class Haanga_Main_Runtime extends Haanga_Main
      *  
      *
      */
-    function append_custom_tag($name)
+    function get_custom_tag($name)
     {
-        static $loaded = array();
+        $loaded = &$this->tags;
 
         if (!isset($loaded[$name])) {
             $this->prepend_op[] = $this->op_comment("Load tag {$name} definition");
@@ -1296,6 +1300,22 @@ final class Haanga_Main_Runtime extends Haanga_Main
 
         return "{$name}_Tag::main";
     }
+
+    function get_custom_filter($name)
+    {
+        $loaded = &$this->filters;
+
+        if (!isset($loaded[$name])) {
+            $this->prepend_op[] = $this->op_comment("Load filter {$name} definition");
+            $this->prepend_op[] = $this->op_expr($this->expr_exec("Haanga::doInclude", $this->Expr_str(Extensions::getInstance('Haanga_Filter')->getFilePath($name, FALSE)))); 
+            $loaded[$name] = TRUE;
+        }
+
+        $name = ucfirst($name);
+
+        return "{$name}_Filter::main";
+    }
+    
 }
 
 /*
