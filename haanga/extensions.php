@@ -68,7 +68,7 @@ Abstract Class Extensions
         }
         $file = "/{$pref}/{$file}.php";
         if ($rel) {
-            $file = dirname(__FILE__).$file;
+            $file = HAANGA_DIR.$file;
         }
         return $file;
     }

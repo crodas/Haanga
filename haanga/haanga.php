@@ -35,19 +35,30 @@
   +---------------------------------------------------------------------------------+
 */
 
-require "lexer.php";
-require "generator.php";
-require "extensions.php";
-require "tags.php";
-require "filters.php";
+define('HAANGA_DIR', dirname(__FILE__));
 
+// Load needed files {{{
+require HAANGA_DIR."/lexer.php";
+require HAANGA_DIR."/generator.php";
+require HAANGA_DIR."/extensions.php";
+require HAANGA_DIR."/tags.php";
+require HAANGA_DIR."/filters.php";
+// }}}
+
+// Exception Class {{{
+/**
+ *  Exception class
+ *
+ */
 class CompilerException extends Exception
 {
 }
+// }}}
 
 
 class Haanga_Main
 {
+    protected static $block_var=NULL;
     protected $generator;
     protected $forloop_counter;
     protected $forloop_counter0;
@@ -55,13 +66,16 @@ class Haanga_Main
     protected $sub_template = FALSE;
     protected $name;
     protected $blocks=array();
+    /**
+     *  number of blocks :-)
+     */
     protected $in_block=0;
+    /**
+     *  output buffers :-)
+     */
     protected $ob_start=0;
-    protected static $block_var=NULL;
-    protected $block_super=0;
     protected $append;
     protected $prepend_op;
-
     /**
      *  Table which contains all variables 
      *  aliases defined in the template
@@ -86,11 +100,14 @@ class Haanga_Main
         }
     }
 
+    // setDebug($file) {{{
     function setDebug($file)
     {
         $this->debug = $file;
     }
+    // }}}
 
+    // reset() {{{
     function reset()
     {
         $avoid_cleaning = array('strip_whitespaces' => 1, 'block_var' => 1, 'autoescape'=>1);
@@ -103,22 +120,30 @@ class Haanga_Main
         $this->generator = new Haanga_CodeGenerator;
         $this->blocks = array();
     }
+    // }}}
 
+    // get_template_name() {{{
     final function get_template_name()
     {
         return $this->name;
     }
+    // }}}
 
+    // Set template name {{{
     function set_template_name($path)
     {
         return ($this->name = strstr(basename($path),'.', TRUE));
     }
+    // }}}
 
+    // get_function_name(string $name) {{{
     function get_function_name($name)
     {
         return "{$name}_template";
     }
+    // }}}
 
+    // Compile ($code, $name=NULL) {{{
     final function compile($code, $name=NULL)
     {
         $this->name = $name;
@@ -175,7 +200,7 @@ class Haanga_Main
         }
         return $code;
     }
-
+    // }}}
 
     // compile_file($file) {{{
     /**
@@ -458,11 +483,14 @@ class Haanga_Main
     }
     // }}}
 
+    // {% base "foo.html" %} {{{
     protected function generate_op_base()
     {
         throw new exception("{% base %} can be only as first statement");
     }
+    // }}}
 
+    // Main Loop {{{
     protected function generate_op_code($parsed, &$out)
     {
         if (!is_array($parsed)) {
@@ -483,7 +511,9 @@ class Haanga_Main
             $this->$method($op, $out);
         }
     }
+    // }}}
 
+    // Check the current expr  {{{
     protected function check_expr(&$expr)
     {
         if (is_array($expr) && isset($expr['op'])) {
@@ -532,8 +562,9 @@ class Haanga_Main
             } 
         }
     }
+    // }}}
 
-
+    // {% if <expr> %} HTML {% else %} TWO {% endif $} {{{
     protected function generate_op_if($details, &$out)
     {
         $this->check_expr($details['expr']);
@@ -545,7 +576,9 @@ class Haanga_Main
         }
         $out[] = $this->op_end('if');
     }
+    // }}}
 
+    // Overload template {{{
     protected function compile_required_template($file)
     {
         if (isset($this->_base_dir)) {
@@ -560,7 +593,9 @@ class Haanga_Main
         $code = $comp->compile_file($file);
         return array($comp->get_template_name(), $code);
     }
+    // }}}
     
+    // include "file.html" | include <var1> {{{
     protected function generate_op_include($details, &$out)
     {
         if (!$details[0]['string']) {
@@ -574,15 +609,17 @@ class Haanga_Main
             $this->expr_var('blocks'),
             $this->expr_TRUE()
         );
-        $this->generate_op_print(array('expr' => $expr), $op_code);
-        $this->generate_op_print(array('expr' => $expr), $out);
+        $this->generate_op_print($expr, $op_code);
+        $this->generate_op_print($expr, $out);
     }
+    // }}}
 
-
+    // Handle HTML code {{{
     protected function generate_op_html($details, &$out)
     {
         $this->generate_op_print($details, $out);
     }
+    // }}}
 
     // generate_op_print_var {{{
     /**
@@ -672,6 +709,7 @@ class Haanga_Main
     }
     // }}}
 
+    // first_of var1 var2 'name' {{{
     protected function generate_op_first_of($details, &$out)
     {
         $texpr = array();
@@ -694,7 +732,9 @@ class Haanga_Main
 
         $this->generate_op_print($expr, $out);
     }
+    // }}}
 
+    // cycle 'uno' var {{{
     protected function generate_op_cycle($details, &$out)
     {
         static $cycle = 0;
@@ -733,7 +773,9 @@ class Haanga_Main
         }
         $cycle++;
     }
+    // }}}
 
+    // {# something #} {{{
     protected function generate_op_comment($details, &$out)
     {
         if ($this->is_last_op_print($out)) {
@@ -747,7 +789,9 @@ class Haanga_Main
             $out[] = $old_print;
         }
     }
+    // }}} 
 
+    // {% block 'name' %} ... {% endblock %} {{{
     protected function generate_op_block($details, &$out)
     {
         $this->ob_start($out);
@@ -799,9 +843,9 @@ class Haanga_Main
         $this->in_block--;
 
     } 
+    // }}}
 
-
-
+    // regroup <var1> by <field> as <foo> {{{
     protected function generate_op_regroup($details, &$out)
     {
         $out[] = $this->op_declare($details['as'], $this->expr_array_first(array()));
@@ -828,7 +872,9 @@ class Haanga_Main
         $out[] = $this->op_end('foreach');
         $out[] = $this->op_comment("Sorting done");
     }
+    // }}}
 
+    // Get variable name {{{
     protected function generate_variable_name($variable)
     {
         if (is_array($variable)) {
@@ -872,7 +918,9 @@ class Haanga_Main
 
         return $this->expr_var($variable);
     }
+    // }}}
 
+    // Print {{{
     protected function generate_op_print($details, &$out)
     {
         $last = count($out)-1;
@@ -917,7 +965,9 @@ class Haanga_Main
             }
         }
     }
+    // }}}
 
+    // for [<key>,]<val> in <array> {{{
     protected function generate_op_loop($details, &$out)
     {
         static $id = 0;
@@ -977,7 +1027,9 @@ class Haanga_Main
             $out[] = $this->op_end('if');
         }
     }
+    // }}}
 
+    // ifchanged [<var1> <var2] {{{
     protected function generate_op_ifchanged($details, &$out)
     {
         static $ifchanged = 0;
@@ -1036,7 +1088,9 @@ class Haanga_Main
         }
         $out[] = $this->op_end('if');
     }
+    // }}}
 
+    // autoescape ON|OFF {{{
     function generate_op_autoescape($details, &$out)
     {
         $old_autoescape   = $this->autoescape;
@@ -1044,12 +1098,19 @@ class Haanga_Main
         $this->generate_op_code($details['body'], $out);
         $this->autoescape = $old_autoescape;
     }
+    // }}}
 
+    // ob_Start(array &$out) {{{
+    /**
+     *  Start a new buffering  
+     *
+     */
     function ob_start(&$out)
     {
         $this->ob_start++;
         $out[] = $this->op_declare('buffer'.$this->ob_start, array('string' => ''));
     }
+    // }}}
 
     // Custom Tags {{{
     function get_custom_tag($name)
@@ -1119,12 +1180,18 @@ class Haanga_Main
     }
     // }}}
 
+    // with <variable> as <var> {{{
+    /**
+     *
+     *
+     */
     function generate_op_alias($details, &$out)
     {
         $this->var_alias[ $details['as'] ] = $details['var'];
         $this->generate_op_code($details['body'], $out);
         unset($this->var_alias[ $details['as'] ] );
     }
+    // }}}
 
     // Custom Filters {{{
     function get_custom_filter($name)
@@ -1172,16 +1239,8 @@ class Haanga_Main
     }
     // }}}
 
-    final static function main_cli()
-    {
-        $argv = $GLOBALS['argv'];
-        $haanga = new Haanga_Main;
-        $code = $haanga->compile_file($argv[1]);
-        echo "<?php\n\n$code\n";
-    }
-
-
     /* Custom functions (which generate PHP code)  {{{ */
+
     function filter_safe($args)
     {
         $this->var_is_safe = TRUE;
@@ -1237,11 +1296,29 @@ class Haanga_Main
 
     /* }}} */
 
+    final static function main_cli()
+    {
+        $argv = $GLOBALS['argv'];
+        $haanga = new Haanga_Main;
+        $code = $haanga->compile_file($argv[1]);
+        echo "<?php\n\n$code\n";
+    }
+
 }
 
 
+/**
+ *  Runtime compiler
+ *
+ */
 final class Haanga_Main_Runtime extends Haanga_Main
 {
+
+    // get_function_name($name=NULL) {{{
+    /**
+     *
+     *
+     */
     function get_function_name($name=NULL)
     {
         if ($name === NULL) {
@@ -1249,12 +1326,16 @@ final class Haanga_Main_Runtime extends Haanga_Main
         }
         return "haanga_".sha1($name);
     }
+    // }}}
 
+    // set_template_name($path) {{{
     function set_template_name($path)
     {
         return $path;
     }
+    // }}}
 
+    // Override {% include %} {{{
     protected function generate_op_include($details, &$out)
     {
         $expr = $this->expr_exec(
@@ -1266,7 +1347,9 @@ final class Haanga_Main_Runtime extends Haanga_Main
         );
         $this->generate_op_print(array('expr' => $expr), $out);
     }
+    // }}}
 
+    // {% base "" %} {{{
     function expr_call_base_template()
     {
         return $this->expr_exec(
@@ -1277,12 +1360,16 @@ final class Haanga_Main_Runtime extends Haanga_Main
             $this->expr_var('blocks')
         );
     }
+    // }}}
 
+    // get_base_template($base) {{{
     function get_base_template($base)
     {
         $this->subtemplate = $base;
     }
+    // }}}
 
+    // Override get_Custom_tag {{{
     /**
      *  
      *
@@ -1301,7 +1388,9 @@ final class Haanga_Main_Runtime extends Haanga_Main
 
         return "{$name}_Tag::main";
     }
+    // }}}
 
+    // Override get_custom_filter {{{
     function get_custom_filter($name)
     {
         $loaded = &$this->filters;
@@ -1316,6 +1405,7 @@ final class Haanga_Main_Runtime extends Haanga_Main
 
         return "{$name}_Filter::main";
     }
+    // }}}
     
 }
 
