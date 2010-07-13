@@ -1126,6 +1126,7 @@ class Haanga_Main
         unset($this->var_alias[ $details['as'] ] );
     }
 
+    // Custom Filters {{{
     function get_custom_filter($name)
     {
         $function = $this->get_function_name().'_filter_'.$name;
@@ -1169,6 +1170,7 @@ class Haanga_Main
         $this->ob_start--;
         $this->generate_op_print($exec, $out);
     }
+    // }}}
 
     final static function main_cli()
     {
@@ -1180,7 +1182,6 @@ class Haanga_Main
 
 
     /* Custom functions (which generate PHP code)  {{{ */
-
     function filter_safe($args)
     {
         $this->var_is_safe = TRUE;
@@ -1192,9 +1193,9 @@ class Haanga_Main
      *  Change parameters order for calling date()
      *
      */
-    function filter_xdate($args)
+    function filter_date($args)
     {
-        return array('exec' => 'date', 'args' => array($args[1], $args[0]));
+        return $this->expr_exec('date', $args[1], $args[0]);
     }
     // }}}
 
