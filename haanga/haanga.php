@@ -1239,7 +1239,7 @@ class Haanga_Main
         $target = $this->expr_var('buffer'.$this->ob_start);
         foreach ($details['functions'] as $f) {
             $param = (isset($exec) ? $exec : $target);
-            $exec  = $this->op_filtering(array($param));
+            $exec  = $this->do_filtering($f, array($param));
         }
         $this->ob_start--;
         $this->generate_op_print($exec, $out);

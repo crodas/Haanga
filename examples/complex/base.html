@@ -32,16 +32,14 @@ function foo_bar  () {
         {% block test %}
             test
             {% block foo %}foo{% endblock foo %}
-        Strlen: {% strlen %}
         {% for var in some_list %}
-            {%strtoupper%}
+            {%upper%}
             {# Define a custom filter (AKA call a PHP function) #}
             i must be uppercase
-            {% endstrtoupper %}
+            {% endupper %}
             {{ forloop.counter }}<br/>
             {{ forloop.counter0 }}<br/>
         {% endfor %}
-        {% endstrlen %}
 
         {% endblock test %}
         </td>

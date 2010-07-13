@@ -196,3 +196,5 @@ expr(A) ::= T_NUMERIC(B). { A = B; }
 varname(A) ::= varname(B) T_DOT T_ALPHA(C). { if (!is_array(B)) { A = array(B); } else { A = B; }  A[]=C;}
 varname(A) ::= varname(B) T_BRACKETS_OPEN var_or_string(C) T_BRACKETS_CLOSE. { if (!is_array(B)) { A = array(B); } else { A = B; }  A[]=C;}
 varname(A) ::= T_ALPHA(B). { A = B; } 
+/* T_CUSTOM|T_CUSTOM_BLOCK are also T_ALPHA */
+varname(A) ::= T_CUSTOM|T_CUSTOM_BLOCK(B). { A = B; } 
