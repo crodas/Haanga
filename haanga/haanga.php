@@ -588,8 +588,10 @@ class Haanga_Main
     // Overload template {{{
     protected function compile_required_template($file)
     {
-        if (isset($this->_base_dir)) {
-            $file = $this->_base_dir.'/'.$file;
+        if (!is_file($file)) {
+            if (isset($this->_base_dir)) {
+                $file = $this->_base_dir.'/'.$file;
+            }
         }
         if (!is_file($file)) {
             throw new CompilerException("can't find {$file} file template");
@@ -654,13 +656,6 @@ class Haanga_Main
                     $this->var_is_safe = TRUE;
                 }
                 $args = array(isset($exec) ? $exec : $target);
-                if (is_array($func_name)) {
-                    /* prepare array for ($func_name, $arg1, $arg2 ... ) 
-                       where $arg1 = last expression and $arg2.. $argX is 
-                       defined in the template */
-                    $args      = array_merge($args, $func_name['args']);
-                    $func_name = $func_name[0]; 
-                }
                 $exec = $this->do_filtering($func_name, $args);
             }
             unset($details['variable']);
@@ -1215,12 +1210,26 @@ class Haanga_Main
         if (!$filter) {
             $filter = Extensions::getInstance('Haanga_Filter');
         }
+        
+        if (is_array($name)) {
+            /*
+               prepare array for ($func_name, $arg1, $arg2 ... ) 
+               where $arg1 = last expression and $arg2.. $argX is 
+               defined in the template 
+             */
+            $args = array_merge($args, $name['args']);
+            $name = $name[0]; 
+        }
+
         if (is_callable(array($this, 'filter_'.$name))) {
-            /* Filter is defined in the compiler */
+            /* Filter has generator defined in Haanga itself */
             $exec = call_user_func(array($this, 'filter_'.$name), $args);
         } else {
             if (!$filter->isValid($name)) {
                 throw new CompilerException("{$name} is an invalid filter");
+            }
+            if ($filter->hasGenerator($name)) {
+                return $filter->generator($name, $this, $args);
             }
             $fnc = $filter->getFunctionAlias($name);
             if (!$fnc) {
