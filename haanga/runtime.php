@@ -36,6 +36,21 @@ class Haanga
         self::$templates_dir = $dir;
     }
 
+    // doInclude(string $file) {{{
+    /**
+     *  Load a PHP file using Haanga's root dir as 
+     *  base dir.
+     *
+     *  @param string $file File
+     *
+     *  @return void
+     */
+    public static function doInclude($file)
+    {
+        require_once dirname(__FILE__)."/".$file;
+    }
+    // }}}
+
     public static function Load($file, $vars = array(), $return=FALSE, $blocks=array())
     {
         static $compiler;
@@ -69,3 +84,12 @@ class Haanga
         return $callback($vars, $return, $blocks);
     }
 }
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: sw=4 ts=4 fdm=marker
+ * vim<600: sw=4 ts=4
+ */

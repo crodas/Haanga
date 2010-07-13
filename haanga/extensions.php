@@ -35,61 +35,88 @@
   +---------------------------------------------------------------------------------+
 */
 
-
-class Haanga_Tag extends Extensions
+Abstract Class Extensions
 {
-    /**
-     *  isValid
-     *
-     *  Check if the current $tag (string) is registered as a custom
-     *  tag, if so, it check wether it is just a custom tag or a custom block.
-     *
-     *  This method is called from the lexer for each alpha (within {% %}), 
-     *  to avoid parsing conflicts.
-     *
-     *  @param string $tag  Tag to check
-     *
-     *  @return int|bool Parser::T_CUSTOM_TAG, Parser::T_CUSTOM_TAG or FALSE
-     */
-    final public function isValid($tag)
-    {
-        static $cache = array();
-        $tag = strtolower($tag);
+    private static $_instances;
 
-        if (!isset($cache[$tag])) {
-            $file = self::getFilePath($tag);
-            if (is_readable($file)) {
-                /* Load custom tag definition */
-                require_once $file;
-                $class_name = self::getClassName($tag);
-                if (class_exists($class_name)) {
-                    $properties = get_class_vars($class_name);
-                    $is_block   = FALSE;
-                    if (isset($properties['is_block'])) {
-                        $is_block = (bool)$properties['is_block'];
-                    }
-                    $cache[$tag] = $is_block ? Parser::T_CUSTOM_BLOCK : Parser::T_CUSTOM_TAG;
-                }
-            }
-            if (!isset($cache[$tag])) {
-                $cache[$tag] = FALSE;
-            }
+    final private function __construct()
+    {
+    }
+
+    final static function getInstance($name)
+    {
+        if (!class_exists($name)) {
+            throw new CompilerExeception("{$name} is not a class");
+        }
+        if (!is_subclass_of($name, __CLASS__)) {
+            throw new CompilerExeception("{$name} is not a sub-class of ".__CLASS__);
         }
 
-        return $cache[$tag];
+        if (!isset(self::$_instances[$name])) {
+            self::$_instances[$name] = new $name;
+        }
+        return self::$_instances[$name];
     }
 
-    final function getFilePath($file, $rel=TRUE)
+    abstract function isValid($name);
+    abstract function getClassName($name);
+
+    function getFilePath($file, $rel=TRUE, $pref=NULL)
     {
-        return parent::getFilePath($file, $rel, 'tags');
+        if (!$pref) {
+            $pref = strtolower(get_class($this));
+        }
+        $file = "/{$pref}/{$file}.php";
+        if ($rel) {
+            $file = dirname(__FILE__).$file;
+        }
+        return $file;
     }
 
-    final function getClassName($tag)
+    final public function getFunctionAlias($name)
     {
-        return "{$tag}_tag";
+        if (!$this->isValid($name)) {
+            return NULL;
+        }
+        $zclass     = $this->getClassName($name);
+        $properties = get_class_vars($zclass);
+        if (isset($properties['php_alias'])) {
+            return array('name' => $properties['php_alias']);
+        }
+        return array();
     }
 
+    // getFunctionBody(string $name, string $name) {{{
+    /**
+     *  Return the body function of the custom tag main method.
+     *
+     *  @param string $name
+     *  @param string $name
+     *
+     *  @return string
+     */
+    static function getFunctionBody($name, $name)
+    {
+        if (!$this->isValid($name)) {
+            return NULL;
+        }
+        $zclass     = $this->getClassName($name);
+        if (!is_callable(array($zclass, 'main'))) {
+            throw new CompilerException("{$name}: missing main method in {$zclass} class");
+        }
+        
+        $reflection = new ReflectionMethod($zclass, 'main');
+        $content    = file($this->getFilePath($name));
 
+        $start   = $reflection->getStartLine()-1;
+        $end     = $reflection->getEndLine();
+        $content = array_slice($content, $start, $end-$start); 
+
+        $content[0] = str_replace("main", $name, $content[0]);
+
+        return implode("", $content);
+    }
+    // }}}
 }
 
 /*

@@ -4,6 +4,7 @@
 {% block title %}Userlist | {{ block.super }} -- {{title}}{% endblock %}
 
 {% block content %}
+{% spaceless %}
 <h2>Userlist</h2>
 <ul>
 {% for user in users %}
@@ -18,5 +19,6 @@
 
 [{{ block.super }}]
 
+{% endspaceless %}
 {% endblock %}
 

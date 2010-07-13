@@ -1,6 +1,6 @@
 <?php
 
-class Upper_Tag extends Custom_Tag
+class Upper_Tag
 {
     public static $is_block  = TRUE;
     /* This tag calls to a PHP native function */

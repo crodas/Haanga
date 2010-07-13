@@ -83,7 +83,11 @@ class Haanga_Lexer
 
     function is_custom_tag()
     {
-        $value = Custom_Tag::isTag($this->value);
+        static $tag=NULL;
+        if (!$tag) {
+            $tag = Extensions::getInstance('Haanga_tag');
+        }
+        $value = $tag->isValid($this->value);
         $this->token = $value ? $value : Parser::T_ALPHA;
     }
 

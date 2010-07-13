@@ -37,6 +37,7 @@
 
 require "lexer.php";
 require "generator.php";
+require "extensions.php";
 require "tags.php";
 
 class CompilerException extends Exception {
@@ -1064,14 +1065,14 @@ class Haanga_Main
     function append_custom_tag($name)
     {
         $function = $this->get_function_name().'_filter_'.$name;
-        $this->append .= "\n\n".Custom_Tag::getFunctionBody($name, $function);
+        $this->append .= "\n\n".Extensions::getInstance('Haanga_Tag')->getFunctionBody($name, $function);
         return $function;
     }
 
     function generate_op_custom_tag($details, &$out)
     {
         $tag_name    = $details['name'];
-        $tagFunction = Custom_Tag::getFunctionAlias($tag_name); 
+        $tagFunction = Extensions::getInstance('Haanga_Tag')->getFunctionAlias($tag_name); 
 
         if (!isset($tagFunction['name'])) {
             $function = $this->append_custom_tag($tag_name);
@@ -1286,8 +1287,8 @@ final class Haanga_Main_Runtime extends Haanga_Main
         static $loaded = array();
 
         if (!isset($loaded[$name])) {
-            $this->prepend_op[] = $this->op_comment("Load custom tag definition");
-            $this->prepend_op[] = $this->op_expr($this->expr_exec("require_once", $this->Expr_str(Custom_Tag::getFilePath($name)))); 
+            $this->prepend_op[] = $this->op_comment("Load tag {$name} definition");
+            $this->prepend_op[] = $this->op_expr($this->expr_exec("Haanga::doInclude", $this->Expr_str(Extensions::getInstance('Haanga_Tag')->getFilePath($name, FALSE)))); 
             $loaded[$name] = TRUE;
         }
 
