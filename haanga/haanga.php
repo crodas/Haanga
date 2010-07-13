@@ -347,7 +347,7 @@ class Haanga_Main
         return $this->expr('==', $this->expr_exec('isset', $var), $isset);
     }
 
-    protected function expr_array()
+    final function expr_array()
     {
         $def = array();
         foreach (func_get_args() as $arg) {
@@ -362,7 +362,7 @@ class Haanga_Main
         return array("array" => $def);
     }
 
-    protected function expr_array_first($values)
+    final function expr_array_first($values)
     {
         $def = array();
         foreach ($values as $arg) {
@@ -1129,10 +1129,15 @@ class Haanga_Main
      */
     function generate_op_custom_tag($details, &$out)
     {
-        $tag_name    = $details['name'];
-        $tagFunction = Extensions::getInstance('Haanga_Tag')->getFunctionAlias($tag_name); 
+        static $tags;
+        if (!$tags) {
+            $tags = Extensions::getInstance('Haanga_Tag');
+        }
 
-        if (!$tagFunction) {
+        $tag_name    = $details['name'];
+        $tagFunction = $tags->getFunctionAlias($tag_name); 
+
+        if (!$tagFunction && !$tags->hasGenerator($tag_name)) {
             $function = $this->get_custom_tag($tag_name);
         } else {
             $function = $tagFunction;
@@ -1146,7 +1151,11 @@ class Haanga_Main
             $this->ob_start($out);
             $this->generate_op_code($details['body'], $out);
             $target = $this->expr_var('buffer'.$this->ob_start);
-            $exec   = $this->expr_exec($function, $target);
+            if ($tags->hasGenerator($tag_name)) {
+                $exec = $tags->generator($tag_name, $this, array($target));
+            } else {
+                $exec = $this->expr_exec($function, $target);
+            }
             $this->ob_start--;
             $this->generate_op_print($exec, $out);
             return;
@@ -1154,7 +1163,12 @@ class Haanga_Main
 
         $var  = isset($details['as']) ? $details['as'] : NULL;
         $args = array_merge(array($function), $details['list']);
-        $exec = call_user_func_array(array($this, 'expr_exec'), $args);
+
+        if ($tags->hasGenerator($tag_name)) {
+            $exec = $tags->generator($tag_name, $this, $args);
+        } else {
+            $exec = call_user_func_array(array($this, 'expr_exec'), $args);
+        }
         
         if (isset($details['for'])) {
             $new_args = array($this->expr_var('var'));
