@@ -88,7 +88,7 @@ Abstract Class Extensions
 
     // getFunctionBody(string $name, string $name) {{{
     /**
-     *  Return the body function of the custom tag main method.
+     *  Return the body function of the custom extension main method.
      *
      *  @param string $name
      *  @param string $name
@@ -117,6 +117,7 @@ Abstract Class Extensions
         return implode("", $content);
     }
     // }}}
+
 }
 
 /*
