@@ -292,6 +292,10 @@ class Haanga_Main
 
     function op_declare($name, $value)
     {
+        if (is_array($name) && isset($name['var'])) {
+            $name = $name['var'];
+        }
+
         return array('op' => 'declare', 'name' => $name, $value);
     }
 
@@ -796,16 +800,21 @@ class Haanga_Main
     // {% block 'name' %} ... {% endblock %} {{{
     protected function generate_op_block($details, &$out)
     {
+        $this->in_block++;
+        $this->blocks[] = $details['name'];
+        $block_name = $this->expr_var('blocks', $details['name']);
+
         $this->ob_start($out);
         $buffer_var = 'buffer'.$this->ob_start;
-        $this->in_block++;
 
-        $this->generate_op_code($details['body'], $out);
+        $this->generate_op_code($details['body'], $body);
+
+        $out = array_merge($out, $body);
         $this->ob_start--;
 
-        $var    = $this->expr_var("blocks", $details['name']);
         $buffer = $this->expr_var($buffer_var);
 
+        /* {{{ */
         /**
          *  isset previous block (parent block)?
          *  TRUE
@@ -819,29 +828,29 @@ class Haanga_Main
          *
          */
         $declare = $this->expr_cond(
-            $this->expr_isset($var['var']),
+            $this->expr_isset_ex($block_name),
             $this->expr_cond(
-                $this->expr("===", $this->expr_exec('strpos', $var, 
-                        array('string' => self::$block_var)
+                $this->expr("===", $this->expr_exec('strpos', $block_name, 
+                        $this->expr_str(self::$block_var)
                     ), FALSE
                 ),
-                $var,
+                $block_name,
                 $this->expr_exec('str_replace', 
-                    array('string' => self::$block_var),
+                    $this->expr_str(self::$block_var),
                     $buffer,
-                    $var
+                    $block_name
                 )
             ),
             $buffer
         );
+        /* }}} */
 
         if (!$this->subtemplate) {
             $this->generate_op_print($declare, $out);
         } else {
-            $this->blocks[] = $details['name'];
-
-            $out[] = $this->op_declare('blocks["'.$details['name'].'"]', $declare);
+            $out[] = $this->op_declare($block_name, $declare);
         }
+        array_pop($this->blocks);
         $this->in_block--;
 
     } 
