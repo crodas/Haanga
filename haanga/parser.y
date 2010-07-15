@@ -171,6 +171,7 @@ list(A) ::= list(B) var_or_string(C).  { A = B; A[] = C; }
 list(A) ::= list(B) T_COMMA var_or_string(C).  { A = B; A[] = C; }
 list(A) ::= var_or_string(B). { A = array(B); }
 
+var_or_string(A) ::= T_NUMERIC(B). { A = array('number' => B); }  
 var_or_string(A) ::= varname(B).   { A = array('var' => B); }  
 var_or_string(A) ::= string(B).    { A = array('string' => B); }
 
