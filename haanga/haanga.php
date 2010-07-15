@@ -62,9 +62,8 @@ class Haanga_Main
     // properties {{{
     protected static $block_var=NULL;
     protected $generator;
-    protected $forloop_counter;
-    protected $forloop_counter0;
-    protected $forid = FALSE;
+    protected $forloop = array();
+    protected $forid = 0;
     protected $sub_template = FALSE;
     protected $name;
     protected $blocks=array();
@@ -908,28 +907,28 @@ class Haanga_Main
                 }
                 switch ($variable[1]) {
                 case 'counter':
-                    $this->forloop_counter[$this->forid] = TRUE; 
+                    $this->forloop[$this->forid]['counter'] = TRUE; 
                     $variable = 'forcounter1_'.$this->forid;
                     break;
                 case 'counter0':
-                    $this->forloop_counter0[$this->forid] = TRUE; 
+                    $this->forloop[$this->forid]['counter0'] = TRUE; 
                     $variable = 'forcounter0_'.$this->forid;
                     break;
                 case 'last':
-                    $this->forloop_last[$this->forid]    = TRUE;
-                    $this->forloop_counter[$this->forid] = TRUE; 
+                    $this->forloop[$this->forid]['counter'] = TRUE; 
+                    $this->forloop[$this->forid]['last']    = TRUE;
                     $variable = 'islast_'.$this->forid;
                     break;
                 case 'first':
-                    $this->forloop_first[$this->forid]    = TRUE;
+                    $this->forloop[$this->forid]['first']    = TRUE;
                     $variable = 'isfirst_'.$this->forid;
                     break;
                 case 'revcounter':
-                    $this->forloop_revcounter[$this->forid] = TRUE;
+                    $this->forloop[$this->forid]['revcounter'] = TRUE;
                     $variable = 'revcount_'.$this->forid;
                     break;
                 case 'revcounter0':
-                    $this->forloop_revcounter0[$this->forid] = TRUE;
+                    $this->forloop[$this->forid]['revcounter0'] = TRUE;
                     $variable = 'revcount0_'.$this->forid;
                     break;
                 case 'parentloop':
@@ -942,6 +941,8 @@ class Haanga_Main
                 default:
                     throw new CompilerException("Unexpected forloop.{$variable[1]}");
                 }
+                /* no need to escape it */
+                $this->var_is_safe = TRUE;
                 break;
             case 'block':
                 if ($this->in_block == 0) {
@@ -950,6 +951,8 @@ class Haanga_Main
                 if (!$this->subtemplate) {
                     throw new CompilerException("Only subtemplates can call block.super");
                 }
+                /* no need to escape it */
+                $this->var_is_safe = TRUE;
                 return $this->expr_str(self::$block_var);
                 break;
             } 
@@ -1012,8 +1015,6 @@ class Haanga_Main
     // for [<key>,]<val> in <array> {{{
     protected function generate_op_loop($details, &$out)
     {
-        static $id = 0;
-        $id++;
         if (isset($details['empty'])) {
             $expr = $this->expr('==',
                 $this->expr_exec('count', $this->expr_var($details['array'])),
@@ -1027,16 +1028,19 @@ class Haanga_Main
 
         /* ForID */
         $oldid       = $this->forid;
-        $this->forid = $id;
+        $this->forid = $oldid+1;
+
+        $this->forloop[$this->forid] = array();
 
         /* Loop body */
         $for_loop_body = array();
         $this->generate_op_code($details['body'], $for_loop_body);
 
-        $oid = $this->forid;
+        $oid  = $this->forid;
+        $size = $this->expr_var('psize_'.$oid);
         
         // counter {{{
-        if (isset($this->forloop_counter[$oid])) {
+        if (isset($this->forloop[$oid]['counter'])) {
             $var   = 'forcounter1_'.$oid;
             $out[] = $this->op_declare($var, $this->expr_number(1));
             $for_loop_body[] = $this->op_inc($var);
@@ -1044,7 +1048,7 @@ class Haanga_Main
         // }}}
 
         // counter0 {{{
-        if (isset($this->forloop_counter0[$oid])) {
+        if (isset($this->forloop[$oid]['counter0'])) {
             $var   = 'forcounter0_'.$oid;
             $out[] = $this->op_declare($var, $this->expr_number(0) );
             $for_loop_body[] = $this->op_inc($var);
@@ -1052,12 +1056,14 @@ class Haanga_Main
         // }}}
 
         // last {{{
-        if (isset($this->forloop_last[$oid])) {
-            $cnt   = 'psize_'.$oid;
-            $var   = 'islast_'.$oid;
-            $expr  = $this->op_declare($var, array('expr' => $this->expr("==", $this->expr_var('forcounter1_'.$oid), $this->expr_var($cnt))));
+        if (isset($this->forloop[$oid]['last'])) {
+            if (!isset($cnt)) {
+                $cnt = $this->op_declare('psize_'.$oid, $this->expr_exec('count', $this->expr_var($details['array'])));
+                $out[] = $cnt;
+            }
+            $var  = 'islast_'.$oid;
+            $expr = $this->op_declare($var, $this->expr("==", $this->expr_var('forcounter1_'.$oid), $size));
 
-            $out[] = $this->op_declare($cnt, $this->expr_exec('count', $this->expr_var($details['array'])) );
             $out[] = $expr;
 
             $for_loop_body[] = $expr;
@@ -1065,7 +1071,7 @@ class Haanga_Main
         // }}}
 
         // first {{{
-        if (isset($this->forloop_first[$oid])) {
+        if (isset($this->forloop[$oid]['first'])) {
             $out[] = $this->op_declare('isfirst_'.$oid, $this->expr_TRUE());
 
             $for_loop_body[] = $this->op_declare('isfirst_'.$oid, $this->expr_FALSE());
@@ -1073,18 +1079,26 @@ class Haanga_Main
         // }}}
 
         // revcounter {{{
-        if (isset($this->forloop_revcounter[$oid])) {
+        if (isset($this->forloop[$oid]['revcounter'])) {
+            if (!isset($cnt)) {
+                $cnt   = $this->op_declare('psize_'.$oid, $this->expr_exec('count', $this->expr_var($details['array'])));
+                $out[] = $cnt;
+            }
             $var = $this->expr_var('revcount_'.$oid);
-            $out[] = $this->op_declare($var, $this->expr_exec('count', $this->expr_var($details['array'])));
+            $out[] = $this->op_declare($var, $size );
 
             $for_loop_body[] = $this->op_declare($var, $this->expr("-", $var, $this->expr_number(1)));
         }
          // }}}
 
         // revcounter0 {{{
-        if (isset($this->forloop_revcounter0[$oid])) {
+        if (isset($this->forloop[$oid]['revcounter0'])) {
+            if (!isset($cnt)) {
+                $cnt = $this->op_declare('psize_'.$oid, $this->expr_exec('count', $this->expr_var($details['array'])));
+                $out[] = $cnt;
+            }
             $var = $this->expr_var('revcount0_'.$oid);
-            $out[] = $this->op_declare($var, $this->expr("-",$this->expr_exec('count', $this->expr_var($details['array'])),  $this->expr_number(1)));
+            $out[] = $this->op_declare($var, $this->expr("-", $size, $this->expr_number(1)));
 
             $for_loop_body[] = $this->op_declare($var, $this->expr("-", $var, $this->expr_number(1)));
         }
