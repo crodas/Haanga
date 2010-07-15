@@ -181,13 +181,13 @@ s_content(A) ::= s_content(B) T_STRING_CONTENT(C). { A = B.C; }
 s_content(A) ::= T_STRING_CONTENT(B). { A = B; }
 
 /* expr */
-expr(A) ::= expr(B) T_AND(X)  expr(C).  { A = array('op' => @X, B, C); }
-expr(A) ::= expr(B) T_OR(X)  expr(C).  { A = array('op' => @X, B, C); }
-expr(A) ::= expr(B) T_PLUS|T_MINUS(X)  expr(C).  { A = array('op' => @X, B, C); }
-expr(A) ::= expr(B) T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN(X)  expr(C).  { A = array('op' => trim(@X), B, C); }
-expr(A) ::= expr(B) T_TIMES|T_DIV|T_MOD(X)  expr(C).  { A = array('op' => @X, B, C); }
+expr(A) ::= expr(B) T_AND(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
+expr(A) ::= expr(B) T_OR(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
+expr(A) ::= expr(B) T_PLUS|T_MINUS(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
+expr(A) ::= expr(B) T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN(X)  expr(C).  { A = array('op_expr' => trim(@X), B, C); }
+expr(A) ::= expr(B) T_TIMES|T_DIV|T_MOD(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
 expr(A) ::= piped_list(B). {A = array('var_filter' => B);}
-expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = array('op' => 'expr', B); }
+expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = array('op_expr' => 'expr', B); }
 //expr(A) ::= var_or_string(B). { A = B; }
 expr(A) ::= string(B).   { A = array('string' => B); }
 expr(A) ::= T_NUMERIC(B). { A = B; }

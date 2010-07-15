@@ -181,14 +181,14 @@ class Haanga_CodeGenerator
     protected function php_generate_expr($expr)
     {
         $code = '';
-        if (is_array($expr) && isset($expr['op'])) {
-            if ($expr['op'] == 'expr') {
+        if (is_array($expr) && isset($expr['op_expr'])) {
+            if ($expr['op_expr'] == 'expr') {
                 $code .= "(";
                 $code .= $this->php_generate_expr($expr[0]);
                 $code .= ")";
             } else {
                 $code .= $this->php_generate_expr($expr[0]);
-                $code .= " {$expr['op']} ";
+                $code .= " {$expr['op_expr']} ";
                 $code .= $this->php_generate_expr($expr[1]);
             }
         } else {
