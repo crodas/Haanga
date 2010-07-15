@@ -917,11 +917,11 @@ class Haanga_Main
                 }
                 break;
             case 'block':
-                if (!$this->subtemplate) {
-                    throw new CompilerException("Only subtemplates can call block.super");
-                }
                 if ($this->in_block == 0) {
                     throw new CompilerException("Can't use block.super outside a block");
+                }
+                if (!$this->subtemplate) {
+                    throw new CompilerException("Only subtemplates can call block.super");
                 }
                 return $this->expr_str(self::$block_var);
                 break;
@@ -1073,7 +1073,7 @@ class Haanga_Main
             /* beauty :-) */
             foreach ($details['check'] as $id=>$type) {
                 if (!isset($type['var'])) {
-                    throw new CompilerException("Invalid error {$type['string']}");
+                    throw new CompilerException("Unexpected string {$type['string']}, expected a varabile");
                 }
                 $this_expr = $this->expr('OR',
                     $this->expr_isset("{$var1}[{$id}]", FALSE),

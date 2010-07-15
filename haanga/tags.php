@@ -51,7 +51,7 @@ class Haanga_Tag extends Extensions
      *
      *  @return int|bool Parser::T_CUSTOM_TAG, Parser::T_CUSTOM_TAG or FALSE
      */
-    final public function isValid($tag)
+    final function isValid($tag)
     {
         static $cache = array();
         $tag = strtolower($tag);
