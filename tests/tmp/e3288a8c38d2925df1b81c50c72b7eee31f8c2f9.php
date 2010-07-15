@@ -25,7 +25,7 @@ function haanga_e3288a8c38d2925df1b81c50c72b7eee31f8c2f9($vars, $return=FALSE, $
         $revcount_7  = count($user["list"]);
         $revcount0_7  = count($user["list"]) - 1;
         foreach ($user["list"] as  $u) {
-            $buffer1 .= "\n        ".htmlentities($forcounter1_7)."-".htmlentities($revcount_7)."-".htmlentities($revcount0_7)." (".htmlentities($forcounter1_6)."). ".htmlentities(ucfirst($u["name"]))." (";
+            $buffer1 .= "\n        ".$forcounter1_7."-".$revcount_7."-".$revcount0_7." (".$forcounter1_6."). ".htmlentities(ucfirst($u["name"]))." (";
             if ($isfirst_7) {
                 $buffer1 .= "first";
             } else {

@@ -64,6 +64,10 @@ class Haanga_Main
     protected $generator;
     protected $forloop_counter;
     protected $forloop_counter0;
+    protected $forloop_revcounter;
+    protected $forloop_revcounter0;
+    protected $forloop_first;
+    protected $forloop_last;
     protected $forid = FALSE;
     protected $sub_template = FALSE;
     protected $name;
@@ -942,6 +946,8 @@ class Haanga_Main
                 default:
                     throw new CompilerException("Unexpected forloop.{$variable[1]}");
                 }
+                /* no need to escape it */
+                $this->var_is_safe = TRUE;
                 break;
             case 'block':
                 if ($this->in_block == 0) {
@@ -950,6 +956,8 @@ class Haanga_Main
                 if (!$this->subtemplate) {
                     throw new CompilerException("Only subtemplates can call block.super");
                 }
+                /* no need to escape it */
+                $this->var_is_safe = TRUE;
                 return $this->expr_str(self::$block_var);
                 break;
             } 
