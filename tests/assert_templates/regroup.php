@@ -6,6 +6,10 @@ $data = array('users' => array(
         'age' => 22,
     ),
     array(
+        'name' => 'Middle',
+        'age' => 22,
+    ),
+    array(
         'name' => 'older Foo',
         'age' => 23,
     ),

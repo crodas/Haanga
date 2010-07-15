@@ -86,7 +86,19 @@ Abstract Class Extensions
         return NULL;
     }
 
-    function generator($name, $compiler, $args)
+    // generator(string $name, Haanga_Compiler $compiler, Array $args) {{{
+    /**
+     *  Executer the generator method of the extension. If 
+     *  the extension doesn't has any generator method, an empty
+     *  will be returned.
+     *
+     *  @param string       $name extension name
+     *  @param Haanga_Main  Compiler object
+     *  @param array        Arrays
+     *
+     *  @return array
+     */
+    function generator($name, Haanga_Main $compiler, $args)
     {
         if (!$this->hasGenerator($name)) {
             return array();
@@ -94,7 +106,17 @@ Abstract Class Extensions
         $zclass = $this->getClassName($name);
         return $zclass::generator($compiler, $args);
     }
+    // }}}
 
+    // hasGenerator(string $name) {{{
+    /** 
+     *  Return TRUE if the extension has a  
+     *  generator method
+     *
+     *  @param string $name Extension name
+     *
+     *  @return bool
+     */
     function hasGenerator($name)
     {
         if (!$this->isValid($name)) {
@@ -103,7 +125,7 @@ Abstract Class Extensions
         $zclass = $this->getClassName($name);
         return is_callable(array($zclass, 'generator'));
     }
-
+    // }}}
 
     // getFunctionBody(string $name, string $name) {{{
     /**

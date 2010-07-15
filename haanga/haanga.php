@@ -58,6 +58,7 @@ class CompilerException extends Exception
 
 class Haanga_Main
 {
+
     // properties {{{
     protected static $block_var=NULL;
     protected $generator;
@@ -232,8 +233,8 @@ class Haanga_Main
     // is_expr methods {{{
     function is_expr(Array $cmd, $type=NULL)
     {
-        if (isset($cmd['op'])) {
-            if (!$type || $type == $cmd['op']) {
+        if (isset($cmd['op_expr'])) {
+            if (!$type || $type == $cmd['op_expr']) {
                 return TRUE;
             }
         }
@@ -292,6 +293,18 @@ class Haanga_Main
 
     function op_declare($name, $value)
     {
+        if (is_array($name)) {
+            if (isset($name['var'])) {
+                $name = $name['var'];
+            }
+        }
+
+        if (is_array($value)) {
+            if (isset($value['op_expr'])) {
+                $value = array('expr' => $value);
+            }
+        }
+
         return array('op' => 'declare', 'name' => $name, $value);
     }
 
@@ -457,7 +470,7 @@ class Haanga_Main
      */
     final function expr($operation, $expr1, $expr2=NULL) 
     {
-        $expr = array('op' => $operation, $expr1);
+        $expr = array('op_expr' => $operation, $expr1);
         if ($expr2 !== NULL) {
             $expr[] = $expr2;
         }
@@ -523,8 +536,8 @@ class Haanga_Main
     // Check the current expr  {{{
     protected function check_expr(&$expr)
     {
-        if (is_array($expr) && isset($expr['op'])) {
-            if ($expr['op'] == 'in') {
+        if (is_array($expr) && isset($expr['op_expr'])) {
+            if ($expr['op_expr'] == 'in') {
                 if (isset($expr[1]['string'])) {
                     $expr = $this->expr("!==",
                         $this->expr_exec("strpos", $expr[1], $expr[0]),
@@ -796,16 +809,21 @@ class Haanga_Main
     // {% block 'name' %} ... {% endblock %} {{{
     protected function generate_op_block($details, &$out)
     {
+        $this->in_block++;
+        $this->blocks[] = $details['name'];
+        $block_name = $this->expr_var('blocks', $details['name']);
+
         $this->ob_start($out);
         $buffer_var = 'buffer'.$this->ob_start;
-        $this->in_block++;
 
-        $this->generate_op_code($details['body'], $out);
+        $this->generate_op_code($details['body'], $body);
+
+        $out = array_merge($out, $body);
         $this->ob_start--;
 
-        $var    = $this->expr_var("blocks", $details['name']);
         $buffer = $this->expr_var($buffer_var);
 
+        /* {{{ */
         /**
          *  isset previous block (parent block)?
          *  TRUE
@@ -819,29 +837,32 @@ class Haanga_Main
          *
          */
         $declare = $this->expr_cond(
-            $this->expr_isset($var['var']),
+            $this->expr_isset_ex($block_name),
             $this->expr_cond(
-                $this->expr("===", $this->expr_exec('strpos', $var, 
-                        array('string' => self::$block_var)
-                    ), FALSE
+                $this->expr("===", $this->expr_exec('strpos', $block_name, 
+                        $this->expr_str(self::$block_var)
+                    ), $this->expr_FALSE()
                 ),
-                $var,
+                $block_name,
                 $this->expr_exec('str_replace', 
-                    array('string' => self::$block_var),
+                    $this->expr_str(self::$block_var),
                     $buffer,
-                    $var
+                    $block_name
                 )
             ),
             $buffer
         );
+        /* }}} */
 
         if (!$this->subtemplate) {
             $this->generate_op_print($declare, $out);
         } else {
-            $this->blocks[] = $details['name'];
-
-            $out[] = $this->op_declare('blocks["'.$details['name'].'"]', $declare);
+            $out[] = $this->op_declare($block_name, $declare);
+            if ($this->in_block > 1) {
+                $this->generate_op_print($block_name, $out);
+            }
         }
+        array_pop($this->blocks);
         $this->in_block--;
 
     } 
@@ -899,16 +920,35 @@ class Haanga_Main
                     $this->forloop_counter[$this->forid] = TRUE; 
                     $variable = 'islast_'.$this->forid;
                     break;
+                case 'first':
+                    $this->forloop_first[$this->forid]    = TRUE;
+                    $variable = 'isfirst_'.$this->forid;
+                    break;
+                case 'revcounter':
+                    $this->forloop_revcounter[$this->forid] = TRUE;
+                    $variable = 'revcount_'.$this->forid;
+                    break;
+                case 'revcounter0':
+                    $this->forloop_revcounter0[$this->forid] = TRUE;
+                    $variable = 'revcount0_'.$this->forid;
+                    break;
+                case 'parentloop':
+                    unset($variable[1]);
+                    $this->forid--;
+                    $variable = $this->generate_variable_name(array_values($variable));
+                    $variable = $variable['var'];
+                    $this->forid++;
+                    break;
                 default:
                     throw new CompilerException("Unexpected forloop.{$variable[1]}");
                 }
                 break;
             case 'block':
-                if (!$this->subtemplate) {
-                    throw new CompilerException("Only subtemplates can call block.super");
-                }
                 if ($this->in_block == 0) {
                     throw new CompilerException("Can't use block.super outside a block");
+                }
+                if (!$this->subtemplate) {
+                    throw new CompilerException("Only subtemplates can call block.super");
                 }
                 return $this->expr_str(self::$block_var);
                 break;
@@ -994,17 +1034,24 @@ class Haanga_Main
         $this->generate_op_code($details['body'], $for_loop_body);
 
         $oid = $this->forid;
+        
+        // counter {{{
         if (isset($this->forloop_counter[$oid])) {
             $var   = 'forcounter1_'.$oid;
             $out[] = $this->op_declare($var, $this->expr_number(1));
             $for_loop_body[] = $this->op_inc($var);
         }
+        // }}}
 
+        // counter0 {{{
         if (isset($this->forloop_counter0[$oid])) {
             $var   = 'forcounter0_'.$oid;
             $out[] = $this->op_declare($var, $this->expr_number(0) );
             $for_loop_body[] = $this->op_inc($var);
         }
+        // }}}
+
+        // last {{{
         if (isset($this->forloop_last[$oid])) {
             $cnt   = 'psize_'.$oid;
             $var   = 'islast_'.$oid;
@@ -1015,6 +1062,33 @@ class Haanga_Main
 
             $for_loop_body[] = $expr;
         }
+        // }}}
+
+        // first {{{
+        if (isset($this->forloop_first[$oid])) {
+            $out[] = $this->op_declare('isfirst_'.$oid, $this->expr_TRUE());
+
+            $for_loop_body[] = $this->op_declare('isfirst_'.$oid, $this->expr_FALSE());
+        }
+        // }}}
+
+        // revcounter {{{
+        if (isset($this->forloop_revcounter[$oid])) {
+            $var = $this->expr_var('revcount_'.$oid);
+            $out[] = $this->op_declare($var, $this->expr_exec('count', $this->expr_var($details['array'])));
+
+            $for_loop_body[] = $this->op_declare($var, $this->expr("-", $var, $this->expr_number(1)));
+        }
+         // }}}
+
+        // revcounter0 {{{
+        if (isset($this->forloop_revcounter0[$oid])) {
+            $var = $this->expr_var('revcount0_'.$oid);
+            $out[] = $this->op_declare($var, $this->expr("-",$this->expr_exec('count', $this->expr_var($details['array'])),  $this->expr_number(1)));
+
+            $for_loop_body[] = $this->op_declare($var, $this->expr("-", $var, $this->expr_number(1)));
+        }
+        // }}}
 
         /* Restore old ForID */
         $this->forid = $oldid;
@@ -1060,7 +1134,7 @@ class Haanga_Main
             /* beauty :-) */
             foreach ($details['check'] as $id=>$type) {
                 if (!isset($type['var'])) {
-                    throw new CompilerException("Invalid error {$type['string']}");
+                    throw new CompilerException("Unexpected string {$type['string']}, expected a varabile");
                 }
                 $this_expr = $this->expr('OR',
                     $this->expr_isset("{$var1}[{$id}]", FALSE),

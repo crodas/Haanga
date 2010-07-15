@@ -394,6 +394,14 @@ whitespace {
     $this->token = Parser::T_BRACKETS_CLOSE;
 }
 
+numerals {
+    $this->token = Parser::T_NUMERIC;
+}
+
+numerals "."  numerals {
+    $this->token = Parser::T_NUMERIC;
+}
+
 "'" {
     $this->token = Parser::T_STRING_SINGLE_INIT;
     $this->yypushstate(self::IN_STRING_SINGLE);

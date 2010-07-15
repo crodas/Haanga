@@ -42,7 +42,7 @@ class Haanga_Filter extends Extensions
      *
      *
      */
-    final public function isValid($filter)
+    final function isValid($filter)
     {
         static $cache = array();
         $filter = strtolower($filter);
