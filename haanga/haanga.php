@@ -58,6 +58,7 @@ class CompilerException extends Exception
 
 class Haanga_Main
 {
+
     // properties {{{
     protected static $block_var=NULL;
     protected $generator;
@@ -832,7 +833,7 @@ class Haanga_Main
             $this->expr_cond(
                 $this->expr("===", $this->expr_exec('strpos', $block_name, 
                         $this->expr_str(self::$block_var)
-                    ), FALSE
+                    ), $this->expr_FALSE()
                 ),
                 $block_name,
                 $this->expr_exec('str_replace', 
@@ -849,6 +850,9 @@ class Haanga_Main
             $this->generate_op_print($declare, $out);
         } else {
             $out[] = $this->op_declare($block_name, $declare);
+            if ($this->in_block > 1) {
+                $this->generate_op_print($block_name, $out);
+            }
         }
         array_pop($this->blocks);
         $this->in_block--;
