@@ -1,1 +1,2 @@
 {{ array|join:" // " }}
+{{ array|join }}
