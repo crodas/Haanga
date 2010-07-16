@@ -713,7 +713,7 @@ class Haanga_Main
 
         $details = $this->get_var_filtering($details['variable'], $variable);
 
-        if (!isset($details['var']) && !isset($variable['var'])) {
+        if (!isset($details['var']) && !isset($details['exec'])) {
             /* generate_variable_name didn't replied a variable, weird case
                 currently just used for {{block.super}}.
             */
