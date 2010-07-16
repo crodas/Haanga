@@ -50,7 +50,7 @@ function do_parsing($template, $ignore_whitespace=FALSE)
             $parser->doParse($lexer->token, $lexer->value);
         }
     } catch (Exception $e) {
-        throw new Exception($e->getMessage(). ' on line '.$lexer->getLine());
+        throw new CompilerException($e->getMessage(). ' on line '.$lexer->getLine());
     }
     $parser->doParse(0, 0);
     return $parser->body;

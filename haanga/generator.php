@@ -292,6 +292,9 @@ class Haanga_CodeGenerator
                 $code .= $this->php_generate_declare(array($op[$i]['false']));
                 $code .= ").";
                 break;
+            case 'constant':
+                $code = $value;
+                break;
             default:
                 var_dump($op);die('error');
                 throw new Exception("Don't know how to declare {$key} = {$value}");

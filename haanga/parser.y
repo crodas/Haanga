@@ -84,7 +84,7 @@ stmts(A) ::= if_stmt(B). { A = B; }
 stmts(A) ::= T_INCLUDE var_or_string(B) T_CLOSE_TAG. { A = array('operation' => 'include', B); }
 stmts(A) ::= custom_tag(B). { A = B; }
 stmts(A) ::= alias(B). { A = B; }
-stmts(A) ::= T_AUTOESCAPE T_OFF|T_ON(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG. { A = array('operation' => 'autoescape', 'value' => @B, 'body' => X); }
+stmts(A) ::= T_AUTOESCAPE T_OFF|T_ON(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG. { A = array('operation' => 'autoescape', 'value' => strtolower(@B), 'body' => X); }
 
 /* Statement */
 
@@ -149,7 +149,7 @@ block_stmt(A) ::= T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK 
 filter_stmt(A) ::= T_FILTER piped_list(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_FILTER T_CLOSE_TAG. { A = array('operation' => 'filter', 'functions' => B, 'body' => X); }
 
 /* regroup stmt */
-regroup(A) ::= T_REGROUP varname(B) T_BY varname(C) T_AS varname(X). { A=array('operation' => 'regroup', 'array' => B, 'row' => C, 'as' => X); }
+regroup(A) ::= T_REGROUP piped_list(B) T_BY varname(C) T_AS varname(X). { A=array('operation' => 'regroup', 'array' => B, 'row' => C, 'as' => X); }
 
 /* Cycle */ 
 cycle(A) ::= T_CYCLE list(B). { A = array('operation' => 'cycle', 'vars' => B); } 
@@ -198,4 +198,4 @@ varname(A) ::= varname(B) T_DOT T_ALPHA(C). { if (!is_array(B)) { A = array(B); 
 varname(A) ::= varname(B) T_BRACKETS_OPEN var_or_string(C) T_BRACKETS_CLOSE. { if (!is_array(B)) { A = array(B); } else { A = B; }  A[]=C;}
 varname(A) ::= T_ALPHA(B). { A = B; } 
 /* T_CUSTOM|T_CUSTOM_BLOCK are also T_ALPHA */
-varname(A) ::= T_CUSTOM|T_CUSTOM_BLOCK(B). { A = B; } 
+varname(A) ::= T_CUSTOM_TAG|T_CUSTOM_BLOCK(B). { A = B; } 
