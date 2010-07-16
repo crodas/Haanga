@@ -51,7 +51,6 @@ class Haanga_CodeGenerator
         foreach ($op_code as $op) {
             $method = "php_{$op['op']}";
             if (!is_callable(array($this, $method))) {
-                var_dump($code, $op);
                 throw new Exception("CodeGenerator: Missing method $method");
             }
             switch ($op['op']) {
@@ -209,9 +208,6 @@ class Haanga_CodeGenerator
     protected function php_generate_list($array)
     {
         $code = "";
-        if (!is_array($array)) {
-            var_dump(debug_backtrace());die();
-        }
         foreach ($array as $value) {
             $code .= $this->php_generate_declare(array($value));
             $code .= ", ";
@@ -228,7 +224,7 @@ class Haanga_CodeGenerator
                 continue;
             }
             if (!is_Array($op[$i])) {
-                var_dump($op);die('error1');
+                throw new CompilerException("Malformed declaration ".print_r($op, TRUE));
             }
             $key   = key($op[$i]);
             $value = current($op[$i]); 
@@ -296,8 +292,7 @@ class Haanga_CodeGenerator
                 $code = $value;
                 break;
             default:
-                var_dump($op);die('error');
-                throw new Exception("Don't know how to declare {$key} = {$value}");
+                throw new Exception("Don't know how to declare {$key} = {$value} (".print_r($op[$i], TRUE));
             }
         }
 
