@@ -106,16 +106,16 @@ stmt(A) ::= regroup(B). { A = B; }
 stmt(A) ::= first_of(B). { A = B; }
 
 /* FOR loop */
-for_stmt(A) ::= T_FOR varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
+for_stmt(A) ::= T_FOR varname(B) T_IN piped_list(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
     A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D, 'index' => NULL); 
 }
-for_stmt(A) ::= T_FOR varname(I) T_COMMA varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
+for_stmt(A) ::= T_FOR varname(I) T_COMMA varname(B) T_IN piped_list(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
     A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D, 'index' => I); 
 }
-for_stmt(A) ::= T_FOR varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_EMPTY T_CLOSE_TAG body(E)  T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
+for_stmt(A) ::= T_FOR varname(B) T_IN piped_list(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_EMPTY T_CLOSE_TAG body(E)  T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
     A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D, 'empty' => E, 'index' => NULL); 
 }
-for_stmt(A) ::= T_FOR varname(I) T_COMMA varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_EMPTY T_CLOSE_TAG body(E)  T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
+for_stmt(A) ::= T_FOR varname(I) T_COMMA varname(B) T_IN piped_list(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_EMPTY T_CLOSE_TAG body(E)  T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
     A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D, 'empty' => E, 'index' => I); 
 }
 /* IF */

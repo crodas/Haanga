@@ -89,7 +89,6 @@ class Haanga_Main
      */
     public $var_is_safe=FALSE;
     protected $autoescape=TRUE;
-    protected $strip_whitespaces=FALSE;
     protected $force_whitespaces=0;
     /**
      *  Debug file
@@ -675,13 +674,14 @@ class Haanga_Main
      *  output in the parser.
      *
      *  
-     *  @param array $variable (Output of piped_list(B) (parser))
-     *  @param array &$varname Variable name
+     *  @param array $variable      (Output of piped_list(B) (parser))
+     *  @param array &$varname      Variable name
+     *  @param bool  $accept_string  TRUE is string output are OK (ie: block.parent)
      *
      *  @return expr  
      *
      */
-    function get_var_filtering($variable, &$varname)
+    function get_filtered_var($variable, &$varname, $accept_string=FALSE)
     {
         $this->var_is_safe = FALSE;
         if (count($variable) > 1) {
@@ -709,6 +709,12 @@ class Haanga_Main
             $details = $this->generate_variable_name($variable[0]);
             $varname = $variable[0];
 
+            if (!isset($details['var']) && !$accept_string) {
+                /* generate_variable_name didn't replied a variable, weird case
+                    currently just used for {{block.super}}.
+                */
+                throw new Haanga_CompilerException("Invalid variable name {$variable[0]}");
+            }
         }
 
         return $details;
@@ -726,7 +732,7 @@ class Haanga_Main
     protected function generate_op_print_var($details, &$out)
     {
 
-        $details = $this->get_var_filtering($details['variable'], $variable);
+        $details = $this->get_filtered_var($details['variable'], $variable, TRUE);
 
         if (!isset($details['var']) && !isset($details['exec'])) {
             /* generate_variable_name didn't replied a variable, weird case
@@ -870,13 +876,8 @@ class Haanga_Main
     protected function generate_op_regroup($details, &$out)
     {
         $out[] = $this->op_comment("Temporary sorting");
-        $array = $this->get_var_filtering($details['array'], $varname);
-        if (!isset($array['var']) && !isset($array['exec'])) {
-            /* generate_variable_name didn't replied a variable, weird case
-                currently just used for {{block.super}}.
-            */
-            throw new Haanga_CompilerException("Invalid variable name {$details['array']}");
-        }
+        $array = $this->get_filtered_var($details['array'], $varname);
+
         if (isset($array['exec'])) {
             $varname = $this->expr_var($details['as']);
             $out[]   = $this->op_declare($varname, $array); 
@@ -983,13 +984,7 @@ class Haanga_Main
             $content = $this->generate_variable_name($details['variable']);
         } else if (isset($details['html']))  {
             $html = $details['html'];
-            if ($this->strip_whitespaces && $this->force_whitespaces == 0) {
-                $html = str_replace("\n", " ", $html);
-                $html = preg_replace("/\s\s+/", " ", $html);
-            }
             $content = $this->expr_str($html);
-        } else if (isset($details['function'])) {
-            $content = $this->expr_exec($details['function'][0], $details['function'][1]);
         } else {
             $content = $details;
         }
@@ -1118,7 +1113,8 @@ class Haanga_Main
         $this->forid = $oldid;
 
         /* Merge loop body  */
-        $loop = $this->op_foreach($details['array'], $details['variable'], $details['index']);
+        $array = $this->get_filtered_var($details['array'], $varname);
+        $loop  = $this->op_foreach($array, $details['variable'], $details['index']);
 
         $out[] = $loop;
         $out   = array_merge($out, $for_loop_body);

@@ -104,7 +104,7 @@ whitespace      = /[ \r\t\n]+/
 html            = /([^{]+(.[^%{#])?)+/
 comment         = /([^\#]+\#\})+/
 custom_tag_end  = /end([a-zA-Z][a-zA-Z0-9]*)/
-token_end       = /[^a-zA-Z0-9_]/
+token_end       = /[^a-zA-Z0-9_\.]/
 single_string   = /[^'\\]+/
 double_string   = /[^"\\]+/
 */
