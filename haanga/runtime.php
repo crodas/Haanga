@@ -1,6 +1,10 @@
 <?php
 
 
+class Haanga_Exception extends Exception
+{
+}
+
 /**
  *  Haanga Runtime class
  *
@@ -11,6 +15,7 @@ class Haanga
 {
     protected static $cache_dir;
     protected static $templates_dir;
+    public static $has_compiled;
 
     private function __construct()
     {
@@ -20,10 +25,10 @@ class Haanga
     public static function setCacheDir($dir)
     {
         if (!is_dir($dir)) {
-            throw new Exception("{$dir} is not a valid directory");
+            throw new Haanga_Exception("{$dir} is not a valid directory");
         }
         if (!is_writable($dir)) {
-            throw new Exception("{$dir} can't be written");
+            throw new Haanga_Exception("{$dir} can't be written");
         }
         self::$cache_dir = $dir;
     }
@@ -31,7 +36,7 @@ class Haanga
     public static function setTemplateDir($dir)
     {
         if (!is_dir($dir)) {
-            throw new Exception("{$dir} is not a valid directory");
+            throw new Haanga_Exception("{$dir} is not a valid directory");
         }
         self::$templates_dir = $dir;
     }
@@ -55,12 +60,19 @@ class Haanga
     {
         static $compiler;
         if (empty(self::$cache_dir) || empty(self::$templates_dir)) {
-            throw new Exception("Cache dir or template dir is missing");
+            throw new Haanga_Exception("Cache dir or template dir is missing");
         }
 
-        $tpl = self::$templates_dir.'/'.$file;
-        $fnc = sha1($tpl);
-        $php = self::$cache_dir.'/'.$fnc.'.php';
+        self::$has_compiled = FALSE;
+
+        $tpl      = self::$templates_dir.'/'.$file;
+        $fnc      =  sha1($tpl);
+        $php      = self::$cache_dir.'/'.$fnc.'.php';
+        $callback = "haanga_".$fnc;
+
+        if (is_callable($callback)) {
+            return $callback($vars, $return, $blocks);
+        }
 
         if (!is_file($php) && !is_file($tpl)) {
             throw new Exception("View {$file} doesn't exists");
@@ -75,8 +87,8 @@ class Haanga
             //$compiler->setDebug($php.".dump");
             $code = $compiler->compile_file($tpl, $tpl);
             file_put_contents($php, "<?php".$code);
+            self::$has_compiled = TRUE;
         }
-        $callback = "haanga_".$fnc;
         if (!is_callable($callback)) {
             require_once $php;
         }

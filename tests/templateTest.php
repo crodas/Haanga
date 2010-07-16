@@ -24,6 +24,17 @@ class templateTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($output, $expected);
     }
 
+    /** 
+     * @dataProvider tplProvider
+     */
+    public function testCompiled($test_file, $data, $expected)
+    {
+        /* same as above, but we ensure that the file wasn't compiled */
+        $output = Haanga::Load($test_file, $data, TRUE);
+        $this->assertEquals($output, $expected);
+        $this->assertFalse(Haanga::$has_compiled);
+    }
+
     public function tplProvider()
     {
         $datas = array();

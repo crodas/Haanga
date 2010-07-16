@@ -50,7 +50,7 @@ require HAANGA_DIR."/filters.php";
  *  Exception class
  *
  */
-class CompilerException extends Exception
+class Haanga_CompilerException extends Exception
 {
 }
 // }}}
@@ -219,7 +219,7 @@ class Haanga_Main
     final function compile_file($file) 
     {
         if (!is_readable($file)) {
-            throw new CompilerException("$file is not a file");
+            throw new Haanga_CompilerException("$file is not a file");
         }
         $this->_base_dir = dirname($file);
         $this->_file     = basename($file);
@@ -521,7 +521,7 @@ class Haanga_Main
     function get_base_template($base)
     {
         if (!isset($base['string'])) {
-            throw new CompilerException("Dynamic inheritance is not supported for compilated templates");
+            throw new Haanga_CompilerException("Dynamic inheritance is not supported for compilated templates");
         }
         $file = $base['string'];
         list($this->subtemplate, $new_code) = $this->compile_required_template($file);
@@ -540,11 +540,11 @@ class Haanga_Main
     protected function generate_op_code($parsed, &$out)
     {
         if (!is_array($parsed)) {
-            throw new CompilerException("Invalid \$parsed array");
+            throw new Haanga_CompilerException("Invalid \$parsed array");
         }
         foreach ($parsed as $op) {
             if (!isset($op['operation'])) {
-                throw new CompilerException("Malformed $parsed array");
+                throw new Haanga_CompilerException("Malformed $parsed array");
             }
             if ($this->subtemplate && $this->in_block == 0 && $op['operation'] != 'block') {
                 /* ignore most of tokens in subtemplates */
@@ -552,7 +552,7 @@ class Haanga_Main
             }
             $method = "generate_op_".$op['operation'];
             if (!is_callable(array($this, $method))) {
-                throw new CompilerException("Compiler: Missing method $method");
+                throw new Haanga_CompilerException("Compiler: Missing method $method");
             }
             $this->$method($op, $out);
         }
@@ -633,7 +633,7 @@ class Haanga_Main
             }
         }
         if (!is_file($file)) {
-            throw new CompilerException("can't find {$file} file template");
+            throw new Haanga_CompilerException("can't find {$file} file template");
         }
         $class = get_class($this);
         $comp  = new  $class;
@@ -647,7 +647,7 @@ class Haanga_Main
     protected function generate_op_include($details, &$out)
     {
         if (!$details[0]['string']) {
-            throw new CompilerException("Dynamic inheritance is not supported for compilated templates");
+            throw new Haanga_CompilerException("Dynamic inheritance is not supported for compilated templates");
         }
         list($name,$code) = $this->compile_required_template($details[0]['string']);
         $this->append .= "\n\n{$code}";
@@ -690,7 +690,7 @@ class Haanga_Main
             
             if (!isset($target['var'])) {
                 /* block.super can't have any filter */
-                throw new CompilerException("This variable can't have any filter");
+                throw new Haanga_CompilerException("This variable can't have any filter");
             }
 
             for ($i=1; $i < $count; $i++) {
@@ -875,7 +875,7 @@ class Haanga_Main
             /* generate_variable_name didn't replied a variable, weird case
                 currently just used for {{block.super}}.
             */
-            throw new CompilerException("Invalid variable name {$details['array']}");
+            throw new Haanga_CompilerException("Invalid variable name {$details['array']}");
         }
         if (isset($array['exec'])) {
             $varname = $this->expr_var($details['as']);
@@ -913,7 +913,7 @@ class Haanga_Main
             switch ($variable[0]) {
             case 'forloop':
                 if (!$this->forid) {
-                    throw new CompilerException("Invalid forloop reference outside of a loop");
+                    throw new Haanga_CompilerException("Invalid forloop reference outside of a loop");
                 }
                 switch ($variable[1]) {
                 case 'counter':
@@ -949,17 +949,17 @@ class Haanga_Main
                     $this->forid++;
                     break;
                 default:
-                    throw new CompilerException("Unexpected forloop.{$variable[1]}");
+                    throw new Haanga_CompilerException("Unexpected forloop.{$variable[1]}");
                 }
                 /* no need to escape it */
                 $this->var_is_safe = TRUE;
                 break;
             case 'block':
                 if ($this->in_block == 0) {
-                    throw new CompilerException("Can't use block.super outside a block");
+                    throw new Haanga_CompilerException("Can't use block.super outside a block");
                 }
                 if (!$this->subtemplate) {
-                    throw new CompilerException("Only subtemplates can call block.super");
+                    throw new Haanga_CompilerException("Only subtemplates can call block.super");
                 }
                 /* no need to escape it */
                 $this->var_is_safe = TRUE;
@@ -1158,7 +1158,7 @@ class Haanga_Main
             /* beauty :-) */
             foreach ($details['check'] as $id=>$type) {
                 if (!isset($type['var'])) {
-                    throw new CompilerException("Unexpected string {$type['string']}, expected a varabile");
+                    throw new Haanga_CompilerException("Unexpected string {$type['string']}, expected a varabile");
                 }
                 $this_expr = $this->expr('OR',
                     $this->expr_isset("{$var1}[{$id}]", FALSE),
@@ -1216,7 +1216,7 @@ class Haanga_Main
     function get_custom_tag($name)
     {
         $function = $this->get_function_name().'_tag_'.$name;
-        $this->append .= "\n\n".Extensions::getInstance('Haanga_Tag')->getFunctionBody($name, $function);
+        $this->append .= "\n\n".Haanga_Extensions::getInstance('Haanga_Tag')->getFunctionBody($name, $function);
         return $function;
     }
 
@@ -1229,7 +1229,7 @@ class Haanga_Main
     {
         static $tags;
         if (!$tags) {
-            $tags = Extensions::getInstance('Haanga_Tag');
+            $tags = Haanga_Extensions::getInstance('Haanga_Tag');
         }
 
         $tag_name    = $details['name'];
@@ -1320,7 +1320,7 @@ class Haanga_Main
     function get_custom_filter($name)
     {
         $function = $this->get_function_name().'_filter_'.$name;
-        $this->append .= "\n\n".Extensions::getInstance('Haanga_Filter')->getFunctionBody($name, $function);
+        $this->append .= "\n\n".Haanga_Extensions::getInstance('Haanga_Filter')->getFunctionBody($name, $function);
         return $function;
     }
 
@@ -1329,7 +1329,7 @@ class Haanga_Main
     {
         static $filter;
         if (!$filter) {
-            $filter = Extensions::getInstance('Haanga_Filter');
+            $filter = Haanga_Extensions::getInstance('Haanga_Filter');
         }
         
         if (is_array($name)) {
@@ -1343,7 +1343,7 @@ class Haanga_Main
         }
 
         if (!$filter->isValid($name)) {
-            throw new CompilerException("{$name} is an invalid filter");
+            throw new Haanga_CompilerException("{$name} is an invalid filter");
         }
         if ($filter->hasGenerator($name)) {
             return $filter->generator($name, $this, $args);
@@ -1456,7 +1456,7 @@ final class Haanga_Main_Runtime extends Haanga_Main
 
         if (!isset($loaded[$name])) {
             $this->prepend_op[] = $this->op_comment("Load tag {$name} definition");
-            $this->prepend_op[] = $this->op_expr($this->expr_exec("Haanga::doInclude", $this->Expr_str(Extensions::getInstance('Haanga_Tag')->getFilePath($name, FALSE)))); 
+            $this->prepend_op[] = $this->op_expr($this->expr_exec("Haanga::doInclude", $this->Expr_str(Haanga_Extensions::getInstance('Haanga_Tag')->getFilePath($name, FALSE)))); 
             $loaded[$name] = TRUE;
         }
 
@@ -1473,7 +1473,7 @@ final class Haanga_Main_Runtime extends Haanga_Main
 
         if (!isset($loaded[$name])) {
             $this->prepend_op[] = $this->op_comment("Load filter {$name} definition");
-            $this->prepend_op[] = $this->op_expr($this->expr_exec("Haanga::doInclude", $this->Expr_str(Extensions::getInstance('Haanga_Filter')->getFilePath($name, FALSE)))); 
+            $this->prepend_op[] = $this->op_expr($this->expr_exec("Haanga::doInclude", $this->Expr_str(Haanga_Extensions::getInstance('Haanga_Filter')->getFilePath($name, FALSE)))); 
             $loaded[$name] = TRUE;
         }
 

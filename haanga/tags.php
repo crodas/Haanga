@@ -36,7 +36,7 @@
 */
 
 
-class Haanga_Tag extends Extensions
+class Haanga_Tag extends Haanga_Extensions
 {
     /**
      *  isValid

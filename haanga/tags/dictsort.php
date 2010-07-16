@@ -11,14 +11,14 @@ class Dictsort_Tag
     function generator($cmp, $args, $redirected)
     {
         if (!$redirected) {
-            throw new CompilerException("dictsort must be redirected to a variable using AS <varname>");
+            throw new Haanga_CompilerException("dictsort must be redirected to a variable using AS <varname>");
         }
         if (count($args) != 2) {
-            throw new CompilerException("Dictsort must have two params");
+            throw new Haanga_CompilerException("Dictsort must have two params");
         }
 
         if (!$cmp->is_var($args[0])) {
-            throw new CompilerException("Dictsort: First parameter must be an array");
+            throw new Haanga_CompilerException("Dictsort: First parameter must be an array");
         }
 
         /* set redirected as a variable */

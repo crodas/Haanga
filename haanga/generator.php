@@ -224,7 +224,7 @@ class Haanga_CodeGenerator
                 continue;
             }
             if (!is_Array($op[$i])) {
-                throw new CompilerException("Malformed declaration ".print_r($op, TRUE));
+                throw new Haanga_CompilerException("Malformed declaration ".print_r($op, TRUE));
             }
             $key   = key($op[$i]);
             $value = current($op[$i]); 
