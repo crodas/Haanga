@@ -102,7 +102,6 @@ custom_tag(A) ::= T_CUSTOM_BLOCK(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_CUSTOM_END(
 alias(A) ::= T_WITH varname(B) T_AS varname(C) T_CLOSE_TAG body(X) T_OPEN_TAG T_ENDWITH T_CLOSE_TAG. { A = array('operation' => 'alias', 'var' => B, 'as' => C, 'body' => X); }
 
 /* Simple statements (don't require a end_tag or a body ) */
-stmt(A) ::= cycle(B). { A = B; }
 stmt(A) ::= regroup(B). { A = B; }
 stmt(A) ::= first_of(B). { A = B; }
 
@@ -150,10 +149,6 @@ filter_stmt(A) ::= T_FILTER piped_list(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_F
 
 /* regroup stmt */
 regroup(A) ::= T_REGROUP piped_list(B) T_BY varname(C) T_AS varname(X). { A=array('operation' => 'regroup', 'array' => B, 'row' => C, 'as' => X); }
-
-/* Cycle */ 
-cycle(A) ::= T_CYCLE list(B). { A = array('operation' => 'cycle', 'vars' => B); } 
-cycle(A) ::= T_CYCLE list(B) T_AS varname(C). { A = array('operation' => 'cycle', 'vars' => B, 'as' => C); } 
 
 /* first_of */
 first_of(A) ::= T_FIRST_OF list(B). { A = array('operation' => 'first_of', 'vars' => B); }

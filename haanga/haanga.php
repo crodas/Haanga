@@ -77,7 +77,6 @@ class Haanga_Main
     protected $ob_start=0;
     protected $append;
     protected $prepend_op;
-    protected $cycle;
     /**
      *  Table which contains all variables 
      *  aliases defined in the template
@@ -774,47 +773,6 @@ class Haanga_Main
     }
     // }}}
 
-    // cycle 'uno' var {{{
-    protected function generate_op_cycle($details, &$out)
-    {
-        static $cycle = 0;
-
-        $index = 'index_'.$cycle;
-        $def   = 'def_cycle_'.$cycle; 
-
-        if (count($details['vars']) == 1 && isset($details['vars'][0]['var']) && isset($this->cycle[$details['vars'][0]['var']])) {
-            $id    = $this->cycle[$details['vars'][0]['var']];
-            $index = 'index_'.$id;
-            $def   = 'def_cycle_'.$id; 
-        } else {
-            $out[] = $this->op_declare($def, $this->expr_array_first($details['vars']));
-        }
-
-        /* isset($var) == FALSE */
-        $expr = $this->expr('==', $this->expr_exec('isset', $this->expr_var($index)), FALSE);
-
-        /* ($foo + 1) % count($bar) */
-        $inc = $this->expr('%',
-            $this->expr('expr',
-                $this->expr('+', $this->expr_var($index), 1)
-            ),
-            $this->expr_exec('count', $this->expr_var($def))
-        );
-
-
-
-
-        if (!isset($details['as'])) {
-            $out[] = $this->op_declare($index, $this->expr_cond($expr, $this->expr_number(0), array('expr' => $inc))); 
-            $var   = $this->expr_var($def, $this->expr_var($index));
-            $this->generate_op_print(array("variable" => $var['var']), $out);
-        } else {
-            $this->cycle[$details['as']] = $cycle;
-        }
-        $cycle++;
-    }
-    // }}}
-
     // {# something #} {{{
     protected function generate_op_comment($details, &$out)
     {
@@ -1002,7 +960,7 @@ class Haanga_Main
     // }}}
 
     // Print {{{
-    protected function generate_op_print($details, &$out)
+    public function generate_op_print($details, &$out)
     {
         $last = count($out)-1;
         if (isset($details['variable'])) {
@@ -1289,7 +1247,7 @@ class Haanga_Main
         $args = array_merge(array($function), $details['list']);
 
         if ($tags->hasGenerator($tag_name)) {
-            $exec = $tags->generator($tag_name, $this, $args, $var);
+            $exec = $tags->generator($tag_name, $this, $details['list'], $var);
             if ($exec InstanceOf ArrayIterator) {
                 /* 
                    The generator returned more than one statement,
