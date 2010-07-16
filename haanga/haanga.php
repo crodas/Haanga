@@ -856,7 +856,7 @@ class Haanga_Main
     {
         $out[] = $this->op_declare($details['as'], $this->expr_array_first(array()));
         $array = $this->get_var_filtering($details['array'], $varname);
-        if (!isset($details['var']) && !isset($varname['var'])) {
+        if (!isset($array['var']) && !isset($array['exec'])) {
             /* generate_variable_name didn't replied a variable, weird case
                 currently just used for {{block.super}}.
             */
