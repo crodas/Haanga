@@ -11,7 +11,7 @@ class Spaceless_Tag
     public $is_block  = TRUE;
 
     /**
-     *  main()
+     *  main() {{{
      *
      *  This function contains the definition of spaceless
      *  tag, it is important not to refence to $compiler since it
@@ -21,7 +21,7 @@ class Spaceless_Tag
      *  It is also important to put the start and the end of the 
      *  function in new lines.
      *
-     */
+     *
     static function main($html)
     {
         $regex = array(
@@ -32,7 +32,7 @@ class Spaceless_Tag
         $replaces = array("><", "<", ">");
         $html     = preg_replace($regex, $replaces, $html);
         return $html;
-    }
+    } }}} */
 
     /**
      *  spaceless now uses generated code instead of 

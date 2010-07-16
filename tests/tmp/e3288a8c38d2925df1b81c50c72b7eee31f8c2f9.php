@@ -5,18 +5,43 @@ Haanga::doInclude("/filters/dictsort.php");
 function haanga_e3288a8c38d2925df1b81c50c72b7eee31f8c2f9($vars, $return=FALSE, $blocks=array())
 {
     extract($vars);
-    $buffer1  = "";
-    $sorted_users  = Array();
-    $users  = Dictsort_Filter::main($users, "age");
+    /*  Test regroup with filters, and without filters  */
+    $buffer1  = "\n";
     /* Temporary sorting */
-    foreach ($users as  $item) {
+    $sorted_users  = Dictsort_Filter::main($users, $regroup_by);
+    $temp_group  = Array();
+    foreach ($sorted_users as  $item) {
         $temp_group[$item["age"]][]  = $item;
     }
     /* Proper format */
+    $sorted_users  = Array();
     foreach ($temp_group as  $group => $item) {
         $sorted_users[]  = Array("grouper" => $group, "list" => $item);
     }
     /* Sorting done */
+    $buffer1 .= "\n";
+    $t_users  = $users;
+    $field  = Array();
+    foreach ($t_users as  $key => $item) {
+        $field[$key]  = $item[$regroup_by];
+    }
+    array_multisort($field, SORT_REGULAR, $t_users);
+    $buffer1 .= "\n";
+    /* Temporary sorting */
+    $temp_group  = Array();
+    foreach ($t_users as  $item) {
+        $temp_group[$item["age"]][]  = $item;
+    }
+    /* Proper format */
+    $sorted_users1  = Array();
+    foreach ($temp_group as  $group => $item) {
+        $sorted_users1[]  = Array("grouper" => $group, "list" => $item);
+    }
+    /* Sorting done */
+    $buffer1 .= "\n\n";
+    if ($sorted_users != $sorted_users1) {
+        $buffer1 .= "\n    Error\n";
+    }
     $buffer1 .= "\n\n";
     $forcounter1_1  = 1;
     foreach ($sorted_users as  $user) {

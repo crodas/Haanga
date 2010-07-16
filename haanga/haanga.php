@@ -243,6 +243,11 @@ class Haanga_Main
     {
         return $this->is_expr($cmd, 'exec');
     }
+
+    function is_var(Array $cmd)
+    {
+        return isset($cmd['var']);
+    }
     // }}}
 
     // op_* helper methods {{{
@@ -452,6 +457,16 @@ class Haanga_Main
     final function expr_var($var)
     {
         return array('var' => func_get_args());
+    }
+
+    /**
+     *  Return expr for variable reference
+     *
+     *  @return array
+     */
+    final function expr_var_ex(Array $var)
+    {
+        return array('var' => $var);
     }
 
     /**
@@ -854,7 +869,7 @@ class Haanga_Main
     // regroup <var1> by <field> as <foo> {{{
     protected function generate_op_regroup($details, &$out)
     {
-        $out[] = $this->op_declare($details['as'], $this->expr_array_first(array()));
+        $out[] = $this->op_comment("Temporary sorting");
         $array = $this->get_var_filtering($details['array'], $varname);
         if (!isset($array['var']) && !isset($array['exec'])) {
             /* generate_variable_name didn't replied a variable, weird case
@@ -863,11 +878,12 @@ class Haanga_Main
             throw new CompilerException("Invalid variable name {$details['array']}");
         }
         if (isset($array['exec'])) {
-            $out[] = $this->op_declare($varname, $array); 
+            $varname = $this->expr_var($details['as']);
+            $out[]   = $this->op_declare($varname, $array); 
         }
         $var = $this->expr_var('item', $details['row']);
 
-        $out[] = $this->op_comment("Temporary sorting");
+        $out[] = $this->op_declare('temp_group', $this->expr_array());
         $out[] = $this->op_foreach($varname, 'item');
 
 
@@ -875,7 +891,7 @@ class Haanga_Main
         $out[] = $this->op_end('foreach');
 
         $out[] = $this->op_comment("Proper format");
-
+        $out[] = $this->op_declare($details['as'], $this->expr_array_first(array()));
         $out[] = $this->op_foreach('temp_group', 'item', 'group');
 
         $array = $this->expr_array(

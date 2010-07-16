@@ -1,4 +1,4 @@
-{% dictsort users "age" as sorted_users %}
+{% dictsort users regroup_field as sorted_users %}
 {% for user in sorted_users %}
     {% ifchanged %}Users with {{user.age}} years{% endifchanged %}
     {{ user.name }}

@@ -21,4 +21,6 @@ $data = array('users' => array(
         'age' => 22,
         'foo' => 2
     ),
-));
+    ),
+    'regroup_field' => 'age',
+);
