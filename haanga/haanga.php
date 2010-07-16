@@ -77,7 +77,6 @@ class Haanga_Main
     protected $ob_start=0;
     protected $append;
     protected $prepend_op;
-    protected $cycle;
     /**
      *  Table which contains all variables 
      *  aliases defined in the template
@@ -263,6 +262,13 @@ class Haanga_Main
 
     function op_foreach($array, $value, $key=NULL)
     {
+        foreach (array('array', 'value', 'key') as $var) {
+            $var = &$$var;
+            if (is_array($var) && isset($var['var'])) {
+                $var = $var['var'];
+            }
+            unset($var);
+        }
         $def = array('op' => 'foreach', 'array' => $array, 'value' => $value);
         if ($key) {
             $def['key'] = $key;
@@ -331,6 +337,11 @@ class Haanga_Main
         return array('expr_cond' => $expr, 'true' => $true, 'false' => $false);
     }
 
+    function expr_const($name)
+    {
+        return array('constant' => $name);
+    }
+
     /**
      *  Generate code to call base template
      *
@@ -344,6 +355,7 @@ class Haanga_Main
             $this->expr_var('blocks')
         );
     }
+
     /**
      *  return a function call for isset($var) === $isset
      *
@@ -642,6 +654,52 @@ class Haanga_Main
     }
     // }}}
 
+    // get_var_filtered {{{
+    /**
+     *  This method handles all the filtered variable (piped_list(X)'s 
+     *  output in the parser.
+     *
+     *  
+     *  @param array $variable (Output of piped_list(B) (parser))
+     *  @param array &$varname Variable name
+     *
+     *  @return expr  
+     *
+     */
+    function get_var_filtering($variable, &$varname)
+    {
+        $this->var_is_safe = FALSE;
+        if (count($variable) > 1) {
+            $count  = count($variable);
+            $target = $this->generate_variable_name($variable[0]);
+            
+            if (!isset($target['var'])) {
+                /* block.super can't have any filter */
+                throw new CompilerException("This variable can't have any filter");
+            }
+
+            for ($i=1; $i < $count; $i++) {
+                $func_name = $variable[$i];
+                if ($func_name == 'escape') {
+                    /* to avoid double cleaning */
+                    $this->var_is_safe = TRUE;
+                }
+                $args = array(isset($exec) ? $exec : $target);
+                $exec = $this->do_filtering($func_name, $args);
+            }
+            unset($variable);
+            $varname = $args[0];
+            $details = $exec;
+        } else {
+            $details = $this->generate_variable_name($variable[0]);
+            $varname = $variable[0];
+
+        }
+
+        return $details;
+    }
+    // }}}
+
     // generate_op_print_var {{{
     /**
      *  Generate code to print a variable with its filters, if there is any.
@@ -652,54 +710,21 @@ class Haanga_Main
      */
     protected function generate_op_print_var($details, &$out)
     {
-        if (count($details['variable']) > 1) {
-            $count  = count($details['variable']);
-            $target = $this->generate_variable_name($details['variable'][0]);
-            
-            if (!isset($target['var'])) {
-                /* block.super can't have any filter */
-                throw new CompilerException("This variable can't have any filter");
-            }
 
-            for ($i=1; $i < $count; $i++) {
-                $func_name = $details['variable'][$i];
-                if ($func_name == 'escape') {
-                    /* to avoid double cleaning */
-                    $this->var_is_safe = TRUE;
-                }
-                $args = array(isset($exec) ? $exec : $target);
-                $exec = $this->do_filtering($func_name, $args);
-            }
-            unset($details['variable']);
-            $details = $exec;
-        } else {
-            $details = $this->generate_variable_name($details['variable'][0]);
+        $details = $this->get_var_filtering($details['variable'], $variable);
 
-            if (!isset($details['var'])) {
-                /* generate_variable_name didn't replied a variable, weird case
-                   currently just used for {{block.super}}.
-                */
-                $this->generate_op_print($details, $out);
-                return;
-            }
+        if (!isset($details['var']) && !isset($variable['var'])) {
+            /* generate_variable_name didn't replied a variable, weird case
+                currently just used for {{block.super}}.
+            */
+            $this->generate_op_print($details, $out);
+            return;
         }
 
-        /* check if variable is a reference to parent block (which can't
-           have any filter */
-        $is_super = !isset($target) && is_string($details['var'][0]) && strpos($details['var'][0], self::$block_var) !== FALSE;
 
-        if (!$this->var_is_safe && $this->autoescape &&!$is_super) {
-            if (!isset($target)) {
-                $target = $details;
-            }
-            $args = array(isset($exec) ? $exec : $target);
-            $exec = $this->do_filtering('escape', $args);
-            $details = $exec;
-        }
-
-        if ($this->var_is_safe) {
-            /* restore var_is_safe to FALSE for next variables to print */
-            $this->var_is_safe = FALSE;
+        if (!$this->var_is_safe && $this->autoescape) {
+            $args    = array($details);
+            $details = $this->do_filtering('escape', $args);
         }
 
         $this->generate_op_print($details, $out);
@@ -745,47 +770,6 @@ class Haanga_Main
         $expr = $texpr[$i-1];
 
         $this->generate_op_print($expr, $out);
-    }
-    // }}}
-
-    // cycle 'uno' var {{{
-    protected function generate_op_cycle($details, &$out)
-    {
-        static $cycle = 0;
-
-        $index = 'index_'.$cycle;
-        $def   = 'def_cycle_'.$cycle; 
-
-        if (count($details['vars']) == 1 && isset($details['vars'][0]['var']) && isset($this->cycle[$details['vars'][0]['var']])) {
-            $id    = $this->cycle[$details['vars'][0]['var']];
-            $index = 'index_'.$id;
-            $def   = 'def_cycle_'.$id; 
-        } else {
-            $out[] = $this->op_declare($def, $this->expr_array_first($details['vars']));
-        }
-
-        /* isset($var) == FALSE */
-        $expr = $this->expr('==', $this->expr_exec('isset', $this->expr_var($index)), FALSE);
-
-        /* ($foo + 1) % count($bar) */
-        $inc = $this->expr('%',
-            $this->expr('expr',
-                $this->expr('+', $this->expr_var($index), 1)
-            ),
-            $this->expr_exec('count', $this->expr_var($def))
-        );
-
-
-
-
-        if (!isset($details['as'])) {
-            $out[] = $this->op_declare($index, $this->expr_cond($expr, $this->expr_number(0), array('expr' => $inc))); 
-            $var   = $this->expr_var($def, $this->expr_var($index));
-            $this->generate_op_print(array("variable" => $var['var']), $out);
-        } else {
-            $this->cycle[$details['as']] = $cycle;
-        }
-        $cycle++;
     }
     // }}}
 
@@ -871,10 +855,20 @@ class Haanga_Main
     protected function generate_op_regroup($details, &$out)
     {
         $out[] = $this->op_declare($details['as'], $this->expr_array_first(array()));
+        $array = $this->get_var_filtering($details['array'], $varname);
+        if (!isset($details['var']) && !isset($varname['var'])) {
+            /* generate_variable_name didn't replied a variable, weird case
+                currently just used for {{block.super}}.
+            */
+            throw new CompilerException("Invalid variable name {$details['array']}");
+        }
+        if (isset($array['exec'])) {
+            $out[] = $this->op_declare($varname, $array); 
+        }
         $var = $this->expr_var('item', $details['row']);
 
         $out[] = $this->op_comment("Temporary sorting");
-        $out[] = $this->op_foreach($details['array'], 'item');
+        $out[] = $this->op_foreach($varname, 'item');
 
 
         $out[] = $this->op_declare(array('temp_group', $var, NULL),  $this->expr_var('item'));
@@ -966,7 +960,7 @@ class Haanga_Main
     // }}}
 
     // Print {{{
-    protected function generate_op_print($details, &$out)
+    public function generate_op_print($details, &$out)
     {
         $last = count($out)-1;
         if (isset($details['variable'])) {
@@ -1226,7 +1220,7 @@ class Haanga_Main
         $tagFunction = $tags->getFunctionAlias($tag_name); 
 
         if (!$tagFunction && !$tags->hasGenerator($tag_name)) {
-            $function = $this->get_custom_tag($tag_name);
+            $function = $this->get_custom_tag($tag_name, isset($details['as']));
         } else {
             $function = $tagFunction;
         }
@@ -1253,7 +1247,16 @@ class Haanga_Main
         $args = array_merge(array($function), $details['list']);
 
         if ($tags->hasGenerator($tag_name)) {
-            $exec = $tags->generator($tag_name, $this, $args);
+            $exec = $tags->generator($tag_name, $this, $details['list'], $var);
+            if ($exec InstanceOf ArrayIterator) {
+                /* 
+                   The generator returned more than one statement,
+                   so we assume the output is already handled
+                   by one of those stmts.
+                */
+                $out = array_merge($out, $exec->getArrayCopy());
+                return;
+            }
         } else {
             $exec = call_user_func_array(array($this, 'expr_exec'), $args);
         }

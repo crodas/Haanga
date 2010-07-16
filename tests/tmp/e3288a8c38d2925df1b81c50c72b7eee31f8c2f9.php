@@ -1,10 +1,13 @@
 <?php
+/* Load filter dictsort definition */
+Haanga::doInclude("/filters/dictsort.php");
 /* Generated from ./assert_templates/regroup.tpl */
 function haanga_e3288a8c38d2925df1b81c50c72b7eee31f8c2f9($vars, $return=FALSE, $blocks=array())
 {
     extract($vars);
     $buffer1  = "";
     $sorted_users  = Array();
+    $users  = Dictsort_Filter::main($users, "age");
     /* Temporary sorting */
     foreach ($users as  $item) {
         $temp_group[$item["age"]][]  = $item;

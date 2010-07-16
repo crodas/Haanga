@@ -24,7 +24,7 @@ function haanga_4726e18009acee8a1c86a79b620c7ded71be5ddf($vars, $return=FALSE, $
     foreach ($array as  $i) {
         $buffer2  = "\n    ";
         if ($islast_1) {
-            $buffer2 .= " Last ".$i;
+            $buffer2 .= " Last ".htmlentities($i);
         }
         $buffer2 .= "\n\n";
         $buffer1 .= trim($buffer2);
@@ -42,7 +42,7 @@ function haanga_4726e18009acee8a1c86a79b620c7ded71be5ddf($vars, $return=FALSE, $
             foreach ($arr as  $val) {
                 $buffer2 .= "\n            ";
                 if ($islast_1) {
-                    $buffer2 .= " Last ".$k;
+                    $buffer2 .= " Last ".htmlentities($k);
                 }
                 $buffer2 .= "\n        ";
             }
@@ -62,7 +62,7 @@ function haanga_4726e18009acee8a1c86a79b620c7ded71be5ddf($vars, $return=FALSE, $
             foreach ($arr as  $val) {
                 $buffer2 .= "\n            ";
                 if ($isfirst_1) {
-                    $buffer2 .= " first ".$k;
+                    $buffer2 .= " first ".htmlentities($k);
                 }
                 $buffer2 .= "\n        ";
             }

@@ -7,11 +7,6 @@ $data = array('users' => array(
         'foo' => 1,
     ),
     array(
-        'name' => 'bar',
-        'age' => 22,
-        'foo' => 2
-    ),
-    array(
         'name' => 'older Foo',
         'age' => 23,
         'foo' => 2
@@ -19,6 +14,11 @@ $data = array('users' => array(
     array(
         'name' => 'older Bar',
         'age' => 23,
+        'foo' => 2
+    ),
+    array(
+        'name' => 'bar',
+        'age' => 22,
         'foo' => 2
     ),
 ));

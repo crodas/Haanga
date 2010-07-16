@@ -19,9 +19,9 @@ class templateTest extends PHPUnit_Framework_TestCase
     public function testRuntime($test_file, $data, $expected)
     {
         $output   = Haanga::Load($test_file, $data, TRUE);
-        /**/$output   = str_replace(" ", '\s', $output);
+        /*$output   = str_replace(" ", '\s', $output);
         $expected = str_replace(" ", '\s', $expected);/**/
-        $this->assertEquals($expected, $output);
+        $this->assertEquals($output, $expected);
     }
 
     public function tplProvider()

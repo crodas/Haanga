@@ -95,16 +95,17 @@ Abstract Class Extensions
      *  @param string       $name extension name
      *  @param Haanga_Main  Compiler object
      *  @param array        Arrays
+     *  @param mixed        Extra param
      *
      *  @return array
      */
-    function generator($name, Haanga_Main $compiler, $args)
+    function generator($name, Haanga_Main $compiler, $args, $extra=NULL)
     {
         if (!$this->hasGenerator($name)) {
             return array();
         }
         $zclass = $this->getClassName($name);
-        return $zclass::generator($compiler, $args);
+        return $zclass::generator($compiler, $args, $extra);
     }
     // }}}
 

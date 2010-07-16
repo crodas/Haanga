@@ -4,7 +4,14 @@ function haanga_be17029b5fd2998df7c922a92652b6886d7780fd($vars, $return=FALSE, $
 {
     extract($vars);
     $buffer1  = "";
-    foreach ($users as  $user) {
+    $sorted_users  = $users;
+    $field  = Array();
+    foreach ($sorted_users as  $key => $item) {
+        $field[$key]  = $item["age"];
+    }
+    array_multisort($field, SORT_ASC, $sorted_users);
+    $buffer1 .= "\n";
+    foreach ($sorted_users as  $user) {
         $buffer1 .= "\n    ";
         $buffer2  = "Users with ".htmlentities($user["age"])." years";
         if (isset($ifchanged1) == FALSE OR $ifchanged1 != $buffer2) {
@@ -14,7 +21,7 @@ function haanga_be17029b5fd2998df7c922a92652b6886d7780fd($vars, $return=FALSE, $
         $buffer1 .= "\n    ".htmlentities($user["name"])."\n";
     }
     $buffer1 .= "\n\n";
-    foreach ($users as  $user) {
+    foreach ($sorted_users as  $user) {
         $buffer1 .= "\n    ";
         if ((isset($ifchanged2[1]) == FALSE OR $ifchanged2[1] != $user["foo"]) AND isset($ifchanged2[0]) == FALSE OR $ifchanged2[0] != $user["age"]) {
             $buffer1 .= "Users with ".htmlentities($user["age"])." years";

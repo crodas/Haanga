@@ -1,4 +1,4 @@
-{% regroup users by age as sorted_users %}
+{% regroup users|dictsort:"age" by age as sorted_users %}
 
 {% for user in sorted_users %}
     {{user.grouper}}
