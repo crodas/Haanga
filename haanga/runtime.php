@@ -1,20 +1,65 @@
 <?php
+/*
+  +---------------------------------------------------------------------------------+
+  | Copyright (c) 2010 Haanga                                                       |
+  +---------------------------------------------------------------------------------+
+  | Redistribution and use in source and binary forms, with or without              |
+  | modification, are permitted provided that the following conditions are met:     |
+  | 1. Redistributions of source code must retain the above copyright               |
+  |    notice, this list of conditions and the following disclaimer.                |
+  |                                                                                 |
+  | 2. Redistributions in binary form must reproduce the above copyright            |
+  |    notice, this list of conditions and the following disclaimer in the          |
+  |    documentation and/or other materials provided with the distribution.         |
+  |                                                                                 |
+  | 3. All advertising materials mentioning features or use of this software        |
+  |    must display the following acknowledgement:                                  |
+  |    This product includes software developed by César D. Rodas.                  |
+  |                                                                                 |
+  | 4. Neither the name of the César D. Rodas nor the                               |
+  |    names of its contributors may be used to endorse or promote products         |
+  |    derived from this software without specific prior written permission.        |
+  |                                                                                 |
+  | THIS SOFTWARE IS PROVIDED BY CÉSAR D. RODAS ''AS IS'' AND ANY                   |
+  | EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED       |
+  | WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE          |
+  | DISCLAIMED. IN NO EVENT SHALL CÉSAR D. RODAS BE LIABLE FOR ANY                  |
+  | DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES      |
+  | (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;    |
+  | LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND     |
+  | ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT      |
+  | (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS   |
+  | SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE                     |
+  +---------------------------------------------------------------------------------+
+  | Authors: César Rodas <crodas@php.net>                                           |
+  +---------------------------------------------------------------------------------+
+*/
 
 
+// Haanga_Exception {{{
+/**
+ *  General exception class. It is thrown 
+ *  when something is not configured properly
+ *
+ */
 class Haanga_Exception extends Exception
 {
 }
+// }}}
 
 /**
  *  Haanga Runtime class
  *
- *  Load a template, if the template does not exists or it 
- *  has changed, this class will compile it and update the cache
+ *  Simple class to call templates efficiently. This class aims
+ *  to reduce the compilation of a template as less a possible. Also
+ *  it will not load in memory the compiler, except when there is not
+ *  cache (compiled template) or it is out-dated.
+ *
  */
 class Haanga
 {
     protected static $cache_dir;
-    protected static $templates_dir;
+    protected static $templates_dir='.';
     public static $has_compiled;
 
     private function __construct()
@@ -22,6 +67,15 @@ class Haanga
         /* The class can't be instanced */
     }
 
+    // setCacheDir(string $dir) {{{
+    /**
+     *  Set the directory where the compiled templates
+     *  are stored.
+     *
+     *  @param string $dir 
+     *
+     *  @return void
+     */
     public static function setCacheDir($dir)
     {
         if (!is_dir($dir)) {
@@ -32,7 +86,16 @@ class Haanga
         }
         self::$cache_dir = $dir;
     }
+    // }}}
 
+    // setTemplateDir(string $dir) {{{
+    /**
+     *  Set the directory where the templates are located.
+     *
+     *  @param string $dir
+     *
+     *  @return void
+     */
     public static function setTemplateDir($dir)
     {
         if (!is_dir($dir)) {
@@ -40,6 +103,7 @@ class Haanga
         }
         self::$templates_dir = $dir;
     }
+    // }}}
 
     // doInclude(string $file) {{{
     /**
@@ -56,6 +120,23 @@ class Haanga
     }
     // }}}
 
+    // load(string $file, array $vars, bool $return, array $blocks) {{{
+    /**
+     *  Load
+     *
+     *  Load template. If the template is already compiled, just the compiled
+     *  PHP file will be included an used. If the template is new, or it 
+     *  had changed, the Haanga compiler is loaded in memory, and the template
+     *  is compiled.
+     *
+     *
+     *  @param string $file
+     *  @param array  $vars 
+     *  @param bool   $return
+     *  @param array  $blocks   
+     *
+     *  @return string|NULL
+     */
     public static function Load($file, $vars = array(), $return=FALSE, $blocks=array())
     {
         static $compiler;
@@ -95,6 +176,8 @@ class Haanga
 
         return $callback($vars, $return, $blocks);
     }
+    // }}}
+
 }
 
 /*
