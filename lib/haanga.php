@@ -66,6 +66,7 @@ class Haanga_Compiler
     protected $forid = 0;
     protected $sub_template = FALSE;
     protected $name;
+    protected $check_function = FALSE;
     protected $blocks=array();
     /**
      *  number of blocks :-)
@@ -137,7 +138,9 @@ class Haanga_Compiler
     // Set template name {{{
     function set_template_name($path)
     {
-        return ($this->name = strstr(basename($path),'.', TRUE));
+        $file = basename($path);
+        $pos  = strpos($file,'.');
+        return ($this->name = substr($file, 0, $pos));
     }
     // }}}
 
@@ -165,10 +168,14 @@ class Haanga_Compiler
         }
 
         if ($name) {
+            $func_name = $this->get_function_name($name);
+            if ($this->check_function) {
+                $op_code[] = $this->op_if($this->expr("===", $this->expr_exec('function_exists', $this->expr_str($func_name)), $this->expr_FALSE()));
+            }
             if (isset($this->_file)) {
                 $op_code[] = $this->op_comment("Generated from {$this->_base_dir}/{$this->_file}");
             }
-            $op_code[] = $this->op_declare_function($this->get_function_name($name));
+            $op_code[] = $this->op_declare_function($func_name);
             $op_code[] = $this->op_expr($this->expr_exec('extract', $this->expr_var('vars')));
         }
 
@@ -190,6 +197,9 @@ class Haanga_Compiler
 
         if ($name) {
             $op_code[] = $this->op_end('function');
+            if ($this->check_function) {
+                $op_code[] = $this->op_end('if');
+            }
         }
         
         if (count($this->prepend_op)) {
@@ -200,6 +210,7 @@ class Haanga_Compiler
         if (!empty($this->append)) {
             $code .= $this->append;
         }
+
         if (!empty($this->debug)) {
             $op_code['php'] = $code;
             file_put_contents($this->debug, print_r($op_code, TRUE));
@@ -213,17 +224,19 @@ class Haanga_Compiler
      *  Compile a file
      *
      *  @param string $file File path
+     *  @param bool   $safe Whether or not add check if the function is already defined
      *
      *  @return Generated PHP code
      */
-    final function compile_file($file) 
+    final function compile_file($file, $safe=FALSE) 
     {
         if (!is_readable($file)) {
             throw new Haanga_CompilerException("$file is not a file");
         }
-        $this->_base_dir = dirname($file);
-        $this->_file     = basename($file);
-        $name            = $this->set_template_name($file);
+        $this->_base_dir      = dirname($file);
+        $this->_file          = basename($file);
+        $this->check_function = $safe;
+        $name                 = $this->set_template_name($file);
         return $this->compile(file_get_contents($file), $name);
     }
     // }}}
@@ -619,7 +632,7 @@ class Haanga_Compiler
         $class = get_class($this);
         $comp  = new  $class;
         $comp->reset();
-        $code = $comp->compile_file($file);
+        $code = $comp->compile_file($file, $this->check_function);
         return array($comp->get_template_name(), $code);
     }
     // }}}
@@ -633,10 +646,10 @@ class Haanga_Compiler
         list($name,$code) = $this->compile_required_template($details[0]['string']);
         $this->append .= "\n\n{$code}";
         $expr = $this->expr_exec(
-            $this->get_function_name($this->subtemplate),
+            $this->get_function_name($name),
             $this->expr_var('vars'),
-            $this->expr_var('blocks'),
-            $this->expr_TRUE()
+            $this->expr_TRUE(),
+            $this->expr_var('blocks')
         );
         $this->generate_op_print($expr, $out);
     }
@@ -1168,7 +1181,7 @@ class Haanga_Compiler
     // Custom Tags {{{
     function get_custom_tag($name)
     {
-        $function = $this->get_function_name().'_tag_'.$name;
+        $function = $this->get_function_name($this->name).'_tag_'.$name;
         $this->append .= "\n\n".Haanga_Extensions::getInstance('Haanga_Tag')->getFunctionBody($name, $function);
         return $function;
     }
@@ -1254,7 +1267,7 @@ class Haanga_Compiler
     // Custom Filters {{{
     function get_custom_filter($name)
     {
-        $function = $this->get_function_name().'_filter_'.$name;
+        $function = $this->get_function_name($this->name).'_filter_'.$name;
         $this->append .= "\n\n".Haanga_Extensions::getInstance('Haanga_Filter')->getFunctionBody($name, $function);
         return $function;
     }
@@ -1311,8 +1324,11 @@ class Haanga_Compiler
     {
         $argv = $GLOBALS['argv'];
         $haanga = new Haanga_Compiler;
-        $code = $haanga->compile_file($argv[1]);
-        echo "<?php\n\n$code\n";
+        $code = $haanga->compile_file($argv[1], TRUE);
+        if (!isset($argv[2]) || $argv[2] != '--notags') {
+            $code = "<?php\n\n$code";
+        }
+        echo $code;
     }
 
 }
@@ -1330,11 +1346,8 @@ final class Haanga_Compiler_Runtime extends Haanga_Compiler
      *
      *
      */
-    function get_function_name($name=NULL)
+    function get_function_name($name)
     {
-        if ($name === NULL) {
-            $name = $this->name;
-        }
         return "haanga_".sha1($name);
     }
     // }}}

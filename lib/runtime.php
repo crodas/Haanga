@@ -177,7 +177,7 @@ class Haanga
             if (self::$debug) {
                 $compiler->setDebug($php.".dump");
             }
-            $code = $compiler->compile_file($tpl, $tpl);
+            $code = $compiler->compile_file($tpl, FALSE);
             file_put_contents($php, "<?php".$code);
             self::$has_compiled = TRUE;
         }

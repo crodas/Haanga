@@ -137,26 +137,27 @@ Abstract Class Haanga_Extensions
      *
      *  @return string
      */
-    static function getFunctionBody($name, $name)
+    function getFunctionBody($tag_name, $name)
     {
-        if (!$this->isValid($name)) {
+        if (!$this->isValid($tag_name)) {
             return NULL;
         }
-        $zclass     = $this->getClassName($name);
+        $zclass  = $this->getClassName($tag_name);
         if (!is_callable(array($zclass, 'main'))) {
             throw new Haanga_CompilerException("{$name}: missing main method in {$zclass} class");
         }
         
         $reflection = new ReflectionMethod($zclass, 'main');
-        $content    = file($this->getFilePath($name));
+        $content    = file($this->getFilePath($tag_name));
 
         $start   = $reflection->getStartLine()-1;
         $end     = $reflection->getEndLine();
         $content = array_slice($content, $start, $end-$start); 
 
         $content[0] = str_replace("main", $name, $content[0]);
+        
 
-        return implode("", $content);
+        return "if (!function_exists('{$name}')) {\n".implode("", $content)."}";
     }
     // }}}
 
