@@ -105,7 +105,7 @@ Abstract Class Haanga_Extensions
             return array();
         }
         $zclass = $this->getClassName($name);
-        return $zclass::generator($compiler, $args, $extra);
+        return call_user_func(array($zclass, 'generator'), $compiler, $args, $extra);
     }
     // }}}
 
