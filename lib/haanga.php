@@ -176,7 +176,7 @@ class Haanga_Compiler
         $this->generate_op_code($parsed, $op_code);
         if ($this->subtemplate) {
             $expr = $this->expr_call_base_template();
-            $this->generate_op_print(array('expr' => $expr), $op_code);
+            $this->generate_op_print($expr, $op_code);
         }
         $this->ob_start--;
 
@@ -201,6 +201,7 @@ class Haanga_Compiler
             $code .= $this->append;
         }
         if (!empty($this->debug)) {
+            $op_code['php'] = $code;
             file_put_contents($this->debug, print_r($op_code, TRUE));
         }
         return $code;
@@ -377,20 +378,10 @@ class Haanga_Compiler
 
     final function expr_array()
     {
-        $def = array();
-        foreach (func_get_args() as $arg) {
-            if (count($arg) == 2) {
-                if (!is_array($arg[0])) {
-                    $arg[0] = $this->expr_str($arg[0]);
-                }
-                $arg = array('key' => $arg);
-            }
-            $def[] = $arg;
-        }
-        return array("array" => $def);
+        return $this->expr_array_ex(func_get_args());
     }
 
-    final function expr_array_first($values)
+    final function expr_array_ex($values)
     {
         $def = array();
         foreach ($values as $arg) {
@@ -455,7 +446,7 @@ class Haanga_Compiler
      */
     final function expr_var($var)
     {
-        return array('var' => func_get_args());
+        return $this->expr_var_ex(func_get_args());
     }
 
     /**
@@ -581,17 +572,8 @@ class Haanga_Compiler
             $this->check_expr($expr[1]);
         } else {
             if (is_array($expr)) {
-                if (isset($expr['var'])) {
-                    $expr = $this->generate_variable_name($expr['var']);
-                } else if (isset($expr['var_filter'])) {
-                    foreach ($expr['var_filter'] as $id => $f) {
-                        if ($id == 0) {
-                            $exec = $this->generate_variable_name($f);
-                        } else {
-                            $exec = $this->expr_exec($f, $exec);
-                        }
-                    }
-                    $expr = $exec;
+                if (isset($expr['var_filter'])) {
+                    $expr = $this->get_filtered_var($expr['var_filter'], $var);
                 } else if (isset($expr['args'])) {
                     /* check every arguments */
                     foreach ($expr['args'] as &$v) {
@@ -656,7 +638,6 @@ class Haanga_Compiler
             $this->expr_var('blocks'),
             $this->expr_TRUE()
         );
-        $this->generate_op_print($expr, $op_code);
         $this->generate_op_print($expr, $out);
     }
     // }}}
@@ -868,7 +849,7 @@ class Haanga_Compiler
         $out[] = $this->op_end('foreach');
 
         $out[] = $this->op_comment("Proper format");
-        $out[] = $this->op_declare($details['as'], $this->expr_array_first(array()));
+        $out[] = $this->op_declare($details['as'], $this->expr_array_ex(array()));
         $out[] = $this->op_foreach('temp_group', 'item', 'group');
 
         $array = $this->expr_array(
@@ -1151,7 +1132,7 @@ class Haanga_Compiler
             }
             $out[] = $this->op_if($expr);
             $this->generate_op_code($details['body'], $out);
-            $out[] = $this->op_declare($var1, $this->expr_array_first($details['check']));
+            $out[] = $this->op_declare($var1, $this->expr_array_ex($details['check']));
         }
 
         if (isset($details['else'])) {
@@ -1375,7 +1356,7 @@ final class Haanga_Compiler_Runtime extends Haanga_Compiler
             $this->expr_TRUE(),
             $this->expr_var('blocks')
         );
-        $this->generate_op_print(array('expr' => $expr), $out);
+        $this->generate_op_print($expr, $out);
     }
     // }}}
 

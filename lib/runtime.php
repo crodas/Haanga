@@ -60,6 +60,7 @@ class Haanga
 {
     protected static $cache_dir;
     protected static $templates_dir='.';
+    protected static $debug;
     public static $has_compiled;
 
     private function __construct()
@@ -105,7 +106,15 @@ class Haanga
     }
     // }}}
 
-    // doInclude(string $file) {{{
+    // enableDebug($bool) {{{
+    public static function enableDebug($bool)
+    {
+        self::$debug = $bool;
+    }
+    // }}}
+    
+
+    // doInclude(s tring $file) {{{
     /**
      *  Load a PHP file using Haanga's root dir as 
      *  base dir.
@@ -165,7 +174,9 @@ class Haanga
                 $compiler = new Haanga_Compiler_Runtime;
             }
             $compiler->reset();
-            //$compiler->setDebug($php.".dump");
+            if (self::$debug) {
+                $compiler->setDebug($php.".dump");
+            }
             $code = $compiler->compile_file($tpl, $tpl);
             file_put_contents($php, "<?php".$code);
             self::$has_compiled = TRUE;
