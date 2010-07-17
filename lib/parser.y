@@ -72,7 +72,7 @@ body(A) ::= . { A = array(); }
 code(A) ::= T_OPEN_TAG stmts(B). { A = B; }
 code(A) ::= T_HTML(B). { A = array('operation' => 'html', 'html' => B); }
 code(A) ::= T_COMMENT_OPEN T_COMMENT(B). { B=rtrim(B); A = array('operation' => 'comment', 'comment' => substr(B, 0, strlen(B)-2)); } 
-code(A) ::= T_PRINT_OPEN piped_list(B) T_PRINT_CLOSE.  { A = array('operation' => 'print_var', 'variable' => B); }
+code(A) ::= T_PRINT_OPEN filtered_var(B) T_PRINT_CLOSE.  { A = array('operation' => 'print_var', 'variable' => B); }
 
 stmts(A) ::= T_EXTENDS var_or_string(B) T_CLOSE_TAG. { A = array('operation' => 'base', B); }
 stmts(A) ::= stmt(B) T_CLOSE_TAG. { A = B; }
@@ -88,14 +88,12 @@ stmts(A) ::= T_AUTOESCAPE T_OFF|T_ON(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_AUT
 
 /* Statement */
 
-/* function call */
+/* CUSTOM TAGS */
 custom_tag(A) ::= T_CUSTOM_TAG(B) T_CLOSE_TAG. { A = array('operation' => 'custom_tag', 'name' => B, 'list'=>array()); }
-custom_tag(A) ::= T_CUSTOM_TAG(B) T_FOR varname(C) T_CLOSE_TAG. { A = array('operation' => 'custom_tag', 'name' => B, 'for' => C, 'list' => array()); }
-custom_tag(A) ::= T_CUSTOM_TAG(B) T_FOR varname(C) T_AS varname(X) T_CLOSE_TAG. { A = array('operation' => 'custom_tag', 'name' => B, 'for' => C, 'list' => array(),'as' => X); }
 custom_tag(A) ::= T_CUSTOM_TAG(B) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'custom_tag', 'name' => B, 'as' => C, 'list'=>array()); }
-custom_tag(A) ::= T_CUSTOM_TAG(B) list(X) T_CLOSE_TAG. { A = array('operation' => 'custom_tag', 'name' => B, 'list' => X); }
-custom_tag(A) ::= T_CUSTOM_TAG(B) list(X) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'custom_tag', 'name' => B, 'as' => C, 'list' => X); }
-/* custom block  */
+custom_tag(A) ::= T_CUSTOM_TAG(B) var_list(X) T_CLOSE_TAG. { A = array('operation' => 'custom_tag', 'name' => B, 'list' => X); }
+custom_tag(A) ::= T_CUSTOM_TAG(B) var_list(X) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'custom_tag', 'name' => B, 'as' => C, 'list' => X); }
+/* tags as blocks */
 custom_tag(A) ::= T_CUSTOM_BLOCK(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_CUSTOM_END(C) T_CLOSE_TAG. { if ('end'.B != C) { throw new Exception("Unexpected ".C); } A = array('operation' => 'custom_tag', 'name' => B, 'body' => X, 'list' => array());}
 
 /* variable alias */
@@ -103,19 +101,18 @@ alias(A) ::= T_WITH varname(B) T_AS varname(C) T_CLOSE_TAG body(X) T_OPEN_TAG T_
 
 /* Simple statements (don't require a end_tag or a body ) */
 stmt(A) ::= regroup(B). { A = B; }
-stmt(A) ::= first_of(B). { A = B; }
 
 /* FOR loop */
-for_stmt(A) ::= T_FOR varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
+for_stmt(A) ::= T_FOR varname(B) T_IN filtered_var(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
     A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D, 'index' => NULL); 
 }
-for_stmt(A) ::= T_FOR varname(I) T_COMMA varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
+for_stmt(A) ::= T_FOR varname(I) T_COMMA varname(B) T_IN filtered_var(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
     A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D, 'index' => I); 
 }
-for_stmt(A) ::= T_FOR varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_EMPTY T_CLOSE_TAG body(E)  T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
+for_stmt(A) ::= T_FOR varname(B) T_IN filtered_var(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_EMPTY T_CLOSE_TAG body(E)  T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
     A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D, 'empty' => E, 'index' => NULL); 
 }
-for_stmt(A) ::= T_FOR varname(I) T_COMMA varname(B) T_IN varname(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_EMPTY T_CLOSE_TAG body(E)  T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
+for_stmt(A) ::= T_FOR varname(I) T_COMMA varname(B) T_IN filtered_var(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_EMPTY T_CLOSE_TAG body(E)  T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
     A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D, 'empty' => E, 'index' => I); 
 }
 /* IF */
@@ -127,14 +124,14 @@ ifchanged_stmt(A) ::= T_IFCHANGED T_CLOSE_TAG body(B) T_OPEN_TAG T_ENDIFCHANGED 
     A = array('operation' => 'ifchanged', 'body' => B); 
 }
 
-ifchanged_stmt(A) ::= T_IFCHANGED list(X) T_CLOSE_TAG body(B) T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG. { 
+ifchanged_stmt(A) ::= T_IFCHANGED var_list(X) T_CLOSE_TAG body(B) T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG. { 
     A = array('operation' => 'ifchanged', 'body' => B, 'check' => X);
 }
 ifchanged_stmt(A) ::= T_IFCHANGED T_CLOSE_TAG body(B) T_OPEN_TAG T_ELSE T_CLOSE_TAG body(C) T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG. { 
     A = array('operation' => 'ifchanged', 'body' => B, 'else' => C); 
 }
 
-ifchanged_stmt(A) ::= T_IFCHANGED list(X) T_CLOSE_TAG body(B) T_OPEN_TAG T_ELSE T_CLOSE_TAG body(C) T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG. { 
+ifchanged_stmt(A) ::= T_IFCHANGED var_list(X) T_CLOSE_TAG body(B) T_OPEN_TAG T_ELSE T_CLOSE_TAG body(C) T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG. { 
     A = array('operation' => 'ifchanged', 'body' => B, 'check' => X, 'else' => C);
 }
 
@@ -145,30 +142,28 @@ block_stmt(A) ::= T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK 
 block_stmt(A) ::= T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }
 
 /* filter stmt */
-filter_stmt(A) ::= T_FILTER piped_list(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_FILTER T_CLOSE_TAG. { A = array('operation' => 'filter', 'functions' => B, 'body' => X); }
+filter_stmt(A) ::= T_FILTER filtered_var(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_FILTER T_CLOSE_TAG. { A = array('operation' => 'filter', 'functions' => B, 'body' => X); }
 
 /* regroup stmt */
-regroup(A) ::= T_REGROUP piped_list(B) T_BY varname(C) T_AS varname(X). { A=array('operation' => 'regroup', 'array' => B, 'row' => C, 'as' => X); }
+regroup(A) ::= T_REGROUP filtered_var(B) T_BY varname(C) T_AS varname(X). { A=array('operation' => 'regroup', 'array' => B, 'row' => C, 'as' => X); }
 
-/* first_of */
-first_of(A) ::= T_FIRST_OF list(B). { A = array('operation' => 'first_of', 'vars' => B); }
-
-
-/* Piped filters */
-piped_list(A) ::= piped_list(B) T_PIPE varname_args(C). { A = B; A[] = C; }
-piped_list(A) ::= varname_args(B). { A = array(B); }
+/* variables with filters */
+filtered_var(A) ::= filtered_var(B) T_PIPE varname_args(C). { A = B; A[] = C; }
+filtered_var(A) ::= varname_args(B). { A = array(B); }
 
 varname_args(A) ::= varname(B) T_COLON var_or_string(X) . { A = array(B, 'args'=>array(X)); }
 varname_args(A) ::= varname(B). { A = B; }
 
 /* List of variables */
-list(A) ::= list(B) var_or_string(C).  { A = B; A[] = C; }
-list(A) ::= list(B) T_COMMA var_or_string(C).  { A = B; A[] = C; }
-list(A) ::= var_or_string(B). { A = array(B); }
+var_list(A) ::= var_list(B) var_or_string(C).           { A = B; A[] = C; }
+var_list(A) ::= var_list(B) T_COMMA var_or_string(C).   { A = B; A[] = C; }
+var_list(A) ::= var_or_string(B).                       { A = array(B); }
 
-var_or_string(A) ::= T_NUMERIC(B). { A = array('number' => B); }  
-var_or_string(A) ::= varname(B).   { A = array('var' => B); }  
-var_or_string(A) ::= string(B).    { A = array('string' => B); }
+
+/* variable or string (used on var_list) */
+var_or_string(A) ::= varname(B).    { A = array('var' => B); }  
+var_or_string(A) ::= T_NUMERIC(B).  { A = array('number' => B); }  
+var_or_string(A) ::= string(B).     { A = array('string' => B); }
 
 string(A)    ::= T_STRING_SINGLE_INIT s_content(B)  T_STRING_SINGLE_END. {  A = B; }
 string(A)    ::= T_STRING_DOUBLE_INIT s_content(B)  T_STRING_DOUBLE_END. {  A = B; }
@@ -181,11 +176,10 @@ expr(A) ::= expr(B) T_OR(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
 expr(A) ::= expr(B) T_PLUS|T_MINUS(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
 expr(A) ::= expr(B) T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN(X)  expr(C).  { A = array('op_expr' => trim(@X), B, C); }
 expr(A) ::= expr(B) T_TIMES|T_DIV|T_MOD(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
-expr(A) ::= piped_list(B). {A = array('var_filter' => B);}
+expr(A) ::= filtered_var(B). {A = array('var_filter' => B);}
 expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = array('op_expr' => 'expr', B); }
-//expr(A) ::= var_or_string(B). { A = B; }
 expr(A) ::= string(B).   { A = array('string' => B); }
-expr(A) ::= T_NUMERIC(B). { A = B; }
+expr(A) ::= T_NUMERIC(B). { A = array('number' => B); }
 
 
 /* Variable name */

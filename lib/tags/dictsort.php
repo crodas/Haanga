@@ -11,7 +11,14 @@ class Dictsort_Tag
     function generator($cmp, $args, $redirected)
     {
         if (!$redirected) {
-            throw new CompilerException("dictsort must be redirected to a variable using AS <varname>");
+            throw new Haanga_CompilerException("dictsort must be redirected to a variable using AS <varname>");
+        }
+        if (count($args) != 2) {
+            throw new Haanga_CompilerException("Dictsort must have two params");
+        }
+
+        if (!$cmp->is_var($args[0])) {
+            throw new Haanga_CompilerException("Dictsort: First parameter must be an array");
         }
 
         /* set redirected as a variable */
@@ -26,7 +33,7 @@ class Dictsort_Tag
         $out[] = $cmp->op_foreach($redirected, 'item', $key);
         $out[] = $cmp->op_declare($cmp->expr_var('field', $key), $cmp->expr_var('item', $args[1]));
         $out[] = $cmp->op_end('foreach');
-        $out[] = $cmp->op_expr($cmp->expr_exec('array_multisort', $cmp->expr_var('field'), $cmp->expr_const('SORT_ASC'), $redirected));
+        $out[] = $cmp->op_expr($cmp->expr_exec('array_multisort', $cmp->expr_var('field'), $cmp->expr_const('SORT_REGULAR'), $redirected));
 
         return new ArrayIterator($out);
     }

@@ -50,7 +50,7 @@ function do_parsing($template, $ignore_whitespace=FALSE)
             $parser->doParse($lexer->token, $lexer->value);
         }
     } catch (Exception $e) {
-        throw new CompilerException($e->getMessage(). ' on line '.$lexer->getLine());
+        throw new Haanga_CompilerException($e->getMessage(). ' on line '.$lexer->getLine());
     }
     $parser->doParse(0, 0);
     return $parser->body;
@@ -85,7 +85,7 @@ class Haanga_Lexer
     {
         static $tag=NULL;
         if (!$tag) {
-            $tag = Extensions::getInstance('Haanga_tag');
+            $tag = Haanga_Extensions::getInstance('Haanga_tag');
         }
         $value = $tag->isValid($this->value);
         $this->token = $value ? $value : Parser::T_ALPHA;
@@ -104,7 +104,7 @@ whitespace      = /[ \r\t\n]+/
 html            = /([^{]+(.[^%{#])?)+/
 comment         = /([^\#]+\#\})+/
 custom_tag_end  = /end([a-zA-Z][a-zA-Z0-9]*)/
-token_end       = /[^a-zA-Z0-9]/
+token_end       = /[^a-zA-Z0-9_\.]/
 single_string   = /[^'\\]+/
 double_string   = /[^"\\]+/
 */
@@ -148,10 +148,6 @@ html {
 
 "empty" token_end {
     $this->token = Parser::T_EMPTY;
-}
-
-"firstof" token_end {
-    $this->token = Parser::T_FIRST_OF;
 }
 
 "block" token_end {

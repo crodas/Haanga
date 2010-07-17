@@ -7,9 +7,9 @@ function haanga_be17029b5fd2998df7c922a92652b6886d7780fd($vars, $return=FALSE, $
     $sorted_users  = $users;
     $field  = Array();
     foreach ($sorted_users as  $key => $item) {
-        $field[$key]  = $item["age"];
+        $field[$key]  = $item[$regroup_field];
     }
-    array_multisort($field, SORT_ASC, $sorted_users);
+    array_multisort($field, SORT_REGULAR, $sorted_users);
     $buffer1 .= "\n";
     foreach ($sorted_users as  $user) {
         $buffer1 .= "\n    ";

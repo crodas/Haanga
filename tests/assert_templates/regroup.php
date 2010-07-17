@@ -21,4 +21,4 @@ $data = array('users' => array(
         'name' => 'bar',
         'age' => 22,
     ),
-));
+), 'regroup_by' => 'name');

@@ -6,7 +6,7 @@ class Pluralize_Filter
     {
         if (count($args) > 1) {
             if (!isset($args[1]['string'])) {
-                throw new CompilerException("pluralize: First parameter must be an string");
+                throw new Haanga_CompilerException("pluralize: First parameter must be an string");
             }
             $parts    = explode(",", $args[1]['string']);
             $singular = "";

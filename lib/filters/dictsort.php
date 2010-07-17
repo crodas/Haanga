@@ -14,8 +14,8 @@ class Dictsort_Filter
         foreach ($array as $key => $item) {
             $field[$key] = $item[$sort_by];
         }
-
-        array_multisort($field, SORT_ASC, $array);
+        array_multisort($field, SORT_REGULAR, $array);
         return $array;
+
     }
 }

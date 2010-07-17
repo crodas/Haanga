@@ -33,10 +33,15 @@ class Cycle_Tag
         );
 
         if (!$declared) {
-            $out[] = $cmp->op_declare($index, $cmp->expr_cond($expr, $cmp->expr_number(0), array('expr' => $inc))); 
+            if (isset($id)) {
+                $out[] = $cmp->op_declare($index, $inc);
+            } else {
+                $out[] = $cmp->op_declare($index, $cmp->expr_cond($expr, $cmp->expr_number(0), array('expr' => $inc))); 
+            }
             $var   = $cmp->expr_var($def, $cmp->expr_var($index));
             $cmp->generate_op_print(array("variable" => $var['var']), $out);
         } else {
+            $out[] = $cmp->op_declare($index, $cmp->expr_number(-1));
             $cmp->cycle[$declared] = $cycle;
         }
 

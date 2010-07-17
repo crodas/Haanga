@@ -35,7 +35,7 @@
   +---------------------------------------------------------------------------------+
 */
 
-class Haanga_Filter extends Extensions
+class Haanga_Filter extends Haanga_Extensions
 {
     /**
      *  isValid

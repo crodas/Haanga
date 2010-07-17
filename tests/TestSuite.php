@@ -1,6 +1,6 @@
 <?php
 
-require "../haanga/runtime.php";
+require "../lib/runtime.php";
 require "templateTest.php";
 require "errorTest.php";
 

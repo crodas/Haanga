@@ -12,14 +12,15 @@ function haanga_ce9ab0a21d381cdfd181f6d4b9c01a720d4c7320($vars, $return=FALSE, $
     }
     $buffer1 .= "\n-----------------------------------------------\n";
     $def_cycle_1  = Array("uno", "dos", "tres");
+    $index_1  = -1;
     $buffer1 .= "\n";
-    $index_1  = (isset($index_1) == FALSE ? 0 : ($index_1 + 1) % count($def_cycle_1));
+    $index_1  = ($index_1 + 1) % count($def_cycle_1);
     $buffer1 .= $def_cycle_1[$index_1]."\n";
-    $index_1  = (isset($index_1) == FALSE ? 0 : ($index_1 + 1) % count($def_cycle_1));
+    $index_1  = ($index_1 + 1) % count($def_cycle_1);
     $buffer1 .= $def_cycle_1[$index_1]."\n";
-    $index_1  = (isset($index_1) == FALSE ? 0 : ($index_1 + 1) % count($def_cycle_1));
+    $index_1  = ($index_1 + 1) % count($def_cycle_1);
     $buffer1 .= $def_cycle_1[$index_1]."\n";
-    $index_1  = (isset($index_1) == FALSE ? 0 : ($index_1 + 1) % count($def_cycle_1));
+    $index_1  = ($index_1 + 1) % count($def_cycle_1);
     $buffer1 .= $def_cycle_1[$index_1]."\n";
     if ($return == TRUE) {
         return $buffer1;

@@ -35,7 +35,7 @@
   +---------------------------------------------------------------------------------+
 */
 
-Abstract Class Extensions
+Abstract Class Haanga_Extensions
 {
     private static $_instances;
 
@@ -46,10 +46,10 @@ Abstract Class Extensions
     final static function getInstance($name)
     {
         if (!class_exists($name)) {
-            throw new CompilerExeception("{$name} is not a class");
+            throw new Haanga_CompilerException("{$name} is not a class");
         }
         if (!is_subclass_of($name, __CLASS__)) {
-            throw new CompilerExeception("{$name} is not a sub-class of ".__CLASS__);
+            throw new Haanga_CompilerException("{$name} is not a sub-class of ".__CLASS__);
         }
 
         if (!isset(self::$_instances[$name])) {
@@ -93,13 +93,13 @@ Abstract Class Extensions
      *  will be returned.
      *
      *  @param string       $name extension name
-     *  @param Haanga_Main  Compiler object
+     *  @param Haanga_Compiler  Compiler object
      *  @param array        Arrays
      *  @param mixed        Extra param
      *
      *  @return array
      */
-    function generator($name, Haanga_Main $compiler, $args, $extra=NULL)
+    function generator($name, Haanga_Compiler $compiler, $args, $extra=NULL)
     {
         if (!$this->hasGenerator($name)) {
             return array();
@@ -144,7 +144,7 @@ Abstract Class Extensions
         }
         $zclass     = $this->getClassName($name);
         if (!is_callable(array($zclass, 'main'))) {
-            throw new CompilerException("{$name}: missing main method in {$zclass} class");
+            throw new Haanga_CompilerException("{$name}: missing main method in {$zclass} class");
         }
         
         $reflection = new ReflectionMethod($zclass, 'main');
