@@ -56,7 +56,7 @@ class Haanga_CompilerException extends Exception
 // }}}
 
 
-class Haanga_Main
+class Haanga_Compiler
 {
 
     // properties {{{
@@ -1248,28 +1248,10 @@ class Haanga_Main
             $exec = call_user_func_array(array($this, 'expr_exec'), $args);
         }
         
-        if (isset($details['for'])) {
-            $new_args = array($this->expr_var('var'));
-            $print['function'][1] = $new_args;
-            $arr['args'] = $new_args;
-
-            if ($var) {
-                $out[] = $this->op_declare($var, $this->expr_str());
-            }
-
-            $out[] = $this->op_foreach($details['for'], 'var');
-            if ($var) {
-                $out[] = $this->append_var($var, $exec);
-            } else {
-                $this->generate_op_print($exec, $out);
-            }
-            $out[] = $this->op_end('foreach');
+        if ($var) {
+            $out[] = $this->op_declare($var, $exec);
         } else {
-            if ($var) {
-                $out[] = $this->op_declare($var, $exec);
-            } else {
-                $this->generate_op_print($exec, $out);
-            }
+            $this->generate_op_print($exec, $out);
         }
     }
     // }}}
@@ -1346,7 +1328,7 @@ class Haanga_Main
     final static function main_cli()
     {
         $argv = $GLOBALS['argv'];
-        $haanga = new Haanga_Main;
+        $haanga = new Haanga_Compiler;
         $code = $haanga->compile_file($argv[1]);
         echo "<?php\n\n$code\n";
     }
@@ -1358,7 +1340,7 @@ class Haanga_Main
  *  Runtime compiler
  *
  */
-final class Haanga_Main_Runtime extends Haanga_Main
+final class Haanga_Compiler_Runtime extends Haanga_Compiler
 {
 
     // get_function_name($name=NULL) {{{

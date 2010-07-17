@@ -93,13 +93,13 @@ Abstract Class Haanga_Extensions
      *  will be returned.
      *
      *  @param string       $name extension name
-     *  @param Haanga_Main  Compiler object
+     *  @param Haanga_Compiler  Compiler object
      *  @param array        Arrays
      *  @param mixed        Extra param
      *
      *  @return array
      */
-    function generator($name, Haanga_Main $compiler, $args, $extra=NULL)
+    function generator($name, Haanga_Compiler $compiler, $args, $extra=NULL)
     {
         if (!$this->hasGenerator($name)) {
             return array();

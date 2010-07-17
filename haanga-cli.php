@@ -3,4 +3,4 @@
 
 require dirname(__FILE__)."/lib/haanga.php";
 
-Haanga_Main::main_cli();
+Haanga_Compiler::main_cli();

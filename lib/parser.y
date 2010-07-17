@@ -90,8 +90,6 @@ stmts(A) ::= T_AUTOESCAPE T_OFF|T_ON(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_AUT
 
 /* CUSTOM TAGS */
 custom_tag(A) ::= T_CUSTOM_TAG(B) T_CLOSE_TAG. { A = array('operation' => 'custom_tag', 'name' => B, 'list'=>array()); }
-custom_tag(A) ::= T_CUSTOM_TAG(B) T_FOR varname(C) T_CLOSE_TAG. { A = array('operation' => 'custom_tag', 'name' => B, 'for' => C, 'list' => array()); }
-custom_tag(A) ::= T_CUSTOM_TAG(B) T_FOR varname(C) T_AS varname(X) T_CLOSE_TAG. { A = array('operation' => 'custom_tag', 'name' => B, 'for' => C, 'list' => array(),'as' => X); }
 custom_tag(A) ::= T_CUSTOM_TAG(B) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'custom_tag', 'name' => B, 'as' => C, 'list'=>array()); }
 custom_tag(A) ::= T_CUSTOM_TAG(B) var_list(X) T_CLOSE_TAG. { A = array('operation' => 'custom_tag', 'name' => B, 'list' => X); }
 custom_tag(A) ::= T_CUSTOM_TAG(B) var_list(X) T_AS varname(C) T_CLOSE_TAG. { A = array('operation' => 'custom_tag', 'name' => B, 'as' => C, 'list' => X); }

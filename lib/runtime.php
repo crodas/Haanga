@@ -162,7 +162,7 @@ class Haanga
         if (!is_file($php) || filemtime($tpl) > filemtime($php)) {
             if (!$compiler) {
                 require_once dirname(__FILE__)."/haanga.php";
-                $compiler = new Haanga_Main_Runtime;
+                $compiler = new Haanga_Compiler_Runtime;
             }
             $compiler->reset();
             //$compiler->setDebug($php.".dump");
