@@ -795,6 +795,7 @@ class Haanga_Compiler
         $this->ob_start($out);
         $buffer_var = 'buffer'.$this->ob_start;
 
+        $body = array();
         $this->generate_op_code($details['body'], $body);
 
         $out = array_merge($out, $body);

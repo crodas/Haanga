@@ -1,8 +1,8 @@
 <?php
 
-require "../haanga/runtime.php";
+require "../lib/runtime.php";
 
-Haanga::setCacheDir('complex/tmp/');
+Haanga::setCacheDir('tmp/');
 Haanga::setTEmplateDir('complex/');
 
 $people =  array(
