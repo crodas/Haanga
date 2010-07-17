@@ -150,10 +150,6 @@ html {
     $this->token = Parser::T_EMPTY;
 }
 
-"firstof" token_end {
-    $this->token = Parser::T_FIRST_OF;
-}
-
 "block" token_end {
     $this->token = Parser::T_BLOCK;
 }

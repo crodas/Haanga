@@ -769,31 +769,6 @@ class Haanga_Main
     }
     // }}}
 
-    // first_of var1 var2 'name' {{{
-    protected function generate_op_first_of($details, &$out)
-    {
-        $texpr = array();
-        foreach ($details['vars'] as $var) {
-            if (isset($var['string'])) {
-                $texpr[] = $var;
-                break;
-            }
-            $texpr[] = $this->expr_cond(
-                $this->expr_isset($var['var']),
-                $var,
-                ""
-            );
-        }
-        $texpr = array_reverse($texpr);
-        for ($i=1; $i < count($texpr); $i++) {
-           $texpr[$i]['false'] = $texpr[$i-1]; 
-        }
-        $expr = $texpr[$i-1];
-
-        $this->generate_op_print($expr, $out);
-    }
-    // }}}
-
     // {# something #} {{{
     protected function generate_op_comment($details, &$out)
     {
