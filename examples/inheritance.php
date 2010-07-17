@@ -5,9 +5,9 @@
  *   
  *   @credit - adapt from ptemplates sample
  */
-require "../haanga/runtime.php";
+require "../lib/runtime.php";
 
-Haanga::setCacheDir('inheritance/tmp/');
+Haanga::setCacheDir('tmp/');
 Haanga::setTEmplateDir('inheritance/');
 
 $time_start = microtime(true);

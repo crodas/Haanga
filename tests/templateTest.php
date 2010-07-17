@@ -8,6 +8,7 @@ class templateTest extends PHPUnit_Framework_TestCase
         @mkdir("tmp/");
         Haanga::setCacheDir("tmp/");
         Haanga::setTemplateDir(".");
+        Haanga::enableDebug(TRUE);
         foreach (glob("tmp/*") as $file) {
             unlink($file);
         }
@@ -27,12 +28,39 @@ class templateTest extends PHPUnit_Framework_TestCase
     /** 
      * @dataProvider tplProvider
      */
-    public function testCompiled($test_file, $data, $expected)
+    public function testIsCached($test_file, $data, $expected)
     {
         /* same as above, but we ensure that the file wasn't compiled */
         $output = Haanga::Load($test_file, $data, TRUE);
         $this->assertEquals($output, $expected);
         $this->assertFalse(Haanga::$has_compiled);
+    }
+
+
+    /** 
+     * @dataProvider tplProvider
+     */
+    public function testCompiler($test_file, $data, $expected)
+    {
+        $GLOBALS['argv'][1] = $test_file;
+        $GLOBALS['argv'][2] = '--notags';
+        $GLOBALS['argv'][3] = '--save';
+
+        ob_start();
+        Haanga_Compiler::main_cli();
+        $code = ob_get_clean();
+
+        eval($code);
+
+        $file     = basename($test_file);
+        $pos      = strpos($file,'.');
+        $function = substr($file, 0, $pos).'_template';
+        $output   = call_user_func($function, $data, TRUE);
+
+        if ($output != $expected) {
+            die($code);
+        }
+        $this->assertEquals($output, $expected);
     }
 
     public function tplProvider()

@@ -133,8 +133,9 @@ class Haanga_CodeGenerator
      */
     function php_function($op)
     {
+        $code = "function {$op['name']}(\$vars, \$return=FALSE, \$blocks=array())".$this->ident()."{";
         $this->ident++;
-        return "function {$op['name']}(\$vars, \$return=FALSE, \$blocks=array())\n{";
+        return $code;
     }
     // }}}
 

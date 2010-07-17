@@ -19,7 +19,7 @@ class Cycle_Tag
             $index = 'index_'.$id;
             $def   = 'def_cycle_'.$id; 
         } else {
-            $out[] = $cmp->op_declare($def, $cmp->expr_array_first($args));
+            $out[] = $cmp->op_declare($def, $cmp->expr_array_ex($args));
         }
 
         /* isset($var) == FALSE */
