@@ -112,7 +112,6 @@ class Haanga
         self::$debug = $bool;
     }
     // }}}
-    
 
     // doInclude(s tring $file) {{{
     /**
@@ -177,7 +176,13 @@ class Haanga
             if (self::$debug) {
                 $compiler->setDebug($php.".dump");
             }
-            $code = $compiler->compile_file($tpl, FALSE);
+
+            try {
+                $code = $compiler->compile_file($tpl, FALSE);
+            } catch (Exception $e) {
+                throw new Haanga_CompilerException($tpl.' :'.$e->getMessage());
+            }
+
             file_put_contents($php, "<?php".$code);
             self::$has_compiled = TRUE;
         }

@@ -84,6 +84,7 @@ stmts(A) ::= if_stmt(B). { A = B; }
 stmts(A) ::= T_INCLUDE var_or_string(B) T_CLOSE_TAG. { A = array('operation' => 'include', B); }
 stmts(A) ::= custom_tag(B). { A = B; }
 stmts(A) ::= alias(B). { A = B; }
+stmts(A) ::= ifequal(B). { A = B; }
 stmts(A) ::= T_AUTOESCAPE T_OFF|T_ON(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG. { A = array('operation' => 'autoescape', 'value' => strtolower(@B), 'body' => X); }
 
 /* Statement */
@@ -135,11 +136,21 @@ ifchanged_stmt(A) ::= T_IFCHANGED var_list(X) T_CLOSE_TAG body(B) T_OPEN_TAG T_E
     A = array('operation' => 'ifchanged', 'body' => B, 'check' => X, 'else' => C);
 }
 
+/* ifequal */
+ifequal(A) ::= T_IFEQUAL fvar_or_string(B) fvar_or_string(C) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG. {  A = array('operation' => 'ifequal', 'cmp' => '==', 1 => B, 2 => C, 'body' => X); }
+ifequal(A) ::= T_IFEQUAL fvar_or_string(B) fvar_or_string(C) T_CLOSE_TAG body(X) T_OPEN_TAG T_ELSE T_CLOSE_TAG body(Y) T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG. {  A = array('operation' => 'ifequal', 'cmp' => '==', 1 => B, 2 => C, 'body' => X, 'else' => Y); }
+ifequal(A) ::= T_IFNOTEQUAL fvar_or_string(B) fvar_or_string(C) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG. {  A = array('operation' => 'ifequal', 'cmp' => '!=', 1 => B, 2 => C, 'body' => X); }
+ifequal(A) ::= T_IFNOTEQUAL fvar_or_string(B) fvar_or_string(C) T_CLOSE_TAG body(X) T_OPEN_TAG T_ELSE T_CLOSE_TAG body(Y) T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG. {  A = array('operation' => 'ifequal', 'cmp' => '!=', 1 => B, 2 => C, 'body' => X, 'else' => Y); }
+
  
 /* block stmt */
 block_stmt(A) ::= T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }
 
 block_stmt(A) ::= T_BLOCK varname(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }
+
+block_stmt(A) ::= T_BLOCK T_NUMERIC(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }
+
+block_stmt(A) ::= T_BLOCK T_NUMERIC(B) T_CLOSE_TAG body(C) T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG. { A = array('operation' => 'block', 'name' => B, 'body' => C); }
 
 /* filter stmt */
 filter_stmt(A) ::= T_FILTER filtered_var(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_END_FILTER T_CLOSE_TAG. { A = array('operation' => 'filter', 'functions' => B, 'body' => X); }
@@ -165,6 +176,11 @@ var_or_string(A) ::= varname(B).    { A = array('var' => B); }
 var_or_string(A) ::= T_NUMERIC(B).  { A = array('number' => B); }  
 var_or_string(A) ::= string(B).     { A = array('string' => B); }
 
+fvar_or_string(A) ::= filtered_var(B).  { A = array('var_filter' => B); }  
+fvar_or_string(A) ::= T_NUMERIC(B).     { A = array('number' => B); }  
+fvar_or_string(A) ::= string(B).        { A = array('string' => B); }
+
+/* */
 string(A)    ::= T_STRING_SINGLE_INIT s_content(B)  T_STRING_SINGLE_END. {  A = B; }
 string(A)    ::= T_STRING_DOUBLE_INIT s_content(B)  T_STRING_DOUBLE_END. {  A = B; }
 s_content(A) ::= s_content(B) T_STRING_CONTENT(C). { A = B.C; }
@@ -176,11 +192,8 @@ expr(A) ::= expr(B) T_OR(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
 expr(A) ::= expr(B) T_PLUS|T_MINUS(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
 expr(A) ::= expr(B) T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN(X)  expr(C).  { A = array('op_expr' => trim(@X), B, C); }
 expr(A) ::= expr(B) T_TIMES|T_DIV|T_MOD(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
-expr(A) ::= filtered_var(B). {A = array('var_filter' => B);}
 expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = array('op_expr' => 'expr', B); }
-expr(A) ::= string(B).   { A = array('string' => B); }
-expr(A) ::= T_NUMERIC(B). { A = array('number' => B); }
-
+expr(A) ::= fvar_or_string(B). { A = B; }
 
 /* Variable name */
 varname(A) ::= varname(B) T_DOT T_ALPHA(C). { if (!is_array(B)) { A = array(B); } else { A = B; }  A[]=C;}

@@ -46,14 +46,13 @@ function do_parsing($template, $ignore_whitespace=FALSE)
             if  (!$lexer->yylex()) {
                 break;
             }
-            //var_dump(array($lexer->token, $lexer->value));
             $parser->doParse($lexer->token, $lexer->value);
         }
     } catch (Exception $e) {
         throw new Haanga_CompilerException($e->getMessage(). ' on line '.$lexer->getLine());
     }
     $parser->doParse(0, 0);
-    return $parser->body;
+    return (array)$parser->body;
 }
 
 class Haanga_Lexer
@@ -239,6 +238,23 @@ html {
     $this->token = Parser::T_IFCHANGED;
 }
 
+"ifequal" token_end {
+    $this->token = Parser::T_IFEQUAL;
+}
+
+"endifequal" token_end {
+    $this->token = Parser::T_END_IFEQUAL;
+}
+
+"ifnotequal" token_end {
+    $this->token = Parser::T_IFNOTEQUAL;
+}
+
+"endifnotequal" token_end {
+    $this->token = Parser::T_END_IFNOTEQUAL;
+}
+
+
 "else" token_end {
     $this->token = Parser::T_ELSE;
 }
@@ -349,7 +365,7 @@ numerals "."  numerals {
     $this->token = Parser::T_NUMERIC;
 }
 
-alpha {
+alpha  {
     $this->is_custom_tag();
 }
 

@@ -57,9 +57,6 @@ class templateTest extends PHPUnit_Framework_TestCase
         $function = substr($file, 0, $pos).'_template';
         $output   = call_user_func($function, $data, TRUE);
 
-        if ($output != $expected) {
-            die($code);
-        }
         $this->assertEquals($output, $expected);
     }
 

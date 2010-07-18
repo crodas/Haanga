@@ -160,7 +160,7 @@ class Haanga_Compiler
         $code   = "";
         $this->subtemplate = FALSE;
 
-        if ($parsed[0]['operation'] == 'base') {
+        if (isset($parsed[0]) && $parsed[0]['operation'] == 'base') {
             /* {% base ... %} found */
             $base  = $parsed[0][0];
             $code .= $this->get_base_template($base); 
@@ -604,6 +604,16 @@ class Haanga_Compiler
     }
     // }}}
 
+    protected function generate_op_ifequal($details, &$out)
+    {
+        $if['expr'] = $this->expr($details['cmp'], $details[1], $details[2]);
+        $if['body'] = $details['body'];
+        if (isset($details['else'])) {
+            $if['else'] =  $details['else'];
+        }
+        $this->generate_op_if($if, $out);
+    }
+
     // {% if <expr> %} HTML {% else %} TWO {% endif $} {{{
     protected function generate_op_if($details, &$out)
     {
@@ -782,6 +792,22 @@ class Haanga_Compiler
     // {% block 'name' %} ... {% endblock %} {{{
     protected function generate_op_block($details, &$out)
     {
+        if (is_array($details['name'])) {
+            $name = "";
+            foreach ($details['name'] as $part) {
+                if (is_string($part)) {
+                    $name .= "{$part}";
+                } else if (is_array($part)) {
+                    if (isset($part['string'])) {
+                        $name = "{$part['string']}";
+                    } else {
+                        throw new Haanga_CompilerException("Invalid blockname");
+                    }
+                }
+                $name .= ".";
+            }
+            $details['name'] = substr($name, 0, -1);
+        }
         $this->in_block++;
         $this->blocks[] = $details['name'];
         $block_name = $this->expr_var('blocks', $details['name']);
