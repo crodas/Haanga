@@ -44,7 +44,6 @@ class templateTest extends PHPUnit_Framework_TestCase
     {
         $GLOBALS['argv'][1] = $test_file;
         $GLOBALS['argv'][2] = '--notags';
-        $GLOBALS['argv'][3] = '--save';
 
         ob_start();
         Haanga_Compiler::main_cli();

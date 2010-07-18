@@ -6,10 +6,14 @@ Haanga::setCacheDir('tmp/');
 Haanga::setTEmplateDir('django-yui-layout-templates/');
 
 $files = array();
-foreach (glob("django-yui-layout-templates/*") as $html) {
+foreach (glob("django-yui-layout-templates/*.html") as $html) {
     if (is_file($html)) {
-        $files[] = basename($html);
+        $files[basename($html)] = TRUE;
     }
+}
+
+if (!isset($_GET['layout']) || !isset($files[$_GET['layout']])) {
+    $_GET['layout'] = key($files);
 }
 
 $blocks = array(
@@ -26,8 +30,10 @@ $sql_queries = array(
     array('sql' => 'select * from php', 'time' => '1'),
 );
 
-$time = microtime(TRUE);
-$mem = memory_get_usage();
+$files = array_keys($files);
+$time  = microtime(TRUE);
+$mem   = memory_get_usage();
+
 Haanga::Load($_GET['layout'], compact('debug', 'files', 'sql_queries'), FALSE, $blocks);
 var_dump(array(
  'memory (mb)' => (memory_get_usage()-$mem)/(1024*1024), 
