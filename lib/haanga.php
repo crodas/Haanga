@@ -604,6 +604,7 @@ class Haanga_Compiler
     }
     // }}}
 
+    // ifequal|ifnotequal <var_filtered|string|number> <var_fitlered|string|number> ... else ... {{{
     protected function generate_op_ifequal($details, &$out)
     {
         $if['expr'] = $this->expr($details['cmp'], $details[1], $details[2]);
@@ -613,6 +614,7 @@ class Haanga_Compiler
         }
         $this->generate_op_if($if, $out);
     }
+    // }}}
 
     // {% if <expr> %} HTML {% else %} TWO {% endif $} {{{
     protected function generate_op_if($details, &$out)
@@ -799,7 +801,7 @@ class Haanga_Compiler
                     $name .= "{$part}";
                 } else if (is_array($part)) {
                     if (isset($part['string'])) {
-                        $name = "{$part['string']}";
+                        $name .= "{$part['string']}";
                     } else {
                         throw new Haanga_CompilerException("Invalid blockname");
                     }
