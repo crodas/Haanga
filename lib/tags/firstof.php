@@ -10,7 +10,7 @@ class FirstOf_Tag
     {
         $texpr = array();
         foreach ($args as $var) {
-            if (isset($var['string'])) {
+            if ($cmp->is_string($var)) {
                 $texpr[] = $var;
                 break;
             }

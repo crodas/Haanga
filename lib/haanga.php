@@ -261,6 +261,17 @@ class Haanga_Compiler
     {
         return isset($cmd['var']);
     }
+
+    function is_var_filter($cmd)
+    {
+        return isset($cmd['var_filter']);
+    }
+
+    function is_string($cmd)
+    {
+        return isset($cmd['string']);
+    }
+
     // }}}
 
     // op_* helper methods {{{
@@ -282,7 +293,7 @@ class Haanga_Compiler
     {
         foreach (array('array', 'value', 'key') as $var) {
             $var = &$$var;
-            if (is_array($var) && isset($var['var'])) {
+            if (is_array($var) && $this->is_var($var)) {
                 $var = $var['var'];
             }
             unset($var);
@@ -317,7 +328,7 @@ class Haanga_Compiler
     function op_declare($name, $value)
     {
         if (is_array($name)) {
-            if (isset($name['var'])) {
+            if ($this->is_var($name)) {
                 $name = $name['var'];
             }
         }
@@ -523,7 +534,7 @@ class Haanga_Compiler
      */
     function get_base_template($base)
     {
-        if (!isset($base['string'])) {
+        if (!$this->is_string($base)) {
             throw new Haanga_CompilerException("Dynamic inheritance is not supported for compilated templates");
         }
         $file = $base['string'];
@@ -567,7 +578,7 @@ class Haanga_Compiler
     {
         if (is_array($expr) && isset($expr['op_expr'])) {
             if ($expr['op_expr'] == 'in') {
-                if (isset($expr[1]['string'])) {
+                if ($this->is_string($expr[1])) {
                     $expr = $this->expr("!==",
                         $this->expr_exec("strpos", $expr[1], $expr[0]),
                         FALSE
@@ -585,7 +596,7 @@ class Haanga_Compiler
             $this->check_expr($expr[1]);
         } else {
             if (is_array($expr)) {
-                if (isset($expr['var_filter'])) {
+                if ($this->is_var_filter($expr)) {
                     $expr = $this->get_filtered_var($expr['var_filter'], $var);
                 } else if (isset($expr['args'])) {
                     /* check every arguments */
@@ -694,7 +705,7 @@ class Haanga_Compiler
             $count  = count($variable);
             $target = $this->generate_variable_name($variable[0]);
             
-            if (!isset($target['var'])) {
+            if (!$this->is_var($target)) {
                 /* block.super can't have any filter */
                 throw new Haanga_CompilerException("This variable can't have any filter");
             }
@@ -715,7 +726,7 @@ class Haanga_Compiler
             $details = $this->generate_variable_name($variable[0]);
             $varname = $variable[0];
 
-            if (!isset($details['var']) && !$accept_string) {
+            if (!$this->is_var($details) && !$accept_string) {
                 /* generate_variable_name didn't replied a variable, weird case
                     currently just used for {{block.super}}.
                 */
@@ -740,7 +751,7 @@ class Haanga_Compiler
 
         $details = $this->get_filtered_var($details['variable'], $variable, TRUE);
 
-        if (!isset($details['var']) && !isset($details['exec'])) {
+        if (!$this->is_var($details) && !isset($details['exec'])) {
             /* generate_variable_name didn't replied a variable, weird case
                 currently just used for {{block.super}}.
             */
@@ -800,7 +811,7 @@ class Haanga_Compiler
                 if (is_string($part)) {
                     $name .= "{$part}";
                 } else if (is_array($part)) {
-                    if (isset($part['string'])) {
+                    if ($this->is_string($part)) {
                         $name .= "{$part['string']}";
                     } else {
                         throw new Haanga_CompilerException("Invalid blockname");
@@ -1151,7 +1162,7 @@ class Haanga_Compiler
         } else {
             /* beauty :-) */
             foreach ($details['check'] as $id=>$type) {
-                if (!isset($type['var'])) {
+                if (!$this->is_var($type)) {
                     throw new Haanga_CompilerException("Unexpected string {$type['string']}, expected a varabile");
                 }
                 $this_expr = $this->expr('OR',
@@ -1350,9 +1361,9 @@ class Haanga_Compiler
 
     final static function main_cli()
     {
-        $argv = $GLOBALS['argv'];
+        $argv   = $GLOBALS['argv'];
         $haanga = new Haanga_Compiler;
-        $code = $haanga->compile_file($argv[1], TRUE);
+        $code   = $haanga->compile_file($argv[1], TRUE);
         if (!isset($argv[2]) || $argv[2] != '--notags') {
             $code = "<?php\n\n$code";
         }

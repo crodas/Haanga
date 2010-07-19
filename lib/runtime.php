@@ -113,7 +113,7 @@ class Haanga
     }
     // }}}
 
-    // doInclude(s tring $file) {{{
+    // doInclude(string $file) {{{
     /**
      *  Load a PHP file using Haanga's root dir as 
      *  base dir.
