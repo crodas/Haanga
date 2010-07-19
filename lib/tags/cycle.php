@@ -14,7 +14,7 @@ class Cycle_Tag
         $def   = 'def_cycle_'.$cycle; 
         $out   = array();
 
-        if (count($args) == 1 && isset($args[0]['var']) && isset($cmp->cycle[$args[0]['var']])) {
+        if (count($args) == 1 && $cmp->is_var($args[0]) && isset($cmp->cycle[$args[0]['var']])) {
             $id    = $cmp->cycle[$args[0]['var']];
             $index = 'index_'.$id;
             $def   = 'def_cycle_'.$id; 

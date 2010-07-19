@@ -13,7 +13,10 @@ function haanga_d2f931b3242b3187b9a3d407f38c7d9d691df84f($vars, $return=FALSE, $
         $buffer2 .= "\n            <li><a href=\"".$item["url"]."\">".htmlentities($item["name"])."</a></li>\n        ";
     }
     $buffer2 .= "\n    </ul>\n    ";
-    $buffer1 .= (isset($blocks["menu"]) == TRUE ? (strpos($blocks["menu"], "{{block.1b3231655cebb7a1f783eddf27d254ca}}") === FALSE ? $blocks["menu"] : str_replace("{{block.1b3231655cebb7a1f783eddf27d254ca}}", $buffer2, $blocks["menu"])) : $buffer2)."\n    ".Haanga::Load("assert_templates/partial.tpl", $vars, TRUE, $blocks)."\n</body>\n</html>\n";
+    $buffer1 .= (isset($blocks["main.menu"]) == TRUE ? (strpos($blocks["main.menu"], "{{block.1b3231655cebb7a1f783eddf27d254ca}}") === FALSE ? $blocks["main.menu"] : str_replace("{{block.1b3231655cebb7a1f783eddf27d254ca}}", $buffer2, $blocks["main.menu"])) : $buffer2)."\n    ";
+    $buffer2  = "";
+    $buffer2 .= Haanga::Load("assert_templates/partial.tpl", $vars, TRUE, $blocks);
+    $buffer1 .= (isset($blocks["main.include-end"]) == TRUE ? (strpos($blocks["main.include-end"], "{{block.1b3231655cebb7a1f783eddf27d254ca}}") === FALSE ? $blocks["main.include-end"] : str_replace("{{block.1b3231655cebb7a1f783eddf27d254ca}}", $buffer2, $blocks["main.include-end"])) : $buffer2)."\n</body>\n</html>\n";
     if ($return == TRUE) {
         return $buffer1;
     } else {

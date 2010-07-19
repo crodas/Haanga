@@ -46,19 +46,23 @@ class Haanga_Filter extends Haanga_Extensions
     {
         static $cache = array();
         $filter = strtolower($filter);
-
+        
         if (!isset($cache[$filter])) {
-            $file = $this->getFilePath($filter);
-            if (is_readable($file)) {
-                /* Load custom filter definition */
-                require_once $file;
-                $class_name = $this->getClassName($filter);
-                if (class_exists($class_name)) {
-                    $cache[$filter] = TRUE;
+            $class_name = $this->getClassName($filter);
+            if (class_exists($class_name)) {
+                $cache[$filter] = TRUE;
+            } else {
+                $file = $this->getFilePath($filter);
+                if (is_readable($file)) {
+                    /* Load custom filter definition */
+                    require_once $file;
+                    if (class_exists($class_name)) {
+                        $cache[$filter] = TRUE;
+                    }
                 }
-            }
-            if (!isset($cache[$filter])) {
-                $cache[$filter] = FALSE;
+                if (!isset($cache[$filter])) {
+                    $cache[$filter] = FALSE;
+                }
             }
         }
 

@@ -4,7 +4,7 @@ class Length_Filter
 {
     function generator($compiler, $args)
     {
-        if (isset($args[0]['string'])) {
+        if ($compiler->is_string($args[0])) {
             return $compiler->expr_exec('strlen', $args[0]);
         }
         return $compiler->expr_cond(

@@ -2,7 +2,7 @@
 
 {% block title %}My Title - {{ block.super }}{% endblock %}
 
-{% block menu %}
+{% block main.menu %}
     {{ block.super}}
 
     :-)

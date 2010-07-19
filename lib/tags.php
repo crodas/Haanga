@@ -57,22 +57,31 @@ class Haanga_Tag extends Haanga_Extensions
         $tag = strtolower($tag);
 
         if (!isset($cache[$tag])) {
-            $file = $this->getFilePath($tag);
-            if (is_readable($file)) {
-                /* Load custom tag definition */
-                require_once $file;
-                $class_name = $this->getClassName($tag);
-                if (class_exists($class_name)) {
-                    $properties = get_class_vars($class_name);
-                    $is_block   = FALSE;
-                    if (isset($properties['is_block'])) {
-                        $is_block = (bool)$properties['is_block'];
-                    }
-                    $cache[$tag] = $is_block ? Parser::T_CUSTOM_BLOCK : Parser::T_CUSTOM_TAG;
+            $class_name = $this->getClassName($tag);
+            if (class_exists($class_name)) {
+                $properties = get_class_vars($class_name);
+                $is_block   = FALSE;
+                if (isset($properties['is_block'])) {
+                    $is_block = (bool)$properties['is_block'];
                 }
-            }
-            if (!isset($cache[$tag])) {
-                $cache[$tag] = FALSE;
+                $cache[$tag] = $is_block ? Parser::T_CUSTOM_BLOCK : Parser::T_CUSTOM_TAG;
+            } else { 
+                $file = $this->getFilePath($tag);
+                if (is_readable($file)) {
+                    /* Load custom tag definition */
+                    require_once $file;
+                    if (class_exists($class_name)) {
+                        $properties = get_class_vars($class_name);
+                        $is_block   = FALSE;
+                        if (isset($properties['is_block'])) {
+                            $is_block = (bool)$properties['is_block'];
+                        }
+                        $cache[$tag] = $is_block ? Parser::T_CUSTOM_BLOCK : Parser::T_CUSTOM_TAG;
+                    }
+                }
+                if (!isset($cache[$tag])) {
+                    $cache[$tag] = FALSE;
+                }
             }
         }
 

@@ -5,13 +5,13 @@
 
 <body>
     <h1>Menu</h1>
-    {% block menu %}
+    {% block main.menu %}
     <ul>
         {% for item in menu %}
             <li><a href="{{ item.url|safe }}">{{ item.name }}</a></li>
         {% endfor %}
     </ul>
     {% endblock %}
-    {% include "assert_templates/partial.tpl" %}
+    {% block main['include-end'] %}{% include "assert_templates/partial.tpl" %}{% endblock %}
 </body>
 </html>
