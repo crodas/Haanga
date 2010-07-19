@@ -17,10 +17,19 @@ class Meneame_Pagination_Tag
         $total   = $cmp->expr_var('mnm_total');
         $start   = $cmp->expr_var('mnm_start');
         $end     = $cmp->expr_var('mnm_end');
+        $next    = $cmp->expr_var('mnm_next');
+        $prev    = $cmp->expr_var('mnm_prev');
+        $pages   = $cmp->expr_var('mnm_pages');
         $zero    = $cmp->expr_number(0);
         $one     = $cmp->expr_number(1);
         $two     = $cmp->expr_number(2);
         $false   = $cmp->expr_FALSE();
+
+        $cmp->set_safe($current);
+        $cmp->set_safe($total);
+        $cmp->set_safe($prev);
+        $cmp->set_safe($next);
+        $cmp->set_safe($pages);
         
 
         $code   = array();
@@ -28,14 +37,13 @@ class Meneame_Pagination_Tag
         $code[] = $cmp->op_declare($total, $cmp->expr_exec('ceil', $cmp->expr('/', $args[2], $args[1]))); 
         $code[] = $cmp->op_declare($start, $cmp->expr_exec('max', $cmp->expr('-', $current, $cmp->expr_exec('intval', $cmp->expr('/',$args[3], $two))), $one));
         $code[] = $cmp->op_declare($end, $cmp->expr('+', $start, $cmp->expr('-', $args[3], $one)));
-        $code[] = $cmp->op_declare('mnm_prev', $cmp->expr_cond($cmp->expr('==', $one, $current), $false, $cmp->expr('-', $current, $one)));
-        $code[] = $cmp->op_declare('mnm_next', $cmp->expr_cond(
+        $code[] = $cmp->op_declare($prev, $cmp->expr_cond($cmp->expr('==', $one, $current), $false, $cmp->expr('-', $current, $one)));
+        $code[] = $cmp->op_declare($next, $cmp->expr_cond(
             $cmp->expr('||', $cmp->expr('<', $args[2], $zero), $cmp->expr('<', $current, $total)),
             $cmp->expr('+', $current, $one),
             $false));
 
-        $code[] = $cmp->op_declare('mnm_pages', $cmp->expr_exec('range', $start, $cmp->expr_cond($cmp->expr('<', $end, $total), $end, $total)));
-        //$code[] = $cmp->op_foreach
+        $code[] = $cmp->op_declare($pages, $cmp->expr_exec('range', $start, $cmp->expr_cond($cmp->expr('<', $end, $total), $end, $total)));
 
         return new ArrayIterator($code);
     }

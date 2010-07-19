@@ -15,7 +15,7 @@ function haanga_8d56a9a504af63b0aa1f9e966ad860de9c65c99b($vars, $return=FALSE, $
     if ($mnm_prev) {
         $buffer1 .= "\n    <span class=\"nextprev\">&#171; Previous</span>\n";
     } else {
-        $buffer1 .= "\n    <a href=\"?page".htmlentities($mnm_prev)."\">&#171; Previous</a>\n";
+        $buffer1 .= "\n    <a href=\"?page".$mnm_prev."\">&#171; Previous</a>\n";
     }
     $buffer1 .= "\n\n";
     if ($mnm_start > 1) {
@@ -25,19 +25,19 @@ function haanga_8d56a9a504af63b0aa1f9e966ad860de9c65c99b($vars, $return=FALSE, $
     foreach ($mnm_pages as  $page) {
         $buffer1 .= "\n    ";
         if ($mnm_current == $page) {
-            $buffer1 .= "\n        <span class=\"current\">".htmlentities($page)."</span>\n    ";
+            $buffer1 .= "\n        <span class=\"current\">".$page."</span>\n    ";
         } else {
-            $buffer1 .= "\n        <a href=\"?page=".htmlentities($page)."\">".htmlentities($page)."</a>\n    ";
+            $buffer1 .= "\n        <a href=\"?page=".$page."\">".$page."</a>\n    ";
         }
         $buffer1 .= "\n";
     }
     $buffer1 .= "\n\n";
     if ($mnm_total > $mnm_end) {
-        $buffer1 .= "\n    <span>...</span>\n    <a href=\"?page=".htmlentities($mnm_total)."\">".htmlentities($mnm_total)."</a>\n";
+        $buffer1 .= "\n    <span>...</span>\n    <a href=\"?page=".$mnm_total."\">".$mnm_total."</a>\n";
     }
     $buffer1 .= "\n\n";
     if ($mnm_next) {
-        $buffer1 .= "\n    <a href=\"?page=".htmlentities($mnm_next)."\">&#187; Next</a>\n";
+        $buffer1 .= "\n    <a href=\"?page=".$mnm_next."\">&#187; Next</a>\n";
     } else {
         $buffer1 .= "\n    <span class=\"nextprev\">&#187; Next</span>\n";
     }
