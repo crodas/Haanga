@@ -149,6 +149,10 @@ html {
     $this->token = Parser::T_EMPTY;
 }
 
+"load" token_end {
+    $this->token = Parser::T_LOAD;
+}
+
 "block" token_end {
     $this->token = Parser::T_BLOCK;
 }

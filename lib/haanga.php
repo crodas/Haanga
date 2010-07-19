@@ -557,8 +557,11 @@ class Haanga_Compiler
             throw new Haanga_CompilerException("Invalid \$parsed array");
         }
         foreach ($parsed as $op) {
+            if (!is_array($op)) {
+                continue;
+            }
             if (!isset($op['operation'])) {
-                throw new Haanga_CompilerException("Malformed $parsed array");
+                throw new Haanga_CompilerException("Malformed array:".print_r($op, TRUE));
             }
             if ($this->subtemplate && $this->in_block == 0 && $op['operation'] != 'block') {
                 /* ignore most of tokens in subtemplates */

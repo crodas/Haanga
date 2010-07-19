@@ -382,6 +382,13 @@ class Haanga_CodeGenerator
                 }
                 $code .= $value;
                 break;
+            case 'op_expr':
+                if (strlen($code) != 0) {
+                    $code .= '.';
+                }
+                $code .= $this->php_generate_expr($op[$i]);
+                $code .= ".";
+                break;
             case 'expr':
                 if (strlen($code) != 0) {
                     $code .= '.';

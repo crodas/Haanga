@@ -102,6 +102,12 @@ alias(A) ::= T_WITH varname(B) T_AS varname(C) T_CLOSE_TAG body(X) T_OPEN_TAG T_
 
 /* Simple statements (don't require a end_tag or a body ) */
 stmt(A) ::= regroup(B). { A = B; }
+stmt ::= T_LOAD string(B). {
+    if (!is_file(B)) {
+        throw new Haanga_CompilerException(B." is not a valid file"); 
+    } 
+    require_once B;
+}
 
 /* FOR loop */
 for_stmt(A) ::= T_FOR varname(B) T_IN filtered_var(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
