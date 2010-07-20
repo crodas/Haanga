@@ -1346,7 +1346,11 @@ class Haanga_Compiler
             throw new Haanga_CompilerException("{$name} is an invalid filter");
         }
         if ($filter->hasGenerator($name)) {
-            return $filter->generator($name, $this, $args);
+            $return = $filter->generator($name, $this, $args);
+            if (is_object($return)) {
+                $return = $return->GetArray();
+            }
+            return $return;
         }
         $fnc = $filter->getFunctionAlias($name);
         if (!$fnc) {

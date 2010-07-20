@@ -21,10 +21,6 @@ class Pluralize_Filter
             $plural   = "s";
         }
 
-        return $compiler->expr_cond(
-            $compiler->expr("<=", $args[0], 1),
-            $compiler->expr_str($singular),
-            $compiler->expr_str($plural)
-        );
+        return hexpr_cond(hexpr($args[0], '<=', 1), $singular, $plural);
     }
 }

@@ -7,7 +7,7 @@ class Reverse_Filter
         if (count($args) != 1) {
             throw new Haanga_CompilerException("Reverse only needs one parameter");
         }
-        return $compiler->expr_exec('array_reverse', 
-            $args[0], $compiler->expr_TRUE());
+
+        return hexec('array_reverse', $args[0], TRUE);
     }
 }

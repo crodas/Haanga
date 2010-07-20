@@ -47,6 +47,7 @@ class HCode
     }
 
 
+
     function num($number)
     {
         return array("number" => $number);
@@ -73,10 +74,7 @@ class HCode
         $class = __CLASS__;
 
         if ($obj InstanceOf $class) {
-            $value = $obj->getArray();
-            if (!$get_all) {
-                $value = $value[0];
-            }
+            $value = $obj->getArray($get_all);
         } else if (is_string($obj)) {
             $value = $this->str($obj);
         } else if (is_numeric($obj) or $obj === 0) {
@@ -86,12 +84,10 @@ class HCode
         } else if ($obj === TRUE) {
             $value = array('expr' => TRUE);
         } else if (is_array($obj)) {
-            if (count($obj) == 1) {
-                foreach (array('var', 'string', 'number') as $type) {
-                    if (isset($obj[$type])) {
-                        $value = $obj;
-                        return;
-                    }
+            foreach (array('exec', 'var', 'string', 'number') as $type) {
+                if (isset($obj[$type])) {
+                    $value = $obj;
+                    return;
                 }
             }
             $h     = hcode()->arr();
@@ -103,17 +99,20 @@ class HCode
                 }
                 $h->element($key, $value);
             }
-            $value = current($h->getArray());
+            $value = $h->getArray();
         } else {
             var_Dump($obj);
             throw new Exception("Imposible to get the value of the object");
         }
     }
 
-    function getArray()
+    function getArray($get_all=FALSE)
     {
         $this->end();
-        return $this->stack;
+        if ($get_all) {
+            return $this->stack;
+        }
+        return $this->stack[0];
     }
 
     function exec($function)
