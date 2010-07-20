@@ -39,6 +39,7 @@ define('HAANGA_DIR', dirname(__FILE__));
 
 // Load needed files {{{
 require HAANGA_DIR."/lexer.php";
+require HAANGA_DIR."/helper.php";
 require HAANGA_DIR."/generator.php";
 require HAANGA_DIR."/extensions.php";
 require HAANGA_DIR."/tags.php";
@@ -763,7 +764,7 @@ class Haanga_Compiler
         }
 
 
-        if (!$this->var_is_safe && $this->autoescape) {
+        if (!$this->is_safe($details) && $this->autoescape) {
             $args    = array($details);
             $details = $this->do_filtering('escape', $args);
         }
@@ -1046,12 +1047,22 @@ class Haanga_Compiler
         /* ForID */
         $oldid       = $this->forid;
         $this->forid = $oldid+1;
-
         $this->forloop[$this->forid] = array();
 
+        /* variables */
+        $array = $this->get_filtered_var($details['array'], $varname);
+
         /* Loop body */
+        if ($this->is_safe($this->expr_var($varname))) {
+            $this->set_safe($this->expr_var($details['variable']));
+        }
+
         $for_loop_body = array();
         $this->generate_op_code($details['body'], $for_loop_body);
+
+        if ($this->is_safe($this->expr_var($varname))) {
+            $this->set_unsafe($details['variable']);
+        }            
 
         $oid  = $this->forid;
         $size = $this->expr_var('psize_'.$oid);
@@ -1125,7 +1136,6 @@ class Haanga_Compiler
         $this->forid = $oldid;
 
         /* Merge loop body  */
-        $array = $this->get_filtered_var($details['array'], $varname);
         $loop  = $this->op_foreach($array, $details['variable'], $details['index']);
 
         $out[] = $loop;
@@ -1361,6 +1371,35 @@ class Haanga_Compiler
         $this->generate_op_print($exec, $out);
     }
     // }}}
+
+    /* variable safety {{{ */
+    function set_safe($name)
+    {
+        if (is_string($name)) {
+            $name = $this->expr_var($name);
+        }
+        $this->safes[serialize($name)] = TRUE;
+    }
+
+    function set_unsafe($name)
+    {
+        if (is_string($name)) {
+            $name = $this->expr_var($name);
+        }
+        unset($this->safes[serialize($name)]);
+    }
+
+    function is_safe($name)
+    {
+        if ($this->var_is_safe) {
+            return TRUE;
+        }
+        if (isset($this->safes[serialize($name)])) {
+            return TRUE;
+        }
+        return FALSE;
+    }
+    /* }}} */
 
     final static function main_cli()
     {
