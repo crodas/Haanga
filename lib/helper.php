@@ -86,7 +86,24 @@ class HCode
         } else if ($obj === TRUE) {
             $value = array('expr' => TRUE);
         } else if (is_array($obj)) {
-            throw new Exception("Not yet implemented");
+            if (count($obj) == 1) {
+                foreach (array('var', 'string', 'number') as $type) {
+                    if (isset($obj[$type])) {
+                        $value = $obj;
+                        return;
+                    }
+                }
+            }
+            $h     = hcode()->arr();
+            $first = 0;
+            foreach($obj as $key => $value) {
+                if ($key === $first) {
+                    $key = NULL;
+                    $first++;
+                }
+                $h->element($key, $value);
+            }
+            $value = current($h->getArray());
         } else {
             var_Dump($obj);
             throw new Exception("Imposible to get the value of the object");
@@ -102,6 +119,11 @@ class HCode
     function exec($function)
     {
         $this->current = array('exec' => $function, 'args' => array());
+        foreach (func_get_args() as $id => $param) {
+            if ($id > 0) {
+                $this->param($param);
+            }
+        }
         return $this;
     }
 
@@ -114,7 +136,19 @@ class HCode
         return $this;
     }
 
-    function arr($function)
+    function expr_cond($expr, $if_true, $if_false)
+    {
+        $this->getValue($expr, $vExpr);
+        $this->getValue($if_true, $vIfTrue);
+        $this->getValue($if_false, $vIfFalse);
+
+        $this->current = array('expr_cond' => $vExpr, 'true' => $vIfTrue, 'false' => $vIfFalse);
+
+        return $this;
+    }
+
+
+    function arr()
     {
         $this->current = array('array' => array());
 
@@ -123,12 +157,28 @@ class HCode
 
     function element($key=NULL, $value)
     {
+        $last = & $this->current;
+
+        if (!isset($last['array'])) {
+            throw new Exception("Invalid call to element()");
+        }
+
+        $this->getValue($value, $val);
+        if ($key !== NULL) {
+            $this->getValue($key, $kval);
+            $val = array('key' => array($kval, $val));
+        }
+        $last['array'][] = $val;
     }
 
     function decl($name, $value)
     {
+        if (is_string($name)) {
+            $name = hvar($name);
+        }
         $this->getValue($value, $stmt);
-        $this->stack[] = array('op' => 'declare', 'name' => $name, $stmt);
+        $this->getValue($name, $name);
+        $this->stack[] = array('op' => 'declare', 'name' => $name['var'], $stmt);
         return $this;
     }
 
@@ -162,35 +212,50 @@ function hcode()
     return new HCode;
 }
 
-function hexpr($operation, $term1, $term2=NULL)
+function hexpr($term1, $op, $term2=NULL, $op2=NULL)
 {
     $code = hcode();
-    return $code->expr($operation, $term1, $term2);
+    switch ($op2) {
+    case '+':
+    case '-':
+    case '/':
+    case '*':
+    case '%':
+    case '||':
+    case '&&':
+    case '<':
+    case '>':
+    case '<=':
+    case '>=':
+    case '==':
+    case '!=':
+        /* call recursive to resolve term2 */
+        $args = func_get_args();
+        $term2 = call_user_func_array('hexpr', array_slice($args, 2));
+        break;
+    }
+    return $code->expr($op, $term1, $term2);
 }
 
-function hexec($function)
+function hexpr_cond($expr, $if_true, $if_false)
 {
     $code = hcode();
-    return $code->exec($function);
+    $code->expr_cond($expr, $if_true, $if_false);
+
+    return $code;
+}
+
+function hexec()
+{
+    $code = hcode();
+    $args = func_get_args();
+    return call_user_func_array(array($code, 'exec'), $args);
 }
 
 function hvar()
 {
     $code = hcode();
-    return call_user_func_array(array($code, 'v'), func_get_args());
+    $args = func_get_args();
+    return call_user_func_array(array($code, 'v'), $args);
 }
 
-$code = hcode();
-
-$code->decl('foo', hexec('ceil')->param( hexpr('/', 5, 10) )->param( 1 ));
-$code->decl('mnm_current', hvar('argv', 'david', hvar('x')));
-$code->decl('david', hexpr('+', 5, hvar('cesar') ) );
-
-require "generator.php";
-
-class Haanga_CompilerException extends Exception {}
-
-$generator = new Haanga_CodeGenerator;
-$code = $generator->getCode($code->getArray());
-
-var_dump($code);

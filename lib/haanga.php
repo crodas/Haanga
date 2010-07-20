@@ -39,6 +39,7 @@ define('HAANGA_DIR', dirname(__FILE__));
 
 // Load needed files {{{
 require HAANGA_DIR."/lexer.php";
+require HAANGA_DIR."/helper.php";
 require HAANGA_DIR."/generator.php";
 require HAANGA_DIR."/extensions.php";
 require HAANGA_DIR."/tags.php";

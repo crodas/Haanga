@@ -9,21 +9,31 @@ class Meneame_Pagination_Tag
         if (count($args) != 3 && count($args) != 4) {
             throw new Haanga_CompilerException("Memeame_Pagination requires 3 or 4 parameters");
         }
+
         if (count($args) == 3) {
-            $args[3] = $cmp->expr_number(5);
+            $args[3] = 5;
         }
 
-        $current = $cmp->expr_var('mnm_current');
-        $total   = $cmp->expr_var('mnm_total');
-        $start   = $cmp->expr_var('mnm_start');
-        $end     = $cmp->expr_var('mnm_end');
-        $next    = $cmp->expr_var('mnm_next');
-        $prev    = $cmp->expr_var('mnm_prev');
-        $pages   = $cmp->expr_var('mnm_pages');
-        $zero    = $cmp->expr_number(0);
-        $one     = $cmp->expr_number(1);
-        $two     = $cmp->expr_number(2);
-        $false   = $cmp->expr_FALSE();
+        Haanga::doInclude("helper.php");
+
+
+        $current = hvar('mnm_current');
+        $total   = hvar('mnm_total');
+        $start   = hvar('mnm_start');
+        $end     = hvar('mnm_end');
+        $prev    = hvar('mnm_prev');
+        $next    = hvar('mnm_next');
+        $pages   = hvar('mnm_pages');
+        
+        $code = hcode();
+        
+        $code->decl($current, $args[0]);
+        $code->decl($total, hexec('ceil', hexpr($args[2], '/', $args[1])) );
+        $code->decl($start, hexec('max', hexpr($current, '-', hexec('intval', hexpr($args[3],'/', 2))), 1));
+        $code->decl($end, hexpr($start, '+', $args[3], '-', 1));
+        $code->decl($prev, hexpr_cond( hexpr(1, '==', $current), FALSE, hexpr($current, '-', 1)) ); 
+        $code->decl($next, hexpr_cond( hexpr($args[2], '<', 0, '||', $current, '<', $total), hexpr($current, '+', 1), FALSE));
+        $code->decl('mnm_pages', hexec('range', $start, hexpr_cond(hexpr($end,'<', $total), $end, $total)));
 
         $cmp->set_safe($current);
         $cmp->set_safe($total);
@@ -32,20 +42,7 @@ class Meneame_Pagination_Tag
         $cmp->set_safe($pages);
         
 
-        $code   = array();
-        $code[] = $cmp->op_declare($current, $args[0]);
-        $code[] = $cmp->op_declare($total, $cmp->expr_exec('ceil', $cmp->expr('/', $args[2], $args[1]))); 
-        $code[] = $cmp->op_declare($start, $cmp->expr_exec('max', $cmp->expr('-', $current, $cmp->expr_exec('intval', $cmp->expr('/',$args[3], $two))), $one));
-        $code[] = $cmp->op_declare($end, $cmp->expr('+', $start, $cmp->expr('-', $args[3], $one)));
-        $code[] = $cmp->op_declare($prev, $cmp->expr_cond($cmp->expr('==', $one, $current), $false, $cmp->expr('-', $current, $one)));
-        $code[] = $cmp->op_declare($next, $cmp->expr_cond(
-            $cmp->expr('||', $cmp->expr('<', $args[2], $zero), $cmp->expr('<', $current, $total)),
-            $cmp->expr('+', $current, $one),
-            $false));
-
-        $code[] = $cmp->op_declare($pages, $cmp->expr_exec('range', $start, $cmp->expr_cond($cmp->expr('<', $end, $total), $end, $total)));
-
-        return new ArrayIterator($code);
+        return new ArrayIterator($code->getArray());
     }
 
 }
