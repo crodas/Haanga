@@ -85,8 +85,14 @@ class HCode
         return array("number" => $number);
     }
 
+    function stack_size()
+    {
+        return count($this->stack);
+    }
+
     function append_ast(HCode $obj)
     {
+        $obj->end();
         $this->stack = array_merge($this->stack, $obj->stack);
 
         return $this;

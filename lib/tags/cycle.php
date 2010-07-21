@@ -44,6 +44,7 @@ class Cycle_Tag
             } else {
                 $code->decl($index, hexpr_cond($expr, 0, $inc));
             }
+            $code->end();
             $var = hvar($def, hvar($index));
             $cmp->do_print($code, $var);
         } else {
@@ -53,7 +54,7 @@ class Cycle_Tag
 
         $cycle++;
 
-        return new ArrayIterator($code->getArray(TRUE));
+        return $code;
 
     }
 }

@@ -669,20 +669,17 @@ class Haanga_Compiler
     // }}}
     
     // include "file.html" | include <var1> {{{
-    protected function generate_op_include($details, &$out)
+    protected function generate_op_include($details, &$body)
     {
         if (!$details[0]['string']) {
             throw new Haanga_CompilerException("Dynamic inheritance is not supported for compilated templates");
         }
         list($name,$code) = $this->compile_required_template($details[0]['string']);
         $this->append .= "\n\n{$code}";
-        $expr = $this->expr_exec(
-            $this->get_function_name($name),
-            $this->expr_var('vars'),
-            $this->expr_TRUE(),
-            $this->expr_var('blocks')
+        $this->do_print($body,
+            hexpr($this->get_function_name($name), 
+            hvar('vars'), TRUE, hvar('blocks'))
         );
-        $this->generate_op_print($expr, $out);
     }
     // }}}
 
@@ -1060,15 +1057,9 @@ class Haanga_Compiler
     protected function generate_op_loop($details, &$body)
     {
         if (isset($details['empty'])) {
-            die('here');
-            $expr = $this->expr('==',
-                $this->expr_exec('count', $this->expr_var($details['array'])),
-                0
-            );
-
-            $out[] = $this->op_if($expr);
-            $this->generate_op_code($details['empty'], $out);
-            $out[] = $this->op_else();
+            $body->do_if(hexpr(hexec('count', hvar($details['array'])), '==', 0));
+            $this->generate_op_code($details['empty'], $body);
+            $body->do_else();
         }
 
         /* ForID */
@@ -1166,8 +1157,7 @@ class Haanga_Compiler
         $body->do_foreach($array, $details['variable'], $details['index'], $for_body);
 
         if (isset($details['empty'])) {
-            die('here3');
-            $out[] = $this->op_end('if');
+            $body->do_endif();
         }
     }
     // }}}
@@ -1289,9 +1279,9 @@ class Haanga_Compiler
                if the custom tag has 'body' 
                then it behave the same way as a filter
             */
-            $this->ob_start($out);
-            $this->generate_op_code($details['body'], $out);
-            $target = $this->expr_var('buffer'.$this->ob_start);
+            $this->ob_start($body);
+            $this->generate_op_code($details['body'], $body);
+            $target = hvar('buffer'.$this->ob_start);
             if ($tags->hasGenerator($tag_name)) {
                 $exec = $tags->generator($tag_name, $this, array($target));
                 if ($exec InstanceOf HCode) {
@@ -1311,25 +1301,26 @@ class Haanga_Compiler
         if ($tags->hasGenerator($tag_name)) {
             $exec = $tags->generator($tag_name, $this, $details['list'], $var);
             if ($exec InstanceOf HCode) {
-                $exec = $exec->getArray();
-            }
-            if ($exec InstanceOf ArrayIterator) {
-                /* 
-                   The generator returned more than one statement,
-                   so we assume the output is already handled
-                   by one of those stmts.
-                */
-                $out = array_merge($out, $exec->getArrayCopy());
-                return;
+                if ($exec->stack_size() < 2) {
+                    $exec = $exec->getArray();
+                } else {
+                    /* 
+                        The generator returned more than one statement,
+                        so we assume the output is already handled
+                        by one of those stmts.
+                    */
+                    $body->append_ast($exec);
+                    return;
+                }
             }
         } else {
             $exec = call_user_func_array(array($this, 'expr_exec'), $args);
         }
         
         if ($var) {
-            $out->decl($var, $exec);
+            $body->decl($var, $exec);
         } else {
-            $this->generate_op_print($exec, $out);
+            $this->do_print($body, $exec);
         }
     }
     // }}}
