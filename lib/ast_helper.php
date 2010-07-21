@@ -92,6 +92,7 @@ class HCode
 
     function append_ast(HCode $obj)
     {
+        $this->end();
         $obj->end();
         $this->stack = array_merge($this->stack, $obj->stack);
 
@@ -182,7 +183,7 @@ class HCode
     static function fromArrayGetAST($obj)
     {
         $class = __CLASS__;
-        foreach (array('exec', 'var', 'string', 'number', 'constant') as $type) {
+        foreach (array('op_expr', 'expr_cond', 'exec', 'var', 'string', 'number', 'constant') as $type) {
             if (isset($obj[$type])) {
                 $nobj = new $class;
                 $nobj->stack[] = $obj;

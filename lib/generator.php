@@ -281,6 +281,9 @@ class Haanga_CodeGenerator
     protected function php_generate_expr($expr)
     {
         $code = '';
+        if (is_object($expr)) {
+            $expr = $expr->getArray();
+        }
         if (is_array($expr) && isset($expr['op_expr'])) {
             if ($expr['op_expr'] == 'expr') {
                 $code .= "(";
@@ -482,7 +485,7 @@ class Haanga_CodeGenerator
                 } else {
                     throw new Exception("Invalid variable definition ".print_r($var, TRUE));
                 }
-            } 
+            }
             $var_str = $this->php_get_varname($var[0]);
             for ($i=1; $i < count($var); $i++) {
                 $var_str .= "[";
@@ -493,6 +496,8 @@ class Haanga_CodeGenerator
                         $var_str .= $this->php_get_varname($var[$i]['var']);
                     } else if (isset($var[$i]['string'])) {
                         $var_str .= '"'.addslashes($var[$i]['string']).'"';
+                    } else if (isset($var[$i]['number'])) {
+                        $var_str .= $var[$i]['number'];
                     }
                 }
                 $var_str .= "]";

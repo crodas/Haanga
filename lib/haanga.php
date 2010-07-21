@@ -636,9 +636,20 @@ class Haanga_Compiler
     // }}}
 
     // {% if <expr> %} HTML {% else %} TWO {% endif $} {{{
-    protected function generate_op_if($details, &$out)
+    protected function generate_op_if($details, &$body)
     {
         $this->check_expr($details['expr']);
+        $expr = HCode::fromArrayGetAST($details['expr']);
+        $body->do_if($expr);
+        $this->generate_op_code($details['body'], $body);
+        if (isset($details['else'])) {
+            $body->do_else();
+            $this->generate_op_code($details['else'], $body);
+        }
+        $body->do_endif();
+        return;
+
+
         $out[] = $this->op_if($details['expr']);
         $this->generate_op_code($details['body'], $out);
         if (isset($details['else'])) {
@@ -753,7 +764,7 @@ class Haanga_Compiler
      *  escaped if autoescape is "on".
      *
      */
-    protected function generate_op_print_var($details, &$out)
+    protected function generate_op_print_var($details, &$body)
     {
 
         $details = $this->get_filtered_var($details['variable'], $variable, TRUE);
@@ -762,7 +773,7 @@ class Haanga_Compiler
             /* generate_variable_name didn't replied a variable, weird case
                 currently just used for {{block.super}}.
             */
-            $this->generate_op_print($details, $out);
+            $this->do_print($body, $details);
             return;
         }
 
@@ -775,7 +786,7 @@ class Haanga_Compiler
         if (is_array($details)) {
             $details = HCode::fromArrayGetAST($details);
         }
-        $this->do_print($out, $details);
+        $this->do_print($body, $details);
     }
     // }}}
 
@@ -1083,7 +1094,7 @@ class Haanga_Compiler
         }            
 
         $oid  = $this->forid;
-        $size = $this->expr_var('psize_'.$oid);
+        $size = hvar('psize_'.$oid);
         
         // counter {{{
         if (isset($this->forloop[$oid]['counter'])) {
@@ -1104,15 +1115,13 @@ class Haanga_Compiler
         // last {{{
         if (isset($this->forloop[$oid]['last'])) {
             if (!isset($cnt)) {
-                $cnt = $this->op_declare('psize_'.$oid, $this->expr_exec('count', $this->expr_var($details['array'])));
-                $out[] = $cnt;
+                $body->decl('psize_'.$oid, hexec('count', $details['array']));
+                $cnt = TRUE;
             }
             $var  = 'islast_'.$oid;
             $expr = $this->op_declare($var, $this->expr("==", $this->expr_var('forcounter1_'.$oid), $size));
-
-            $out[] = $expr;
-
-            $for_body[] = $expr;
+            $body->decl($var, hexpr('forcounter1_'.$oid, '==', $size));
+            $for_body->decl($var, hexpr('forcounter1_'.$oid, '==', $size));
         }
         // }}}
 
@@ -1163,7 +1172,7 @@ class Haanga_Compiler
     // }}}
 
     // ifchanged [<var1> <var2] {{{
-    protected function generate_op_ifchanged($details, &$out)
+    protected function generate_op_ifchanged($details, &$body)
     {
         static $ifchanged = 0;
 
@@ -1171,55 +1180,44 @@ class Haanga_Compiler
         $var1 = 'ifchanged'.$ifchanged;
         if (!isset($details['check'])) {
             /* ugly */
-            $this->ob_start($out);
-            $var2 = 'buffer'.$this->ob_start;
+            $this->ob_start($body);
+            $var2 = hvar('buffer'.$this->ob_start);
 
-            $expr = $this->expr('OR',
-                $this->expr_isset($var1, FALSE),
-                $this->expr('!=', 
-                    $this->expr_var($var1),
-                    $this->expr_var($var2)
-                )
-            );
 
-            $this->generate_op_code($details['body'], $out);
+            $this->generate_op_code($details['body'], $body);
             $this->ob_start--;
-            $out[] = $this->op_if($expr);
-            $this->generate_op_print(array('variable' => $var2), $out);
-            $out[] = $this->op_declare($var1, $this->expr_var($var2));
+            $body->do_if(hexpr(hexec('isset', hvar($var1)), '==', FALSE, '||', hvar($var1), '!=', $var2));
+            $this->do_print($body, $var2);
+            $body->decl($var1, $var2);
         } else {
             /* beauty :-) */
             foreach ($details['check'] as $id=>$type) {
-                if (!$this->is_var($type)) {
+                if (!HCode::is_var($type)) {
                     throw new Haanga_CompilerException("Unexpected string {$type['string']}, expected a varabile");
                 }
-                $this_expr = $this->expr('OR',
-                    $this->expr_isset("{$var1}[{$id}]", FALSE),
-                    $this->expr('!=', 
-                        $this->expr_var("{$var1}[{$id}]"),
-                        $this->expr_var($type['var'])
-                    )
-                );
+
+                $this_expr = hexpr(hexpr(
+                    hexec('isset', hvar($var1, $id)), '==', FALSE,
+                    '||', hvar($var1, $id), '!=', $type
+                ));
+
                 if (isset($expr)) {
-                    $this_expr = $this->expr('AND', 
-                        $this->expr('expr', $this_expr),
-                        $expr
-                    );
+                    $this_expr = hexpr($expr, '&&', $this_expr);
                 }
 
                 $expr = $this_expr;
 
             }
-            $out[] = $this->op_if($expr);
-            $this->generate_op_code($details['body'], $out);
-            $out[] = $this->op_declare($var1, $this->expr_array_ex($details['check']));
+            $body->do_if($expr);
+            $this->generate_op_code($details['body'], $body);
+            $body->decl($var1, $details['check']);
         }
 
         if (isset($details['else'])) {
-            $out[] = $this->op_else();
-            $this->generate_op_code($details['else'], $out);
+            $body->do_else();
+            $this->generate_op_code($details['else'], $body);
         }
-        $out[] = $this->op_end('if');
+        $body->do_endif();
     }
     // }}}
 
@@ -1284,14 +1282,14 @@ class Haanga_Compiler
             $target = hvar('buffer'.$this->ob_start);
             if ($tags->hasGenerator($tag_name)) {
                 $exec = $tags->generator($tag_name, $this, array($target));
-                if ($exec InstanceOf HCode) {
-                    $exec = $exec->getArray();
+                if (!$exec InstanceOf HCode) {
+                    throw new Haanga_CompilerException("Invalid output of custom filter {$tag_name}");
                 }
             } else {
-                $exec = $this->expr_exec($function, $target);
+                $exec = hexec($function, $target);
             }
             $this->ob_start--;
-            $this->generate_op_print($exec, $out);
+            $this->do_print($body, $exec);
             return;
         }
 
@@ -1301,9 +1299,7 @@ class Haanga_Compiler
         if ($tags->hasGenerator($tag_name)) {
             $exec = $tags->generator($tag_name, $this, $details['list'], $var);
             if ($exec InstanceOf HCode) {
-                if ($exec->stack_size() < 2) {
-                    $exec = $exec->getArray();
-                } else {
+                if ($exec->stack_size() >= 2) {
                     /* 
                         The generator returned more than one statement,
                         so we assume the output is already handled
@@ -1312,9 +1308,15 @@ class Haanga_Compiler
                     $body->append_ast($exec);
                     return;
                 }
+            } else {
+                throw new Haanga_CompilerException("Invalid output of the custom tag {$tag_name}");
             }
         } else {
-            $exec = call_user_func_array(array($this, 'expr_exec'), $args);
+            $fnc  = array_shift($args);
+            $exec = hexec($fnc);
+            foreach ($args as $arg) {
+                $exec->param($arg);
+            }
         }
         
         if ($var) {
@@ -1369,30 +1371,30 @@ class Haanga_Compiler
         }
 
         if ($filter->hasGenerator($name)) {
-            $return = $filter->generator($name, $this, $args);
-            return $return;
+            return $filter->generator($name, $this, $args);
         }
         $fnc = $filter->getFunctionAlias($name);
         if (!$fnc) {
             $fnc = $this->get_custom_filter($name);
         }
+
         $args = array_merge(array($fnc), $args);
         $exec = call_user_func_array('hexec', $args);
 
         return $exec;
     }
 
-    function generate_op_filter($details, &$out)
+    function generate_op_filter($details, &$body)
     {
-        $this->ob_start($out);
-        $this->generate_op_code($details['body'], $out);
-        $target = $this->expr_var('buffer'.$this->ob_start);
+        $this->ob_start($body);
+        $this->generate_op_code($details['body'], $body);
+        $target = hvar('buffer'.$this->ob_start);
         foreach ($details['functions'] as $f) {
             $param = (isset($exec) ? $exec : $target);
             $exec  = $this->do_filtering($f, array($param));
         }
         $this->ob_start--;
-        $this->generate_op_print($exec, $out);
+        $this->do_print($body, $exec);
     }
     // }}}
 
