@@ -25,11 +25,11 @@ class Spaceless_Tag
     static function main($html)
     {
         $regex = array(
-            "/>[ \t\r\n]+</sU",
-            "/^[ \t\r\n]+</sU",
-            "/>[ \t\r\n]+$/sU",
+            '/>[ \t\r\n]+</sU',
+            '/^[ \t\r\n]+</sU',
+            '/>[ \t\r\n]+$/sU',
         );
-        $replaces = array("><", "<", ">");
+        $replaces = array('><', '<', '>');
         $html     = preg_replace($regex, $replaces, $html);
         return $html;
     } }}} */
@@ -41,19 +41,10 @@ class Spaceless_Tag
      */
     function generator($compiler, $args)
     {
-        $regex = $compiler->expr_array(
-            $compiler->expr_str("/>[ \t\r\n]+</sU"),
-            $compiler->expr_str("/^[ \t\r\n]+</sU"),
-            $compiler->expr_str("/>[ \t\r\n]+$/sU")
-        );
+        $regex = array('/>[ \t\r\n]+</sU','/^[ \t\r\n]+</sU','/>[ \t\r\n]+$/sU');
+        $repl  = array('><', '<', '>');
 
-        $replaces = $compiler->expr_array(
-            $compiler->expr_str("><"), 
-            $compiler->expr_str("<"),
-            $compiler->expr_str(">")
-        );
-
-        return $compiler->expr_exec("preg_replace", $regex, $replaces, $args[0]);
+        return hexec('preg_replace', $regex, $repl, $args[0]);
     }
     
 

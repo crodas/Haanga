@@ -21,20 +21,20 @@ class Dictsort_Tag
             throw new Haanga_CompilerException("Dictsort: First parameter must be an array");
         }
 
-        /* set redirected as a variable */
-        $redirected = $cmp->expr_var($redirected);
-        $field      = $cmp->expr_var('field');
-        $key        = $cmp->expr_var('key');
+        $redirected = hvar($redirected);
+        $field      = hvar('field');
+        $key        = hvar('key');
 
-        /* create list of statements */
-        $out   = array();
-        $out[] = $cmp->op_declare($redirected, $args[0]);
-        $out[] = $cmp->op_declare('field', $cmp->expr_array());
-        $out[] = $cmp->op_foreach($redirected, 'item', $key);
-        $out[] = $cmp->op_declare($cmp->expr_var('field', $key), $cmp->expr_var('item', $args[1]));
-        $out[] = $cmp->op_end('foreach');
-        $out[] = $cmp->op_expr($cmp->expr_exec('array_multisort', $cmp->expr_var('field'), $cmp->expr_const('SORT_REGULAR'), $redirected));
+        $code = hcode();
+        $body = hcode();
 
-        return new ArrayIterator($out);
+        $body->decl(hvar('field', $key), hvar('item', $args[1]));
+
+        $code->decl($redirected, $args[0]);
+        $code->decl($field, array());
+        $code->for_each($redirected, 'item', $key, $body);
+        $code->do_exec('array_multisort', $field, hconst('SORT_REGULAR'), $redirected);
+
+        return new ArrayIterator($code->getArray(TRUE));
     }
 }

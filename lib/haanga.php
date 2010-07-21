@@ -990,6 +990,25 @@ class Haanga_Compiler
     // }}}
 
     // Print {{{
+    public function do_print(HCode $code, HCode $stmt)
+    {
+        $buffer = hvar('buffer'.$this->ob_start);
+
+        $last = &$code->getLast();
+
+        if ($this->ob_start == 0) {
+            $code->exec('print', $stmt);
+            return;
+        }
+
+        if (isset($last['name']) && $last['name'] == $buffer->var && ($last['op'] == 'declare' || $last['op'] == 'append_var') ) {
+            $last[] = $stmt;
+        } else {
+            $code->append($buffer, $stmt);
+        }
+
+    }
+
     public function generate_op_print($details, &$out)
     {
         $last = count($out)-1;
@@ -1269,6 +1288,9 @@ class Haanga_Compiler
             $target = $this->expr_var('buffer'.$this->ob_start);
             if ($tags->hasGenerator($tag_name)) {
                 $exec = $tags->generator($tag_name, $this, array($target));
+                if ($exec InstanceOf HCode) {
+                    $exec = $exec->getArray();
+                }
             } else {
                 $exec = $this->expr_exec($function, $target);
             }
@@ -1282,6 +1304,9 @@ class Haanga_Compiler
 
         if ($tags->hasGenerator($tag_name)) {
             $exec = $tags->generator($tag_name, $this, $details['list'], $var);
+            if ($exec InstanceOf HCode) {
+                $exec = $exec->getArray();
+            }
             if ($exec InstanceOf ArrayIterator) {
                 /* 
                    The generator returned more than one statement,

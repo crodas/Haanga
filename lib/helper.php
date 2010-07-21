@@ -41,16 +41,33 @@ class HCode
 
     public $current = array();
 
+
+    function &getLast()
+    {
+        if (count($this->stack) == 0) {
+            return array();
+        }
+        return $this->stack[count($this->stack)-1];
+    }
+
+    function is_str($arr)
+    {
+        return isset($arr['string']);
+    }
+
     function str($string)
     {
         return array("string" => $string);
     }
 
-
-
     function num($number)
     {
         return array("number" => $number);
+    }
+
+    function constant($str)
+    {
+        return array('constant' => $str);
     }
 
     function v()
@@ -69,6 +86,15 @@ class HCode
         return $this;
     }
 
+    final function __get($property)
+    {
+        $property = strtolower($property);
+        if (isset($this->current[$property])) {
+            return $this->current[$property];
+        }
+        return FALSE;
+    }
+
     protected function getValue($obj, &$value, $get_all=FALSE)
     {
         $class = __CLASS__;
@@ -84,7 +110,7 @@ class HCode
         } else if ($obj === TRUE) {
             $value = array('expr' => TRUE);
         } else if (is_array($obj)) {
-            foreach (array('exec', 'var', 'string', 'number') as $type) {
+            foreach (array('exec', 'var', 'string', 'number', 'constant') as $type) {
                 if (isset($obj[$type])) {
                     $value = $obj;
                     return;
@@ -100,6 +126,8 @@ class HCode
                 $h->element($key, $value);
             }
             $value = $h->getArray();
+        } else if ($obj === NULL) {
+            $value = array();
         } else {
             var_Dump($obj);
             throw new Exception("Imposible to get the value of the object");
@@ -115,6 +143,39 @@ class HCode
         return $this->stack[0];
     }
 
+    function for_each($array, $value, $key, HCode $body)
+    {
+        foreach (array('array', 'value', 'key') as $var) {
+            if ($$var === NULL) {
+                continue;
+            }
+            $var1 = & $$var;
+            if (is_string($var1)) {
+                $var1 = hvar($var1);
+            }
+            $var1 = $var1->getArray();
+            $var1 = $var1['var'];
+        }
+        $def = array('op' => 'foreach', 'array' => $array, 'value' => $value);
+        if ($key) {
+            $def['key'] = $key;
+        }
+        $this->stack[] = $def;
+        $this->stack   = array_merge($this->stack, $body->getArray(TRUE));
+        $this->stack[] = array('op' => 'end_foreach');
+
+        return $this;
+    }
+
+    function do_exec()
+    {
+        $params = func_get_args();
+        $exec   = call_user_func_array('hexec', $params);
+        $this->stack[] = array('op' => 'expr', $exec->getArray());
+
+        return $this;
+    }
+
     function exec($function)
     {
         $this->current = array('exec' => $function, 'args' => array());
@@ -126,10 +187,14 @@ class HCode
         return $this;
     }
 
-    function expr($operation, $term1, $term2)
+    function expr($operation, $term1, $term2=NULL)
     {
         $this->getValue($term1, $value1);
-        $this->getValue($term2, $value2);
+        if ($term2 !== NULL) {
+            $this->getValue($term2, $value2);
+        } else {
+            $value2 = NULL;
+        }
         $this->current = array('op_expr' => $operation, $value1, $value2);
 
         return $this;
@@ -181,6 +246,17 @@ class HCode
         return $this;
     }
 
+    function append($name, $value)
+    {
+        if (is_string($name)) {
+            $name = hvar($name);
+        }
+        $this->getValue($value, $stmt);
+        $this->getValue($name, $name);
+        $this->stack[] = array('op' => 'append_var', 'name' => $name['var'], $stmt);
+        return $this;
+    }
+
     function param($param)
     {
         $last = & $this->current;
@@ -211,7 +287,7 @@ function hcode()
     return new HCode;
 }
 
-function hexpr($term1, $op, $term2=NULL, $op2=NULL)
+function hexpr($term1, $op='expr', $term2=NULL, $op2=NULL)
 {
     $code = hcode();
     switch ($op2) {
@@ -249,6 +325,11 @@ function hexec()
     $code = hcode();
     $args = func_get_args();
     return call_user_func_array(array($code, 'exec'), $args);
+}
+
+function hconst($str)
+{
+    return HCode::Constant($str);
 }
 
 function hvar()
