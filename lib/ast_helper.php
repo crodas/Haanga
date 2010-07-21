@@ -45,14 +45,32 @@ class HCode
     function &getLast()
     {
         if (count($this->stack) == 0) {
-            return array();
+            return NULL;
         }
         return $this->stack[count($this->stack)-1];
     }
 
-    function is_str($arr)
+    static protected function check_type($obj, $type)
     {
-        return isset($arr['string']);
+        if (!is_array($obj)) {
+            $obj = $obj->getArray();
+        }
+        return isset($obj[$type]);
+    }
+
+    public static function is_str($arr)
+    {
+        return self::check_type($arr, 'string');
+    }
+
+    public static function is_var($arr)
+    {
+        return self::check_type($arr, 'var');
+    }
+
+    public static function is_exec($arr)
+    {
+        return self::check_type($arr, 'exec');
     }
 
     function str($string)
@@ -68,6 +86,57 @@ class HCode
     function constant($str)
     {
         return array('constant' => $str);
+    }
+
+    function comment($str)
+    {
+        $this->stack[] = array("op" => "comment", 'comment' => $str);
+
+        return $this;
+    }
+
+    function declare_function($name)
+    {
+        $this->stack[] = array('op' => 'function', 'name' => $name);
+
+        return $this;
+    }
+
+    function do_return($name)
+    {
+        $this->getValue($name, $expr);
+        $this->stack[] = array('op' => 'return', $expr);
+
+        return $this;
+    }
+
+    function do_if($expr)
+    {
+        $this->getValue($expr, $vexpr);
+        $this->stack[] = array('op' => 'if', 'expr' => $vexpr);
+
+        return $this;
+    }
+
+    function do_else()
+    {
+        $this->stack[] = array('op' => 'else');
+
+        return $this;
+    }
+
+    function do_endif()
+    {
+        $this->stack[] = array('op' => 'end_if');
+
+        return $this;
+    }
+
+    function do_endfunction()
+    {
+        $this->stack[] = array('op' => 'end_function');
+
+        return $this;
     }
 
     function v()
@@ -95,16 +164,28 @@ class HCode
         return FALSE;
     }
 
-    protected function getValue($obj, &$value, $get_all=FALSE)
+    static function fromArrayGetAST($obj)
+    {
+        $class = __CLASS__;
+        foreach (array('exec', 'var', 'string', 'number', 'constant') as $type) {
+            if (isset($obj[$type])) {
+                $nobj = new $class;
+                $nobj->stack[] = $obj;
+                return $nobj;
+            }
+        }
+    }
+
+    static function getValue($obj, &$value, $get_all=FALSE)
     {
         $class = __CLASS__;
 
         if ($obj InstanceOf $class) {
             $value = $obj->getArray($get_all);
         } else if (is_string($obj)) {
-            $value = $this->str($obj);
+            $value = self::str($obj);
         } else if (is_numeric($obj) or $obj === 0) {
-            $value = $this->num($obj);
+            $value = self::num($obj);
         } else if ($obj === FALSE) {
             $value = array('expr' => FALSE);
         } else if ($obj === TRUE) {
@@ -339,3 +420,8 @@ function hvar()
     return call_user_func_array(array($code, 'v'), $args);
 }
 
+function hstr($str)
+{
+    $code = hcode();
+    return $code->str($str);
+}

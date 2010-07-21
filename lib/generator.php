@@ -62,6 +62,9 @@ class Haanga_CodeGenerator
         $this->ident = 0;
         $code = "";
         foreach ($op_code as $op) {
+            if (!isset($op['op'])) {
+                var_Dump($op);die();
+            }
             $method = "php_{$op['op']}";
             if (!is_callable(array($this, $method))) {
                 throw new Exception("CodeGenerator: Missing method $method");

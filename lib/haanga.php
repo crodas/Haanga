@@ -39,7 +39,7 @@ define('HAANGA_DIR', dirname(__FILE__));
 
 // Load needed files {{{
 require HAANGA_DIR."/lexer.php";
-require HAANGA_DIR."/helper.php";
+require HAANGA_DIR."/ast_helper.php";
 require HAANGA_DIR."/generator.php";
 require HAANGA_DIR."/extensions.php";
 require HAANGA_DIR."/tags.php";
@@ -161,6 +161,8 @@ class Haanga_Compiler
         $code   = "";
         $this->subtemplate = FALSE;
 
+        $body = hcode();
+
         if (isset($parsed[0]) && $parsed[0]['operation'] == 'base') {
             /* {% base ... %} found */
             $base  = $parsed[0][0];
@@ -171,43 +173,45 @@ class Haanga_Compiler
         if ($name) {
             $func_name = $this->get_function_name($name);
             if ($this->check_function) {
-                $op_code[] = $this->op_if($this->expr("===", $this->expr_exec('function_exists', $this->expr_str($func_name)), $this->expr_FALSE()));
+                $body->do_if(hexpr(hexec('function_exists', $func_name), '===', FALSE));
             }
             if (isset($this->_file)) {
-                $op_code[] = $this->op_comment("Generated from {$this->_base_dir}/{$this->_file}");
+                $body->comment("Generated from {$this->_base_dir}/{$this->_file}");
             }
-            $op_code[] = $this->op_declare_function($func_name);
-            $op_code[] = $this->op_expr($this->expr_exec('extract', $this->expr_var('vars')));
+
+            $body->declare_function($func_name);
+            $body->do_exec('extract', hvar('vars'));
         }
 
-        $this->ob_start($op_code);
-        $this->generate_op_code($parsed, $op_code);
+
+        $this->ob_start($body);
+        $this->generate_op_code($parsed, $body);
         if ($this->subtemplate) {
             $expr = $this->expr_call_base_template();
-            $this->generate_op_print($expr, $op_code);
+            $this->do_print($body, $expr);
         }
         $this->ob_start--;
 
         /* Add last part */
-        $expr = $this->expr('==', $this->expr_var('return'), TRUE);
-        $op_code[] = $this->op_if($expr);
-        $op_code[] = $this->op_return($this->expr_var('buffer1'));
-        $op_code[] = $this->op_else();
-        $this->generate_op_print(array('variable' => 'buffer1'), $op_code);
-        $op_code[] = $this->op_end('if');
+        $body->do_if(hexpr(hvar('return'), '==', TRUE));
+        $body->do_return(hvar('buffer1'));
+        $body->do_else();
+        $this->do_print($body, hvar('buffer1'));
+        $body->do_endif();
 
         if ($name) {
-            $op_code[] = $this->op_end('function');
+            $body->do_endfunction();
             if ($this->check_function) {
-                $op_code[] = $this->op_end('if');
+                $body->do_endif();
             }
         }
         
         if (count($this->prepend_op)) {
-            $op_code = array_merge($this->prepend_op, $op_code);
+            //$op_code = array_merge($this->prepend_op, $op_code);
+            die('missing');
         }
 
-        $code .= $this->generator->getCode($op_code);
+        $code .= $this->generator->getCode($body->getArray(TRUE));
         if (!empty($this->append)) {
             $code .= $this->append;
         }
@@ -378,11 +382,11 @@ class Haanga_Compiler
      */
     function expr_call_base_template()
     {
-        return $this->expr_exec(
+        return hexec(
             $this->get_function_name($this->subtemplate),
-            $this->expr_var('vars'),
-            $this->expr_TRUE(),
-            $this->expr_var('blocks')
+            hvar('vars'),
+            TRUE,
+            hvar('blocks')
         );
     }
 
@@ -552,7 +556,7 @@ class Haanga_Compiler
     // }}}
 
     // Main Loop {{{
-    protected function generate_op_code($parsed, &$out)
+    protected function generate_op_code($parsed, &$body)
     {
         if (!is_array($parsed)) {
             throw new Haanga_CompilerException("Invalid \$parsed array");
@@ -572,7 +576,7 @@ class Haanga_Compiler
             if (!is_callable(array($this, $method))) {
                 throw new Haanga_CompilerException("Compiler: Missing method $method");
             }
-            $this->$method($op, $out);
+            $this->$method($op, $body);
         }
     }
     // }}}
@@ -683,9 +687,10 @@ class Haanga_Compiler
     // }}}
 
     // Handle HTML code {{{
-    protected function generate_op_html($details, &$out)
+    protected function generate_op_html($details, &$body)
     {
-        $this->generate_op_print($details, $out);
+        $string = HCode::str($details['html']);
+        $this->do_print($body, $string);
     }
     // }}}
 
@@ -705,6 +710,7 @@ class Haanga_Compiler
     function get_filtered_var($variable, &$varname, $accept_string=FALSE)
     {
         $this->var_is_safe = FALSE;
+
         if (count($variable) > 1) {
             $count  = count($variable);
             $target = $this->generate_variable_name($variable[0]);
@@ -755,7 +761,7 @@ class Haanga_Compiler
 
         $details = $this->get_filtered_var($details['variable'], $variable, TRUE);
 
-        if (!$this->is_var($details) && !isset($details['exec'])) {
+        if (!HCode::is_var($details) && !HCode::is_exec($details)) {
             /* generate_variable_name didn't replied a variable, weird case
                 currently just used for {{block.super}}.
             */
@@ -763,13 +769,16 @@ class Haanga_Compiler
             return;
         }
 
-
         if (!$this->is_safe($details) && $this->autoescape) {
             $args    = array($details);
             $details = $this->do_filtering('escape', $args);
         }
 
-        $this->generate_op_print($details, $out);
+
+        if (is_array($details)) {
+            $details = HCode::fromArrayGetAST($details);
+        }
+        $this->do_print($out, $details);
     }
     // }}}
 
@@ -990,14 +999,17 @@ class Haanga_Compiler
     // }}}
 
     // Print {{{
-    public function do_print(HCode $code, HCode $stmt)
+    public function do_print(HCode $code, $stmt)
     {
+        if (is_object($stmt)) {
+            $stmt = $stmt->getArray();
+        }
         $buffer = hvar('buffer'.$this->ob_start);
 
         $last = &$code->getLast();
 
         if ($this->ob_start == 0) {
-            $code->exec('print', $stmt);
+            $code->do_exec('print', $stmt);
             return;
         }
 
@@ -1011,6 +1023,9 @@ class Haanga_Compiler
 
     public function generate_op_print($details, &$out)
     {
+        return;
+        var_dump($details, debug_backtrace());die('print');
+        return;
         $last = count($out)-1;
         if (isset($details['variable'])) {
             $content = $this->generate_variable_name($details['variable']);
@@ -1242,10 +1257,10 @@ class Haanga_Compiler
      *  Start a new buffering  
      *
      */
-    function ob_start(&$out)
+    function ob_start(&$body)
     {
         $this->ob_start++;
-        $out[] = $this->op_declare('buffer'.$this->ob_start, array('string' => ''));
+        $body->decl('buffer'.$this->ob_start, "");
     }
     // }}}
 
@@ -1370,11 +1385,9 @@ class Haanga_Compiler
         if (!$filter->isValid($name)) {
             throw new Haanga_CompilerException("{$name} is an invalid filter");
         }
+
         if ($filter->hasGenerator($name)) {
             $return = $filter->generator($name, $this, $args);
-            if (is_object($return)) {
-                $return = $return->GetArray();
-            }
             return $return;
         }
         $fnc = $filter->getFunctionAlias($name);
@@ -1382,7 +1395,7 @@ class Haanga_Compiler
             $fnc = $this->get_custom_filter($name);
         }
         $args = array_merge(array($fnc), $args);
-        $exec = call_user_func_array(array($this, 'expr_exec'), $args);
+        $exec = call_user_func_array('hexec', $args);
 
         return $exec;
     }
@@ -1486,13 +1499,8 @@ final class Haanga_Compiler_Runtime extends Haanga_Compiler
     // {% base "" %} {{{
     function expr_call_base_template()
     {
-        return $this->expr_exec(
-            'Haanga::Load',
-            $this->subtemplate,
-            $this->expr_var('vars'),
-            $this->expr_TRUE(),
-            $this->expr_var('blocks')
-        );
+        return hexec('Haanga::Load', $this->subtemplate, 
+            hvar('vars'), TRUE, hvar('blocks'));
     }
     // }}}
 
