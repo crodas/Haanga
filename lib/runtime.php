@@ -180,7 +180,7 @@ class Haanga
             try {
                 $code = $compiler->compile_file($tpl, FALSE);
             } catch (Exception $e) {
-                throw new Haanga_CompilerException($tpl.' :'.$e->getMessage());
+                throw new Haanga_CompilerException($tpl.' :'.$e->getMessage().' on '.$e->getfile(). ':'.$e->Getline());
             }
 
             file_put_contents($php, "<?php".$code);

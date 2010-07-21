@@ -32,7 +32,7 @@ class Dictsort_Tag
 
         $code->decl($redirected, $args[0]);
         $code->decl($field, array());
-        $code->for_each($redirected, 'item', $key, $body);
+        $code->do_foreach($redirected, 'item', $key, $body);
         $code->do_exec('array_multisort', $field, hconst('SORT_REGULAR'), $redirected);
 
         return new ArrayIterator($code->getArray(TRUE));

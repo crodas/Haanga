@@ -816,7 +816,7 @@ class Haanga_Compiler
     // }}} 
 
     // {% block 'name' %} ... {% endblock %} {{{
-    protected function generate_op_block($details, &$out)
+    protected function generate_op_block($details, &$body)
     {
         if (is_array($details['name'])) {
             $name = "";
@@ -836,18 +836,18 @@ class Haanga_Compiler
         }
         $this->in_block++;
         $this->blocks[] = $details['name'];
-        $block_name = $this->expr_var('blocks', $details['name']);
+        $block_name = hvar('blocks', $details['name']);
 
-        $this->ob_start($out);
+        $this->ob_start($body);
         $buffer_var = 'buffer'.$this->ob_start;
 
-        $body = array();
-        $this->generate_op_code($details['body'], $body);
+        $content = hcode();
+        $this->generate_op_code($details['body'], $content);
 
-        $out = array_merge($out, $body);
+        $body->append_ast($content);
         $this->ob_start--;
 
-        $buffer = $this->expr_var($buffer_var);
+        $buffer = hvar($buffer_var);
 
         /* {{{ */
         /**
@@ -862,30 +862,21 @@ class Haanga_Compiler
          *      print current block
          *
          */
-        $declare = $this->expr_cond(
-            $this->expr_isset_ex($block_name),
-            $this->expr_cond(
-                $this->expr("===", $this->expr_exec('strpos', $block_name, 
-                        $this->expr_str(self::$block_var)
-                    ), $this->expr_FALSE()
-                ),
+        $declare = hexpr_cond(
+            hexec('isset', $block_name),
+            hexpr_cond(
+                hexpr(hexec('strpos', $block_name, self::$block_var), '===', FALSE),
                 $block_name,
-                $this->expr_exec('str_replace', 
-                    $this->expr_str(self::$block_var),
-                    $buffer,
-                    $block_name
-                )
-            ),
-            $buffer
-        );
+                hexec('str_replace', self::$block_var, $buffer, $block_name)
+            ), $buffer);
         /* }}} */
 
         if (!$this->subtemplate) {
-            $this->generate_op_print($declare, $out);
+            $this->do_print($body, $declare);
         } else {
-            $out[] = $this->op_declare($block_name, $declare);
+            $body->decl($block_name, $declare);
             if ($this->in_block > 1) {
-                $this->generate_op_print($block_name, $out);
+                $this->do_print($body, $block_name);
             }
         }
         array_pop($this->blocks);
@@ -1001,9 +992,6 @@ class Haanga_Compiler
     // Print {{{
     public function do_print(HCode $code, $stmt)
     {
-        if (is_object($stmt)) {
-            $stmt = $stmt->getArray();
-        }
         $buffer = hvar('buffer'.$this->ob_start);
 
         $last = &$code->getLast();
@@ -1013,7 +1001,11 @@ class Haanga_Compiler
             return;
         }
 
+
         if (isset($last['name']) && $last['name'] == $buffer->var && ($last['op'] == 'declare' || $last['op'] == 'append_var') ) {
+            if (is_object($stmt)) {
+                HCode::GetValue($stmt, $stmt);
+            }
             $last[] = $stmt;
         } else {
             $code->append($buffer, $stmt);
@@ -1065,9 +1057,10 @@ class Haanga_Compiler
     // }}}
 
     // for [<key>,]<val> in <array> {{{
-    protected function generate_op_loop($details, &$out)
+    protected function generate_op_loop($details, &$body)
     {
         if (isset($details['empty'])) {
+            die('here');
             $expr = $this->expr('==',
                 $this->expr_exec('count', $this->expr_var($details['array'])),
                 0
@@ -1091,8 +1084,8 @@ class Haanga_Compiler
             $this->set_safe($this->expr_var($details['variable']));
         }
 
-        $for_loop_body = array();
-        $this->generate_op_code($details['body'], $for_loop_body);
+        $for_body = hcode();
+        $this->generate_op_code($details['body'], $for_body);
 
         if ($this->is_safe($this->expr_var($varname))) {
             $this->set_unsafe($details['variable']);
@@ -1103,17 +1096,17 @@ class Haanga_Compiler
         
         // counter {{{
         if (isset($this->forloop[$oid]['counter'])) {
-            $var   = 'forcounter1_'.$oid;
-            $out[] = $this->op_declare($var, $this->expr_number(1));
-            $for_loop_body[] = $this->op_inc($var);
+            $var   = hvar('forcounter1_'.$oid);
+            $body->decl($var, 1);
+            $for_body->decl($var, hexpr($var, '+', 1));
         }
         // }}}
 
         // counter0 {{{
         if (isset($this->forloop[$oid]['counter0'])) {
-            $var   = 'forcounter0_'.$oid;
-            $out[] = $this->op_declare($var, $this->expr_number(0) );
-            $for_loop_body[] = $this->op_inc($var);
+            $var   = hvar('forcounter0_'.$oid);
+            $body->decl($var, 0);
+            $for_body->decl($var, hexpr($var, '+', 1));
         }
         // }}}
 
@@ -1128,7 +1121,7 @@ class Haanga_Compiler
 
             $out[] = $expr;
 
-            $for_loop_body[] = $expr;
+            $for_body[] = $expr;
         }
         // }}}
 
@@ -1136,7 +1129,7 @@ class Haanga_Compiler
         if (isset($this->forloop[$oid]['first'])) {
             $out[] = $this->op_declare('isfirst_'.$oid, $this->expr_TRUE());
 
-            $for_loop_body[] = $this->op_declare('isfirst_'.$oid, $this->expr_FALSE());
+            $for_body[] = $this->op_declare('isfirst_'.$oid, $this->expr_FALSE());
         }
         // }}}
 
@@ -1149,7 +1142,7 @@ class Haanga_Compiler
             $var = $this->expr_var('revcount_'.$oid);
             $out[] = $this->op_declare($var, $size );
 
-            $for_loop_body[] = $this->op_declare($var, $this->expr("-", $var, $this->expr_number(1)));
+            $for_body[] = $this->op_declare($var, $this->expr("-", $var, $this->expr_number(1)));
         }
          // }}}
 
@@ -1162,7 +1155,7 @@ class Haanga_Compiler
             $var = $this->expr_var('revcount0_'.$oid);
             $out[] = $this->op_declare($var, $this->expr("-", $size, $this->expr_number(1)));
 
-            $for_loop_body[] = $this->op_declare($var, $this->expr("-", $var, $this->expr_number(1)));
+            $for_body[] = $this->op_declare($var, $this->expr("-", $var, $this->expr_number(1)));
         }
         // }}}
 
@@ -1170,12 +1163,10 @@ class Haanga_Compiler
         $this->forid = $oldid;
 
         /* Merge loop body  */
-        $loop  = $this->op_foreach($array, $details['variable'], $details['index']);
+        $body->do_foreach($array, $details['variable'], $details['index'], $for_body);
 
-        $out[] = $loop;
-        $out   = array_merge($out, $for_loop_body);
-        $out[] = $this->op_end('foreach');
         if (isset($details['empty'])) {
+            die('here3');
             $out[] = $this->op_end('if');
         }
     }
@@ -1277,7 +1268,7 @@ class Haanga_Compiler
      *  handled by the compiler).
      *
      */
-    function generate_op_custom_tag($details, &$out)
+    function generate_op_custom_tag($details, &$body)
     {
         static $tags;
         if (!$tags) {
@@ -1336,7 +1327,7 @@ class Haanga_Compiler
         }
         
         if ($var) {
-            $out[] = $this->op_declare($var, $exec);
+            $out->decl($var, $exec);
         } else {
             $this->generate_op_print($exec, $out);
         }
@@ -1483,16 +1474,12 @@ final class Haanga_Compiler_Runtime extends Haanga_Compiler
     // }}}
 
     // Override {% include %} {{{
-    protected function generate_op_include($details, &$out)
+    protected function generate_op_include($details, &$body)
     {
-        $expr = $this->expr_exec(
-            'Haanga::Load', 
-            $details[0],
-            $this->expr_var('vars'),
-            $this->expr_TRUE(),
-            $this->expr_var('blocks')
+        $this->do_print($body,
+            hexec('Haanga::Load', $details[0], hvar('vars'), TRUE, 
+            hvar('blocks'))
         );
-        $this->generate_op_print($expr, $out);
     }
     // }}}
 

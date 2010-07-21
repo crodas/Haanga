@@ -37,18 +37,20 @@
 
 class HCode
 {
-    public $stack;
+    public $stack = array();
 
     public $current = array();
 
 
     function &getLast()
     {
+        $f = array();
         if (count($this->stack) == 0) {
-            return NULL;
+            return $f;
         }
         return $this->stack[count($this->stack)-1];
     }
+
 
     static protected function check_type($obj, $type)
     {
@@ -81,6 +83,13 @@ class HCode
     function num($number)
     {
         return array("number" => $number);
+    }
+
+    function append_ast(HCode $obj)
+    {
+        $this->stack = array_merge($this->stack, $obj->stack);
+
+        return $this;
     }
 
     function constant($str)
@@ -224,7 +233,7 @@ class HCode
         return $this->stack[0];
     }
 
-    function for_each($array, $value, $key, HCode $body)
+    function do_foreach($array, $value, $key, HCode $body)
     {
         foreach (array('array', 'value', 'key') as $var) {
             if ($$var === NULL) {
@@ -234,7 +243,9 @@ class HCode
             if (is_string($var1)) {
                 $var1 = hvar($var1);
             }
-            $var1 = $var1->getArray();
+            if (is_object($var1)) {
+                $var1 = $var1->getArray();
+            }
             $var1 = $var1['var'];
         }
         $def = array('op' => 'foreach', 'array' => $array, 'value' => $value);
@@ -418,10 +429,4 @@ function hvar()
     $code = hcode();
     $args = func_get_args();
     return call_user_func_array(array($code, 'v'), $args);
-}
-
-function hstr($str)
-{
-    $code = hcode();
-    return $code->str($str);
 }
