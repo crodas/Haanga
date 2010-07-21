@@ -1,12 +1,11 @@
 <?php
-/* Load filter dictsort definition */
-Haanga::doInclude("/filters/dictsort.php");
 /* Generated from ./assert_templates/regroup.tpl */
 function haanga_e3288a8c38d2925df1b81c50c72b7eee31f8c2f9($vars, $return=FALSE, $blocks=array())
 {
     extract($vars);
+    $buffer1  = "";
     /*  Test regroup with filters, and without filters  */
-    $buffer1  = "\n";
+    $buffer1 .= "\n";
     /* Temporary sorting */
     $sorted_users  = Dictsort_Filter::main($users, $regroup_by);
     $temp_group  = Array();
@@ -62,19 +61,19 @@ function haanga_e3288a8c38d2925df1b81c50c72b7eee31f8c2f9($vars, $return=FALSE, $
                 }
             }
             $buffer1 .= ")\n    ";
-            $forcounter1_2++;
+            $forcounter1_2  = $forcounter1_2 + 1;
             $islast_2  = $forcounter1_2 == $psize_2;
             $isfirst_2  = FALSE;
             $revcount_2  = $revcount_2 - 1;
             $revcount0_2  = $revcount0_2 - 1;
         }
         $buffer1 .= "\n";
-        $forcounter1_1++;
+        $forcounter1_1  = $forcounter1_1 + 1;
     }
     $buffer1 .= "\n";
     if ($return == TRUE) {
         return $buffer1;
     } else {
-        echo $buffer1;
+        print($buffer1);
     }
 }

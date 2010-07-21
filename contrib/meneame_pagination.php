@@ -39,7 +39,7 @@ class Meneame_Pagination_Tag
         $cmp->set_safe($pages);
         
 
-        return new ArrayIterator($code->getArray(TRUE));
+        return $code;
     }
 
 }

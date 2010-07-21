@@ -291,6 +291,9 @@ class Haanga_CodeGenerator
                 $code .= ")";
             } else {
                 $code .= $this->php_generate_expr($expr[0]);
+                if (is_object($expr['op_expr'])) {
+                    var_dump($expr);die();
+                }
                 $code .= " {$expr['op_expr']} ";
                 $code .= $this->php_generate_expr($expr[1]);
             }

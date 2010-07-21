@@ -28,7 +28,7 @@ function haanga_4726e18009acee8a1c86a79b620c7ded71be5ddf($vars, $return=FALSE, $
         }
         $buffer2 .= "\n\n";
         $buffer1 .= trim($buffer2);
-        $forcounter1_1++;
+        $forcounter1_1  = $forcounter1_1 + 1;
         $islast_1  = $forcounter1_1 == $psize_1;
     }
     $buffer1 .= "\n\n";
@@ -50,7 +50,7 @@ function haanga_4726e18009acee8a1c86a79b620c7ded71be5ddf($vars, $return=FALSE, $
         }
         $buffer2 .= "\n\n";
         $buffer1 .= trim($buffer2);
-        $forcounter1_1++;
+        $forcounter1_1  = $forcounter1_1 + 1;
         $islast_1  = $forcounter1_1 == $psize_1;
     }
     $buffer1 .= "\n\n";
@@ -76,6 +76,6 @@ function haanga_4726e18009acee8a1c86a79b620c7ded71be5ddf($vars, $return=FALSE, $
     if ($return == TRUE) {
         return $buffer1;
     } else {
-        echo $buffer1;
+        print($buffer1);
     }
 }

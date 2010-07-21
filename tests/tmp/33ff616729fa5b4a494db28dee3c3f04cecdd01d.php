@@ -1,6 +1,4 @@
 <?php
-/* Load filter truncatewords definition */
-Haanga::doInclude("/filters/truncatewords.php");
 /* Generated from ./assert_templates/truncatewords.tpl */
 function haanga_33ff616729fa5b4a494db28dee3c3f04cecdd01d($vars, $return=FALSE, $blocks=array())
 {
@@ -9,6 +7,6 @@ function haanga_33ff616729fa5b4a494db28dee3c3f04cecdd01d($vars, $return=FALSE, $
     if ($return == TRUE) {
         return $buffer1;
     } else {
-        echo $buffer1;
+        print($buffer1);
     }
 }

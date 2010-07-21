@@ -433,7 +433,12 @@ function hconst($str)
 
 function hvar()
 {
-    $code = hcode();
     $args = func_get_args();
+    return hvar_ex($args);
+}
+
+function hvar_ex($args)
+{
+    $code = hcode();
     return call_user_func_array(array($code, 'v'), $args);
 }

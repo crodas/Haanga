@@ -13,6 +13,6 @@ function haanga_7c948c919295fb106667df66f458e608eb775422($vars, $return=FALSE, $
     if ($return == TRUE) {
         return $buffer1;
     } else {
-        echo $buffer1;
+        print($buffer1);
     }
 }

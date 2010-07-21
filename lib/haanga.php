@@ -162,6 +162,7 @@ class Haanga_Compiler
         $this->subtemplate = FALSE;
 
         $body = hcode();
+        $this->prepend_op = hcode();
 
         if (isset($parsed[0]) && $parsed[0]['operation'] == 'base') {
             /* {% base ... %} found */
@@ -206,9 +207,8 @@ class Haanga_Compiler
             }
         }
         
-        if (count($this->prepend_op)) {
-            //$op_code = array_merge($this->prepend_op, $op_code);
-            die('missing');
+        if ($this->prepend_op->stack_size()) {
+            $this->prepend_op->append_ast($body);
         }
 
         $code .= $this->generator->getCode($body->getArray(TRUE));
@@ -688,7 +688,7 @@ class Haanga_Compiler
         list($name,$code) = $this->compile_required_template($details[0]['string']);
         $this->append .= "\n\n{$code}";
         $this->do_print($body,
-            hexpr($this->get_function_name($name), 
+            hexec($this->get_function_name($name), 
             hvar('vars'), TRUE, hvar('blocks'))
         );
     }
@@ -790,36 +790,10 @@ class Haanga_Compiler
     }
     // }}}
 
-    // is_last_op_print($out) {{{
-    /**
-     *  Return TRUE if the last stacked operation
-     *  is a print (declare or append_var).
-     *
-     *  @param array $out Stack of operations
-     *
-     *  @return bool
-     */
-    protected function is_last_op_print($out)
-    {
-        $last   = count($out)-1;
-        $sprint = array('print', 'declare', 'append_var');
-        return $last >= 0 && array_search($out[$last]['op'], $sprint) !== FALSE;
-    }
-    // }}}
-
     // {# something #} {{{
-    protected function generate_op_comment($details, &$out)
+    protected function generate_op_comment($details, &$body)
     {
-        if ($this->is_last_op_print($out)) {
-            /* If there is a print declared previously, we pop it
-               and add it after the cycle declaration
-             */
-            $old_print = array_pop($out);
-        }
-        $out[] = $this->op_comment($details['comment']);
-        if (isset($old_print)) {
-            $out[] = $old_print;
-        }
+        $body->comment($details['comment']);
     }
     // }}} 
 
@@ -894,37 +868,33 @@ class Haanga_Compiler
     // }}}
 
     // regroup <var1> by <field> as <foo> {{{
-    protected function generate_op_regroup($details, &$out)
+    protected function generate_op_regroup($details, &$body)
     {
-        $out[] = $this->op_comment("Temporary sorting");
+        $body->comment("Temporary sorting");
+
         $array = $this->get_filtered_var($details['array'], $varname);
 
-        if (isset($array['exec'])) {
-            $varname = $this->expr_var($details['as']);
-            $out[]   = $this->op_declare($varname, $array); 
+        if (HCode::is_exec($array)) {
+            $varname = hvar($details['as']);
+            $body->decl($varname, $array);
         }
-        $var = $this->expr_var('item', $details['row']);
+        $var = hvar('item', $details['row']);
 
-        $out[] = $this->op_declare('temp_group', $this->expr_array());
-        $out[] = $this->op_foreach($varname, 'item');
+        $body->decl('temp_group', array());
 
-
-        $out[] = $this->op_declare(array('temp_group', $var, NULL),  $this->expr_var('item'));
-        $out[] = $this->op_end('foreach');
-
-        $out[] = $this->op_comment("Proper format");
-        $out[] = $this->op_declare($details['as'], $this->expr_array_ex(array()));
-        $out[] = $this->op_foreach('temp_group', 'item', 'group');
-
-        $array = $this->expr_array(
-            array("grouper", $this->expr_var('group')),
-            array("list",    $this->expr_var('item'))
+        $body->do_foreach($varname, 'item', NULL, 
+            hcode()->decl(hvar('temp_group', $var, NULL), hvar('item'))
         );
-        
-        $out[] = $this->op_declare(array($details['as'], NULL), $array );
 
-        $out[] = $this->op_end('foreach');
-        $out[] = $this->op_comment("Sorting done");
+        $body->comment("Proper format");
+        $body->decl($details['as'], array());
+        $body->do_foreach('temp_group', 'item', 'group',
+            hcode()->decl(
+                hvar($details['as'], NULL), 
+                array("grouper" => hvar('group'), "list"    => hvar('item'))
+            )
+        );
+        $body->comment("Sorting done");
     }
     // }}}
 
@@ -1021,47 +991,6 @@ class Haanga_Compiler
 
     }
 
-    public function generate_op_print($details, &$out)
-    {
-        return;
-        var_dump($details, debug_backtrace());die('print');
-        return;
-        $last = count($out)-1;
-        if (isset($details['variable'])) {
-            $content = $this->generate_variable_name($details['variable']);
-        } else if (isset($details['html']))  {
-            $html = $details['html'];
-            $content = $this->expr_str($html);
-        } else {
-            $content = $details;
-        }
-
-        $var_name = 'buffer'.$this->ob_start;
-        
-        if ($this->ob_start == 0) {
-            $operation = 'print';
-        } else {
-            $operation = 'append_var';
-        }
-
-        if ($last >= 0 && $out[$last]['op'] == $operation && ($operation != 'append_var' || $out[$last]['name'] === $var_name)) {
-            /* try to append this to the previous print if it exists */
-            $out[$last][] = $content;
-        } else {
-            if ($this->ob_start == 0) {
-                $out[] = array('op' => 'print', $content);
-            } else {
-                if (isset($out[$last]) && $out[$last]['op'] == 'declare' && $out[$last]['name'] == $var_name) {
-                    /* override an empty declaration of a empty buffer 
-                       if the next operation is an 'append'
-                    */
-                    $out[$last][] = $content;
-                } else {
-                    $out[] = $this->op_append('buffer'.$this->ob_start, $content);
-                }
-            }
-        }
-    }
     // }}}
 
     // for [<key>,]<val> in <array> {{{
@@ -1115,47 +1044,44 @@ class Haanga_Compiler
         // last {{{
         if (isset($this->forloop[$oid]['last'])) {
             if (!isset($cnt)) {
-                $body->decl('psize_'.$oid, hexec('count', $details['array']));
+                $body->decl('psize_'.$oid, hexec('count', hvar_ex($details['array'])));
                 $cnt = TRUE;
             }
             $var  = 'islast_'.$oid;
-            $expr = $this->op_declare($var, $this->expr("==", $this->expr_var('forcounter1_'.$oid), $size));
-            $body->decl($var, hexpr('forcounter1_'.$oid, '==', $size));
-            $for_body->decl($var, hexpr('forcounter1_'.$oid, '==', $size));
+            $body->decl($var, hexpr(hvar('forcounter1_'.$oid), '==', $size));
+            $for_body->decl($var, hexpr(hvar('forcounter1_'.$oid), '==', $size));
         }
         // }}}
 
         // first {{{
         if (isset($this->forloop[$oid]['first'])) {
-            $out[] = $this->op_declare('isfirst_'.$oid, $this->expr_TRUE());
-
-            $for_body[] = $this->op_declare('isfirst_'.$oid, $this->expr_FALSE());
+            $var = hvar('isfirst_'.$oid);
+            $body->decl($var, TRUE);
+            $for_body->decl($var, FALSE);
         }
         // }}}
 
         // revcounter {{{
         if (isset($this->forloop[$oid]['revcounter'])) {
             if (!isset($cnt)) {
-                $cnt   = $this->op_declare('psize_'.$oid, $this->expr_exec('count', $this->expr_var($details['array'])));
-                $out[] = $cnt;
+                $body->decl('psize_'.$oid, hexec('count', hvar_ex($details['array'])));
+                $cnt = TRUE;
             }
             $var = $this->expr_var('revcount_'.$oid);
-            $out[] = $this->op_declare($var, $size );
-
-            $for_body[] = $this->op_declare($var, $this->expr("-", $var, $this->expr_number(1)));
+            $body->decl($var, $size);
+            $for_body->decl($var, hexpr($var, '-', 1));
         }
          // }}}
 
         // revcounter0 {{{
         if (isset($this->forloop[$oid]['revcounter0'])) {
             if (!isset($cnt)) {
-                $cnt = $this->op_declare('psize_'.$oid, $this->expr_exec('count', $this->expr_var($details['array'])));
-                $out[] = $cnt;
+                $body->decl('psize_'.$oid, hexec('count', hvar_ex($details['array'])));
+                $cnt = TRUE;
             }
             $var = $this->expr_var('revcount0_'.$oid);
-            $out[] = $this->op_declare($var, $this->expr("-", $size, $this->expr_number(1)));
-
-            $for_body[] = $this->op_declare($var, $this->expr("-", $var, $this->expr_number(1)));
+            $body->decl($var, hexpr($size, "-", 1));
+            $for_body->decl($var, hexpr($var, '-', 1));
         }
         // }}}
 
@@ -1501,8 +1427,8 @@ final class Haanga_Compiler_Runtime extends Haanga_Compiler
         $loaded = &$this->tags;
 
         if (!isset($loaded[$name])) {
-            $this->prepend_op[] = $this->op_comment("Load tag {$name} definition");
-            $this->prepend_op[] = $this->op_expr($this->expr_exec("Haanga::doInclude", $this->Expr_str(Haanga_Extensions::getInstance('Haanga_Tag')->getFilePath($name, FALSE)))); 
+            $this->prepend_op->comment("Load tag {$name} definition");
+            $this->prepend_op->exec('Haanga::doInclude', Haanga_Extensions::getInstance('Haanga_Tag')->getFilePath($name, FALSE));
             $loaded[$name] = TRUE;
         }
 
@@ -1518,8 +1444,8 @@ final class Haanga_Compiler_Runtime extends Haanga_Compiler
         $loaded = &$this->filters;
 
         if (!isset($loaded[$name])) {
-            $this->prepend_op[] = $this->op_comment("Load filter {$name} definition");
-            $this->prepend_op[] = $this->op_expr($this->expr_exec("Haanga::doInclude", $this->Expr_str(Haanga_Extensions::getInstance('Haanga_Filter')->getFilePath($name, FALSE)))); 
+            $this->prepend_op->comment("Load filter {$name} definition");
+            $this->prepend_op->exec('Haanga::doInclude', Haanga_Extensions::getInstance('Haanga_Filter')->getFilePath($name, FALSE));
             $loaded[$name] = TRUE;
         }
 
