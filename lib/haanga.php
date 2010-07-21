@@ -279,103 +279,11 @@ class Haanga_Compiler
 
     // }}}
 
-    // op_* helper methods {{{
-    /**
-     *  Return an stand alone expression
-     *
-     */
-    function op_expr($expr)
-    {
-        return array('op' => 'expr', $expr);
-    }
-
-    function op_comment($comment)
-    {
-        return array('op' => 'comment', 'comment' => $comment);
-    }
-
-    function op_foreach($array, $value, $key=NULL)
-    {
-        foreach (array('array', 'value', 'key') as $var) {
-            $var = &$$var;
-            if (is_array($var) && $this->is_var($var)) {
-                $var = $var['var'];
-            }
-            unset($var);
-        }
-        $def = array('op' => 'foreach', 'array' => $array, 'value' => $value);
-        if ($key) {
-            $def['key'] = $key;
-        }
-        return $def;
-    }
-
-    function op_if($expr)
-    {
-        return array('op' => 'if', 'expr' => $expr);
-    }
-
-    function op_else()
-    {
-        return array('op' => 'else');
-    }
-
-    function op_return($expr)
-    {
-        return array('op' => 'return', $expr);
-    }
-
-    function op_end($op)
-    {
-        return array('op' => "end_{$op}");
-    }
-
-    function op_declare($name, $value)
-    {
-        if (is_array($name)) {
-            if ($this->is_var($name)) {
-                $name = $name['var'];
-            }
-        }
-
-        if (is_array($value)) {
-            if (isset($value['op_expr'])) {
-                $value = array('expr' => $value);
-            }
-        }
-
-        return array('op' => 'declare', 'name' => $name, $value);
-    }
-
-    function op_append($name, $expr)
-    {
-        return array('op' => 'append_var', 'name' => $name, $expr);
-    }
-
-
-    function op_inc($name)
-    {
-        return array('op' => 'inc', 'name' => $name);
-    }
-
-    function op_declare_function($name)
-    {
-        return array('op' => 'function', 'name' => $name);
-    }
-
-    //}}}
-
     // expr_* helper methods {{{
     function expr_cond($expr, $true, $false)
     {
         return array('expr_cond' => $expr, 'true' => $true, 'false' => $false);
     }
-
-    function expr_const($name)
-    {
-        return array('constant' => $name);
-    }
-
     /**
      *  Generate code to call base template
      *
@@ -391,52 +299,6 @@ class Haanga_Compiler
     }
 
     /**
-     *  return a function call for isset($var) === $isset
-     *
-     *  @return array
-     */
-    final function expr_isset($var, $isset=TRUE)
-    {
-        return $this->expr('==', $this->expr_exec('isset', $this->expr_var($var)), $isset);
-    }
-
-    final function expr_isset_ex($var, $isset=TRUE)
-    {
-        return $this->expr('==', $this->expr_exec('isset', $var), $isset);
-    }
-
-    final function expr_array()
-    {
-        return $this->expr_array_ex(func_get_args());
-    }
-
-    final function expr_array_ex($values)
-    {
-        $def = array();
-        foreach ($values as $arg) {
-            if (count($arg) == 2) {
-                if (!is_array($arg[0])) {
-                    $arg[0] = $this->expr_str($arg[0]);
-                }
-                $arg = array('key' => $arg);
-            }
-            $def[] = $arg;
-        }
-        return array("array" => $def);
-    }
-
-
-    /**
-     *  return an number definition of $num
-     *
-     *  @return array
-     */
-    final function expr_number($num=0)
-    {
-        return array('number' =>$num);
-    }
-
-    /**
      *  return an string definition of $str
      *
      *  @return array
@@ -444,28 +306,6 @@ class Haanga_Compiler
     final function expr_str($str='')
     {
         return array('string' => $str);
-    }
-
-    /**
-     *  Generate expression that for
-     *  boolean TRUE
-     *
-     *  @return array
-     */
-    final function expr_TRUE()
-    {
-        return array('expr' => TRUE);
-    }
-
-    /**
-     *  Generate expression that for
-     *  boolean FALSE
-     *
-     *  @return array
-     */
-    final function expr_FALSE()
-    {
-        return array('expr' => FALSE);
     }
 
     /**
