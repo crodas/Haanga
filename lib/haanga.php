@@ -212,7 +212,8 @@ class Haanga_Compiler
             $body = $this->prepend_op;
         }
 
-        $code .= $this->generator->getCode($body->getArray(TRUE));
+        $op_code = $body->getArray(TRUE); 
+        $code   .= $this->generator->getCode($op_code);
         if (!empty($this->append)) {
             $code .= $this->append;
         }
