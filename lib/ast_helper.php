@@ -35,14 +35,26 @@
   +---------------------------------------------------------------------------------+
 */
 
+/**
+ *  Simple AST (abstract syntax tree) helper class. This
+ *  helps to generate array structure that is then translated by 
+ *  the Haanga_Generator class.
+ *
+ */
 class HCode
 {
     public $stack = array();
-
     public $current = array();
 
 
-    function &getLast()
+    // getLast() {{{
+    /**
+     *  Return a refernce to the last element
+     *  of the AST stack.
+     *
+     *  @return array
+     */
+    function & getLast()
     {
         $f = array();
         if (count($this->stack) == 0) {
@@ -50,6 +62,7 @@ class HCode
         }
         return $this->stack[count($this->stack)-1];
     }
+    // }}}
 
 
     static protected function check_type($obj, $type)
@@ -440,6 +453,12 @@ function hconst($str)
     return HCode::Constant($str);
 }
 
+// hvar() {{{
+/**
+ *  Create the representation of a variable
+ *
+ *  @return HCode
+ */
 function hvar()
 {
     $args = func_get_args();
@@ -451,3 +470,13 @@ function hvar_ex($args)
     $code = hcode();
     return call_user_func_array(array($code, 'v'), $args);
 }
+// }}}
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: sw=4 ts=4 fdm=marker
+ * vim<600: sw=4 ts=4
+ */

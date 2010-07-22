@@ -254,7 +254,7 @@ class Haanga_Compiler
 
     // }}}
 
-    // expr_* helper methods {{{
+    // expr_call_base_template() {{{
     /**
      *  Generate code to call base template
      *
@@ -268,6 +268,7 @@ class Haanga_Compiler
             hvar('blocks')
         );
     }
+    // }}}
 
     // get_base_template($base) {{{
     /**
