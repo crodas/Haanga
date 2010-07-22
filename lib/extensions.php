@@ -61,14 +61,21 @@ Abstract Class Haanga_Extensions
     abstract function isValid($name);
     abstract function getClassName($name);
 
-    function getFilePath($file, $rel=TRUE, $pref=NULL)
+    function getFilePath($name, $rel=TRUE, $pref=NULL)
     {
+
         if (!$pref) {
             $pref = strtolower(get_class($this));
         }
-        $file = "/{$pref}/{$file}.php";
+        $file = "/{$pref}/{$name}.php";
         if ($rel) {
             $file = HAANGA_DIR.$file;
+        }
+        if (!is_file($file) && !is_file(dirname(__FILE__).$file)) {
+            try {
+                $reflection = new ReflectionClass($this->getClassName($name));
+                $file = $reflection->getFileName();
+            } catch (Exception $e) {}
         }
         return $file;
     }

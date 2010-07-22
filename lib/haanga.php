@@ -207,8 +207,9 @@ class Haanga_Compiler
             }
         }
         
-        if ($this->prepend_op->stack_size()) {
+        if ($this->prepend_op->stack_size() > 0) {
             $this->prepend_op->append_ast($body);
+            $body = $this->prepend_op;
         }
 
         $code .= $this->generator->getCode($body->getArray(TRUE));
@@ -1169,7 +1170,7 @@ final class Haanga_Compiler_Runtime extends Haanga_Compiler
 
         if (!isset($loaded[$name])) {
             $this->prepend_op->comment("Load tag {$name} definition");
-            $this->prepend_op->exec('Haanga::doInclude', Haanga_Extensions::getInstance('Haanga_Tag')->getFilePath($name, FALSE));
+            $this->prepend_op->do_exec('Haanga::doInclude', Haanga_Extensions::getInstance('Haanga_Tag')->getFilePath($name, FALSE));
             $loaded[$name] = TRUE;
         }
 
@@ -1186,7 +1187,7 @@ final class Haanga_Compiler_Runtime extends Haanga_Compiler
 
         if (!isset($loaded[$name])) {
             $this->prepend_op->comment("Load filter {$name} definition");
-            $this->prepend_op->exec('Haanga::doInclude', Haanga_Extensions::getInstance('Haanga_Filter')->getFilePath($name, FALSE));
+            $this->prepend_op->do_exec('Haanga::doInclude', Haanga_Extensions::getInstance('Haanga_Filter')->getFilePath($name, FALSE));
             $loaded[$name] = TRUE;
         }
 

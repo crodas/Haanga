@@ -124,7 +124,11 @@ class Haanga
      */
     public static function doInclude($file)
     {
-        require_once dirname(__FILE__)."/".$file;
+        if (is_file($file)) {
+            require_once $file;
+        } else {
+            require_once dirname(__FILE__)."/".$file;
+        }
     }
     // }}}
 
