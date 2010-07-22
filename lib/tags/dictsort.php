@@ -17,7 +17,7 @@ class Dictsort_Tag
             throw new Haanga_CompilerException("Dictsort must have two params");
         }
 
-        if (!$cmp->is_var($args[0])) {
+        if (!HCode::is_var($args[0])) {
             throw new Haanga_CompilerException("Dictsort: First parameter must be an array");
         }
 

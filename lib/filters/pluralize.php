@@ -5,7 +5,7 @@ class Pluralize_Filter
     function generator($compiler, $args)
     {
         if (count($args) > 1) {
-            if (!$compiler->is_string($args[1])) {
+            if (!HCode::is_str($args[1])) {
                 throw new Haanga_CompilerException("pluralize: First parameter must be an string");
             }
             $parts    = explode(",", $args[1]['string']);

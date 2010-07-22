@@ -20,7 +20,7 @@ class Meneame_Pagination_Tag
         $end     = hvar('mnm_end');
         $prev    = hvar('mnm_prev');
         $next    = hvar('mnm_next');
-        $pages   = hvar('mnm_pages');
+        $pages   = 'mnm_pages';
         
         $code = hcode();
         

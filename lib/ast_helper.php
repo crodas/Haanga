@@ -54,7 +54,7 @@ class HCode
 
     static protected function check_type($obj, $type)
     {
-        if (!is_array($obj)) {
+        if (is_object($obj)) {
             $obj = $obj->getArray();
         }
         return isset($obj[$type]);
@@ -74,6 +74,12 @@ class HCode
     {
         return self::check_type($arr, 'exec');
     }
+
+    public static function is_expr($arr)
+    {
+        return self::check_type($arr, 'op_expr');
+    }
+
 
     function str($string)
     {
@@ -183,6 +189,9 @@ class HCode
     static function fromArrayGetAST($obj)
     {
         $class = __CLASS__;
+        if ($obj InstanceOf $class) {
+            return $obj;
+        }
         foreach (array('op_expr', 'expr_cond', 'exec', 'var', 'string', 'number', 'constant') as $type) {
             if (isset($obj[$type])) {
                 $nobj = new $class;
