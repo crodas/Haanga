@@ -375,14 +375,14 @@ class Haanga_Compiler
     // }}}
 
     // ifequal|ifnotequal <var_filtered|string|number> <var_fitlered|string|number> ... else ... {{{
-    protected function generate_op_ifequal($details, &$out)
+    protected function generate_op_ifequal($details, &$body)
     {
         $if['expr'] = hexpr($details[1], $details['cmp'], $details[2])->getArray();
         $if['body'] = $details['body'];
         if (isset($details['else'])) {
             $if['else'] =  $details['else'];
         }
-        $this->generate_op_if($if, $out);
+        $this->generate_op_if($if, $body);
     }
     // }}}
 
@@ -889,16 +889,16 @@ class Haanga_Compiler
     // }}}
 
     // autoescape ON|OFF {{{
-    function generate_op_autoescape($details, &$out)
+    function generate_op_autoescape($details, &$body)
     {
         $old_autoescape   = $this->autoescape;
         $this->autoescape = strtolower($details['value']) == 'on';
-        $this->generate_op_code($details['body'], $out);
+        $this->generate_op_code($details['body'], $body);
         $this->autoescape = $old_autoescape;
     }
     // }}}
 
-    // ob_Start(array &$out) {{{
+    // ob_Start(array &$body) {{{
     /**
      *  Start a new buffering  
      *
@@ -999,10 +999,10 @@ class Haanga_Compiler
      *
      *
      */
-    function generate_op_alias($details, &$out)
+    function generate_op_alias($details, &$body)
     {
         $this->var_alias[ $details['as'] ] = $details['var'];
-        $this->generate_op_code($details['body'], $out);
+        $this->generate_op_code($details['body'], $body);
         unset($this->var_alias[ $details['as'] ] );
     }
     // }}}
