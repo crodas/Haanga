@@ -1,5 +1,8 @@
 <?php
 
+/**
+ *  @runTestsInSeparateProcess
+ */
 class errorTest extends PHPUnit_Framework_TestCase
 {
     /** 
@@ -8,7 +11,8 @@ class errorTest extends PHPUnit_Framework_TestCase
      */
     function testInvalidForloop($tpl)
     {
-        $this->setExpectedException('Haanga_CompilerException');
+        TestSuite::init();
+        $this->setExpectedException('Haanga_Compiler_Exception');
         Haanga::Load($tpl);
     }
 

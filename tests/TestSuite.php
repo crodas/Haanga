@@ -1,8 +1,9 @@
 <?php
 
-require "../lib/runtime.php";
-require "templateTest.php";
-require "errorTest.php";
+require dirname(__FILE__)."/../lib/Haanga.php";
+require dirname(__FILE__)."/templateTest.php";
+require dirname(__FILE__)."/errorTest.php";
+
 
 class TestSuite extends PHPUnit_Framework_TestSuite
 {
@@ -13,5 +14,13 @@ class TestSuite extends PHPUnit_Framework_TestSuite
         $suite->addTestSuite('errorTest');
 
         return $suite;
+    }
+
+    public static function Init()
+    {
+        Haanga::RegisterAutoLoad();
+        Haanga::setCacheDir("tmp/");
+        Haanga::setTemplateDir(".");
+        Haanga::enableDebug(TRUE);
     }
 }

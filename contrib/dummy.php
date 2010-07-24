@@ -1,6 +1,6 @@
 <?php
 
-Class Dummy_Tag
+Class Haanga_Extension_Tag_Dummy
 {
     public $is_block = TRUE;
 

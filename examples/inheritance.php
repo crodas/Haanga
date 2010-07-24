@@ -5,8 +5,9 @@
  *   
  *   @credit - adapt from ptemplates sample
  */
-require "../lib/runtime.php";
+require "../lib/Haanga.php";
 
+Haanga::registerAutoload();
 Haanga::setCacheDir('tmp/');
 Haanga::setTEmplateDir('inheritance/');
 
