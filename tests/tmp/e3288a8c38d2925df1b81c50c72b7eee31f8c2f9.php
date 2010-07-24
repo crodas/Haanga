@@ -1,6 +1,6 @@
 <?php
 /* Load filter dictsort definition */
-Haanga::doInclude("/filters/dictsort.php");
+require_once("/home/crodas/projects/playground/haanga/lib/Haanga/Extension/Filter/Dictsort.php");
 /* Generated from ./assert_templates/regroup.tpl */
 function haanga_e3288a8c38d2925df1b81c50c72b7eee31f8c2f9($vars, $return=FALSE, $blocks=array())
 {
@@ -9,7 +9,7 @@ function haanga_e3288a8c38d2925df1b81c50c72b7eee31f8c2f9($vars, $return=FALSE, $
     /*  Test regroup with filters, and without filters  */
     $buffer1 .= "\n";
     /* Temporary sorting */
-    $sorted_users  = Dictsort_Filter::main($users, $regroup_by);
+    $sorted_users  = Haanga_Extension_Filter_Dictsort::main($users, $regroup_by);
     $temp_group  = Array();
     foreach ($sorted_users as  $item) {
         $temp_group[$item["age"]][]  = $item;

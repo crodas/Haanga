@@ -1,6 +1,8 @@
 <?php
 
-require "../lib/runtime.php";
+require "../lib/Haanga.php";
+
+Haanga::registerAutoload();
 
 Haanga::setCacheDir('tmp/');
 Haanga::setTEmplateDir('django-yui-layout-templates/');

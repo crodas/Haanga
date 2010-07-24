@@ -1,14 +1,14 @@
 <?php
 
+/**
+ *  @runTestsInSeparateProcess
+ */
 class templateTest extends PHPUnit_Framework_TestCase
 {
     public function testInit()
     {
         /* setup */
         @mkdir("tmp/");
-        Haanga::setCacheDir("tmp/");
-        Haanga::setTemplateDir(".");
-        Haanga::enableDebug(TRUE);
         foreach (glob("tmp/*") as $file) {
             unlink($file);
         }
@@ -19,6 +19,7 @@ class templateTest extends PHPUnit_Framework_TestCase
      */
     public function testRuntime($test_file, $data, $expected)
     {
+        TestSuite::init();
         $output   = Haanga::Load($test_file, $data, TRUE);
         /*$output   = str_replace(" ", '\s', $output);
         $expected = str_replace(" ", '\s', $expected);/**/
@@ -31,6 +32,7 @@ class templateTest extends PHPUnit_Framework_TestCase
     public function testIsCached($test_file, $data, $expected)
     {
         /* same as above, but we ensure that the file wasn't compiled */
+        TestSuite::init();
         $output = Haanga::Load($test_file, $data, TRUE);
         $this->assertEquals($output, $expected);
         $this->assertFalse(Haanga::$has_compiled);
@@ -42,11 +44,12 @@ class templateTest extends PHPUnit_Framework_TestCase
      */
     public function testCLICompiler($test_file, $data, $expected)
     {
+        TestSuite::init();
         $GLOBALS['argv'][1] = $test_file;
         $GLOBALS['argv'][2] = '--notags';
 
         ob_start();
-        Haanga_Compiler::main_cli();
+        Haanga_Compiler_Base::main_cli();
         $code = ob_get_clean();
 
         eval($code);

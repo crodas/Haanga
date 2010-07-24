@@ -1,6 +1,6 @@
 <?php
 
-class Meneame_Pagination_Tag
+class Haanga_Extension_Tag_MeneamePagination
 {
     public $is_block = FALSE;
 
