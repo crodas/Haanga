@@ -17,7 +17,7 @@ class Haanga_Extension_Tag_Dictsort
             throw new Haanga_Compiler_Exception("Dictsort must have two params");
         }
 
-        if (!Haanga_AST_Helper::is_var($args[0])) {
+        if (!Haanga_AST::is_var($args[0])) {
             throw new Haanga_Compiler_Exception("Dictsort: First parameter must be an array");
         }
 

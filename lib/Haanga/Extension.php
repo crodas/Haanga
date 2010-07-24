@@ -93,20 +93,20 @@ Abstract Class Haanga_Extension
         return NULL;
     }
 
-    // generator(string $name, Haanga_Compiler_Base $compiler, Array $args) {{{
+    // generator(string $name, Haanga_Compiler $compiler, Array $args) {{{
     /**
      *  Executer the generator method of the extension. If 
      *  the extension doesn't has any generator method, an empty
      *  will be returned.
      *
      *  @param string       $name extension name
-     *  @param Haanga_Compiler_Base  Compiler object
+     *  @param Haanga_Compiler  Compiler object
      *  @param array        Arrays
      *  @param mixed        Extra param
      *
      *  @return array
      */
-    function generator($name, Haanga_Compiler_Base $compiler, $args, $extra=NULL)
+    function generator($name, Haanga_Compiler $compiler, $args, $extra=NULL)
     {
         if (!$this->hasGenerator($name)) {
             return array();

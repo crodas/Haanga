@@ -49,7 +49,7 @@ class templateTest extends PHPUnit_Framework_TestCase
         $GLOBALS['argv'][2] = '--notags';
 
         ob_start();
-        Haanga_Compiler_Base::main_cli();
+        Haanga_Compiler::main_cli();
         $code = ob_get_clean();
 
         eval($code);

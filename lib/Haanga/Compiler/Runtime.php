@@ -39,7 +39,7 @@
  *  Runtime compiler
  *
  */
-final class Haanga_Compiler_Runtime extends Haanga_Compiler_Base
+final class Haanga_Compiler_Runtime extends Haanga_Compiler
 {
 
     // get_function_name($name=NULL) {{{

@@ -41,7 +41,7 @@
  *  the Haanga_Generator class.
  *
  */
-class Haanga_AST_Helper
+class Haanga_AST
 {
     public $stack = array();
     public $current = array();
@@ -110,7 +110,7 @@ class Haanga_AST_Helper
         return count($this->stack);
     }
 
-    function append_ast(Haanga_AST_Helper $obj)
+    function append_ast(Haanga_AST $obj)
     {
         $this->end();
         $obj->end();
@@ -263,7 +263,7 @@ class Haanga_AST_Helper
         return $this->stack[0];
     }
 
-    function do_foreach($array, $value, $key, Haanga_AST_Helper $body)
+    function do_foreach($array, $value, $key, Haanga_AST $body)
     {
         foreach (array('array', 'value', 'key') as $var) {
             if ($$var === NULL) {
@@ -406,7 +406,7 @@ class Haanga_AST_Helper
 
 function hcode()
 {
-    return new Haanga_AST_Helper;
+    return new Haanga_AST;
 }
 
 function hexpr($term1, $op='expr', $term2=NULL, $op2=NULL)
@@ -451,14 +451,14 @@ function hexec()
 
 function hconst($str)
 {
-    return Haanga_AST_Helper::Constant($str);
+    return Haanga_AST::Constant($str);
 }
 
 // hvar() {{{
 /**
  *  Create the representation of a variable
  *
- *  @return Haanga_AST_Helper
+ *  @return Haanga_AST
  */
 function hvar()
 {

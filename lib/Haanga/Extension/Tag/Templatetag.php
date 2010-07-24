@@ -8,12 +8,12 @@ class Haanga_Extension_Tag_Templatetag
             throw new Haanga_Compiler_Exception("templatetag only needs one parameter");
         }
 
-        if (Haanga_AST_Helper::is_var($args[0])) {
+        if (Haanga_AST::is_var($args[0])) {
             $type = $args[0]['var'];
             if (!is_string($type)) {
                 throw new Haanga_Compiler_Exception("Invalid parameter");
             }
-        } else if (Haanga_AST_Helper::is_str($args[0])) {
+        } else if (Haanga_AST::is_str($args[0])) {
             $type = $args[0]['string'];
         }
 
@@ -49,7 +49,7 @@ class Haanga_Extension_Tag_Templatetag
         }
 
         $code = hcode();
-        $compiler->do_print($code, Haanga_AST_Helper::str($str));
+        $compiler->do_print($code, Haanga_AST::str($str));
 
         return $code;
     }

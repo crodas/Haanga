@@ -16,7 +16,7 @@ class Haanga_Extension_Tag_Cycle
         $index = 'index_'.$cycle;
         $def   = 'def_cycle_'.$cycle; 
 
-        if (count($args) == 1 && Haanga_AST_Helper::is_var($args[0]) && isset($cmp->cycle[$args[0]['var']])) {
+        if (count($args) == 1 && Haanga_AST::is_var($args[0]) && isset($cmp->cycle[$args[0]['var']])) {
             $id    = $cmp->cycle[$args[0]['var']];
             $index = 'index_'.$id;
             $def   = 'def_cycle_'.$id; 
