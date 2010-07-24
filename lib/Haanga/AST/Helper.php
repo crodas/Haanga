@@ -45,6 +45,7 @@ class Haanga_AST_Helper
 {
     public $stack = array();
     public $current = array();
+    public $doesPrint = FALSE;
 
 
     // getLast() {{{

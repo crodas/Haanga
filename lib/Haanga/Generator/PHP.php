@@ -92,7 +92,7 @@ class Haanga_Generator_PHP
      */
     protected function ident()
     {
-        $code = "\n";
+        $code = PHP_EOL;
         $code .= str_repeat($this->tab, $this->ident);
 
         return $code;

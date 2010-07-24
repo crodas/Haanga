@@ -691,6 +691,9 @@ class Haanga_Compiler_Base
     // Print {{{
     public function do_print(Haanga_AST_Helper $code, $stmt)
     {
+        /* Flag this object as a printing one */
+        $code->doesPrint = TRUE;
+
         $buffer = hvar('buffer'.$this->ob_start);
 
         $last = &$code->getLast();
@@ -946,7 +949,7 @@ class Haanga_Compiler_Base
         if ($tags->hasGenerator($tag_name)) {
             $exec = $tags->generator($tag_name, $this, $details['list'], $var);
             if ($exec InstanceOf Haanga_AST_Helper) {
-                if ($exec->stack_size() >= 2) {
+                if ($exec->stack_size() >= 2 || $exec->doesPrint) {
                     /* 
                         The generator returned more than one statement,
                         so we assume the output is already handled
