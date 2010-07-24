@@ -18,6 +18,6 @@ Class Cut_Filter
      */
     function generator($compiler, $args)
     {
-        return $compiler->expr_exec("str_replace", $args[1], $compiler->expr_str(), $args[0]);
+        return hexec('str_replace', $args[1], "", $args[0]);
     }
 }

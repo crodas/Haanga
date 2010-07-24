@@ -8,7 +8,7 @@ function haanga_8815cff61dc42c8002f44fd73612611e6bc333e6($vars, $return=FALSE, $
         $buffer1 .= "\n    Here\n";
     }
     $buffer1 .= "\n";
-    if ((is_array($names) == TRUE ? array_search("d.", $names) : strpos($names, "d.")) !== FALSE) {
+    if ((is_array($names) ? array_search("d.", $names) : strpos($names, "d.")) !== FALSE) {
         $buffer1 .= "\n    Here\n";
     }
     $buffer1 .= "\n";
@@ -16,13 +16,13 @@ function haanga_8815cff61dc42c8002f44fd73612611e6bc333e6($vars, $return=FALSE, $
         $buffer1 .= "\n    Here\n";
     }
     $buffer1 .= "\n";
-    if ((is_array($names) == TRUE ? array_search($search, $names) : strpos($names, $search)) !== FALSE) {
+    if ((is_array($names) ? array_search($search, $names) : strpos($names, $search)) !== FALSE) {
         $buffer1 .= "\n    Here\n";
     }
     $buffer1 .= "\n";
     if ($return == TRUE) {
         return $buffer1;
     } else {
-        echo $buffer1;
+        print($buffer1);
     }
 }

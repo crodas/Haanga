@@ -14,7 +14,7 @@ function haanga_be17029b5fd2998df7c922a92652b6886d7780fd($vars, $return=FALSE, $
     foreach ($sorted_users as  $user) {
         $buffer1 .= "\n    ";
         $buffer2  = "Users with ".htmlentities($user["age"])." years";
-        if (isset($ifchanged1) == FALSE OR $ifchanged1 != $buffer2) {
+        if (isset($ifchanged1) == FALSE || $ifchanged1 != $buffer2) {
             $buffer1 .= $buffer2;
             $ifchanged1  = $buffer2;
         }
@@ -23,7 +23,7 @@ function haanga_be17029b5fd2998df7c922a92652b6886d7780fd($vars, $return=FALSE, $
     $buffer1 .= "\n\n";
     foreach ($sorted_users as  $user) {
         $buffer1 .= "\n    ";
-        if ((isset($ifchanged2[1]) == FALSE OR $ifchanged2[1] != $user["foo"]) AND isset($ifchanged2[0]) == FALSE OR $ifchanged2[0] != $user["age"]) {
+        if ((isset($ifchanged2[0]) == FALSE || $ifchanged2[0] != $user["age"]) && (isset($ifchanged2[1]) == FALSE || $ifchanged2[1] != $user["foo"])) {
             $buffer1 .= "Users with ".htmlentities($user["age"])." years";
             $ifchanged2  = Array($user["age"], $user["foo"]);
         } else {
@@ -35,6 +35,6 @@ function haanga_be17029b5fd2998df7c922a92652b6886d7780fd($vars, $return=FALSE, $
     if ($return == TRUE) {
         return $buffer1;
     } else {
-        echo $buffer1;
+        print($buffer1);
     }
 }

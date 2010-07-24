@@ -62,6 +62,9 @@ class Haanga_CodeGenerator
         $this->ident = 0;
         $code = "";
         foreach ($op_code as $op) {
+            if (!isset($op['op'])) {
+                var_Dump($op);die();
+            }
             $method = "php_{$op['op']}";
             if (!is_callable(array($this, $method))) {
                 throw new Exception("CodeGenerator: Missing method $method");
@@ -278,6 +281,9 @@ class Haanga_CodeGenerator
     protected function php_generate_expr($expr)
     {
         $code = '';
+        if (is_object($expr)) {
+            $expr = $expr->getArray();
+        }
         if (is_array($expr) && isset($expr['op_expr'])) {
             if ($expr['op_expr'] == 'expr') {
                 $code .= "(";
@@ -285,6 +291,9 @@ class Haanga_CodeGenerator
                 $code .= ")";
             } else {
                 $code .= $this->php_generate_expr($expr[0]);
+                if (is_object($expr['op_expr'])) {
+                    var_dump($expr);die();
+                }
                 $code .= " {$expr['op_expr']} ";
                 $code .= $this->php_generate_expr($expr[1]);
             }
@@ -479,7 +488,7 @@ class Haanga_CodeGenerator
                 } else {
                     throw new Exception("Invalid variable definition ".print_r($var, TRUE));
                 }
-            } 
+            }
             $var_str = $this->php_get_varname($var[0]);
             for ($i=1; $i < count($var); $i++) {
                 $var_str .= "[";
@@ -490,6 +499,8 @@ class Haanga_CodeGenerator
                         $var_str .= $this->php_get_varname($var[$i]['var']);
                     } else if (isset($var[$i]['string'])) {
                         $var_str .= '"'.addslashes($var[$i]['string']).'"';
+                    } else if (isset($var[$i]['number'])) {
+                        $var_str .= $var[$i]['number'];
                     }
                 }
                 $var_str .= "]";

@@ -35,21 +35,143 @@
   +---------------------------------------------------------------------------------+
 */
 
+/**
+ *  Simple AST (abstract syntax tree) helper class. This
+ *  helps to generate array structure that is then translated by 
+ *  the Haanga_Generator class.
+ *
+ */
 class HCode
 {
-    public $stack;
-
+    public $stack = array();
     public $current = array();
+
+
+    // getLast() {{{
+    /**
+     *  Return a refernce to the last element
+     *  of the AST stack.
+     *
+     *  @return array
+     */
+    function & getLast()
+    {
+        $f = array();
+        if (count($this->stack) == 0) {
+            return $f;
+        }
+        return $this->stack[count($this->stack)-1];
+    }
+    // }}}
+
+
+    static protected function check_type($obj, $type)
+    {
+        if (is_object($obj)) {
+            $obj = $obj->getArray();
+        }
+        return isset($obj[$type]);
+    }
+
+    public static function is_str($arr)
+    {
+        return self::check_type($arr, 'string');
+    }
+
+    public static function is_var($arr)
+    {
+        return self::check_type($arr, 'var');
+    }
+
+    public static function is_exec($arr)
+    {
+        return self::check_type($arr, 'exec');
+    }
+
+    public static function is_expr($arr)
+    {
+        return self::check_type($arr, 'op_expr');
+    }
+
 
     function str($string)
     {
         return array("string" => $string);
     }
 
-
     function num($number)
     {
         return array("number" => $number);
+    }
+
+    function stack_size()
+    {
+        return count($this->stack);
+    }
+
+    function append_ast(HCode $obj)
+    {
+        $this->end();
+        $obj->end();
+        $this->stack = array_merge($this->stack, $obj->stack);
+
+        return $this;
+    }
+
+    function constant($str)
+    {
+        return array('constant' => $str);
+    }
+
+    function comment($str)
+    {
+        $this->stack[] = array("op" => "comment", 'comment' => $str);
+
+        return $this;
+    }
+
+    function declare_function($name)
+    {
+        $this->stack[] = array('op' => 'function', 'name' => $name);
+
+        return $this;
+    }
+
+    function do_return($name)
+    {
+        $this->getValue($name, $expr);
+        $this->stack[] = array('op' => 'return', $expr);
+
+        return $this;
+    }
+
+    function do_if($expr)
+    {
+        $this->getValue($expr, $vexpr);
+        $this->stack[] = array('op' => 'if', 'expr' => $vexpr);
+
+        return $this;
+    }
+
+    function do_else()
+    {
+        $this->stack[] = array('op' => 'else');
+
+        return $this;
+    }
+
+    function do_endif()
+    {
+        $this->stack[] = array('op' => 'end_if');
+
+        return $this;
+    }
+
+    function do_endfunction()
+    {
+        $this->stack[] = array('op' => 'end_function');
+
+        return $this;
     }
 
     function v()
@@ -68,30 +190,49 @@ class HCode
         return $this;
     }
 
-    protected function getValue($obj, &$value, $get_all=FALSE)
+    final function __get($property)
+    {
+        $property = strtolower($property);
+        if (isset($this->current[$property])) {
+            return $this->current[$property];
+        }
+        return FALSE;
+    }
+
+    static function fromArrayGetAST($obj)
+    {
+        $class = __CLASS__;
+        if ($obj InstanceOf $class) {
+            return $obj;
+        }
+        foreach (array('op_expr', 'expr_cond', 'exec', 'var', 'string', 'number', 'constant') as $type) {
+            if (isset($obj[$type])) {
+                $nobj = new $class;
+                $nobj->stack[] = $obj;
+                return $nobj;
+            }
+        }
+    }
+
+    static function getValue($obj, &$value, $get_all=FALSE)
     {
         $class = __CLASS__;
 
         if ($obj InstanceOf $class) {
-            $value = $obj->getArray();
-            if (!$get_all) {
-                $value = $value[0];
-            }
+            $value = $obj->getArray($get_all);
         } else if (is_string($obj)) {
-            $value = $this->str($obj);
+            $value = self::str($obj);
         } else if (is_numeric($obj) or $obj === 0) {
-            $value = $this->num($obj);
+            $value = self::num($obj);
         } else if ($obj === FALSE) {
             $value = array('expr' => FALSE);
         } else if ($obj === TRUE) {
             $value = array('expr' => TRUE);
         } else if (is_array($obj)) {
-            if (count($obj) == 1) {
-                foreach (array('var', 'string', 'number') as $type) {
-                    if (isset($obj[$type])) {
-                        $value = $obj;
-                        return;
-                    }
+            foreach (array('exec', 'var', 'string', 'number', 'constant') as $type) {
+                if (isset($obj[$type])) {
+                    $value = $obj;
+                    return;
                 }
             }
             $h     = hcode()->arr();
@@ -103,17 +244,57 @@ class HCode
                 }
                 $h->element($key, $value);
             }
-            $value = current($h->getArray());
+            $value = $h->getArray();
+        } else if ($obj === NULL) {
+            $value = array();
         } else {
             var_Dump($obj);
             throw new Exception("Imposible to get the value of the object");
         }
     }
 
-    function getArray()
+    function getArray($get_all=FALSE)
     {
         $this->end();
-        return $this->stack;
+        if ($get_all) {
+            return $this->stack;
+        }
+        return $this->stack[0];
+    }
+
+    function do_foreach($array, $value, $key, HCode $body)
+    {
+        foreach (array('array', 'value', 'key') as $var) {
+            if ($$var === NULL) {
+                continue;
+            }
+            $var1 = & $$var;
+            if (is_string($var1)) {
+                $var1 = hvar($var1);
+            }
+            if (is_object($var1)) {
+                $var1 = $var1->getArray();
+            }
+            $var1 = $var1['var'];
+        }
+        $def = array('op' => 'foreach', 'array' => $array, 'value' => $value);
+        if ($key) {
+            $def['key'] = $key;
+        }
+        $this->stack[] = $def;
+        $this->stack   = array_merge($this->stack, $body->getArray(TRUE));
+        $this->stack[] = array('op' => 'end_foreach');
+
+        return $this;
+    }
+
+    function do_exec()
+    {
+        $params = func_get_args();
+        $exec   = call_user_func_array('hexec', $params);
+        $this->stack[] = array('op' => 'expr', $exec->getArray());
+
+        return $this;
     }
 
     function exec($function)
@@ -127,10 +308,14 @@ class HCode
         return $this;
     }
 
-    function expr($operation, $term1, $term2)
+    function expr($operation, $term1, $term2=NULL)
     {
         $this->getValue($term1, $value1);
-        $this->getValue($term2, $value2);
+        if ($term2 !== NULL) {
+            $this->getValue($term2, $value2);
+        } else {
+            $value2 = NULL;
+        }
         $this->current = array('op_expr' => $operation, $value1, $value2);
 
         return $this;
@@ -182,6 +367,17 @@ class HCode
         return $this;
     }
 
+    function append($name, $value)
+    {
+        if (is_string($name)) {
+            $name = hvar($name);
+        }
+        $this->getValue($value, $stmt);
+        $this->getValue($name, $name);
+        $this->stack[] = array('op' => 'append_var', 'name' => $name['var'], $stmt);
+        return $this;
+    }
+
     function param($param)
     {
         $last = & $this->current;
@@ -212,7 +408,7 @@ function hcode()
     return new HCode;
 }
 
-function hexpr($term1, $op, $term2=NULL, $op2=NULL)
+function hexpr($term1, $op='expr', $term2=NULL, $op2=NULL)
 {
     $code = hcode();
     switch ($op2) {
@@ -252,10 +448,35 @@ function hexec()
     return call_user_func_array(array($code, 'exec'), $args);
 }
 
-function hvar()
+function hconst($str)
 {
-    $code = hcode();
-    $args = func_get_args();
-    return call_user_func_array(array($code, 'v'), $args);
+    return HCode::Constant($str);
 }
 
+// hvar() {{{
+/**
+ *  Create the representation of a variable
+ *
+ *  @return HCode
+ */
+function hvar()
+{
+    $args = func_get_args();
+    return hvar_ex($args);
+}
+
+function hvar_ex($args)
+{
+    $code = hcode();
+    return call_user_func_array(array($code, 'v'), $args);
+}
+// }}}
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: sw=4 ts=4 fdm=marker
+ * vim<600: sw=4 ts=4
+ */

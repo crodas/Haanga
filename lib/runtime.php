@@ -124,7 +124,11 @@ class Haanga
      */
     public static function doInclude($file)
     {
-        require_once dirname(__FILE__)."/".$file;
+        if (is_file($file)) {
+            require_once $file;
+        } else {
+            require_once dirname(__FILE__)."/".$file;
+        }
     }
     // }}}
 
@@ -180,7 +184,7 @@ class Haanga
             try {
                 $code = $compiler->compile_file($tpl, FALSE);
             } catch (Exception $e) {
-                throw new Haanga_CompilerException($tpl.' :'.$e->getMessage());
+                throw new Haanga_CompilerException($tpl.' :'.$e->getMessage().' on '.$e->getfile(). ':'.$e->Getline());
             }
 
             file_put_contents($php, "<?php".$code);

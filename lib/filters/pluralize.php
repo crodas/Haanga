@@ -5,7 +5,7 @@ class Pluralize_Filter
     function generator($compiler, $args)
     {
         if (count($args) > 1) {
-            if (!$compiler->is_string($args[1])) {
+            if (!HCode::is_str($args[1])) {
                 throw new Haanga_CompilerException("pluralize: First parameter must be an string");
             }
             $parts    = explode(",", $args[1]['string']);
@@ -21,10 +21,6 @@ class Pluralize_Filter
             $plural   = "s";
         }
 
-        return $compiler->expr_cond(
-            $compiler->expr("<=", $args[0], 1),
-            $compiler->expr_str($singular),
-            $compiler->expr_str($plural)
-        );
+        return hexpr_cond(hexpr($args[0], '<=', 1), $singular, $plural);
     }
 }

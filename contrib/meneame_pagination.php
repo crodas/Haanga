@@ -14,16 +14,13 @@ class Meneame_Pagination_Tag
             $args[3] = 5;
         }
 
-        Haanga::doInclude("helper.php");
-
-
         $current = hvar('mnm_current');
         $total   = hvar('mnm_total');
         $start   = hvar('mnm_start');
         $end     = hvar('mnm_end');
         $prev    = hvar('mnm_prev');
         $next    = hvar('mnm_next');
-        $pages   = hvar('mnm_pages');
+        $pages   = 'mnm_pages';
         
         $code = hcode();
         
@@ -42,7 +39,7 @@ class Meneame_Pagination_Tag
         $cmp->set_safe($pages);
         
 
-        return new ArrayIterator($code->getArray());
+        return $code;
     }
 
 }

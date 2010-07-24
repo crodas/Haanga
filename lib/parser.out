@@ -1,0 +1,3708 @@
+State 0:
+          start ::= * body
+          body ::= * body code
+      (2) body ::= *
+
+                         start accept
+                          body shift  58
+                     {default} reduce 2
+
+State 1:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG * T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG * T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                          T_IF shift  27
+                        T_ELSE shift  163
+                   T_IFCHANGED shift  34
+                     T_IFEQUAL shift  30
+                 T_END_IFEQUAL shift  162
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 2:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG * T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG * T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                    T_CLOSEFOR shift  132
+                       T_EMPTY shift  129
+                          T_IF shift  27
+                   T_IFCHANGED shift  34
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 3:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG * T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG * T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                          T_IF shift  27
+                        T_ELSE shift  166
+                   T_IFCHANGED shift  34
+                T_ENDIFCHANGED shift  155
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 4:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= T_IF expr T_CLOSE_TAG body T_OPEN_TAG * T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= T_IF expr T_CLOSE_TAG body T_OPEN_TAG * T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                          T_IF shift  27
+                       T_ENDIF shift  144
+                        T_ELSE shift  145
+                   T_IFCHANGED shift  34
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 5:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG * T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG * T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                    T_CLOSEFOR shift  154
+                       T_EMPTY shift  148
+                          T_IF shift  27
+                   T_IFCHANGED shift  34
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 6:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG * T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG * T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                          T_IF shift  27
+                        T_ELSE shift  142
+                   T_IFCHANGED shift  34
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+              T_END_IFNOTEQUAL shift  160
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 7:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG * T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG * T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                          T_IF shift  27
+                        T_ELSE shift  134
+                   T_IFCHANGED shift  34
+                T_ENDIFCHANGED shift  133
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 8:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG * T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                          T_IF shift  27
+                   T_IFCHANGED shift  34
+                     T_IFEQUAL shift  30
+                 T_END_IFEQUAL shift  157
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 9:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG * T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                    T_CLOSEFOR shift  131
+                          T_IF shift  27
+                   T_IFCHANGED shift  34
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 10:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG * T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG * T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                          T_IF shift  27
+                   T_IFCHANGED shift  34
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                   T_END_BLOCK shift  59
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 11:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG * T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                          T_IF shift  27
+                   T_IFCHANGED shift  34
+                T_ENDIFCHANGED shift  141
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 12:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          stmts ::= T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG * T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+              T_END_AUTOESCAPE shift  161
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                          T_IF shift  27
+                   T_IFCHANGED shift  34
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 13:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          custom_tag ::= T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG * T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                  T_CUSTOM_END shift  150
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                          T_IF shift  27
+                   T_IFCHANGED shift  34
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 14:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG * T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                          T_IF shift  27
+                   T_IFCHANGED shift  34
+                T_ENDIFCHANGED shift  137
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 15:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG * T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                          T_IF shift  27
+                   T_IFCHANGED shift  34
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+              T_END_IFNOTEQUAL shift  130
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 16:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG * T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          block_stmt ::= T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG * T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                          T_IF shift  27
+                   T_IFCHANGED shift  34
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                   T_END_BLOCK shift  128
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 17:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG * T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                          T_IF shift  27
+                       T_ENDIF shift  147
+                   T_IFCHANGED shift  34
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 18:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          filter_stmt ::= T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG * T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                          T_IF shift  27
+                   T_IFCHANGED shift  34
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                  T_END_FILTER shift  139
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 19:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG * T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                    T_CLOSEFOR shift  143
+                          T_IF shift  27
+                   T_IFCHANGED shift  34
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 20:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          alias ::= T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG * T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                     T_ENDWITH shift  146
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                          T_IF shift  27
+                   T_IFCHANGED shift  34
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 21:
+          code ::= T_OPEN_TAG * stmts
+          stmts ::= * T_EXTENDS var_or_string T_CLOSE_TAG
+          stmts ::= * stmt T_CLOSE_TAG
+          stmts ::= * for_stmt
+          stmts ::= * ifchanged_stmt
+          stmts ::= * block_stmt
+          stmts ::= * filter_stmt
+          stmts ::= * if_stmt
+          stmts ::= * T_INCLUDE var_or_string T_CLOSE_TAG
+          stmts ::= * custom_tag
+          stmts ::= * alias
+          stmts ::= * ifequal
+          stmts ::= * T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG
+          custom_tag ::= * T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+          alias ::= * T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          stmt ::= * regroup
+          stmt ::= * T_LOAD string
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= * T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= * T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= * T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= * T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= * T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          filter_stmt ::= * T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          regroup ::= * T_REGROUP filtered_var T_BY varname T_AS varname
+
+                     T_EXTENDS shift  39
+                     T_INCLUDE shift  41
+                  T_AUTOESCAPE shift  127
+                  T_CUSTOM_TAG shift  33
+                T_CUSTOM_BLOCK shift  152
+                        T_WITH shift  78
+                        T_LOAD shift  79
+                         T_FOR shift  76
+                          T_IF shift  27
+                   T_IFCHANGED shift  34
+                     T_IFEQUAL shift  30
+                  T_IFNOTEQUAL shift  32
+                       T_BLOCK shift  63
+                      T_FILTER shift  42
+                     T_REGROUP shift  46
+                         stmts shift  183
+                          stmt shift  151
+                      for_stmt shift  167
+                ifchanged_stmt shift  170
+                    block_stmt shift  176
+                   filter_stmt shift  173
+                       if_stmt shift  175
+                    custom_tag shift  177
+                         alias shift  172
+                       ifequal shift  168
+                       regroup shift  226
+
+State 22:
+          filtered_var ::= * filtered_var T_PIPE varname_args
+          filtered_var ::= * varname_args
+          varname_args ::= * varname T_COLON var_or_string
+          varname_args ::= * varname
+          fvar_or_string ::= * filtered_var
+          fvar_or_string ::= * T_NUMERIC
+          fvar_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          expr ::= * expr T_AND expr
+          expr ::= * expr T_OR expr
+          expr ::= * expr T_PLUS|T_MINUS expr
+          expr ::= * expr T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN expr
+          expr ::= expr T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN * expr
+          expr ::= * expr T_TIMES|T_DIV|T_MOD expr
+          expr ::= * T_LPARENT expr T_RPARENT
+          expr ::= * fvar_or_string
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  216
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                     T_LPARENT shift  28
+                       T_ALPHA shift  189
+                  filtered_var shift  136
+                       varname shift  117
+                        string shift  215
+                          expr shift  105
+                fvar_or_string shift  192
+                  varname_args shift  213
+
+State 23:
+          filtered_var ::= * filtered_var T_PIPE varname_args
+          filtered_var ::= * varname_args
+          varname_args ::= * varname T_COLON var_or_string
+          varname_args ::= * varname
+          fvar_or_string ::= * filtered_var
+          fvar_or_string ::= * T_NUMERIC
+          fvar_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          expr ::= * expr T_AND expr
+          expr ::= expr T_AND * expr
+          expr ::= * expr T_OR expr
+          expr ::= * expr T_PLUS|T_MINUS expr
+          expr ::= * expr T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN expr
+          expr ::= * expr T_TIMES|T_DIV|T_MOD expr
+          expr ::= * T_LPARENT expr T_RPARENT
+          expr ::= * fvar_or_string
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  216
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                     T_LPARENT shift  28
+                       T_ALPHA shift  189
+                  filtered_var shift  136
+                       varname shift  117
+                        string shift  215
+                          expr shift  104
+                fvar_or_string shift  192
+                  varname_args shift  213
+
+State 24:
+          filtered_var ::= * filtered_var T_PIPE varname_args
+          filtered_var ::= * varname_args
+          varname_args ::= * varname T_COLON var_or_string
+          varname_args ::= * varname
+          fvar_or_string ::= * filtered_var
+          fvar_or_string ::= * T_NUMERIC
+          fvar_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          expr ::= * expr T_AND expr
+          expr ::= * expr T_OR expr
+          expr ::= * expr T_PLUS|T_MINUS expr
+          expr ::= expr T_PLUS|T_MINUS * expr
+          expr ::= * expr T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN expr
+          expr ::= * expr T_TIMES|T_DIV|T_MOD expr
+          expr ::= * T_LPARENT expr T_RPARENT
+          expr ::= * fvar_or_string
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  216
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                     T_LPARENT shift  28
+                       T_ALPHA shift  189
+                  filtered_var shift  136
+                       varname shift  117
+                        string shift  215
+                          expr shift  112
+                fvar_or_string shift  192
+                  varname_args shift  213
+
+State 25:
+          filtered_var ::= * filtered_var T_PIPE varname_args
+          filtered_var ::= * varname_args
+          varname_args ::= * varname T_COLON var_or_string
+          varname_args ::= * varname
+          fvar_or_string ::= * filtered_var
+          fvar_or_string ::= * T_NUMERIC
+          fvar_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          expr ::= * expr T_AND expr
+          expr ::= * expr T_OR expr
+          expr ::= expr T_OR * expr
+          expr ::= * expr T_PLUS|T_MINUS expr
+          expr ::= * expr T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN expr
+          expr ::= * expr T_TIMES|T_DIV|T_MOD expr
+          expr ::= * T_LPARENT expr T_RPARENT
+          expr ::= * fvar_or_string
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  216
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                     T_LPARENT shift  28
+                       T_ALPHA shift  189
+                  filtered_var shift  136
+                       varname shift  117
+                        string shift  215
+                          expr shift  106
+                fvar_or_string shift  192
+                  varname_args shift  213
+
+State 26:
+          filtered_var ::= * filtered_var T_PIPE varname_args
+          filtered_var ::= * varname_args
+          varname_args ::= * varname T_COLON var_or_string
+          varname_args ::= * varname
+          fvar_or_string ::= * filtered_var
+          fvar_or_string ::= * T_NUMERIC
+          fvar_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          expr ::= * expr T_AND expr
+          expr ::= * expr T_OR expr
+          expr ::= * expr T_PLUS|T_MINUS expr
+          expr ::= * expr T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN expr
+          expr ::= * expr T_TIMES|T_DIV|T_MOD expr
+          expr ::= expr T_TIMES|T_DIV|T_MOD * expr
+          expr ::= * T_LPARENT expr T_RPARENT
+          expr ::= * fvar_or_string
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  216
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                     T_LPARENT shift  28
+                       T_ALPHA shift  189
+                  filtered_var shift  136
+                       varname shift  117
+                        string shift  215
+                          expr shift  190
+                fvar_or_string shift  192
+                  varname_args shift  213
+
+State 27:
+          if_stmt ::= T_IF * expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= T_IF * expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          filtered_var ::= * filtered_var T_PIPE varname_args
+          filtered_var ::= * varname_args
+          varname_args ::= * varname T_COLON var_or_string
+          varname_args ::= * varname
+          fvar_or_string ::= * filtered_var
+          fvar_or_string ::= * T_NUMERIC
+          fvar_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          expr ::= * expr T_AND expr
+          expr ::= * expr T_OR expr
+          expr ::= * expr T_PLUS|T_MINUS expr
+          expr ::= * expr T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN expr
+          expr ::= * expr T_TIMES|T_DIV|T_MOD expr
+          expr ::= * T_LPARENT expr T_RPARENT
+          expr ::= * fvar_or_string
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  216
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                     T_LPARENT shift  28
+                       T_ALPHA shift  189
+                  filtered_var shift  136
+                       varname shift  117
+                        string shift  215
+                          expr shift  102
+                fvar_or_string shift  192
+                  varname_args shift  213
+
+State 28:
+          filtered_var ::= * filtered_var T_PIPE varname_args
+          filtered_var ::= * varname_args
+          varname_args ::= * varname T_COLON var_or_string
+          varname_args ::= * varname
+          fvar_or_string ::= * filtered_var
+          fvar_or_string ::= * T_NUMERIC
+          fvar_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          expr ::= * expr T_AND expr
+          expr ::= * expr T_OR expr
+          expr ::= * expr T_PLUS|T_MINUS expr
+          expr ::= * expr T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN expr
+          expr ::= * expr T_TIMES|T_DIV|T_MOD expr
+          expr ::= * T_LPARENT expr T_RPARENT
+          expr ::= T_LPARENT * expr T_RPARENT
+          expr ::= * fvar_or_string
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  216
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                     T_LPARENT shift  28
+                       T_ALPHA shift  189
+                  filtered_var shift  136
+                       varname shift  117
+                        string shift  215
+                          expr shift  103
+                fvar_or_string shift  192
+                  varname_args shift  213
+
+State 29:
+          ifequal ::= T_IFEQUAL fvar_or_string * fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= T_IFEQUAL fvar_or_string * fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          filtered_var ::= * filtered_var T_PIPE varname_args
+          filtered_var ::= * varname_args
+          varname_args ::= * varname T_COLON var_or_string
+          varname_args ::= * varname
+          fvar_or_string ::= * filtered_var
+          fvar_or_string ::= * T_NUMERIC
+          fvar_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  216
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                       T_ALPHA shift  189
+                  filtered_var shift  136
+                       varname shift  117
+                        string shift  215
+                fvar_or_string shift  165
+                  varname_args shift  213
+
+State 30:
+          ifequal ::= T_IFEQUAL * fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= T_IFEQUAL * fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          filtered_var ::= * filtered_var T_PIPE varname_args
+          filtered_var ::= * varname_args
+          varname_args ::= * varname T_COLON var_or_string
+          varname_args ::= * varname
+          fvar_or_string ::= * filtered_var
+          fvar_or_string ::= * T_NUMERIC
+          fvar_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  216
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                       T_ALPHA shift  189
+                  filtered_var shift  136
+                       varname shift  117
+                        string shift  215
+                fvar_or_string shift  29
+                  varname_args shift  213
+
+State 31:
+          ifequal ::= T_IFNOTEQUAL fvar_or_string * fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= T_IFNOTEQUAL fvar_or_string * fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          filtered_var ::= * filtered_var T_PIPE varname_args
+          filtered_var ::= * varname_args
+          varname_args ::= * varname T_COLON var_or_string
+          varname_args ::= * varname
+          fvar_or_string ::= * filtered_var
+          fvar_or_string ::= * T_NUMERIC
+          fvar_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  216
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                       T_ALPHA shift  189
+                  filtered_var shift  136
+                       varname shift  117
+                        string shift  215
+                fvar_or_string shift  159
+                  varname_args shift  213
+
+State 32:
+          ifequal ::= T_IFNOTEQUAL * fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= T_IFNOTEQUAL * fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          filtered_var ::= * filtered_var T_PIPE varname_args
+          filtered_var ::= * varname_args
+          varname_args ::= * varname T_COLON var_or_string
+          varname_args ::= * varname
+          fvar_or_string ::= * filtered_var
+          fvar_or_string ::= * T_NUMERIC
+          fvar_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  216
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                       T_ALPHA shift  189
+                  filtered_var shift  136
+                       varname shift  117
+                        string shift  215
+                fvar_or_string shift  31
+                  varname_args shift  213
+
+State 33:
+          custom_tag ::= T_CUSTOM_TAG * T_CLOSE_TAG
+          custom_tag ::= T_CUSTOM_TAG * T_AS varname T_CLOSE_TAG
+          custom_tag ::= T_CUSTOM_TAG * var_list T_CLOSE_TAG
+          custom_tag ::= T_CUSTOM_TAG * var_list T_AS varname T_CLOSE_TAG
+          var_list ::= * var_list var_or_string
+          var_list ::= * var_list T_COMMA var_or_string
+          var_list ::= * var_or_string
+          var_or_string ::= * varname
+          var_or_string ::= * T_NUMERIC
+          var_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                   T_CLOSE_TAG shift  221
+                  T_CUSTOM_TAG shift  195
+                          T_AS shift  74
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  181
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                       T_ALPHA shift  189
+                 var_or_string shift  230
+                       varname shift  122
+                      var_list shift  35
+                        string shift  186
+
+State 34:
+          ifchanged_stmt ::= T_IFCHANGED * T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= T_IFCHANGED * var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= T_IFCHANGED * T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= T_IFCHANGED * var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          var_list ::= * var_list var_or_string
+          var_list ::= * var_list T_COMMA var_or_string
+          var_list ::= * var_or_string
+          var_or_string ::= * varname
+          var_or_string ::= * T_NUMERIC
+          var_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                   T_CLOSE_TAG shift  86
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  181
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                       T_ALPHA shift  189
+                 var_or_string shift  230
+                       varname shift  122
+                      var_list shift  36
+                        string shift  186
+
+State 35:
+          custom_tag ::= T_CUSTOM_TAG var_list * T_CLOSE_TAG
+          custom_tag ::= T_CUSTOM_TAG var_list * T_AS varname T_CLOSE_TAG
+          var_list ::= var_list * var_or_string
+          var_list ::= var_list * T_COMMA var_or_string
+          var_or_string ::= * varname
+          var_or_string ::= * T_NUMERIC
+          var_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                   T_CLOSE_TAG shift  218
+                  T_CUSTOM_TAG shift  195
+                          T_AS shift  75
+                T_CUSTOM_BLOCK shift  195
+                       T_COMMA shift  38
+                     T_NUMERIC shift  181
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                       T_ALPHA shift  189
+                 var_or_string shift  196
+                       varname shift  122
+                        string shift  186
+
+State 36:
+          ifchanged_stmt ::= T_IFCHANGED var_list * T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= T_IFCHANGED var_list * T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          var_list ::= var_list * var_or_string
+          var_list ::= var_list * T_COMMA var_or_string
+          var_or_string ::= * varname
+          var_or_string ::= * T_NUMERIC
+          var_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                   T_CLOSE_TAG shift  97
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                       T_COMMA shift  38
+                     T_NUMERIC shift  181
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                       T_ALPHA shift  189
+                 var_or_string shift  196
+                       varname shift  122
+                        string shift  186
+
+State 37:
+          varname_args ::= varname T_COLON * var_or_string
+          var_or_string ::= * varname
+          var_or_string ::= * T_NUMERIC
+          var_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  181
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                       T_ALPHA shift  189
+                 var_or_string shift  202
+                       varname shift  122
+                        string shift  186
+
+State 38:
+          var_list ::= var_list T_COMMA * var_or_string
+          var_or_string ::= * varname
+          var_or_string ::= * T_NUMERIC
+          var_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  181
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                       T_ALPHA shift  189
+                 var_or_string shift  229
+                       varname shift  122
+                        string shift  186
+
+State 39:
+          stmts ::= T_EXTENDS * var_or_string T_CLOSE_TAG
+          var_or_string ::= * varname
+          var_or_string ::= * T_NUMERIC
+          var_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  181
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                       T_ALPHA shift  189
+                 var_or_string shift  158
+                       varname shift  122
+                        string shift  186
+
+State 40:
+          var_or_string ::= * varname
+          var_or_string ::= * T_NUMERIC
+          var_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= varname T_BRACKETS_OPEN * var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  181
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                       T_ALPHA shift  189
+                 var_or_string shift  153
+                       varname shift  122
+                        string shift  186
+
+State 41:
+          stmts ::= T_INCLUDE * var_or_string T_CLOSE_TAG
+          var_or_string ::= * varname
+          var_or_string ::= * T_NUMERIC
+          var_or_string ::= * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  181
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                       T_ALPHA shift  189
+                 var_or_string shift  156
+                       varname shift  122
+                        string shift  186
+
+State 42:
+          filter_stmt ::= T_FILTER * filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          filtered_var ::= * filtered_var T_PIPE varname_args
+          filtered_var ::= * varname_args
+          varname_args ::= * varname T_COLON var_or_string
+          varname_args ::= * varname
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                       T_ALPHA shift  189
+                  filtered_var shift  126
+                       varname shift  117
+                  varname_args shift  213
+
+State 43:
+          code ::= T_PRINT_OPEN * filtered_var T_PRINT_CLOSE
+          filtered_var ::= * filtered_var T_PIPE varname_args
+          filtered_var ::= * varname_args
+          varname_args ::= * varname T_COLON var_or_string
+          varname_args ::= * varname
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                       T_ALPHA shift  189
+                  filtered_var shift  125
+                       varname shift  117
+                  varname_args shift  213
+
+State 44:
+          for_stmt ::= T_FOR varname T_COMMA varname T_IN * filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname T_COMMA varname T_IN * filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          filtered_var ::= * filtered_var T_PIPE varname_args
+          filtered_var ::= * varname_args
+          varname_args ::= * varname T_COLON var_or_string
+          varname_args ::= * varname
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                       T_ALPHA shift  189
+                  filtered_var shift  123
+                       varname shift  117
+                  varname_args shift  213
+
+State 45:
+          for_stmt ::= T_FOR varname T_IN * filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname T_IN * filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          filtered_var ::= * filtered_var T_PIPE varname_args
+          filtered_var ::= * varname_args
+          varname_args ::= * varname T_COLON var_or_string
+          varname_args ::= * varname
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                       T_ALPHA shift  189
+                  filtered_var shift  121
+                       varname shift  117
+                  varname_args shift  213
+
+State 46:
+          regroup ::= T_REGROUP * filtered_var T_BY varname T_AS varname
+          filtered_var ::= * filtered_var T_PIPE varname_args
+          filtered_var ::= * varname_args
+          varname_args ::= * varname T_COLON var_or_string
+          varname_args ::= * varname
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                       T_ALPHA shift  189
+                  filtered_var shift  118
+                       varname shift  117
+                  varname_args shift  213
+
+State 47:
+          filtered_var ::= filtered_var T_PIPE * varname_args
+          varname_args ::= * varname T_COLON var_or_string
+          varname_args ::= * varname
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                       T_ALPHA shift  189
+                       varname shift  117
+                  varname_args shift  201
+
+State 48:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          block_stmt ::= T_BLOCK T_NUMERIC T_CLOSE_TAG body * T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= T_BLOCK T_NUMERIC T_CLOSE_TAG body * T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  16
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 49:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          custom_tag ::= T_CUSTOM_BLOCK T_CLOSE_TAG body * T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  13
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 50:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          if_stmt ::= T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body * T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  17
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 51:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          if_stmt ::= T_IF expr T_CLOSE_TAG body * T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= T_IF expr T_CLOSE_TAG body * T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  4
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 52:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          for_stmt ::= T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body * T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  19
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 53:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body * T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  15
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 54:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          for_stmt ::= T_FOR varname T_IN filtered_var T_CLOSE_TAG body * T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname T_IN filtered_var T_CLOSE_TAG body * T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  5
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 55:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          alias ::= T_WITH varname T_AS varname T_CLOSE_TAG body * T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  20
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 56:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          filter_stmt ::= T_FILTER filtered_var T_CLOSE_TAG body * T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  18
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 57:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          ifchanged_stmt ::= T_IFCHANGED T_CLOSE_TAG body * T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= T_IFCHANGED T_CLOSE_TAG body * T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  3
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 58:
+      (0) start ::= body *
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+
+                    T_OPEN_TAG shift  21
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+                     {default} reduce 0
+
+State 59:
+          block_stmt ::= T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK * T_CLOSE_TAG
+          block_stmt ::= T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK * varname T_CLOSE_TAG
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                   T_CLOSE_TAG shift  210
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                       T_ALPHA shift  189
+                       varname shift  111
+
+State 60:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          ifchanged_stmt ::= T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body * T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  14
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 61:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body * T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body * T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  1
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 62:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body * T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  8
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 63:
+          block_stmt ::= T_BLOCK * varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= T_BLOCK * varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          block_stmt ::= T_BLOCK * T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= T_BLOCK * T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                     T_NUMERIC shift  138
+                       T_ALPHA shift  189
+                       varname shift  109
+
+State 64:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body * T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body * T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  6
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 65:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          for_stmt ::= T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body * T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  9
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 66:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          for_stmt ::= T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body * T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body * T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  2
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 67:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          stmts ::= T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body * T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  12
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 68:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          block_stmt ::= T_BLOCK varname T_CLOSE_TAG body * T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= T_BLOCK varname T_CLOSE_TAG body * T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  10
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 69:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          ifchanged_stmt ::= T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body * T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  11
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 70:
+          body ::= body * code
+          code ::= * T_OPEN_TAG stmts
+          code ::= * T_HTML
+          code ::= * T_COMMENT_OPEN T_COMMENT
+          code ::= * T_PRINT_OPEN filtered_var T_PRINT_CLOSE
+          ifchanged_stmt ::= T_IFCHANGED var_list T_CLOSE_TAG body * T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= T_IFCHANGED var_list T_CLOSE_TAG body * T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+
+                    T_OPEN_TAG shift  7
+                        T_HTML shift  214
+                T_COMMENT_OPEN shift  135
+                  T_PRINT_OPEN shift  43
+                          code shift  185
+
+State 71:
+          regroup ::= T_REGROUP filtered_var T_BY varname T_AS * varname
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                       T_ALPHA shift  189
+                       varname shift  119
+
+State 72:
+          alias ::= T_WITH varname T_AS * varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                       T_ALPHA shift  189
+                       varname shift  116
+
+State 73:
+          regroup ::= T_REGROUP filtered_var T_BY * varname T_AS varname
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                       T_ALPHA shift  189
+                       varname shift  108
+
+State 74:
+          custom_tag ::= T_CUSTOM_TAG T_AS * varname T_CLOSE_TAG
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                       T_ALPHA shift  189
+                       varname shift  114
+
+State 75:
+          custom_tag ::= T_CUSTOM_TAG var_list T_AS * varname T_CLOSE_TAG
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                       T_ALPHA shift  189
+                       varname shift  113
+
+State 76:
+          for_stmt ::= T_FOR * varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR * varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR * varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR * varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                       T_ALPHA shift  189
+                       varname shift  107
+
+State 77:
+          for_stmt ::= T_FOR varname T_COMMA * varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname T_COMMA * varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                       T_ALPHA shift  189
+                       varname shift  110
+
+State 78:
+          alias ::= T_WITH * varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          varname ::= * varname T_DOT T_ALPHA
+          varname ::= * varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+          varname ::= * T_ALPHA
+          varname ::= * T_CUSTOM_TAG|T_CUSTOM_BLOCK
+
+                  T_CUSTOM_TAG shift  195
+                T_CUSTOM_BLOCK shift  195
+                       T_ALPHA shift  189
+                       varname shift  115
+
+State 79:
+          stmt ::= T_LOAD * string
+          string ::= * T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END
+          string ::= * T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END
+
+          T_STRING_SINGLE_INIT shift  80
+          T_STRING_DOUBLE_INIT shift  81
+                        string shift  203
+
+State 80:
+          string ::= T_STRING_SINGLE_INIT * s_content T_STRING_SINGLE_END
+          s_content ::= * s_content T_STRING_CONTENT
+          s_content ::= * T_STRING_CONTENT
+
+              T_STRING_CONTENT shift  178
+                     s_content shift  124
+
+State 81:
+          string ::= T_STRING_DOUBLE_INIT * s_content T_STRING_DOUBLE_END
+          s_content ::= * s_content T_STRING_CONTENT
+          s_content ::= * T_STRING_CONTENT
+
+              T_STRING_CONTENT shift  178
+                     s_content shift  120
+
+State 82:
+          body ::= * body code
+      (2) body ::= *
+          if_stmt ::= T_IF expr T_CLOSE_TAG * body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= T_IF expr T_CLOSE_TAG * body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+
+                          body shift  51
+                     {default} reduce 2
+
+State 83:
+          body ::= * body code
+      (2) body ::= *
+          ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG * body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG * body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+
+                          body shift  64
+                     {default} reduce 2
+
+State 84:
+          body ::= * body code
+      (2) body ::= *
+          ifchanged_stmt ::= T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG * body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+
+                          body shift  69
+                     {default} reduce 2
+
+State 85:
+          body ::= * body code
+      (2) body ::= *
+          ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG * body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG * body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+
+                          body shift  61
+                     {default} reduce 2
+
+State 86:
+          body ::= * body code
+      (2) body ::= *
+          ifchanged_stmt ::= T_IFCHANGED T_CLOSE_TAG * body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= T_IFCHANGED T_CLOSE_TAG * body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+
+                          body shift  57
+                     {default} reduce 2
+
+State 87:
+          body ::= * body code
+      (2) body ::= *
+          if_stmt ::= T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG * body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+
+                          body shift  50
+                     {default} reduce 2
+
+State 88:
+          body ::= * body code
+      (2) body ::= *
+          filter_stmt ::= T_FILTER filtered_var T_CLOSE_TAG * body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+
+                          body shift  56
+                     {default} reduce 2
+
+State 89:
+          body ::= * body code
+      (2) body ::= *
+          block_stmt ::= T_BLOCK varname T_CLOSE_TAG * body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= T_BLOCK varname T_CLOSE_TAG * body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+
+                          body shift  68
+                     {default} reduce 2
+
+State 90:
+          body ::= * body code
+      (2) body ::= *
+          ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG * body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+
+                          body shift  62
+                     {default} reduce 2
+
+State 91:
+          body ::= * body code
+      (2) body ::= *
+          alias ::= T_WITH varname T_AS varname T_CLOSE_TAG * body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+
+                          body shift  55
+                     {default} reduce 2
+
+State 92:
+          body ::= * body code
+      (2) body ::= *
+          custom_tag ::= T_CUSTOM_BLOCK T_CLOSE_TAG * body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+
+                          body shift  49
+                     {default} reduce 2
+
+State 93:
+          body ::= * body code
+      (2) body ::= *
+          block_stmt ::= T_BLOCK T_NUMERIC T_CLOSE_TAG * body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= T_BLOCK T_NUMERIC T_CLOSE_TAG * body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+
+                          body shift  48
+                     {default} reduce 2
+
+State 94:
+          body ::= * body code
+      (2) body ::= *
+          ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG * body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+
+                          body shift  53
+                     {default} reduce 2
+
+State 95:
+          body ::= * body code
+      (2) body ::= *
+          ifchanged_stmt ::= T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG * body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+
+                          body shift  60
+                     {default} reduce 2
+
+State 96:
+          body ::= * body code
+      (2) body ::= *
+          stmts ::= T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG * body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+
+                          body shift  67
+                     {default} reduce 2
+
+State 97:
+          body ::= * body code
+      (2) body ::= *
+          ifchanged_stmt ::= T_IFCHANGED var_list T_CLOSE_TAG * body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+          ifchanged_stmt ::= T_IFCHANGED var_list T_CLOSE_TAG * body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+
+                          body shift  70
+                     {default} reduce 2
+
+State 98:
+          body ::= * body code
+      (2) body ::= *
+          for_stmt ::= T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG * body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+
+                          body shift  65
+                     {default} reduce 2
+
+State 99:
+          body ::= * body code
+      (2) body ::= *
+          for_stmt ::= T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG * body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+
+                          body shift  52
+                     {default} reduce 2
+
+State 100:
+          body ::= * body code
+      (2) body ::= *
+          for_stmt ::= T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG * body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG * body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+
+                          body shift  66
+                     {default} reduce 2
+
+State 101:
+          body ::= * body code
+      (2) body ::= *
+          for_stmt ::= T_FOR varname T_IN filtered_var T_CLOSE_TAG * body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname T_IN filtered_var T_CLOSE_TAG * body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+
+                          body shift  54
+                     {default} reduce 2
+
+State 102:
+          if_stmt ::= T_IF expr * T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          if_stmt ::= T_IF expr * T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+          expr ::= expr * T_AND expr
+          expr ::= expr * T_OR expr
+          expr ::= expr * T_PLUS|T_MINUS expr
+          expr ::= expr * T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN expr
+          expr ::= expr * T_TIMES|T_DIV|T_MOD expr
+
+                         T_AND shift  23
+                          T_OR shift  25
+                          T_EQ shift  22
+                          T_NE shift  22
+                          T_GT shift  22
+                          T_GE shift  22
+                          T_LT shift  22
+                          T_LE shift  22
+                          T_IN shift  22
+                        T_PLUS shift  24
+                       T_MINUS shift  24
+                       T_TIMES shift  26
+                         T_DIV shift  26
+                         T_MOD shift  26
+                   T_CLOSE_TAG shift  82
+
+State 103:
+          expr ::= expr * T_AND expr
+          expr ::= expr * T_OR expr
+          expr ::= expr * T_PLUS|T_MINUS expr
+          expr ::= expr * T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN expr
+          expr ::= expr * T_TIMES|T_DIV|T_MOD expr
+          expr ::= T_LPARENT expr * T_RPARENT
+
+                         T_AND shift  23
+                          T_OR shift  25
+                          T_EQ shift  22
+                          T_NE shift  22
+                          T_GT shift  22
+                          T_GE shift  22
+                          T_LT shift  22
+                          T_LE shift  22
+                          T_IN shift  22
+                        T_PLUS shift  24
+                       T_MINUS shift  24
+                       T_TIMES shift  26
+                         T_DIV shift  26
+                         T_MOD shift  26
+                     T_RPARENT shift  191
+
+State 104:
+          expr ::= expr * T_AND expr
+     (64) expr ::= expr T_AND expr *
+          expr ::= expr * T_OR expr
+          expr ::= expr * T_PLUS|T_MINUS expr
+          expr ::= expr * T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN expr
+          expr ::= expr * T_TIMES|T_DIV|T_MOD expr
+
+                          T_OR shift  25
+                          T_EQ shift  22
+                          T_NE shift  22
+                          T_GT shift  22
+                          T_GE shift  22
+                          T_LT shift  22
+                          T_LE shift  22
+                          T_IN shift  22
+                        T_PLUS shift  24
+                       T_MINUS shift  24
+                       T_TIMES shift  26
+                         T_DIV shift  26
+                         T_MOD shift  26
+                     {default} reduce 64
+
+State 105:
+          expr ::= expr * T_AND expr
+          expr ::= expr * T_OR expr
+          expr ::= expr * T_PLUS|T_MINUS expr
+          expr ::= expr * T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN expr
+     (67) expr ::= expr T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN expr *
+          expr ::= expr * T_TIMES|T_DIV|T_MOD expr
+
+                          T_EQ shift  22
+                          T_EQ reduce 67  ** Parsing conflict **
+                          T_NE shift  22
+                          T_NE reduce 67  ** Parsing conflict **
+                          T_GT shift  22
+                          T_GE shift  22
+                          T_LT shift  22
+                          T_LE shift  22
+                          T_IN shift  22
+                        T_PLUS shift  24
+                       T_MINUS shift  24
+                       T_TIMES shift  26
+                         T_DIV shift  26
+                         T_MOD shift  26
+                     {default} reduce 67
+
+State 106:
+          expr ::= expr * T_AND expr
+          expr ::= expr * T_OR expr
+     (65) expr ::= expr T_OR expr *
+          expr ::= expr * T_PLUS|T_MINUS expr
+          expr ::= expr * T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN expr
+          expr ::= expr * T_TIMES|T_DIV|T_MOD expr
+
+                          T_EQ shift  22
+                          T_NE shift  22
+                          T_GT shift  22
+                          T_GE shift  22
+                          T_LT shift  22
+                          T_LE shift  22
+                          T_IN shift  22
+                        T_PLUS shift  24
+                       T_MINUS shift  24
+                       T_TIMES shift  26
+                         T_DIV shift  26
+                         T_MOD shift  26
+                     {default} reduce 65
+
+State 107:
+          for_stmt ::= T_FOR varname * T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname * T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname * T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname * T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          varname ::= varname * T_DOT T_ALPHA
+          varname ::= varname * T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+
+                          T_IN shift  45
+                       T_COMMA shift  77
+                         T_DOT shift  164
+               T_BRACKETS_OPEN shift  40
+
+State 108:
+          regroup ::= T_REGROUP filtered_var T_BY varname * T_AS varname
+          varname ::= varname * T_DOT T_ALPHA
+          varname ::= varname * T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+
+                          T_AS shift  71
+                         T_DOT shift  164
+               T_BRACKETS_OPEN shift  40
+
+State 109:
+          block_stmt ::= T_BLOCK varname * T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= T_BLOCK varname * T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG
+          varname ::= varname * T_DOT T_ALPHA
+          varname ::= varname * T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+
+                   T_CLOSE_TAG shift  89
+                         T_DOT shift  164
+               T_BRACKETS_OPEN shift  40
+
+State 110:
+          for_stmt ::= T_FOR varname T_COMMA varname * T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname T_COMMA varname * T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          varname ::= varname * T_DOT T_ALPHA
+          varname ::= varname * T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+
+                          T_IN shift  44
+                         T_DOT shift  164
+               T_BRACKETS_OPEN shift  40
+
+State 111:
+          block_stmt ::= T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname * T_CLOSE_TAG
+          varname ::= varname * T_DOT T_ALPHA
+          varname ::= varname * T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+
+                   T_CLOSE_TAG shift  212
+                         T_DOT shift  164
+               T_BRACKETS_OPEN shift  40
+
+State 112:
+          expr ::= expr * T_AND expr
+          expr ::= expr * T_OR expr
+          expr ::= expr * T_PLUS|T_MINUS expr
+     (66) expr ::= expr T_PLUS|T_MINUS expr *
+          expr ::= expr * T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN expr
+          expr ::= expr * T_TIMES|T_DIV|T_MOD expr
+
+                       T_TIMES shift  26
+                         T_DIV shift  26
+                         T_MOD shift  26
+                     {default} reduce 66
+
+State 113:
+          custom_tag ::= T_CUSTOM_TAG var_list T_AS varname * T_CLOSE_TAG
+          varname ::= varname * T_DOT T_ALPHA
+          varname ::= varname * T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+
+                   T_CLOSE_TAG shift  217
+                         T_DOT shift  164
+               T_BRACKETS_OPEN shift  40
+
+State 114:
+          custom_tag ::= T_CUSTOM_TAG T_AS varname * T_CLOSE_TAG
+          varname ::= varname * T_DOT T_ALPHA
+          varname ::= varname * T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+
+                   T_CLOSE_TAG shift  219
+                         T_DOT shift  164
+               T_BRACKETS_OPEN shift  40
+
+State 115:
+          alias ::= T_WITH varname * T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          varname ::= varname * T_DOT T_ALPHA
+          varname ::= varname * T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+
+                          T_AS shift  72
+                         T_DOT shift  164
+               T_BRACKETS_OPEN shift  40
+
+State 116:
+          alias ::= T_WITH varname T_AS varname * T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG
+          varname ::= varname * T_DOT T_ALPHA
+          varname ::= varname * T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+
+                   T_CLOSE_TAG shift  91
+                         T_DOT shift  164
+               T_BRACKETS_OPEN shift  40
+
+State 117:
+          varname_args ::= varname * T_COLON var_or_string
+     (50) varname_args ::= varname *
+          varname ::= varname * T_DOT T_ALPHA
+          varname ::= varname * T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+
+                       T_COLON shift  37
+                         T_DOT shift  164
+               T_BRACKETS_OPEN shift  40
+                     {default} reduce 50
+
+State 118:
+          regroup ::= T_REGROUP filtered_var * T_BY varname T_AS varname
+          filtered_var ::= filtered_var * T_PIPE varname_args
+
+                          T_BY shift  73
+                        T_PIPE shift  47
+
+State 119:
+     (46) regroup ::= T_REGROUP filtered_var T_BY varname T_AS varname *
+          varname ::= varname * T_DOT T_ALPHA
+          varname ::= varname * T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+
+                         T_DOT shift  164
+               T_BRACKETS_OPEN shift  40
+                     {default} reduce 46
+
+State 120:
+          string ::= T_STRING_DOUBLE_INIT s_content * T_STRING_DOUBLE_END
+          s_content ::= s_content * T_STRING_CONTENT
+
+           T_STRING_DOUBLE_END shift  194
+              T_STRING_CONTENT shift  193
+
+State 121:
+          for_stmt ::= T_FOR varname T_IN filtered_var * T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname T_IN filtered_var * T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          filtered_var ::= filtered_var * T_PIPE varname_args
+
+                   T_CLOSE_TAG shift  101
+                        T_PIPE shift  47
+
+State 122:
+     (54) var_or_string ::= varname *
+          varname ::= varname * T_DOT T_ALPHA
+          varname ::= varname * T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE
+
+                         T_DOT shift  164
+               T_BRACKETS_OPEN shift  40
+                     {default} reduce 54
+
+State 123:
+          for_stmt ::= T_FOR varname T_COMMA varname T_IN filtered_var * T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          for_stmt ::= T_FOR varname T_COMMA varname T_IN filtered_var * T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+          filtered_var ::= filtered_var * T_PIPE varname_args
+
+                   T_CLOSE_TAG shift  100
+                        T_PIPE shift  47
+
+State 124:
+          string ::= T_STRING_SINGLE_INIT s_content * T_STRING_SINGLE_END
+          s_content ::= s_content * T_STRING_CONTENT
+
+           T_STRING_SINGLE_END shift  187
+              T_STRING_CONTENT shift  193
+
+State 125:
+          code ::= T_PRINT_OPEN filtered_var * T_PRINT_CLOSE
+          filtered_var ::= filtered_var * T_PIPE varname_args
+
+                 T_PRINT_CLOSE shift  227
+                        T_PIPE shift  47
+
+State 126:
+          filter_stmt ::= T_FILTER filtered_var * T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG
+          filtered_var ::= filtered_var * T_PIPE varname_args
+
+                   T_CLOSE_TAG shift  88
+                        T_PIPE shift  47
+
+State 127:
+          stmts ::= T_AUTOESCAPE * T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+
+                         T_OFF shift  149
+                          T_ON shift  149
+
+State 128:
+          block_stmt ::= T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK * T_CLOSE_TAG
+          block_stmt ::= T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK * T_NUMERIC T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  223
+                     T_NUMERIC shift  140
+
+State 129:
+          for_stmt ::= T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY * T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  98
+
+State 130:
+          ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  207
+
+State 131:
+          for_stmt ::= T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  184
+
+State 132:
+          for_stmt ::= T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  179
+
+State 133:
+          ifchanged_stmt ::= T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  231
+
+State 134:
+          ifchanged_stmt ::= T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE * T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  95
+
+State 135:
+          code ::= T_COMMENT_OPEN * T_COMMENT
+
+                     T_COMMENT shift  225
+
+State 136:
+          filtered_var ::= filtered_var * T_PIPE varname_args
+     (57) fvar_or_string ::= filtered_var *
+
+                        T_PIPE shift  47
+                     {default} reduce 57
+
+State 137:
+          ifchanged_stmt ::= T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  174
+
+State 138:
+          block_stmt ::= T_BLOCK T_NUMERIC * T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG
+          block_stmt ::= T_BLOCK T_NUMERIC * T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  93
+
+State 139:
+          filter_stmt ::= T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  199
+
+State 140:
+          block_stmt ::= T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  222
+
+State 141:
+          ifchanged_stmt ::= T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  211
+
+State 142:
+          ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE * T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  94
+
+State 143:
+          for_stmt ::= T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  197
+
+State 144:
+          if_stmt ::= T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  198
+
+State 145:
+          if_stmt ::= T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE * T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  87
+
+State 146:
+          alias ::= T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  224
+
+State 147:
+          if_stmt ::= T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  204
+
+State 148:
+          for_stmt ::= T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY * T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  99
+
+State 149:
+          stmts ::= T_AUTOESCAPE T_OFF|T_ON * T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  96
+
+State 150:
+          custom_tag ::= T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  228
+
+State 151:
+          stmts ::= stmt * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  169
+
+State 152:
+          custom_tag ::= T_CUSTOM_BLOCK * T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  92
+
+State 153:
+          varname ::= varname T_BRACKETS_OPEN var_or_string * T_BRACKETS_CLOSE
+
+              T_BRACKETS_CLOSE shift  188
+
+State 154:
+          for_stmt ::= T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  200
+
+State 155:
+          ifchanged_stmt ::= T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  205
+
+State 156:
+          stmts ::= T_INCLUDE var_or_string * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  171
+
+State 157:
+          ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  206
+
+State 158:
+          stmts ::= T_EXTENDS var_or_string * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  182
+
+State 159:
+          ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string * T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+          ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string * T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  83
+
+State 160:
+          ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  208
+
+State 161:
+          stmts ::= T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  220
+
+State 162:
+          ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL * T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  209
+
+State 163:
+          ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE * T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  90
+
+State 164:
+          varname ::= varname T_DOT * T_ALPHA
+
+                       T_ALPHA shift  180
+
+State 165:
+          ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string * T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+          ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string * T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  85
+
+State 166:
+          ifchanged_stmt ::= T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE * T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG
+
+                   T_CLOSE_TAG shift  84
+
+State 167:
+      (9) stmts ::= for_stmt *
+
+                     {default} reduce 9
+
+State 168:
+     (17) stmts ::= ifequal *
+
+                     {default} reduce 17
+
+State 169:
+      (8) stmts ::= stmt T_CLOSE_TAG *
+
+                     {default} reduce 8
+
+State 170:
+     (10) stmts ::= ifchanged_stmt *
+
+                     {default} reduce 10
+
+State 171:
+     (14) stmts ::= T_INCLUDE var_or_string T_CLOSE_TAG *
+
+                     {default} reduce 14
+
+State 172:
+     (16) stmts ::= alias *
+
+                     {default} reduce 16
+
+State 173:
+     (12) stmts ::= filter_stmt *
+
+                     {default} reduce 12
+
+State 174:
+     (36) ifchanged_stmt ::= T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG *
+
+                     {default} reduce 36
+
+State 175:
+     (13) stmts ::= if_stmt *
+
+                     {default} reduce 13
+
+State 176:
+     (11) stmts ::= block_stmt *
+
+                     {default} reduce 11
+
+State 177:
+     (15) stmts ::= custom_tag *
+
+                     {default} reduce 15
+
+State 178:
+     (63) s_content ::= T_STRING_CONTENT *
+
+                     {default} reduce 63
+
+State 179:
+     (28) for_stmt ::= T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG *
+
+                     {default} reduce 28
+
+State 180:
+     (71) varname ::= varname T_DOT T_ALPHA *
+
+                     {default} reduce 71
+
+State 181:
+     (55) var_or_string ::= T_NUMERIC *
+
+                     {default} reduce 55
+
+State 182:
+      (7) stmts ::= T_EXTENDS var_or_string T_CLOSE_TAG *
+
+                     {default} reduce 7
+
+State 183:
+      (3) code ::= T_OPEN_TAG stmts *
+
+                     {default} reduce 3
+
+State 184:
+     (30) for_stmt ::= T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG *
+
+                     {default} reduce 30
+
+State 185:
+      (1) body ::= body code *
+
+                     {default} reduce 1
+
+State 186:
+     (56) var_or_string ::= string *
+
+                     {default} reduce 56
+
+State 187:
+     (60) string ::= T_STRING_SINGLE_INIT s_content T_STRING_SINGLE_END *
+
+                     {default} reduce 60
+
+State 188:
+     (72) varname ::= varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE *
+
+                     {default} reduce 72
+
+State 189:
+     (73) varname ::= T_ALPHA *
+
+                     {default} reduce 73
+
+State 190:
+          expr ::= expr * T_AND expr
+          expr ::= expr * T_OR expr
+          expr ::= expr * T_PLUS|T_MINUS expr
+          expr ::= expr * T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN expr
+          expr ::= expr * T_TIMES|T_DIV|T_MOD expr
+     (68) expr ::= expr T_TIMES|T_DIV|T_MOD expr *
+
+                     {default} reduce 68
+
+State 191:
+     (69) expr ::= T_LPARENT expr T_RPARENT *
+
+                     {default} reduce 69
+
+State 192:
+     (70) expr ::= fvar_or_string *
+
+                     {default} reduce 70
+
+State 193:
+     (62) s_content ::= s_content T_STRING_CONTENT *
+
+                     {default} reduce 62
+
+State 194:
+     (61) string ::= T_STRING_DOUBLE_INIT s_content T_STRING_DOUBLE_END *
+
+                     {default} reduce 61
+
+State 195:
+     (74) varname ::= T_CUSTOM_TAG|T_CUSTOM_BLOCK *
+
+                     {default} reduce 74
+
+State 196:
+     (51) var_list ::= var_list var_or_string *
+
+                     {default} reduce 51
+
+State 197:
+     (29) for_stmt ::= T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG *
+
+                     {default} reduce 29
+
+State 198:
+     (31) if_stmt ::= T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG *
+
+                     {default} reduce 31
+
+State 199:
+     (45) filter_stmt ::= T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_END_FILTER T_CLOSE_TAG *
+
+                     {default} reduce 45
+
+State 200:
+     (27) for_stmt ::= T_FOR varname T_IN filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG *
+
+                     {default} reduce 27
+
+State 201:
+     (47) filtered_var ::= filtered_var T_PIPE varname_args *
+
+                     {default} reduce 47
+
+State 202:
+     (49) varname_args ::= varname T_COLON var_or_string *
+
+                     {default} reduce 49
+
+State 203:
+     (26) stmt ::= T_LOAD string *
+
+                     {default} reduce 26
+
+State 204:
+     (32) if_stmt ::= T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIF T_CLOSE_TAG *
+
+                     {default} reduce 32
+
+State 205:
+     (33) ifchanged_stmt ::= T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG *
+
+                     {default} reduce 33
+
+State 206:
+     (38) ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG *
+
+                     {default} reduce 38
+
+State 207:
+     (40) ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG *
+
+                     {default} reduce 40
+
+State 208:
+     (39) ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFNOTEQUAL T_CLOSE_TAG *
+
+                     {default} reduce 39
+
+State 209:
+     (37) ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_END_IFEQUAL T_CLOSE_TAG *
+
+                     {default} reduce 37
+
+State 210:
+     (41) block_stmt ::= T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG *
+
+                     {default} reduce 41
+
+State 211:
+     (35) ifchanged_stmt ::= T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG *
+
+                     {default} reduce 35
+
+State 212:
+     (42) block_stmt ::= T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK varname T_CLOSE_TAG *
+
+                     {default} reduce 42
+
+State 213:
+     (48) filtered_var ::= varname_args *
+
+                     {default} reduce 48
+
+State 214:
+      (4) code ::= T_HTML *
+
+                     {default} reduce 4
+
+State 215:
+     (59) fvar_or_string ::= string *
+
+                     {default} reduce 59
+
+State 216:
+     (58) fvar_or_string ::= T_NUMERIC *
+
+                     {default} reduce 58
+
+State 217:
+     (22) custom_tag ::= T_CUSTOM_TAG var_list T_AS varname T_CLOSE_TAG *
+
+                     {default} reduce 22
+
+State 218:
+     (21) custom_tag ::= T_CUSTOM_TAG var_list T_CLOSE_TAG *
+
+                     {default} reduce 21
+
+State 219:
+     (20) custom_tag ::= T_CUSTOM_TAG T_AS varname T_CLOSE_TAG *
+
+                     {default} reduce 20
+
+State 220:
+     (18) stmts ::= T_AUTOESCAPE T_OFF|T_ON T_CLOSE_TAG body T_OPEN_TAG T_END_AUTOESCAPE T_CLOSE_TAG *
+
+                     {default} reduce 18
+
+State 221:
+     (19) custom_tag ::= T_CUSTOM_TAG T_CLOSE_TAG *
+
+                     {default} reduce 19
+
+State 222:
+     (44) block_stmt ::= T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_NUMERIC T_CLOSE_TAG *
+
+                     {default} reduce 44
+
+State 223:
+     (43) block_stmt ::= T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_END_BLOCK T_CLOSE_TAG *
+
+                     {default} reduce 43
+
+State 224:
+     (24) alias ::= T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_ENDWITH T_CLOSE_TAG *
+
+                     {default} reduce 24
+
+State 225:
+      (5) code ::= T_COMMENT_OPEN T_COMMENT *
+
+                     {default} reduce 5
+
+State 226:
+     (25) stmt ::= regroup *
+
+                     {default} reduce 25
+
+State 227:
+      (6) code ::= T_PRINT_OPEN filtered_var T_PRINT_CLOSE *
+
+                     {default} reduce 6
+
+State 228:
+     (23) custom_tag ::= T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG *
+
+                     {default} reduce 23
+
+State 229:
+     (52) var_list ::= var_list T_COMMA var_or_string *
+
+                     {default} reduce 52
+
+State 230:
+     (53) var_list ::= var_or_string *
+
+                     {default} reduce 53
+
+State 231:
+     (34) ifchanged_stmt ::= T_IFCHANGED var_list T_CLOSE_TAG body T_OPEN_TAG T_ENDIFCHANGED T_CLOSE_TAG *
+
+                     {default} reduce 34
+

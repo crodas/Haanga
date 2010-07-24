@@ -40,7 +40,7 @@ class templateTest extends PHPUnit_Framework_TestCase
     /** 
      * @dataProvider tplProvider
      */
-    public function testCompiler($test_file, $data, $expected)
+    public function testCLICompiler($test_file, $data, $expected)
     {
         $GLOBALS['argv'][1] = $test_file;
         $GLOBALS['argv'][2] = '--notags';

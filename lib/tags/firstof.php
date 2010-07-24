@@ -8,22 +8,15 @@ class FirstOf_Tag
      */
     function generator($cmp, $args)
     {
-        $texpr = array();
-        foreach ($args as $var) {
-            if ($cmp->is_string($var)) {
-                $texpr[] = $var;
-                break;
+        $count = count($args);
+        $args  = array_reverse($args);
+        for ($i=0; $i < $count; $i++) {
+            if (isset($expr) && HCode::is_var($args[$i])) {
+                $expr = hexpr_cond(hexpr(hexec('empty', $args[$i]),'==', FALSE), $args[$i], $expr);
+            } else {
+                $expr = $args[$i];
             }
-            $texpr[] = $cmp->expr_cond(
-                $cmp->expr_exec('empty', $var),
-                "",
-                $var
-            );
         }
-        $texpr = array_reverse($texpr);
-        for ($i=1; $i < count($texpr); $i++) {
-           $texpr[$i]['true'] = $texpr[$i-1]; 
-        }
-        return $texpr[$i-1];
+        return $expr;
     }
 }

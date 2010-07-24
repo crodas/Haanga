@@ -4,7 +4,7 @@ $data = array('users' => array(
     array(
         'name' => 'foo',
         'age' => 22,
-        'foo' => 1,
+        'foo' => 2,
     ),
     array(
         'name' => 'older Foo',
@@ -19,7 +19,7 @@ $data = array('users' => array(
     array(
         'name' => 'bar',
         'age' => 22,
-        'foo' => 2
+        'foo' => 1
     ),
     ),
     'regroup_field' => 'age',
