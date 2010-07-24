@@ -1,6 +1,8 @@
 #!/usr/bin/php
 <?php
 
-require dirname(__FILE__)."/lib/haanga.php";
+require dirname(__FILE__)."/lib/Haanga.php";
 
-Haanga_Compiler::main_cli();
+Haanga::registerAutoload();
+
+Haanga_Compiler_Base::main_cli();
