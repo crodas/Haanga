@@ -74,11 +74,6 @@ class Haanga_Extension_Tag extends Haanga_Extension
         return $cache[$tag];
     }
 
-    final function getFilePath($file, $rel=TRUE)
-    {
-        return parent::getFilePath($file, $rel, 'tags');
-    }
-
     final function getClassName($tag)
     {
         $tag = str_replace("_", "", ucfirst($tag));
