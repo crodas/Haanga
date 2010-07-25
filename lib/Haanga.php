@@ -65,9 +65,12 @@ class Haanga
 
     final public static function AutoLoad($class)
     {
-        if (substr($class, 0, 6) === 'Haanga' && !class_exists($class, false)) {
+        static $loaded = array();
+
+        if (!isset($loaded[$class]) && substr($class, 0, 6) === 'Haanga' && !class_exists($class, false)) {
             $file = str_replace('_', '/', $class);
             @include $file.'.php';
+            $loaded[$class] = TRUE;
         }
     }
 
