@@ -324,7 +324,7 @@ class Haanga_Compiler
                         hexpr_cond(
                             hexec('is_array', $expr[1]),
                             hexec('array_search', $expr[0], $expr[1]),
-                            hexec('strpos', $expr[1], $expr[0])
+                           hexec('strpos', $expr[1], $expr[0])
                         )
                         ,'!==', FALSE
                     );
@@ -369,6 +369,13 @@ class Haanga_Compiler
     // {% if <expr> %} HTML {% else %} TWO {% endif $} {{{
     protected function generate_op_if($details, &$body)
     {
+        if ($this->is_var_filter($details['expr']) && count($details['expr']['var_filter']) == 1) {
+            /* if we are doing if <Variable> it should check 
+               if it exists without throw any warning */
+            $exec =  hexec('default', "")->getArray();
+            $exec =  array($exec['exec'], 'args' => $exec['args']);
+            $details['expr']['var_filter'][] = $exec;
+        }
         $this->check_expr($details['expr']);
         $expr = Haanga_AST::fromArrayGetAST($details['expr']);
         $body->do_if($expr);
