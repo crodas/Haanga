@@ -82,7 +82,11 @@ class templateTest extends PHPUnit_Framework_TestCase
             }
 
             if (is_file($data_file)) {
-                include $data_file;
+                try {
+                    include $data_file;
+                } Catch (Exception $e) {
+                    continue;
+                }
             }
             $datas[] = array($test_file, $data, $expected);
         }

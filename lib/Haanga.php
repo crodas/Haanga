@@ -167,11 +167,11 @@ class Haanga
                 $compiler->setDebug($php.".dump");
             }
 
-            try {
+            //try {
                 $code = $compiler->compile_file($tpl, FALSE);
-            } catch (Exception $e) {
-                throw new Haanga_Compiler_Exception($tpl.' :'.$e->getMessage().' on '.$e->getfile(). ':'.$e->Getline());
-            }
+            //} catch (Exception $e) {
+            //    throw new Haanga_Compiler_Exception($tpl.' :'.$e->getMessage().' on '.$e->getfile(). ':'.$e->Getline());
+            //}
 
             file_put_contents($php, "<?php".$code);
             self::$has_compiled = TRUE;
