@@ -491,19 +491,28 @@ class Haanga_Generator_PHP
             }
             $var_str = $this->php_get_varname($var[0]);
             for ($i=1; $i < count($var); $i++) {
-                $var_str .= "[";
                 if (is_string($var[$i])) {
-                    $var_str .= '"'.$var[$i].'"';
+                    $var_str .= '["'.$var[$i].'"]';
                 } else if (is_array($var[$i])) {
                     if (isset($var[$i]['var'])) {
-                        $var_str .= $this->php_get_varname($var[$i]['var']);
+                        /* index is a variable */
+                        $var_str .= '['.$this->php_get_varname($var[$i]['var']).']';
                     } else if (isset($var[$i]['string'])) {
-                        $var_str .= '"'.addslashes($var[$i]['string']).'"';
+                        /* index is a string */
+                        $var_str .= '["'.addslashes($var[$i]['string']).'"]';
                     } else if (isset($var[$i]['number'])) {
-                        $var_str .= $var[$i]['number'];
+                        /* index is a number */
+                        $var_str .= '['.$var[$i]['number'].']';
+                    } else if (isset($var[$i]['object'])) {
+                        /* Accessing a object's property */
+                        $var_str .= '->'.$var[$i]['object'];
+                    } else if ($var[$i] === array()) {
+                        /* index is a NULL (do append) */
+                        $var_str .= '[]';
+                    } else {
+                        throw new Haanga_Compiler_Exception('Unknown variable definition '.print_r($var, TRUE));
                     }
                 }
-                $var_str .= "]";
             }
             return $var_str;
         } else {

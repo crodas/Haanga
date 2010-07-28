@@ -9,7 +9,7 @@ class errorTest extends PHPUnit_Framework_TestCase
      * @dataProvider tplProvider
      *  
      */
-    function testInvalidForloop($tpl)
+    function testInvalidTemplates($tpl)
     {
         TestSuite::init();
         $this->setExpectedException('Haanga_Compiler_Exception');

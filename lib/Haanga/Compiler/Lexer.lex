@@ -140,6 +140,11 @@ html {
     $this->yypopstate();
 }
 
+"->" {
+    $this->token = HG_Parser::T_OBJ;
+}
+
+
 "." {
     $this->token = HG_Parser::T_DOT;
 }
@@ -394,6 +399,10 @@ whitespace {
 
 ":" {
     $this->token = HG_Parser::T_COLON;
+}
+
+"->" {
+    $this->token = HG_Parser::T_OBJ;
 }
 
 

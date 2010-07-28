@@ -204,6 +204,7 @@ expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = array('op_expr' => 'expr', B); }
 expr(A) ::= fvar_or_string(B). { A = B; }
 
 /* Variable name */
+varname(A) ::= varname(B) T_OBJ T_ALPHA(C). { if (!is_array(B)) { A = array(B); } else { A = B; }  A[]=array('object' => C);}
 varname(A) ::= varname(B) T_DOT T_ALPHA(C). { if (!is_array(B)) { A = array(B); } else { A = B; }  A[]=C;}
 varname(A) ::= varname(B) T_BRACKETS_OPEN var_or_string(C) T_BRACKETS_CLOSE. { if (!is_array(B)) { A = array(B); } else { A = B; }  A[]=C;}
 varname(A) ::= T_ALPHA(B). { A = B; } 
