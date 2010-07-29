@@ -1,6 +1,6 @@
 <?php
 
 $obj->name = 'foo';
-$obj->obj->name = 'bar';
-
-$data = compact('obj');
+$obj->obj['name'] = 'bar';
+$arr['obj'] = $obj;
+$data = compact('obj', 'arr');

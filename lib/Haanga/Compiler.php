@@ -372,9 +372,12 @@ class Haanga_Compiler
         if ($this->is_var_filter($details['expr']) && count($details['expr']['var_filter']) == 1) {
             /* if we are doing if <Variable> it should check 
                if it exists without throw any warning */
-            $exec =  hexec('default', "")->getArray();
-            $exec =  array($exec['exec'], 'args' => $exec['args']);
-            $details['expr']['var_filter'][] = $exec;
+            $expr = $details['expr'];
+            $expr['var_filter'][] = 'empty';
+
+            $variable = $this->get_filtered_var($expr['var_filter'], $var);
+
+            $details['expr'] = hexpr($variable, '===', FALSE)->getArray();
         }
         $this->check_expr($details['expr']);
         $expr = Haanga_AST::fromArrayGetAST($details['expr']);
@@ -710,14 +713,7 @@ class Haanga_Compiler
             return;
         }
 
-        if (isset($last['name']) && $last['name'] == $buffer->var && ($last['op'] == 'declare' || $last['op'] == 'append_var') ) {
-            if (is_object($stmt)) {
-                Haanga_AST::GetValue($stmt, $stmt);
-            }
-            $last[] = $stmt;
-        } else {
-            $code->append($buffer, $stmt);
-        }
+        $code->append($buffer, $stmt);
 
     }
 

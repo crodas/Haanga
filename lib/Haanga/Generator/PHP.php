@@ -61,10 +61,38 @@ class Haanga_Generator_PHP
     {
         $this->ident = 0;
         $code = "";
-        foreach ($op_code as $op) {
+        $size = count($op_code);
+        for ($i=0; $i < $size; $i++) {
+            $op = $op_code[$i];
             if (!isset($op['op'])) {
-                var_Dump($op);die();
+                throw new Haanga_Compiler_Exception("Invalid \$op_code ".print_r($op, TRUE));
             }
+
+            /* declare optimization {{{ */
+            if ($op['op'] == 'declare' || $op['op'] == 'append_var') {
+                /* Code optimization
+                **
+                **  If a variable declaration, or append variable is followed
+                **  by several append_var, then merge everything into a 
+                **  single STMT.
+                **
+                */
+                do {
+                    $next_op = $op_code[$i+1];
+                    if ($next_op['op'] != 'append_var' || $next_op['name'] != $op['name']) {
+                        break;
+                    }
+                    for ($e=0; $e < count($next_op); $e++) {
+                        if (!isset($next_op[$e])) {
+                            break;
+                        }
+                        $op[] = $next_op[$e];
+                    }
+                    $i++;
+                } while(TRUE);
+            }
+            /* }}} */
+
             $method = "php_{$op['op']}";
             if (!is_callable(array($this, $method))) {
                 throw new Exception("CodeGenerator: Missing method $method");

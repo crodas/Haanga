@@ -23,7 +23,7 @@ function haanga_4726e18009acee8a1c86a79b620c7ded71be5ddf($vars, $return=FALSE, $
     $islast_1  = $forcounter1_1 == $psize_1;
     foreach ($array as  $i) {
         $buffer2  = "\n    ";
-        if ((empty($islast_1) == TRUE ? "" : $islast_1)) {
+        if (empty($islast_1) === FALSE) {
             $buffer2 .= " Last ".htmlentities($i);
         }
         $buffer2 .= "\n\n";
@@ -41,7 +41,7 @@ function haanga_4726e18009acee8a1c86a79b620c7ded71be5ddf($vars, $return=FALSE, $
             $buffer2 .= "\n        ";
             foreach ($arr as  $val) {
                 $buffer2 .= "\n            ";
-                if ((empty($islast_1) == TRUE ? "" : $islast_1)) {
+                if (empty($islast_1) === FALSE) {
                     $buffer2 .= " Last ".htmlentities($k);
                 }
                 $buffer2 .= "\n        ";
@@ -61,7 +61,7 @@ function haanga_4726e18009acee8a1c86a79b620c7ded71be5ddf($vars, $return=FALSE, $
             $buffer2 .= "\n        ";
             foreach ($arr as  $val) {
                 $buffer2 .= "\n            ";
-                if ((empty($isfirst_1) == TRUE ? "" : $isfirst_1)) {
+                if (empty($isfirst_1) === FALSE) {
                     $buffer2 .= " first ".htmlentities($k);
                 }
                 $buffer2 .= "\n        ";

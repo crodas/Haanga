@@ -50,6 +50,8 @@ class Haanga
     protected static $cache_dir;
     protected static $templates_dir='.';
     protected static $debug;
+    protected static $onCompile = array();
+    protected static $onCompileTriggered = FALSE;
     public static $has_compiled;
 
     private function __construct()
@@ -72,6 +74,15 @@ class Haanga
             @include $file.'.php';
             $loaded[$class] = TRUE;
         }
+    }
+
+    function onCompile($function)
+    {
+        if (!is_callable($function)) {
+            throw new Haanga_Exception('Invalid callback');
+        }
+
+        self::$onCompile[] = $function;
     }
 
     // setCacheDir(string $dir) {{{
@@ -165,6 +176,13 @@ class Haanga
             $compiler->reset();
             if (self::$debug) {
                 $compiler->setDebug($php.".dump");
+            }
+
+            if (count(self::$onCompile) > 0 && !self::$onCompileTriggered) {
+                foreach (self::$onCompile as $fnc) {
+                    $fnc();
+                }
+                self::$onCompileTriggered = TRUE;
             }
 
             //try {
