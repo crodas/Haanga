@@ -68,12 +68,29 @@ class Haanga
     final public static function AutoLoad($class)
     {
         static $loaded = array();
+        static $incPaths  = array();
+        static $incPathstr;
 
         if (!isset($loaded[$class]) && substr($class, 0, 6) === 'Haanga' && !class_exists($class, false)) {
-            $file = str_replace('_', '/', $class);
-            @include $file.'.php';
+            $file           = str_replace('_', DIRECTORY_SEPARATOR, $class).'.php';
+            $incPath        = get_include_path();
             $loaded[$class] = TRUE;
+
+            if ($incPath != $incPathstr) {
+                $incPathstr = $incPath;
+                $incPaths   = explode(PATH_SEPARATOR, $incPath);
+            }
+            
+
+            foreach ($incPaths as $dir) {
+                if (file_exists($dir. DIRECTORY_SEPARATOR.$file)) {
+                    require_once $file;
+                    return TRUE;
+                }
+            }
         }
+
+        return FALSE;
     }
 
     function onCompile($function)
