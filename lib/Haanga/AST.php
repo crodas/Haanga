@@ -68,6 +68,9 @@ class Haanga_AST
 
     static protected function check_type($obj, $type)
     {
+        if (is_string($obj)) {
+            return FALSE;
+        }
         if (is_object($obj)) {
             $obj = $obj->getArray();
         }
@@ -260,7 +263,7 @@ class Haanga_AST
         if ($get_all) {
             return $this->stack;
         }
-        return $this->stack[0];
+        return isset($this->stack[0]) ?  $this->stack[0] : NULL;
     }
 
     function do_foreach($array, $value, $key, Haanga_AST $body)

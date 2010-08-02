@@ -1053,16 +1053,16 @@ class Haanga_Compiler
     /* variable safety {{{ */
     function set_safe($name)
     {
-        if (is_string($name) || is_array($name)) {
-            $name = hvar($name);
+        if (!Haanga_AST::is_Var($name)) {
+            $name = hvar($name)->getArray();
         }
         $this->safes[serialize($name)] = TRUE;
     }
 
     function set_unsafe($name)
     {
-        if (is_string($name) || is_array($name)) {
-            $name = hvar($name);
+        if (!Haanga_AST::is_Var($name)) {
+            $name = hvar($name)->getArray();
         }
         unset($this->safes[serialize($name)]);
     }
