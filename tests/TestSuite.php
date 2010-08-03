@@ -18,9 +18,13 @@ class TestSuite extends PHPUnit_Framework_TestSuite
 
     public static function Init()
     {
-        Haanga::RegisterAutoLoad();
-        Haanga::setCacheDir("tmp/");
-        Haanga::setTemplateDir(".");
-        Haanga::enableDebug(TRUE);
+        $config = array(
+            'cache_dir' => 'tmp/',
+            'template_dir' => '.',
+            'debug' => TRUE,
+            'use_hash_filename' => FALSE,
+        );
+
+        Haanga::Configure($config);
     }
 }

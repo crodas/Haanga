@@ -1,10 +1,19 @@
 <?php
 
 require "../lib/Haanga.php";
+$config = array(
+    'cache_dir' => 'tmp/',
+    'template_dir' => 'complex/',
+);
 
-Haanga::registerAutoload();
-Haanga::setCacheDir('tmp/');
-Haanga::setTEmplateDir('complex/');
+if (is_callable('xcache_isset')) {
+    /* don't check for changes in the template for the next 5 min */
+    $config['check_ttl'] = 300;
+    $config['check_get'] = 'xcache_get';
+    $config['check_set'] = 'xcache_set';
+}
+
+Haanga::Configure($config);
 
 $people =  array(
     array('first_name' => 'George </br>', 'last_name' => 'Bush', 'gender' => 'Male', 'foobar' => 'extra'),

@@ -1,11 +1,19 @@
 <?php
 
 require "../lib/Haanga.php";
+$config = array(
+    'cache_dir' => 'tmp/',
+    'template_dir' => 'django-yui-layout-templates/',
+);
 
-Haanga::registerAutoload();
+if (is_callable('xcache_isset')) {
+    /* don't check for changes in the template for the next 5 min */
+    $config['check_ttl'] = 300;
+    $config['check_get'] = 'xcache_get';
+    $config['check_set'] = 'xcache_set';
+}
 
-Haanga::setCacheDir('tmp/');
-Haanga::setTEmplateDir('django-yui-layout-templates/');
+Haanga::Configure($config);
 
 $files = array();
 foreach (glob("django-yui-layout-templates/*.html") as $html) {
