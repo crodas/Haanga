@@ -1,4 +1,4 @@
 {% trans _("Translation") %}
-{% trans "Translation" %}
+{% trans _("Translation by %s") "cesar" %}
 {{ text|trans }}
 {{ text|translation|capfirst }}

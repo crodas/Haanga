@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-27 01:24-0400\n"
+"POT-Creation-Date: 2010-08-03 23:34-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,8 +16,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: 
+msgid "hello"
+msgstr "hola"
+
+
+#: assert_templates/trans.tpl:1 assert_templates/trans.tpl:1
 msgid "Translation"
 msgstr "Traducción"
 
-msgid "hello"
-msgstr "hola"
+#: assert_templates/trans.tpl:2 assert_templates/trans.tpl:2
+#, c-format
+msgid "Translation by %s"
+msgstr "Traducción por %s"
