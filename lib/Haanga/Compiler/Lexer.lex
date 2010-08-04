@@ -320,6 +320,11 @@ html {
     $this->token = HG_Parser::T_ENDIF;
 }
 
+"_("  {
+    $this->token = HG_Parser::T_INTL;
+}
+
+
 "(" {
     $this->token = HG_Parser::T_LPARENT;
 }

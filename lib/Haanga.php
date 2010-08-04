@@ -50,7 +50,7 @@ class Haanga
     protected static $cache_dir;
     protected static $templates_dir='.';
     protected static $debug;
-    protected static $onCompile = NULL;
+    protected static $bootstrap = NULL;
     protected static $check_ttl;
     protected static $check_get;
     protected static $check_set;
@@ -112,9 +112,9 @@ class Haanga
             case 'template_dir':
                 self::setTemplateDir($value);
                 break;
-            case 'on_compile':
+            case 'bootstrap':
                 if (is_callable($value)) {
-                    self::$onCompile = $value;
+                    self::$bootstrap = $value;
                 }
                 break;
             case 'debug':
@@ -219,7 +219,8 @@ class Haanga
         $tpl      = self::$templates_dir.'/'.$file;
         $fnc      = sha1($tpl);
         $callback = "haanga_".$fnc;
-        $php = self::$cache_dir.'/'.(self::$hash_filename ? $fnc : str_replace(DIRECTORY_SEPARATOR, '_', $file)).'.php';
+        $php      = self::$hash_filename ? $fnc : str_replace(DIRECTORY_SEPARATOR, '_', $file);
+        $php      = self::$cache_dir.'/'.$php.'.php';
 
         if (is_callable($callback)) {
             return $callback($vars, $return, $blocks);
@@ -253,9 +254,9 @@ class Haanga
 
                 $compiler = new Haanga_Compiler_Runtime;
 
-                if (self::$onCompile) {
-                    /* call onCompile hook, just the first time */
-                    call_user_func(self::$onCompile);
+                if (self::$bootstrap) {
+                    /* call bootstrap hook, just the first time */
+                    call_user_func(self::$bootstrap);
                 }
             }
 

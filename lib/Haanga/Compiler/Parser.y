@@ -187,6 +187,7 @@ fvar_or_string(A) ::= T_NUMERIC(B).     { A = array('number' => B); }
 fvar_or_string(A) ::= string(B).        { A = array('string' => B); }
 
 /* */
+string(A)    ::= T_INTL string(B) T_RPARENT.      { A = B; }
 string(A)    ::= T_STRING_SINGLE_INIT  T_STRING_SINGLE_END. {  A = ""; }
 string(A)    ::= T_STRING_DOUBLE_INIT  T_STRING_DOUBLE_END. {  A = ""; }
 string(A)    ::= T_STRING_SINGLE_INIT s_content(B)  T_STRING_SINGLE_END. {  A = B; }
