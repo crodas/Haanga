@@ -344,6 +344,9 @@ html {
 "+" {
     $this->token = HG_Parser::T_PLUS;
 }
+"-" {
+    $this->token = HG_Parser::T_MINUS;
+}
 "*" {
     $this->token = HG_Parser::T_TIMES;
 }

@@ -56,6 +56,7 @@ class Haanga
     protected static $check_set;
     protected static $use_autoload  = TRUE;
     protected static $hash_filename = TRUE;
+    protected static $compiler = array();
 
     public static $has_compiled;
 
@@ -138,6 +139,12 @@ class Haanga
                 break;
             case 'use_hash_filename':
                 self::$hash_filename = (bool)$value;
+                break;
+            case 'compiler':
+                if (is_array($value)) {
+                    self::$compiler = $value;
+                }
+                break;
             default:
                 continue;
             }
@@ -219,12 +226,14 @@ class Haanga
         $tpl      = self::$templates_dir.'/'.$file;
         $fnc      = sha1($tpl);
         $callback = "haanga_".$fnc;
-        $php      = self::$hash_filename ? $fnc : str_replace(DIRECTORY_SEPARATOR, '_', $file);
-        $php      = self::$cache_dir.'/'.$php.'.php';
 
         if (is_callable($callback)) {
             return $callback($vars, $return, $blocks);
         }
+
+        $php = self::$hash_filename ? $fnc : str_replace(DIRECTORY_SEPARATOR, '_', $file);
+        $php = self::$cache_dir.'/'.$php.'.php';
+
 
         $check = TRUE;
 
@@ -257,6 +266,12 @@ class Haanga
                 if (self::$bootstrap) {
                     /* call bootstrap hook, just the first time */
                     call_user_func(self::$bootstrap);
+                }
+
+                if (count(self::$compiler) != 0) {
+                    foreach (self::$compiler as $opt => $value) {
+                        $compiler->setOption($opt, $value);
+                    }
                 }
             }
 

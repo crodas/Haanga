@@ -5,12 +5,13 @@ require_once("/home/crodas/projects/playground/haanga/contrib/dummy.php");
 function haanga_d2345f9cf4a619dac02b83afccf7c2e1c4530687($vars, $return=FALSE, $blocks=array())
 {
     extract($vars);
-    $buffer1  = "\n";
-    $buffer2  = "\n    testing DUMMY TaG\n";
-    $buffer1 .= Haanga_Extension_Tag_Dummy::main($buffer2)."\n";
     if ($return == TRUE) {
-        return $buffer1;
-    } else {
-        print($buffer1);
+        ob_start();
+    }
+    echo "\n";
+    $buffer1  = "\n    testing DUMMY TaG\n";
+    echo Haanga_Extension_Tag_Dummy::main($buffer1)."\n";
+    if ($return == TRUE) {
+        return ob_get_clean();
     }
 }

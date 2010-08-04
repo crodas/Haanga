@@ -68,6 +68,24 @@ class Haanga_Generator_PHP
                 throw new Haanga_Compiler_Exception("Invalid \$op_code ".print_r($op, TRUE));
             }
 
+            /* echo optimization {{{ */
+            if ($op['op'] == 'print') {
+                do {
+                    $next_op = $op_code[$i+1];
+                    if (!isset($next_op) || $next_op['op'] != 'print') {
+                        break;
+                    }
+                    for ($e=0; $e < count($next_op); $e++) {
+                        if (!isset($next_op[$e])) {
+                            break;
+                        }
+                        $op[] = $next_op[$e];
+                    }
+                    $i++;
+                } while(TRUE);
+            }
+            /* }}} */
+
             /* declare optimization {{{ */
             if ($op['op'] == 'declare' || $op['op'] == 'append_var') {
                 /* Code optimization
@@ -79,7 +97,7 @@ class Haanga_Generator_PHP
                 */
                 do {
                     $next_op = $op_code[$i+1];
-                    if ($next_op['op'] != 'append_var' || $next_op['name'] != $op['name']) {
+                    if (!isset($next_op) || $next_op['op'] != 'append_var' || $next_op['name'] != $op['name']) {
                         break;
                     }
                     for ($e=0; $e < count($next_op); $e++) {

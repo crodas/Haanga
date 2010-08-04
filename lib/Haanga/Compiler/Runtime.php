@@ -64,7 +64,8 @@ final class Haanga_Compiler_Runtime extends Haanga_Compiler
     protected function generate_op_include($details, &$body)
     {
         $this->do_print($body,
-            hexec('Haanga::Load', $details[0], hvar('vars'), TRUE, 
+            hexec('Haanga::Load', $details[0], hvar('vars'),
+            TRUE,
             hvar('blocks'))
         );
     }

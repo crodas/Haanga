@@ -68,19 +68,33 @@ class Haanga_Compiler
      *  activated (which is activated by default)
      */
     public $var_is_safe=FALSE;
-    protected $autoescape=TRUE;
-    protected $force_whitespaces=0;
+    /* compiler options */
+    protected $autoescape = TRUE;
+    protected $if_empty   = TRUE;
+
     /**
      *  Debug file
      */
     protected $debug;
-    // }}}
+    // }}} 
 
     function __construct()
     {
         $this->generator = new Haanga_Generator_PHP;
         if (self::$block_var===NULL) {
             self::$block_var = '{{block.'.md5('super').'}}';
+        }
+    }
+
+    function setOption($option, $value)
+    {
+        switch (strtolower($option)) {
+        case 'if_empty':
+            $this->if_empty = (bool)$value;
+            break;
+        case 'autoescape':
+            $this->autoescape = (bool)$value;
+            break;
         }
     }
 
@@ -160,22 +174,20 @@ class Haanga_Compiler
 
             $body->declare_function($func_name);
             $body->do_exec('extract', hvar('vars'));
+            $body->do_if(hexpr(hvar('return'), '==', TRUE));
+            $body->do_exec('ob_start');
+            $body->do_endif();
         }
 
 
-        $this->ob_start($body);
         $this->generate_op_code($parsed, $body);
         if ($this->subtemplate) {
             $expr = $this->expr_call_base_template();
             $this->do_print($body, $expr);
         }
-        $this->ob_start--;
 
-        /* Add last part */
         $body->do_if(hexpr(hvar('return'), '==', TRUE));
-        $body->do_return(hvar('buffer1'));
-        $body->do_else();
-        $this->do_print($body, hvar('buffer1'));
+        $body->do_return(hexec('ob_get_clean'));
         $body->do_endif();
 
         if ($name) {
@@ -243,8 +255,7 @@ class Haanga_Compiler
     {
         return hexec(
             $this->get_function_name($this->subtemplate),
-            hvar('vars'),
-            TRUE,
+            hvar('vars'), TRUE,
             hvar('blocks')
         );
     }
@@ -369,7 +380,7 @@ class Haanga_Compiler
     // {% if <expr> %} HTML {% else %} TWO {% endif $} {{{
     protected function generate_op_if($details, &$body)
     {
-        if ($this->is_var_filter($details['expr']) && count($details['expr']['var_filter']) == 1) {
+        if ($this->if_empty && $this->is_var_filter($details['expr']) && count($details['expr']['var_filter']) == 1) {
             /* if we are doing if <Variable> it should check 
                if it exists without throw any warning */
             $expr = $details['expr'];
@@ -709,7 +720,8 @@ class Haanga_Compiler
         $last = &$code->getLast();
 
         if ($this->ob_start == 0) {
-            $code->do_exec('print', $stmt);
+            $code->do_echo($stmt);
+            //$code->do_exec('print', $stmt);
             return;
         }
 

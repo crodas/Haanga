@@ -292,6 +292,13 @@ class Haanga_AST
         return $this;
     }
 
+    function do_echo($stmt)
+    {
+        $this->getValue($stmt, $value);
+        $this->stack[] = array('op' => 'print', $value);
+        return $this;
+    }
+
     function do_exec()
     {
         $params = func_get_args();

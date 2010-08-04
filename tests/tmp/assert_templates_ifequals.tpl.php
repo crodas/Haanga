@@ -3,22 +3,22 @@
 function haanga_0c118610d6837670c71af0327fb53e43cea00877($vars, $return=FALSE, $blocks=array())
 {
     extract($vars);
-    $buffer1  = "";
-    if (1 == 2) {
-        $buffer1 .= "\n    Equals\n";
-    } else {
-        $buffer1 .= "\n    Non Equals\n";
-    }
-    $buffer1 .= "\n";
-    if (1 != 2) {
-        $buffer1 .= "\n    Non Equals\n";
-    } else {
-        $buffer1 .= "\n    Equals\n";
-    }
-    $buffer1 .= "\n";
     if ($return == TRUE) {
-        return $buffer1;
+        ob_start();
+    }
+    if (1 == 2) {
+        echo "\n    Equals\n";
     } else {
-        print($buffer1);
+        echo "\n    Non Equals\n";
+    }
+    echo "\n";
+    if (1 != 2) {
+        echo "\n    Non Equals\n";
+    } else {
+        echo "\n    Equals\n";
+    }
+    echo "\n";
+    if ($return == TRUE) {
+        return ob_get_clean();
     }
 }

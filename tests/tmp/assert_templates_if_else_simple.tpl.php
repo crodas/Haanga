@@ -3,22 +3,22 @@
 function haanga_e7733880179030f69680f92d682d991e9f93c62e($vars, $return=FALSE, $blocks=array())
 {
     extract($vars);
-    $buffer1  = "";
-    if (1 + 2 == 3) {
-        $buffer1 .= "True";
-    } else {
-        $buffer1 .= "False";
-    }
-    $buffer1 .= "\n";
-    if (strtoupper($var) == $var) {
-        $buffer1 .= "True";
-    } else {
-        $buffer1 .= "False";
-    }
-    $buffer1 .= "\n";
     if ($return == TRUE) {
-        return $buffer1;
+        ob_start();
+    }
+    if (1 + 2 == 3) {
+        echo "True";
     } else {
-        print($buffer1);
+        echo "False";
+    }
+    echo "\n";
+    if (strtoupper($var) == $var) {
+        echo "True";
+    } else {
+        echo "False";
+    }
+    echo "\n";
+    if ($return == TRUE) {
+        return ob_get_clean();
     }
 }

@@ -3,16 +3,16 @@
 function haanga_d0e8258f9bf65ffe46eddfe8347bb2467fc069ea($vars, $return=FALSE, $blocks=array())
 {
     extract($vars);
-    $buffer1  = "";
-    if ((empty($var["exists"]) == TRUE ? "" : $var["exists"])) {
-        $buffer1 .= " Yes ";
-    } else {
-        $buffer1 .= " No ";
-    }
-    $buffer1 .= "\n";
     if ($return == TRUE) {
-        return $buffer1;
+        ob_start();
+    }
+    if ((empty($var["exists"]) == TRUE ? "" : $var["exists"])) {
+        echo " Yes ";
     } else {
-        print($buffer1);
+        echo " No ";
+    }
+    echo "\n";
+    if ($return == TRUE) {
+        return ob_get_clean();
     }
 }
