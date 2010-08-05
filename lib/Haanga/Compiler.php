@@ -399,7 +399,17 @@ class Haanga_Compiler
     }
     // }}}
 
-    // ifequal|ifnotequal <var_filtered|string|number> <var_fitlered|string|number> ... else ... {{{
+    // buffer <varname> {{{
+    public function generate_op_buffer($details, &$body)
+    {
+        $this->ob_start($body);
+        $this->generate_op_code($details['body'], $body);
+        $body->decl($details['name'], hvar('buffer'.$this->ob_start));
+        $this->ob_start--;
+    }
+    // }}}
+
+    // ifequal|ifnot equal <var_filtered|string|number> <var_fitlered|string|number> ... else ... {{{
     protected function generate_op_ifequal($details, &$body)
     {
         $if['expr'] = hexpr($details[1], $details['cmp'], $details[2])->getArray();

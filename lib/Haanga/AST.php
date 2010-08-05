@@ -372,9 +372,15 @@ class Haanga_AST
         if (is_string($name)) {
             $name = hvar($name);
         }
-        $this->getValue($value, $stmt);
         $this->getValue($name, $name);
-        $this->stack[] = array('op' => 'declare', 'name' => $name['var'], $stmt);
+        $array = array('op' => 'declare', 'name' => $name['var']);
+        foreach (func_get_args() as $id => $value) {
+            if ($id != 0) {
+                $this->getValue($value, $stmt);
+                $array[] = $stmt;
+            }
+        }
+        $this->stack[] = $array;
         return $this;
     }
 

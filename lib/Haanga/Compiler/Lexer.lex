@@ -151,6 +151,11 @@ html {
     $this->token = HG_Parser::T_DOT;
 }
 
+"buffer" token_end {
+    $this->token = HG_Parser::T_BUFFER;
+}
+
+
 "for" token_end {
     $this->token = HG_Parser::T_FOR;
 }
