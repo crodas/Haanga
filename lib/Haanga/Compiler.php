@@ -695,6 +695,8 @@ class Haanga_Compiler
         case '_SESSION':
         case '_REQUEST':
         case '_ENV':
+        case 'forloop':
+        case 'block':
             return FALSE; /* these are arrays */
         }
 
@@ -721,13 +723,6 @@ class Haanga_Compiler
             unset($var);
 
             return $type;
-        }
-
-        /* treat this variable as 'array' */
-        switch ($varname) {
-        case 'forloop':
-        case 'block':
-            return FALSE; 
         }
 
         return $this->dot_as_object;
