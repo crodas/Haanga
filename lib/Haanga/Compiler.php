@@ -58,6 +58,10 @@ class Haanga_Compiler
     protected $append;
     protected $prepend_op;
     /**
+     *  Context at compile time
+     */
+    protected $context;
+    /**
      *  Table which contains all variables 
      *  aliases defined in the template
      */
@@ -71,6 +75,7 @@ class Haanga_Compiler
     /* compiler options */
     protected $autoescape = TRUE;
     protected $if_empty   = TRUE;
+    protected $dot_as_object = TRUE;
 
     /**
      *  Debug file
@@ -95,6 +100,9 @@ class Haanga_Compiler
         case 'autoescape':
             $this->autoescape = (bool)$value;
             break;
+        case 'dot_as_object':
+            $this->dot_as_object = (bool)$value;
+            break;
         }
     }
 
@@ -108,7 +116,10 @@ class Haanga_Compiler
     // reset() {{{
     function reset()
     {
-        $avoid_cleaning = array('strip_whitespaces' => 1, 'block_var' => 1, 'autoescape'=>1);
+        $avoid_cleaning = array(
+            'strip_whitespaces' => 1, 'block_var' => 1, 'autoescape'=>1,
+            'if_empty' => 1, 'dot_as_object' => 1,
+        );
         foreach (array_keys(get_object_vars($this)) as $key) {
             if (isset($avoid_cleaning[$key])) {
                 continue;
@@ -149,7 +160,7 @@ class Haanga_Compiler
     {
         $this->name = $name;
 
-        $parsed = Haanga_Compiler_Lexer::init($code);
+        $parsed = Haanga_Compiler_Lexer::init($code, $this);
         $code   = "";
         $this->subtemplate = FALSE;
 
@@ -225,7 +236,7 @@ class Haanga_Compiler
      *
      *  @return Generated PHP code
      */
-    final function compile_file($file, $safe=FALSE) 
+    final function compile_file($file, $safe=FALSE, $context=array()) 
     {
         if (!is_readable($file)) {
             throw new Haanga_Compiler_Exception("$file is not a file");
@@ -233,6 +244,7 @@ class Haanga_Compiler
         $this->_base_dir      = dirname($file);
         $this->_file          = basename($file);
         $this->check_function = $safe;
+        $this->context        = $context;
         $name                 = $this->set_template_name($file);
         return $this->compile(file_get_contents($file), $name);
     }
@@ -535,7 +547,8 @@ class Haanga_Compiler
     // {# something #} {{{
     protected function generate_op_comment($details, &$body)
     {
-        $body->comment($details['comment']);
+        /* comments are annoying */
+        //$body->comment($details['comment']);
     }
     // }}} 
 
@@ -550,6 +563,8 @@ class Haanga_Compiler
                 } else if (is_array($part)) {
                     if (Haanga_AST::is_str($part)) {
                         $name .= "{$part['string']}";
+                    } elseif (isset($part['object'])) {
+                        $name .= "{$part['object']}";
                     } else {
                         throw new Haanga_Compiler_Exception("Invalid blockname");
                     }
@@ -640,6 +655,85 @@ class Haanga_Compiler
     }
     // }}}
 
+    // variable context {{{
+    /**
+     *  Variables context
+     *
+     *  These two functions are useful to detect if a variable
+     *  separated by dot (foo.bar) is an array or object. To avoid
+     *  overhead we decide it at compile time, rather than 
+     *  ask over and over at rendering time.
+     *
+     *  foo.bar:
+     *      + If foo exists at compile time,
+     *        and it is an array, it would be foo['bar'] 
+     *        otherwise it'd be foo->bar.
+     *      + If foo don't exists at compile time,
+     *        it would be foo->bar if the compiler option
+     *        dot_as_object is TRUE (by default) otherwise
+     *        it'd be foo['bar']
+     * 
+     *  @author crodas
+     *  @author gallir (ideas)
+     *
+     */
+    function set_context($varname, $value)
+    {
+        $this->context[$varname] = $value;
+    }
+
+    function var_is_object(Array $variable)
+    {
+        $varname = $variable[0];
+        switch ($varname) {
+        case 'GLOBALS':
+        case '_SERVER':
+        case '_GET':
+        case '_POST':
+        case '_FILES':
+        case '_COOKIE':
+        case '_SESSION':
+        case '_REQUEST':
+        case '_ENV':
+            return FALSE; /* these are arrays */
+        }
+
+        if (isset($this->context[$varname])) {
+            if (count($variable) == 1) {
+                return is_object($this->context[$varname]);
+            }
+            $var = & $this->context[$varname];
+            foreach ($variable as $id => $part) {
+                if ($id != 0) {
+                    if (is_array($part) && isset($part['object'])) {
+                        $var = &$var->$part['object'];
+                    } else if (is_object($var)) {
+                        $var = &$var->$part;
+                    } else {
+                        $var = &$var[$part];
+                    }
+                }
+            }
+
+            $type = is_object($var);
+
+            /* delete reference */
+            unset($var);
+
+            return $type;
+        }
+
+        /* treat this variable as 'array' */
+        switch ($varname) {
+        case 'forloop':
+        case 'block':
+            return FALSE; 
+        }
+
+        return $this->dot_as_object;
+    }
+    // }}} 
+
     // Get variable name {{{
     protected function generate_variable_name($variable)
     {
@@ -721,7 +815,6 @@ class Haanga_Compiler
 
         if ($this->ob_start == 0) {
             $code->do_echo($stmt);
-            //$code->do_exec('print', $stmt);
             return;
         }
 

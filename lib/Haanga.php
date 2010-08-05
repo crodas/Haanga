@@ -281,7 +281,7 @@ class Haanga
                 $compiler->setDebug($php.".dump");
             }
 
-            $code = $compiler->compile_file($tpl, FALSE);
+            $code = $compiler->compile_file($tpl, FALSE, $vars);
 
             file_put_contents($php, "<?php".$code);
             self::$has_compiled = TRUE;

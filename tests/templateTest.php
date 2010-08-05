@@ -40,8 +40,8 @@ class templateTest extends PHPUnit_Framework_TestCase
 
 
     /** 
-     * @dataProvider tplProvider
-     */
+     * @dataProvider tplProvider 
+     * /
     public function testCLICompiler($test_file, $data, $expected)
     {
         TestSuite::init();
@@ -61,6 +61,7 @@ class templateTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($output, $expected);
     }
+    /* */
 
     public function tplProvider()
     {

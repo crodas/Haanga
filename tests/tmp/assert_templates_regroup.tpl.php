@@ -8,7 +8,6 @@ function haanga_e3288a8c38d2925df1b81c50c72b7eee31f8c2f9($vars, $return=FALSE, $
     if ($return == TRUE) {
         ob_start();
     }
-    /*  Test regroup with filters, and without filters  */
     echo "\n";
     /* Temporary sorting */
     $sorted_users  = Haanga_Extension_Filter_Dictsort::main($users, $regroup_by);
@@ -57,10 +56,10 @@ function haanga_e3288a8c38d2925df1b81c50c72b7eee31f8c2f9($vars, $return=FALSE, $
         $revcount0_2  = $psize_2 - 1;
         foreach ($user["list"] as  $u) {
             echo "\n        ".$forcounter1_2."-".$revcount_2."-".$revcount0_2." (".$forcounter1_1."). ".htmlentities(ucfirst($u["name"]))." (";
-            if ($isfirst_2) {
+            if (empty($isfirst_2) === FALSE) {
                 echo "first";
             } else {
-                if ($islast_2) {
+                if (empty($islast_2) === FALSE) {
                     echo "last";
                 }
             }

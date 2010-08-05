@@ -50,18 +50,22 @@ class Haanga_Compiler_Lexer
     private $state = 1;
     private $ignore_whitespace;
 
-    function __construct($data, $whitespace=FALSE)
+    function __construct($data, $compiler, $whitespace=FALSE)
     {
         $this->data              = $data;
+        $this->compiler          = $compiler;
         $this->N                 = 0;
         $this->ignore_whitespace = $whitespace;
         $this->line              = 1;
     }
 
-    function init($template, $ignore_whitespace=FALSE)
+    function init($template, $compiler, $ignore_whitespace=FALSE)
     {
-        $lexer  = new Haanga_Compiler_Lexer($template, $ignore_whitespace);
+        $lexer  = new Haanga_Compiler_Lexer($template, $compiler, $ignore_whitespace);
         $parser = new Haanga_Compiler_Parser;
+
+        $parser->compiler = $compiler;
+
         try {
             for($i=0; ; $i++) {
                 if  (!$lexer->yylex()) {

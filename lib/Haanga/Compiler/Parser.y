@@ -110,17 +110,26 @@ stmt ::= T_LOAD string(B). {
 }
 
 /* FOR loop */
-for_stmt(A) ::= T_FOR varname(B) T_IN filtered_var(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
-    A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D, 'index' => NULL); 
+for_def(A) ::= T_FOR varname(B) T_IN filtered_var(C) T_CLOSE_TAG . {
+    $this->compiler->set_context(B, array());
+    A = array('operation' => 'loop', 'variable' => B, 'index' => NULL, 'array' => C);
 }
-for_stmt(A) ::= T_FOR varname(I) T_COMMA varname(B) T_IN filtered_var(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
-    A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D, 'index' => I); 
+
+for_def(A) ::= T_FOR varname(I) T_COMMA varname(B) T_IN filtered_var(C) T_CLOSE_TAG . {
+    $this->compiler->set_context(B, array());
+    A = array('operation' => 'loop', 'variable' => B, 'index' => I, 'array' => C);
 }
-for_stmt(A) ::= T_FOR varname(B) T_IN filtered_var(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_EMPTY T_CLOSE_TAG body(E)  T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
-    A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D, 'empty' => E, 'index' => NULL); 
+
+
+for_stmt(A) ::= for_def(B) body(D) T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
+    A = B;
+    A['body'] = D;
 }
-for_stmt(A) ::= T_FOR varname(I) T_COMMA varname(B) T_IN filtered_var(C) T_CLOSE_TAG body(D) T_OPEN_TAG T_EMPTY T_CLOSE_TAG body(E)  T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
-    A = array('operation' => 'loop', 'variable' => B, 'array' => C, 'body' => D, 'empty' => E, 'index' => I); 
+
+for_stmt(A) ::= for_def(B) body(D) T_OPEN_TAG T_EMPTY T_CLOSE_TAG body(E)  T_OPEN_TAG T_CLOSEFOR T_CLOSE_TAG. { 
+    A = B;
+    A['body']  = D;
+    A['empty'] = E;
 }
 /* IF */
 if_stmt(A) ::= T_IF expr(B) T_CLOSE_TAG body(X) T_OPEN_TAG T_ENDIF T_CLOSE_TAG. { A = array('operation' => 'if', 'expr' => B, 'body' => X); }
@@ -206,7 +215,7 @@ expr(A) ::= fvar_or_string(B). { A = B; }
 
 /* Variable name */
 varname(A) ::= varname(B) T_OBJ T_ALPHA(C). { if (!is_array(B)) { A = array(B); } else { A = B; }  A[]=array('object' => C);}
-varname(A) ::= varname(B) T_DOT T_ALPHA(C). { if (!is_array(B)) { A = array(B); } else { A = B; }  A[]=C;}
+varname(A) ::= varname(B) T_DOT T_ALPHA(C). { if (!is_array(B)) { A = array(B); } else { A = B; } A[] = ($this->compiler->var_is_object(A)) ? array('object' => C) : C;}
 varname(A) ::= varname(B) T_BRACKETS_OPEN var_or_string(C) T_BRACKETS_CLOSE. { if (!is_array(B)) { A = array(B); } else { A = B; }  A[]=C;}
 varname(A) ::= T_ALPHA(B). { A = B; } 
 /* T_CUSTOM|T_CUSTOM_BLOCK are also T_ALPHA */

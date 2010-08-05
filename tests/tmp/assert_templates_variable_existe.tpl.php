@@ -6,7 +6,7 @@ function haanga_d0e8258f9bf65ffe46eddfe8347bb2467fc069ea($vars, $return=FALSE, $
     if ($return == TRUE) {
         ob_start();
     }
-    if ((empty($var["exists"]) == TRUE ? "" : $var["exists"])) {
+    if ((empty($var->exists) == TRUE ? "" : $var->exists)) {
         echo " Yes ";
     } else {
         echo " No ";
