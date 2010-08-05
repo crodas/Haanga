@@ -76,6 +76,7 @@ class Haanga_Compiler
     protected $autoescape = TRUE;
     protected $if_empty   = TRUE;
     protected $dot_as_object = TRUE;
+    protected $strip_whitespace = FALSE;
 
     /**
      *  Debug file
@@ -103,6 +104,9 @@ class Haanga_Compiler
         case 'dot_as_object':
             $this->dot_as_object = (bool)$value;
             break;
+        case 'strip_whitespace':
+            $this->strip_whitespace = (bool)$value;
+            break;
         }
     }
 
@@ -117,7 +121,7 @@ class Haanga_Compiler
     function reset()
     {
         $avoid_cleaning = array(
-            'strip_whitespaces' => 1, 'block_var' => 1, 'autoescape'=>1,
+            'strip_whitespace' => 1, 'block_var' => 1, 'autoescape'=>1,
             'if_empty' => 1, 'dot_as_object' => 1,
         );
         foreach (array_keys(get_object_vars($this)) as $key) {
@@ -806,7 +810,12 @@ class Haanga_Compiler
 
         $buffer = hvar('buffer'.$this->ob_start);
 
-        $last = &$code->getLast();
+        if ($this->strip_whitespace && Haanga_AST::is_str($stmt)) {
+            $stmt['string'] = preg_replace('/\s\s+/', ' ', $stmt['string']); 
+            if (trim($stmt['string']) == "") {
+                return; /* avoid whitespaces */
+            }
+        }
 
         if ($this->ob_start == 0) {
             $code->do_echo($stmt);
