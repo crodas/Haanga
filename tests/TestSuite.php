@@ -23,6 +23,9 @@ class TestSuite extends PHPUnit_Framework_TestSuite
             'template_dir' => '.',
             'debug' => TRUE,
             'use_hash_filename' => FALSE,
+            'compiler' => array(
+                'allow_exec' => TRUE   
+            )
         );
 
         Haanga::Configure($config);

@@ -72,11 +72,14 @@ class Haanga_Compiler
      *  activated (which is activated by default)
      */
     public $var_is_safe=FALSE;
+    public $safes;
+
     /* compiler options */
     protected $autoescape = TRUE;
     protected $if_empty   = TRUE;
     protected $dot_as_object = TRUE;
     protected $strip_whitespace = FALSE;
+    protected $is_exec_enabled  = FALSE;
 
     /**
      *  Debug file
@@ -91,6 +94,17 @@ class Haanga_Compiler
             self::$block_var = '{{block.'.md5('super').'}}';
         }
     }
+
+    // isExecEnabled() {{{
+    /**
+     *  Return TRUE if the special tag 'exec' is enabled (FALSE by default)
+     *
+     */
+    function isExecAllowed()
+    {
+        return $this->is_exec_enabled;
+    }
+    // }}}
 
     function setOption($option, $value)
     {
@@ -107,6 +121,10 @@ class Haanga_Compiler
         case 'strip_whitespace':
             $this->strip_whitespace = (bool)$value;
             break;
+        case 'is_exec_enabled':
+        case 'allow_exec':
+            $this->is_exec_enabled = (bool)$value;
+            break;
         }
     }
 
@@ -122,7 +140,7 @@ class Haanga_Compiler
     {
         $avoid_cleaning = array(
             'strip_whitespace' => 1, 'block_var' => 1, 'autoescape'=>1,
-            'if_empty' => 1, 'dot_as_object' => 1,
+            'if_empty' => 1, 'dot_as_object' => 1, 'is_exec_enabled' => 1,
         );
         foreach (array_keys(get_object_vars($this)) as $key) {
             if (isset($avoid_cleaning[$key])) {
@@ -811,7 +829,7 @@ class Haanga_Compiler
         $buffer = hvar('buffer'.$this->ob_start);
 
         if ($this->strip_whitespace && Haanga_AST::is_str($stmt)) {
-            $stmt['string'] = preg_replace('/\s\s+/', ' ', $stmt['string']); 
+            $stmt['string'] = preg_replace('/\s+/', ' ', $stmt['string']); 
             if (trim($stmt['string']) == "") {
                 return; /* avoid whitespaces */
             }

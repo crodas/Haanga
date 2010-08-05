@@ -20,9 +20,7 @@ class templateTest extends PHPUnit_Framework_TestCase
     public function testRuntime($test_file, $data, $expected)
     {
         TestSuite::init();
-        $output   = Haanga::Load($test_file, $data, TRUE);
-        /*$output   = str_replace(" ", '\s', $output);
-        $expected = str_replace(" ", '\s', $expected);/**/
+        $output = Haanga::Load($test_file, $data, TRUE);
         $this->assertEquals($output, $expected);
     }
 
