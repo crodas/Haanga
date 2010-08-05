@@ -335,10 +335,12 @@ class Haanga_Generator_PHP
                 $code .= "(";
                 $code .= $this->php_generate_expr($expr[0]);
                 $code .= ")";
+            } else if ($expr['op_expr'] == 'not') {
+                $code .= "!".$this->php_generate_expr($expr[0]);
             } else {
                 $code .= $this->php_generate_expr($expr[0]);
                 if (is_object($expr['op_expr'])) {
-                    var_dump($expr);die();
+                    var_dump($expr);die('unexpected error');
                 }
                 $code .= " {$expr['op_expr']} ";
                 $code .= $this->php_generate_expr($expr[1]);

@@ -171,7 +171,7 @@ html {
     $this->token = HG_Parser::T_AND;
 }
 
-"AND" {
+"AND" token_end {
     $this->token = HG_Parser::T_AND;
 }
 
@@ -179,7 +179,7 @@ html {
     $this->token = HG_Parser::T_OR;
 }
 
-"OR" {
+"OR" token_end {
     $this->token = HG_Parser::T_OR;
 }
 
@@ -194,6 +194,15 @@ html {
 ">=" {
     $this->token = HG_Parser::T_GE;
 }
+
+"not" token_end {
+    $this->token = HG_Parser::T_NOT;
+}
+    
+"!" token_end {
+    $this->token = HG_Parser::T_NOT;
+}
+    
 
 "[" {
     $this->token = HG_Parser::T_BRACKETS_OPEN;

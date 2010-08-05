@@ -46,6 +46,7 @@
 }
 
 %right T_OPEN_TAG.
+%right T_NOT.
 %left T_AND.
 %left T_OR.
 %nonassoc T_EQ T_NE.
@@ -205,6 +206,7 @@ s_content(A) ::= s_content(B) T_STRING_CONTENT(C). { A = B.C; }
 s_content(A) ::= T_STRING_CONTENT(B). { A = B; }
 
 /* expr */
+expr(A) ::= T_NOT expr(B). { A = array('op_expr' => 'not', B); }
 expr(A) ::= expr(B) T_AND(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
 expr(A) ::= expr(B) T_OR(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
 expr(A) ::= expr(B) T_PLUS|T_MINUS(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
