@@ -243,7 +243,7 @@ class Haanga_Compiler
 
         if (!empty($this->debug)) {
             $op_code['php'] = $code;
-            file_put_contents($this->debug, print_r($op_code, TRUE));
+            file_put_contents($this->debug, print_r($op_code, TRUE), LOCK_EX);
         }
         return $code;
     }
@@ -1088,7 +1088,7 @@ class Haanga_Compiler
         if ($tags->hasGenerator($tag_name)) {
             $exec = $tags->generator($tag_name, $this, $details['list'], $var);
             if ($exec InstanceOf Haanga_AST) {
-                if ($exec->stack_size() >= 2 || $exec->doesPrint) {
+                if ($exec->stack_size() >= 2 || $exec->doesPrint || $var !== NULL) {
                     /* 
                         The generator returned more than one statement,
                         so we assume the output is already handled

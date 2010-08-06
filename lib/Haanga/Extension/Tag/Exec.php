@@ -24,6 +24,7 @@ class Haanga_Extension_Tag_Exec
         for ($i=1; $i < count($args); $i++) {
             $exec->param($args[$i]);
         }
+        $exec->end();
         if ($assign) {
             $code->decl($assign, $exec);
         } else {

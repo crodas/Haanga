@@ -296,7 +296,7 @@ class Haanga
 
             $code = $compiler->compile_file($tpl, FALSE, $vars);
 
-            file_put_contents($php, "<?php".$code);
+            file_put_contents($php, "<?php".$code, LOCK_EX);
             self::$has_compiled = TRUE;
         }
 
