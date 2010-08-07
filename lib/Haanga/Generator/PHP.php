@@ -324,6 +324,13 @@ class Haanga_Generator_PHP
     }
     // }}}
 
+    // php_global($op) {{{
+    function php_global($op)
+    {
+        return "global \$".implode(", \$", $op['vars']).";";
+    }
+    // }}}
+
     // php_generate_expr($op) {{{
     /**
      *  Return an expression

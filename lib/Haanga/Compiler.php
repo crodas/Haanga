@@ -80,6 +80,7 @@ class Haanga_Compiler
     protected $dot_as_object = TRUE;
     protected $strip_whitespace = FALSE;
     protected $is_exec_enabled  = FALSE;
+    protected $global_context = array();
 
     /**
      *  Debug file
@@ -125,6 +126,12 @@ class Haanga_Compiler
         case 'allow_exec':
             $this->is_exec_enabled = (bool)$value;
             break;
+        case 'global':
+            if (!is_array($value)) {
+                $value = array($value);
+            }
+            $this->global_context = $value;
+            break;
         }
     }
 
@@ -141,6 +148,7 @@ class Haanga_Compiler
         $avoid_cleaning = array(
             'strip_whitespace' => 1, 'block_var' => 1, 'autoescape'=>1,
             'if_empty' => 1, 'dot_as_object' => 1, 'is_exec_enabled' => 1,
+            'global_context' => 1,
         );
         foreach (array_keys(get_object_vars($this)) as $key) {
             if (isset($avoid_cleaning[$key])) {
@@ -202,10 +210,13 @@ class Haanga_Compiler
                 $body->do_if(hexpr(hexec('function_exists', $func_name), '===', FALSE));
             }
             if (isset($this->_file)) {
-                $body->comment("Generated from {$this->_base_dir}/{$this->_file}");
+                $body->comment("Generated from ".realpath($this->_base_dir.'/'.$this->_file));
             }
 
             $body->declare_function($func_name);
+            if (count($this->global_context) > 0) {
+                $body->do_global($this->global_context);
+            }
             $body->do_exec('extract', hvar('vars'));
             $body->do_if(hexpr(hvar('return'), '==', TRUE));
             $body->do_exec('ob_start');

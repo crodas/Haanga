@@ -1,5 +1,5 @@
 <?php
-/* Generated from ./assert_templates/subtemplate.tpl */
+/* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/subtemplate.tpl */
 function haanga_8012978a44e77332b744185d044350c7eb89603f($vars, $return=FALSE, $blocks=array())
 {
     extract($vars);

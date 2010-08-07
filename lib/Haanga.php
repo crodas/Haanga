@@ -163,7 +163,7 @@ class Haanga
      */
     public static function setCacheDir($dir)
     {
-        if (!is_dir($dir)) {
+        if (!is_dir($dir) && !mkdir($dir, 0777, TRUE)) {
             throw new Haanga_Exception("{$dir} is not a valid directory");
         }
         if (!is_writable($dir)) {

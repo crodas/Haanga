@@ -1,7 +1,7 @@
 <?php
 /* Load filter dictsort definition */
 require_once("/home/crodas/projects/playground/haanga/lib/Haanga/Extension/Filter/Dictsort.php");
-/* Generated from ./assert_templates/regroup.tpl */
+/* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/regroup.tpl */
 function haanga_e3288a8c38d2925df1b81c50c72b7eee31f8c2f9($vars, $return=FALSE, $blocks=array())
 {
     extract($vars);

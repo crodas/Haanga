@@ -299,6 +299,13 @@ class Haanga_AST
         return $this;
     }
 
+    function do_global($array)
+    {
+        $this->stack[] = array('op' => 'global',  'vars' => $array);
+
+        return $this;
+    }
+
     function do_exec()
     {
         $params = func_get_args();

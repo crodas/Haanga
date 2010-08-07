@@ -1,5 +1,5 @@
 <?php
-/* Generated from ./assert_templates/ifchanged.tpl */
+/* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/ifchanged.tpl */
 function haanga_be17029b5fd2998df7c922a92652b6886d7780fd($vars, $return=FALSE, $blocks=array())
 {
     extract($vars);
