@@ -1,6 +1,6 @@
 <?php
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/spaceless.tpl */
-function haanga_51446bb05a294ee636668b4fd94a6dd706202215($vars, $return=FALSE, $blocks=array())
+function haanga_f51ac87bbd60a3c3e24c65a52e121e9a0fe6f98a($vars, $return=FALSE, $blocks=array())
 {
     extract($vars);
     if ($return == TRUE) {

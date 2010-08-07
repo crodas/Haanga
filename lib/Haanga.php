@@ -227,7 +227,7 @@ class Haanga
 
         self::$has_compiled = FALSE;
 
-        $tpl      = self::$templates_dir.'/'.$file;
+        $tpl      = realpath(self::$templates_dir.'/'.$file);
         $fnc      = sha1($tpl);
         $callback = "haanga_".$fnc;
 

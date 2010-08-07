@@ -1,6 +1,6 @@
 <?php
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/nested_block.tpl */
-function haanga_57c4ad33715ae7aa88250c99f9339224979afde7($vars, $return=FALSE, $blocks=array())
+function haanga_4585ff94701bdef1ce77b7424b41025158a67871($vars, $return=FALSE, $blocks=array())
 {
     extract($vars);
     if ($return == TRUE) {

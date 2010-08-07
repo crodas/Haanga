@@ -1,6 +1,6 @@
 <?php
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/nested_block_second_parent_override.tpl */
-function haanga_d905488f199a96b638d52d62c0fc424fd291ed39($vars, $return=FALSE, $blocks=array())
+function haanga_7a94803e1f6f744da62abeda655124d8234f50e7($vars, $return=FALSE, $blocks=array())
 {
     extract($vars);
     if ($return == TRUE) {

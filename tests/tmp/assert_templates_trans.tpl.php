@@ -1,6 +1,6 @@
 <?php
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/trans.tpl */
-function haanga_8d35b55be0c9b118eda2226b6b520297156d8d6d($vars, $return=FALSE, $blocks=array())
+function haanga_aa7b9e1c49975e4203b4582c3d9e1367dc5fe05b($vars, $return=FALSE, $blocks=array())
 {
     extract($vars);
     if ($return == TRUE) {

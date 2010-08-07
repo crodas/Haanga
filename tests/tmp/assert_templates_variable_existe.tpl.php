@@ -1,6 +1,6 @@
 <?php
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/variable_existe.tpl */
-function haanga_d0e8258f9bf65ffe46eddfe8347bb2467fc069ea($vars, $return=FALSE, $blocks=array())
+function haanga_e7e202dbc6662ce7290f8da886bcde2660e244c5($vars, $return=FALSE, $blocks=array())
 {
     extract($vars);
     if ($return == TRUE) {

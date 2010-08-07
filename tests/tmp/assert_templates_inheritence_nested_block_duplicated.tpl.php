@@ -1,6 +1,6 @@
 <?php
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/inheritence_nested_block_duplicated.tpl */
-function haanga_2f06ae0d3b252465fa65c3a02cc1ebab4d90396f($vars, $return=FALSE, $blocks=array())
+function haanga_41332bba378ec4202564b8a41c93af48567b2781($vars, $return=FALSE, $blocks=array())
 {
     extract($vars);
     if ($return == TRUE) {
