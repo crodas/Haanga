@@ -9,8 +9,8 @@ class templateTest extends PHPUnit_Framework_TestCase
     {
         /* setup */
         @mkdir("tmp/");
-        foreach (glob("tmp/*") as $file) {
-            unlink($file);
+        foreach (glob("tmp/*/*") as $file) {
+            @unlink($file);
         }
     }
 

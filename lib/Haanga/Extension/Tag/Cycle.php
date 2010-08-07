@@ -21,7 +21,13 @@ class Haanga_Extension_Tag_Cycle
             $index = 'index_'.$id;
             $def   = 'def_cycle_'.$id; 
         } else {
+            if (!$declared) {
+                $code->do_if(hexpr(hexec('isset', hvar($def)), '==', FALSE));
+            }
             $code->decl($def, $args);
+            if (!$declared) {
+                $code->do_endif();
+            }
         }
 
         /* isset($var) == FALSE */

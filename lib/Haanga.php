@@ -227,7 +227,7 @@ class Haanga
 
         self::$has_compiled = FALSE;
 
-        $tpl      = realpath(self::$templates_dir.'/'.$file);
+        $tpl      = self::$templates_dir.'/'.$file;
         $fnc      = sha1($tpl);
         $callback = "haanga_".$fnc;
 
@@ -235,9 +235,8 @@ class Haanga
             return $callback($vars, $return, $blocks);
         }
 
-        $php = self::$hash_filename ? $fnc : str_replace(DIRECTORY_SEPARATOR, '_', $file);
+        $php = self::$hash_filename ? $fnc : $file;
         $php = self::$cache_dir.'/'.$php.'.php';
-
 
         $check = TRUE;
 
@@ -297,6 +296,13 @@ class Haanga
             if (self::$debug) {
                 $compiler->setDebug($php.".dump");
             }
+
+            if (!is_dir(dirname($php))) {
+                $old = umask(0);
+                mkdir(dirname($php), 0777, TRUE);
+                umask($old);
+            }
+
 
             $code = $compiler->compile_file($tpl, FALSE, $vars);
 
