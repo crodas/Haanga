@@ -309,7 +309,13 @@ class Haanga_Generator_PHP
     protected function php_exec($op)
     {
         $code  = "";
-        $code .= $op['name'].'(';
+        if (is_string($op['name'])) {
+            $code .= $op['name'];
+        } else {
+            $function = $this->php_get_varname($op['name']);
+            $code .= $function;
+        }
+        $code .= '(';
         if (isset($op['args'])) {
             $code .= $this->php_generate_list($op['args']);
         }

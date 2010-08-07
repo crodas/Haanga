@@ -20,6 +20,7 @@ class Haanga_Extension_Tag_Exec
         } else {
             throw new Haanga_Compiler_Exception("invalid param");
         }
+
         $exec = hexec($args[0]);
         for ($i=1; $i < count($args); $i++) {
             $exec->param($args[$i]);

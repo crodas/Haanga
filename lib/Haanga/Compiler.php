@@ -836,8 +836,6 @@ class Haanga_Compiler
         /* Flag this object as a printing one */
         $code->doesPrint = TRUE;
 
-        $buffer = hvar('buffer'.$this->ob_start);
-
         if ($this->strip_whitespace && Haanga_AST::is_str($stmt)) {
             $stmt['string'] = preg_replace('/\s+/', ' ', $stmt['string']); 
             if (trim($stmt['string']) == "") {
@@ -850,6 +848,7 @@ class Haanga_Compiler
             return;
         }
 
+        $buffer = hvar('buffer'.$this->ob_start);
         $code->append($buffer, $stmt);
 
     }
