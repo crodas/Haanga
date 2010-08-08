@@ -75,12 +75,12 @@ class Haanga_Compiler
     public $safes;
 
     /* compiler options */
-    protected $autoescape = TRUE;
-    protected $if_empty   = TRUE;
-    protected $dot_as_object = TRUE;
-    protected $strip_whitespace = FALSE;
-    protected $is_exec_enabled  = FALSE;
-    protected $global_context = array();
+    static protected $autoescape = TRUE;
+    static protected $if_empty   = TRUE;
+    static protected $dot_as_object = TRUE;
+    static protected $strip_whitespace = FALSE;
+    static protected $is_exec_enabled  = FALSE;
+    static protected $global_context = array();
 
     /**
      *  Debug file
@@ -96,44 +96,69 @@ class Haanga_Compiler
         }
     }
 
-    // isExecEnabled() {{{
-    /**
-     *  Return TRUE if the special tag 'exec' is enabled (FALSE by default)
-     *
-     */
-    function isExecAllowed()
+    // getOption($option) {{{
+    public static function getOption($option)
     {
-        return $this->is_exec_enabled;
-    }
-    // }}}
-
-    function setOption($option, $value)
-    {
+        $value = NULL;
         switch (strtolower($option)) {
         case 'if_empty':
-            $this->if_empty = (bool)$value;
+            $value = self::$if_empty;
             break;
         case 'autoescape':
-            $this->autoescape = (bool)$value;
+            $value = self::$autoescape;
             break;
         case 'dot_as_object':
-            $this->dot_as_object = (bool)$value;
+            $value = self::$dot_as_object;
             break;
         case 'strip_whitespace':
-            $this->strip_whitespace = (bool)$value;
+            $value = self::$strip_whitespace;
             break;
         case 'is_exec_enabled':
         case 'allow_exec':
-            $this->is_exec_enabled = (bool)$value;
+            $value = self::$is_exec_enabled;
+            break;
+        case 'global':
+            $value = self::$global_context;
+            break;
+        }
+        return $value;
+    }
+    // }}}
+
+    // setOption($option, $value) {{{
+    /**
+     *  Set Compiler option.
+     *
+     *  @return void
+     */
+    public static function setOption($option, $value)
+    {
+        switch (strtolower($option)) {
+        case 'if_empty':
+            self::$if_empty = (bool)$value;
+            break;
+        case 'autoescape':
+            self::$autoescape = (bool)$value;
+            break;
+        case 'dot_as_object':
+            self::$dot_as_object = (bool)$value;
+            break;
+        case 'strip_whitespace':
+            self::$strip_whitespace = (bool)$value;
+            break;
+        case 'is_exec_enabled':
+        case 'allow_exec':
+            self::$is_exec_enabled = (bool)$value;
             break;
         case 'global':
             if (!is_array($value)) {
                 $value = array($value);
             }
-            $this->global_context = $value;
+            self::$global_context = $value;
             break;
         }
     }
+    // }}}
 
     // setDebug($file) {{{
     function setDebug($file)
@@ -145,11 +170,6 @@ class Haanga_Compiler
     // reset() {{{
     function reset()
     {
-        $avoid_cleaning = array(
-            'strip_whitespace' => 1, 'block_var' => 1, 'autoescape'=>1,
-            'if_empty' => 1, 'dot_as_object' => 1, 'is_exec_enabled' => 1,
-            'global_context' => 1,
-        );
         foreach (array_keys(get_object_vars($this)) as $key) {
             if (isset($avoid_cleaning[$key])) {
                 continue;
@@ -214,7 +234,7 @@ class Haanga_Compiler
             }
 
             $body->declare_function($func_name);
-            if (count($this->global_context) > 0) {
+            if (count(self::$global_context) > 0) {
                 $body->do_global($this->global_context);
             }
             $body->do_exec('extract', hvar('vars'));
@@ -435,7 +455,7 @@ class Haanga_Compiler
     // {% if <expr> %} HTML {% else %} TWO {% endif $} {{{
     protected function generate_op_if($details, &$body)
     {
-        if ($this->if_empty && $this->is_var_filter($details['expr']) && count($details['expr']['var_filter']) == 1) {
+        if (self::$if_empty && $this->is_var_filter($details['expr']) && count($details['expr']['var_filter']) == 1) {
             /* if we are doing if <Variable> it should check 
                if it exists without throw any warning */
             $expr = $details['expr'];
@@ -574,7 +594,7 @@ class Haanga_Compiler
             return;
         }
 
-        if (!$this->is_safe($details) && $this->autoescape) {
+        if (!$this->is_safe($details) && self::$autoescape) {
             $args    = array($details);
             $details = $this->do_filtering('escape', $args);
         }
@@ -768,7 +788,7 @@ class Haanga_Compiler
             return $type;
         }
 
-        return $this->dot_as_object;
+        return self::$dot_as_object;
     }
     // }}} 
 
@@ -847,7 +867,7 @@ class Haanga_Compiler
         /* Flag this object as a printing one */
         $code->doesPrint = TRUE;
 
-        if ($this->strip_whitespace && Haanga_AST::is_str($stmt)) {
+        if (self::$strip_whitespace && Haanga_AST::is_str($stmt)) {
             $stmt['string'] = preg_replace('/\s+/', ' ', $stmt['string']); 
             if (trim($stmt['string']) == "") {
                 return; /* avoid whitespaces */
@@ -1023,10 +1043,20 @@ class Haanga_Compiler
     // autoescape ON|OFF {{{
     function generate_op_autoescape($details, &$body)
     {
-        $old_autoescape   = $this->autoescape;
-        $this->autoescape = strtolower($details['value']) == 'on';
+        $old_autoescape   = self::$autoescape;
+        self::$autoescape = strtolower($details['value']) == 'on';
         $this->generate_op_code($details['body'], $body);
-        $this->autoescape = $old_autoescape;
+        self::$autoescape = $old_autoescape;
+    }
+    // }}}
+
+    // {% spacefull %} Set to OFF strip_whitespace for a block (the compiler option) {{{
+    function generate_op_spacefull($details, &$body)
+    {
+        $old_strip_whitespace   = self::$strip_whitespace;
+        self::$strip_whitespace = FALSE;
+        $this->generate_op_code($details['body'], $body);
+        self::$strip_whitespace = $old_strip_whitespace;
     }
     // }}}
 

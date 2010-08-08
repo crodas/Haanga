@@ -12,6 +12,7 @@ class errorTest extends PHPUnit_Framework_TestCase
     function testInvalidTemplates($tpl)
     {
         TestSuite::init();
+        Haanga_Compiler::setOption('allow_exec', FALSE);
         $this->setExpectedException('Haanga_Compiler_Exception');
         Haanga::Load($tpl);
     }

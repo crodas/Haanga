@@ -252,6 +252,10 @@ html {
     $this->token = HG_Parser::T_AUTOESCAPE;
 }
 
+"spacefull" token_end {
+    $this->token = HG_Parser::T_SPACEFULL;
+}
+
 
 "endautoescape" token_end {
     $this->token = HG_Parser::T_END_AUTOESCAPE;

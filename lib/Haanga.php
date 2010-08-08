@@ -286,7 +286,7 @@ class Haanga
 
                 if (count(self::$compiler) != 0) {
                     foreach (self::$compiler as $opt => $value) {
-                        $compiler->setOption($opt, $value);
+                        Haanga_Compiler::setOption($opt, $value);
                     }
                 }
             }
