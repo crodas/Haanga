@@ -235,7 +235,7 @@ class Haanga_Compiler
 
             $body->declare_function($func_name);
             if (count(self::$global_context) > 0) {
-                $body->do_global($this->global_context);
+                $body->do_global(self::$global_context);
             }
             $body->do_exec('extract', hvar('vars'));
             $body->do_if(hexpr(hvar('return'), '==', TRUE));
