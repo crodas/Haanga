@@ -141,8 +141,17 @@ class Haanga_yyStackEntry
 ** in the input file. */
 #line 40 "lib/Haanga/Compiler/Parser.y"
 
+    protected $lex;
+    function __construct($lex)
+    {
+        $this->lex = $lex;
+    }
 
-#line 149 "lib/Haanga/Compiler/Parser.php"
+    function throwError($text)
+    {
+    }
+
+#line 158 "lib/Haanga/Compiler/Parser.php"
 
 /* Next is all token values, as class constants
 */
@@ -1558,200 +1567,200 @@ static public $yy_action = array(
     **   function yy_r0($yymsp){ ... }           // User supplied code
     **  #line <lineno> <thisfile>
     */
-#line 66 "lib/Haanga/Compiler/Parser.y"
-    function yy_r0(){ $this->body = $this->yystack[$this->yyidx + 0]->minor;     }
-#line 1569 "lib/Haanga/Compiler/Parser.php"
-#line 68 "lib/Haanga/Compiler/Parser.y"
-    function yy_r1(){ $this->_retvalue=$this->yystack[$this->yyidx + -1]->minor; $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;     }
-#line 1572 "lib/Haanga/Compiler/Parser.php"
-#line 69 "lib/Haanga/Compiler/Parser.y"
-    function yy_r2(){ $this->_retvalue = array();     }
-#line 1575 "lib/Haanga/Compiler/Parser.php"
-#line 72 "lib/Haanga/Compiler/Parser.y"
-    function yy_r3(){ $this->_retvalue = $this->yystack[$this->yyidx + 0]->minor;     }
-#line 1578 "lib/Haanga/Compiler/Parser.php"
-#line 73 "lib/Haanga/Compiler/Parser.y"
-    function yy_r4(){ $this->_retvalue = array('operation' => 'html', 'html' => $this->yystack[$this->yyidx + 0]->minor);     }
-#line 1581 "lib/Haanga/Compiler/Parser.php"
-#line 74 "lib/Haanga/Compiler/Parser.y"
-    function yy_r5(){ $this->yystack[$this->yyidx + 0]->minor=rtrim($this->yystack[$this->yyidx + 0]->minor); $this->_retvalue = array('operation' => 'comment', 'comment' => substr($this->yystack[$this->yyidx + 0]->minor, 0, strlen($this->yystack[$this->yyidx + 0]->minor)-2));     }
-#line 1584 "lib/Haanga/Compiler/Parser.php"
 #line 75 "lib/Haanga/Compiler/Parser.y"
-    function yy_r6(){ $this->_retvalue = array('operation' => 'print_var', 'variable' => $this->yystack[$this->yyidx + -1]->minor);     }
-#line 1587 "lib/Haanga/Compiler/Parser.php"
+    function yy_r0(){ $this->body = $this->yystack[$this->yyidx + 0]->minor;     }
+#line 1578 "lib/Haanga/Compiler/Parser.php"
 #line 77 "lib/Haanga/Compiler/Parser.y"
-    function yy_r7(){ $this->_retvalue = array('operation' => 'base', $this->yystack[$this->yyidx + -1]->minor);     }
-#line 1590 "lib/Haanga/Compiler/Parser.php"
+    function yy_r1(){ $this->_retvalue=$this->yystack[$this->yyidx + -1]->minor; $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;     }
+#line 1581 "lib/Haanga/Compiler/Parser.php"
 #line 78 "lib/Haanga/Compiler/Parser.y"
-    function yy_r8(){ $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;     }
+    function yy_r2(){ $this->_retvalue = array();     }
+#line 1584 "lib/Haanga/Compiler/Parser.php"
+#line 81 "lib/Haanga/Compiler/Parser.y"
+    function yy_r3(){ $this->_retvalue = $this->yystack[$this->yyidx + 0]->minor;     }
+#line 1587 "lib/Haanga/Compiler/Parser.php"
+#line 82 "lib/Haanga/Compiler/Parser.y"
+    function yy_r4(){ $this->_retvalue = array('operation' => 'html', 'html' => $this->yystack[$this->yyidx + 0]->minor);     }
+#line 1590 "lib/Haanga/Compiler/Parser.php"
+#line 83 "lib/Haanga/Compiler/Parser.y"
+    function yy_r5(){ $this->yystack[$this->yyidx + 0]->minor=rtrim($this->yystack[$this->yyidx + 0]->minor); $this->_retvalue = array('operation' => 'comment', 'comment' => substr($this->yystack[$this->yyidx + 0]->minor, 0, strlen($this->yystack[$this->yyidx + 0]->minor)-2));     }
 #line 1593 "lib/Haanga/Compiler/Parser.php"
 #line 84 "lib/Haanga/Compiler/Parser.y"
-    function yy_r14(){ $this->_retvalue = array('operation' => 'include', $this->yystack[$this->yyidx + -1]->minor);     }
+    function yy_r6(){ $this->_retvalue = array('operation' => 'print_var', 'variable' => $this->yystack[$this->yyidx + -1]->minor, 'line' => $this->lex->getLine() );     }
 #line 1596 "lib/Haanga/Compiler/Parser.php"
-#line 88 "lib/Haanga/Compiler/Parser.y"
-    function yy_r18(){ $this->_retvalue = array('operation' => 'autoescape', 'value' => strtolower(@$this->yystack[$this->yyidx + -5]->minor), 'body' => $this->yystack[$this->yyidx + -3]->minor);     }
+#line 86 "lib/Haanga/Compiler/Parser.y"
+    function yy_r7(){ $this->_retvalue = array('operation' => 'base', $this->yystack[$this->yyidx + -1]->minor);     }
 #line 1599 "lib/Haanga/Compiler/Parser.php"
-#line 93 "lib/Haanga/Compiler/Parser.y"
-    function yy_r19(){ $this->_retvalue = array('operation' => 'custom_tag', 'name' => $this->yystack[$this->yyidx + -1]->minor, 'list'=>array());     }
+#line 87 "lib/Haanga/Compiler/Parser.y"
+    function yy_r8(){ $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;     }
 #line 1602 "lib/Haanga/Compiler/Parser.php"
-#line 94 "lib/Haanga/Compiler/Parser.y"
-    function yy_r20(){ $this->_retvalue = array('operation' => 'custom_tag', 'name' => $this->yystack[$this->yyidx + -3]->minor, 'as' => $this->yystack[$this->yyidx + -1]->minor, 'list'=>array());     }
+#line 93 "lib/Haanga/Compiler/Parser.y"
+    function yy_r14(){ $this->_retvalue = array('operation' => 'include', $this->yystack[$this->yyidx + -1]->minor);     }
 #line 1605 "lib/Haanga/Compiler/Parser.php"
-#line 95 "lib/Haanga/Compiler/Parser.y"
-    function yy_r21(){ $this->_retvalue = array('operation' => 'custom_tag', 'name' => $this->yystack[$this->yyidx + -2]->minor, 'list' => $this->yystack[$this->yyidx + -1]->minor);     }
+#line 97 "lib/Haanga/Compiler/Parser.y"
+    function yy_r18(){ $this->_retvalue = array('operation' => 'autoescape', 'value' => strtolower(@$this->yystack[$this->yyidx + -5]->minor), 'body' => $this->yystack[$this->yyidx + -3]->minor);     }
 #line 1608 "lib/Haanga/Compiler/Parser.php"
-#line 96 "lib/Haanga/Compiler/Parser.y"
-    function yy_r22(){ $this->_retvalue = array('operation' => 'custom_tag', 'name' => $this->yystack[$this->yyidx + -4]->minor, 'as' => $this->yystack[$this->yyidx + -1]->minor, 'list' => $this->yystack[$this->yyidx + -3]->minor);     }
+#line 102 "lib/Haanga/Compiler/Parser.y"
+    function yy_r19(){ $this->_retvalue = array('operation' => 'custom_tag', 'name' => $this->yystack[$this->yyidx + -1]->minor, 'list'=>array());     }
 #line 1611 "lib/Haanga/Compiler/Parser.php"
-#line 98 "lib/Haanga/Compiler/Parser.y"
-    function yy_r23(){ if ('end'.$this->yystack[$this->yyidx + -5]->minor != $this->yystack[$this->yyidx + -1]->minor) { throw new Exception("Unexpected ".$this->yystack[$this->yyidx + -1]->minor); } $this->_retvalue = array('operation' => 'custom_tag', 'name' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor, 'list' => array());    }
-#line 1614 "lib/Haanga/Compiler/Parser.php"
-#line 99 "lib/Haanga/Compiler/Parser.y"
-    function yy_r24(){ if ('endbuffer' != $this->yystack[$this->yyidx + -1]->minor) { throw new Exception("Unexpected ".$this->yystack[$this->yyidx + -1]->minor); } $this->_retvalue = array('operation' => 'buffer', 'name' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor);    }
-#line 1617 "lib/Haanga/Compiler/Parser.php"
-#line 100 "lib/Haanga/Compiler/Parser.y"
-    function yy_r25(){ if ('endspacefull' != $this->yystack[$this->yyidx + -1]->minor) { throw new Exception("Unexpected ".$this->yystack[$this->yyidx + -1]->minor); } $this->_retvalue = array('operation' => 'spacefull', 'body' => $this->yystack[$this->yyidx + -3]->minor);    }
-#line 1620 "lib/Haanga/Compiler/Parser.php"
 #line 103 "lib/Haanga/Compiler/Parser.y"
-    function yy_r26(){ $this->_retvalue = array('operation' => 'alias', 'var' => $this->yystack[$this->yyidx + -7]->minor, 'as' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor);     }
-#line 1623 "lib/Haanga/Compiler/Parser.php"
+    function yy_r20(){ $this->_retvalue = array('operation' => 'custom_tag', 'name' => $this->yystack[$this->yyidx + -3]->minor, 'as' => $this->yystack[$this->yyidx + -1]->minor, 'list'=>array());     }
+#line 1614 "lib/Haanga/Compiler/Parser.php"
+#line 104 "lib/Haanga/Compiler/Parser.y"
+    function yy_r21(){ $this->_retvalue = array('operation' => 'custom_tag', 'name' => $this->yystack[$this->yyidx + -2]->minor, 'list' => $this->yystack[$this->yyidx + -1]->minor);     }
+#line 1617 "lib/Haanga/Compiler/Parser.php"
+#line 105 "lib/Haanga/Compiler/Parser.y"
+    function yy_r22(){ $this->_retvalue = array('operation' => 'custom_tag', 'name' => $this->yystack[$this->yyidx + -4]->minor, 'as' => $this->yystack[$this->yyidx + -1]->minor, 'list' => $this->yystack[$this->yyidx + -3]->minor);     }
+#line 1620 "lib/Haanga/Compiler/Parser.php"
 #line 107 "lib/Haanga/Compiler/Parser.y"
+    function yy_r23(){ if ('end'.$this->yystack[$this->yyidx + -5]->minor != $this->yystack[$this->yyidx + -1]->minor) { throw new Exception("Unexpected ".$this->yystack[$this->yyidx + -1]->minor); } $this->_retvalue = array('operation' => 'custom_tag', 'name' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor, 'list' => array());    }
+#line 1623 "lib/Haanga/Compiler/Parser.php"
+#line 108 "lib/Haanga/Compiler/Parser.y"
+    function yy_r24(){ if ('endbuffer' != $this->yystack[$this->yyidx + -1]->minor) { throw new Exception("Unexpected ".$this->yystack[$this->yyidx + -1]->minor); } $this->_retvalue = array('operation' => 'buffer', 'name' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor);    }
+#line 1626 "lib/Haanga/Compiler/Parser.php"
+#line 109 "lib/Haanga/Compiler/Parser.y"
+    function yy_r25(){ if ('endspacefull' != $this->yystack[$this->yyidx + -1]->minor) { throw new Exception("Unexpected ".$this->yystack[$this->yyidx + -1]->minor); } $this->_retvalue = array('operation' => 'spacefull', 'body' => $this->yystack[$this->yyidx + -3]->minor);    }
+#line 1629 "lib/Haanga/Compiler/Parser.php"
+#line 112 "lib/Haanga/Compiler/Parser.y"
+    function yy_r26(){ $this->_retvalue = array('operation' => 'alias', 'var' => $this->yystack[$this->yyidx + -7]->minor, 'as' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor);     }
+#line 1632 "lib/Haanga/Compiler/Parser.php"
+#line 116 "lib/Haanga/Compiler/Parser.y"
     function yy_r28(){
     if (!is_file($this->yystack[$this->yyidx + 0]->minor)) {
         throw new Haanga_Compiler_Exception($this->yystack[$this->yyidx + 0]->minor." is not a valid file"); 
     } 
     require_once $this->yystack[$this->yyidx + 0]->minor;
     }
-#line 1631 "lib/Haanga/Compiler/Parser.php"
-#line 115 "lib/Haanga/Compiler/Parser.y"
+#line 1640 "lib/Haanga/Compiler/Parser.php"
+#line 124 "lib/Haanga/Compiler/Parser.y"
     function yy_r29(){
     $this->compiler->set_context($this->yystack[$this->yyidx + -3]->minor, array());
     $this->_retvalue = array('operation' => 'loop', 'variable' => $this->yystack[$this->yyidx + -3]->minor, 'index' => NULL, 'array' => $this->yystack[$this->yyidx + -1]->minor);
     }
-#line 1637 "lib/Haanga/Compiler/Parser.php"
-#line 120 "lib/Haanga/Compiler/Parser.y"
+#line 1646 "lib/Haanga/Compiler/Parser.php"
+#line 129 "lib/Haanga/Compiler/Parser.y"
     function yy_r30(){
     $this->compiler->set_context($this->yystack[$this->yyidx + -3]->minor, array());
     $this->_retvalue = array('operation' => 'loop', 'variable' => $this->yystack[$this->yyidx + -3]->minor, 'index' => $this->yystack[$this->yyidx + -5]->minor, 'array' => $this->yystack[$this->yyidx + -1]->minor);
     }
-#line 1643 "lib/Haanga/Compiler/Parser.php"
-#line 126 "lib/Haanga/Compiler/Parser.y"
+#line 1652 "lib/Haanga/Compiler/Parser.php"
+#line 135 "lib/Haanga/Compiler/Parser.y"
     function yy_r31(){ 
     $this->_retvalue = $this->yystack[$this->yyidx + -4]->minor;
     $this->_retvalue['body'] = $this->yystack[$this->yyidx + -3]->minor;
     }
-#line 1649 "lib/Haanga/Compiler/Parser.php"
-#line 131 "lib/Haanga/Compiler/Parser.y"
+#line 1658 "lib/Haanga/Compiler/Parser.php"
+#line 140 "lib/Haanga/Compiler/Parser.y"
     function yy_r32(){ 
     $this->_retvalue = $this->yystack[$this->yyidx + -8]->minor;
     $this->_retvalue['body']  = $this->yystack[$this->yyidx + -7]->minor;
     $this->_retvalue['empty'] = $this->yystack[$this->yyidx + -3]->minor;
     }
-#line 1656 "lib/Haanga/Compiler/Parser.php"
-#line 137 "lib/Haanga/Compiler/Parser.y"
+#line 1665 "lib/Haanga/Compiler/Parser.php"
+#line 146 "lib/Haanga/Compiler/Parser.y"
     function yy_r33(){ $this->_retvalue = array('operation' => 'if', 'expr' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor);     }
-#line 1659 "lib/Haanga/Compiler/Parser.php"
-#line 138 "lib/Haanga/Compiler/Parser.y"
+#line 1668 "lib/Haanga/Compiler/Parser.php"
+#line 147 "lib/Haanga/Compiler/Parser.y"
     function yy_r34(){ $this->_retvalue = array('operation' => 'if', 'expr' => $this->yystack[$this->yyidx + -9]->minor, 'body' => $this->yystack[$this->yyidx + -7]->minor, 'else' => $this->yystack[$this->yyidx + -3]->minor);     }
-#line 1662 "lib/Haanga/Compiler/Parser.php"
-#line 141 "lib/Haanga/Compiler/Parser.y"
+#line 1671 "lib/Haanga/Compiler/Parser.php"
+#line 150 "lib/Haanga/Compiler/Parser.y"
     function yy_r35(){ 
     $this->_retvalue = array('operation' => 'ifchanged', 'body' => $this->yystack[$this->yyidx + -3]->minor); 
     }
-#line 1667 "lib/Haanga/Compiler/Parser.php"
-#line 145 "lib/Haanga/Compiler/Parser.y"
+#line 1676 "lib/Haanga/Compiler/Parser.php"
+#line 154 "lib/Haanga/Compiler/Parser.y"
     function yy_r36(){ 
     $this->_retvalue = array('operation' => 'ifchanged', 'body' => $this->yystack[$this->yyidx + -3]->minor, 'check' => $this->yystack[$this->yyidx + -5]->minor);
     }
-#line 1672 "lib/Haanga/Compiler/Parser.php"
-#line 148 "lib/Haanga/Compiler/Parser.y"
+#line 1681 "lib/Haanga/Compiler/Parser.php"
+#line 157 "lib/Haanga/Compiler/Parser.y"
     function yy_r37(){ 
     $this->_retvalue = array('operation' => 'ifchanged', 'body' => $this->yystack[$this->yyidx + -7]->minor, 'else' => $this->yystack[$this->yyidx + -3]->minor); 
     }
-#line 1677 "lib/Haanga/Compiler/Parser.php"
-#line 152 "lib/Haanga/Compiler/Parser.y"
+#line 1686 "lib/Haanga/Compiler/Parser.php"
+#line 161 "lib/Haanga/Compiler/Parser.y"
     function yy_r38(){ 
     $this->_retvalue = array('operation' => 'ifchanged', 'body' => $this->yystack[$this->yyidx + -7]->minor, 'check' => $this->yystack[$this->yyidx + -9]->minor, 'else' => $this->yystack[$this->yyidx + -3]->minor);
     }
-#line 1682 "lib/Haanga/Compiler/Parser.php"
-#line 157 "lib/Haanga/Compiler/Parser.y"
-    function yy_r39(){  $this->_retvalue = array('operation' => 'ifequal', 'cmp' => '==', 1 => $this->yystack[$this->yyidx + -6]->minor, 2 => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor);     }
-#line 1685 "lib/Haanga/Compiler/Parser.php"
-#line 158 "lib/Haanga/Compiler/Parser.y"
-    function yy_r40(){  $this->_retvalue = array('operation' => 'ifequal', 'cmp' => '==', 1 => $this->yystack[$this->yyidx + -10]->minor, 2 => $this->yystack[$this->yyidx + -9]->minor, 'body' => $this->yystack[$this->yyidx + -7]->minor, 'else' => $this->yystack[$this->yyidx + -3]->minor);     }
-#line 1688 "lib/Haanga/Compiler/Parser.php"
-#line 159 "lib/Haanga/Compiler/Parser.y"
-    function yy_r41(){  $this->_retvalue = array('operation' => 'ifequal', 'cmp' => '!=', 1 => $this->yystack[$this->yyidx + -6]->minor, 2 => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor);     }
 #line 1691 "lib/Haanga/Compiler/Parser.php"
-#line 160 "lib/Haanga/Compiler/Parser.y"
-    function yy_r42(){  $this->_retvalue = array('operation' => 'ifequal', 'cmp' => '!=', 1 => $this->yystack[$this->yyidx + -10]->minor, 2 => $this->yystack[$this->yyidx + -9]->minor, 'body' => $this->yystack[$this->yyidx + -7]->minor, 'else' => $this->yystack[$this->yyidx + -3]->minor);     }
-#line 1694 "lib/Haanga/Compiler/Parser.php"
-#line 164 "lib/Haanga/Compiler/Parser.y"
-    function yy_r43(){ $this->_retvalue = array('operation' => 'block', 'name' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor);     }
-#line 1697 "lib/Haanga/Compiler/Parser.php"
 #line 166 "lib/Haanga/Compiler/Parser.y"
-    function yy_r44(){ $this->_retvalue = array('operation' => 'block', 'name' => $this->yystack[$this->yyidx + -6]->minor, 'body' => $this->yystack[$this->yyidx + -4]->minor);     }
+    function yy_r39(){  $this->_retvalue = array('operation' => 'ifequal', 'cmp' => '==', 1 => $this->yystack[$this->yyidx + -6]->minor, 2 => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor);     }
+#line 1694 "lib/Haanga/Compiler/Parser.php"
+#line 167 "lib/Haanga/Compiler/Parser.y"
+    function yy_r40(){  $this->_retvalue = array('operation' => 'ifequal', 'cmp' => '==', 1 => $this->yystack[$this->yyidx + -10]->minor, 2 => $this->yystack[$this->yyidx + -9]->minor, 'body' => $this->yystack[$this->yyidx + -7]->minor, 'else' => $this->yystack[$this->yyidx + -3]->minor);     }
+#line 1697 "lib/Haanga/Compiler/Parser.php"
+#line 168 "lib/Haanga/Compiler/Parser.y"
+    function yy_r41(){  $this->_retvalue = array('operation' => 'ifequal', 'cmp' => '!=', 1 => $this->yystack[$this->yyidx + -6]->minor, 2 => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor);     }
 #line 1700 "lib/Haanga/Compiler/Parser.php"
-#line 173 "lib/Haanga/Compiler/Parser.y"
-    function yy_r47(){ $this->_retvalue = array('operation' => 'filter', 'functions' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor);     }
+#line 169 "lib/Haanga/Compiler/Parser.y"
+    function yy_r42(){  $this->_retvalue = array('operation' => 'ifequal', 'cmp' => '!=', 1 => $this->yystack[$this->yyidx + -10]->minor, 2 => $this->yystack[$this->yyidx + -9]->minor, 'body' => $this->yystack[$this->yyidx + -7]->minor, 'else' => $this->yystack[$this->yyidx + -3]->minor);     }
 #line 1703 "lib/Haanga/Compiler/Parser.php"
-#line 176 "lib/Haanga/Compiler/Parser.y"
-    function yy_r48(){ $this->_retvalue=array('operation' => 'regroup', 'array' => $this->yystack[$this->yyidx + -4]->minor, 'row' => $this->yystack[$this->yyidx + -2]->minor, 'as' => $this->yystack[$this->yyidx + 0]->minor);     }
+#line 173 "lib/Haanga/Compiler/Parser.y"
+    function yy_r43(){ $this->_retvalue = array('operation' => 'block', 'name' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor);     }
 #line 1706 "lib/Haanga/Compiler/Parser.php"
-#line 179 "lib/Haanga/Compiler/Parser.y"
-    function yy_r49(){ $this->_retvalue = $this->yystack[$this->yyidx + -2]->minor; $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;     }
+#line 175 "lib/Haanga/Compiler/Parser.y"
+    function yy_r44(){ $this->_retvalue = array('operation' => 'block', 'name' => $this->yystack[$this->yyidx + -6]->minor, 'body' => $this->yystack[$this->yyidx + -4]->minor);     }
 #line 1709 "lib/Haanga/Compiler/Parser.php"
-#line 180 "lib/Haanga/Compiler/Parser.y"
-    function yy_r50(){ $this->_retvalue = array($this->yystack[$this->yyidx + 0]->minor);     }
-#line 1712 "lib/Haanga/Compiler/Parser.php"
 #line 182 "lib/Haanga/Compiler/Parser.y"
-    function yy_r51(){ $this->_retvalue = array($this->yystack[$this->yyidx + -2]->minor, 'args'=>array($this->yystack[$this->yyidx + 0]->minor));     }
+    function yy_r47(){ $this->_retvalue = array('operation' => 'filter', 'functions' => $this->yystack[$this->yyidx + -5]->minor, 'body' => $this->yystack[$this->yyidx + -3]->minor);     }
+#line 1712 "lib/Haanga/Compiler/Parser.php"
+#line 185 "lib/Haanga/Compiler/Parser.y"
+    function yy_r48(){ $this->_retvalue=array('operation' => 'regroup', 'array' => $this->yystack[$this->yyidx + -4]->minor, 'row' => $this->yystack[$this->yyidx + -2]->minor, 'as' => $this->yystack[$this->yyidx + 0]->minor);     }
 #line 1715 "lib/Haanga/Compiler/Parser.php"
-#line 186 "lib/Haanga/Compiler/Parser.y"
-    function yy_r53(){ $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor; $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;     }
+#line 188 "lib/Haanga/Compiler/Parser.y"
+    function yy_r49(){ $this->_retvalue = $this->yystack[$this->yyidx + -2]->minor; $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;     }
 #line 1718 "lib/Haanga/Compiler/Parser.php"
-#line 192 "lib/Haanga/Compiler/Parser.y"
-    function yy_r56(){ $this->_retvalue = array('var' => $this->yystack[$this->yyidx + 0]->minor);     }
+#line 189 "lib/Haanga/Compiler/Parser.y"
+    function yy_r50(){ $this->_retvalue = array($this->yystack[$this->yyidx + 0]->minor);     }
 #line 1721 "lib/Haanga/Compiler/Parser.php"
-#line 193 "lib/Haanga/Compiler/Parser.y"
-    function yy_r57(){ $this->_retvalue = array('number' => $this->yystack[$this->yyidx + 0]->minor);     }
+#line 191 "lib/Haanga/Compiler/Parser.y"
+    function yy_r51(){ $this->_retvalue = array($this->yystack[$this->yyidx + -2]->minor, 'args'=>array($this->yystack[$this->yyidx + 0]->minor));     }
 #line 1724 "lib/Haanga/Compiler/Parser.php"
-#line 194 "lib/Haanga/Compiler/Parser.y"
-    function yy_r58(){ $this->_retvalue = array('string' => $this->yystack[$this->yyidx + 0]->minor);     }
+#line 195 "lib/Haanga/Compiler/Parser.y"
+    function yy_r53(){ $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor; $this->_retvalue[] = $this->yystack[$this->yyidx + 0]->minor;     }
 #line 1727 "lib/Haanga/Compiler/Parser.php"
-#line 196 "lib/Haanga/Compiler/Parser.y"
-    function yy_r59(){ $this->_retvalue = array('var_filter' => $this->yystack[$this->yyidx + 0]->minor);     }
+#line 201 "lib/Haanga/Compiler/Parser.y"
+    function yy_r56(){ $this->_retvalue = array('var' => $this->yystack[$this->yyidx + 0]->minor);     }
 #line 1730 "lib/Haanga/Compiler/Parser.php"
 #line 202 "lib/Haanga/Compiler/Parser.y"
-    function yy_r63(){  $this->_retvalue = "";     }
+    function yy_r57(){ $this->_retvalue = array('number' => $this->yystack[$this->yyidx + 0]->minor);     }
 #line 1733 "lib/Haanga/Compiler/Parser.php"
-#line 204 "lib/Haanga/Compiler/Parser.y"
-    function yy_r65(){  $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;     }
+#line 203 "lib/Haanga/Compiler/Parser.y"
+    function yy_r58(){ $this->_retvalue = array('string' => $this->yystack[$this->yyidx + 0]->minor);     }
 #line 1736 "lib/Haanga/Compiler/Parser.php"
-#line 206 "lib/Haanga/Compiler/Parser.y"
-    function yy_r67(){ $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor.$this->yystack[$this->yyidx + 0]->minor;     }
+#line 205 "lib/Haanga/Compiler/Parser.y"
+    function yy_r59(){ $this->_retvalue = array('var_filter' => $this->yystack[$this->yyidx + 0]->minor);     }
 #line 1739 "lib/Haanga/Compiler/Parser.php"
-#line 210 "lib/Haanga/Compiler/Parser.y"
-    function yy_r69(){ $this->_retvalue = array('op_expr' => 'not', $this->yystack[$this->yyidx + 0]->minor);     }
-#line 1742 "lib/Haanga/Compiler/Parser.php"
 #line 211 "lib/Haanga/Compiler/Parser.y"
-    function yy_r70(){ $this->_retvalue = array('op_expr' => @$this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);     }
+    function yy_r63(){  $this->_retvalue = "";     }
+#line 1742 "lib/Haanga/Compiler/Parser.php"
+#line 213 "lib/Haanga/Compiler/Parser.y"
+    function yy_r65(){  $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor;     }
 #line 1745 "lib/Haanga/Compiler/Parser.php"
-#line 214 "lib/Haanga/Compiler/Parser.y"
-    function yy_r73(){ $this->_retvalue = array('op_expr' => trim(@$this->yystack[$this->yyidx + -1]->minor), $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);     }
+#line 215 "lib/Haanga/Compiler/Parser.y"
+    function yy_r67(){ $this->_retvalue = $this->yystack[$this->yyidx + -1]->minor.$this->yystack[$this->yyidx + 0]->minor;     }
 #line 1748 "lib/Haanga/Compiler/Parser.php"
-#line 216 "lib/Haanga/Compiler/Parser.y"
-    function yy_r75(){ $this->_retvalue = array('op_expr' => 'expr', $this->yystack[$this->yyidx + -1]->minor);     }
+#line 219 "lib/Haanga/Compiler/Parser.y"
+    function yy_r69(){ $this->_retvalue = array('op_expr' => 'not', $this->yystack[$this->yyidx + 0]->minor);     }
 #line 1751 "lib/Haanga/Compiler/Parser.php"
 #line 220 "lib/Haanga/Compiler/Parser.y"
-    function yy_r77(){ if (!is_array($this->yystack[$this->yyidx + -2]->minor)) { $this->_retvalue = array($this->yystack[$this->yyidx + -2]->minor); } else { $this->_retvalue = $this->yystack[$this->yyidx + -2]->minor; }  $this->_retvalue[]=array('object' => $this->yystack[$this->yyidx + 0]->minor);    }
+    function yy_r70(){ $this->_retvalue = array('op_expr' => @$this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);     }
 #line 1754 "lib/Haanga/Compiler/Parser.php"
-#line 221 "lib/Haanga/Compiler/Parser.y"
-    function yy_r78(){ if (!is_array($this->yystack[$this->yyidx + -2]->minor)) { $this->_retvalue = array($this->yystack[$this->yyidx + -2]->minor); } else { $this->_retvalue = $this->yystack[$this->yyidx + -2]->minor; } $this->_retvalue[] = ($this->compiler->var_is_object($this->_retvalue)) ? array('object' => $this->yystack[$this->yyidx + 0]->minor) : $this->yystack[$this->yyidx + 0]->minor;    }
+#line 223 "lib/Haanga/Compiler/Parser.y"
+    function yy_r73(){ $this->_retvalue = array('op_expr' => trim(@$this->yystack[$this->yyidx + -1]->minor), $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);     }
 #line 1757 "lib/Haanga/Compiler/Parser.php"
-#line 222 "lib/Haanga/Compiler/Parser.y"
-    function yy_r79(){ if (!is_array($this->yystack[$this->yyidx + -3]->minor)) { $this->_retvalue = array($this->yystack[$this->yyidx + -3]->minor); } else { $this->_retvalue = $this->yystack[$this->yyidx + -3]->minor; }  $this->_retvalue[]=$this->yystack[$this->yyidx + -1]->minor;    }
+#line 225 "lib/Haanga/Compiler/Parser.y"
+    function yy_r75(){ $this->_retvalue = array('op_expr' => 'expr', $this->yystack[$this->yyidx + -1]->minor);     }
 #line 1760 "lib/Haanga/Compiler/Parser.php"
+#line 229 "lib/Haanga/Compiler/Parser.y"
+    function yy_r77(){ if (!is_array($this->yystack[$this->yyidx + -2]->minor)) { $this->_retvalue = array($this->yystack[$this->yyidx + -2]->minor); } else { $this->_retvalue = $this->yystack[$this->yyidx + -2]->minor; }  $this->_retvalue[]=array('object' => $this->yystack[$this->yyidx + 0]->minor);    }
+#line 1763 "lib/Haanga/Compiler/Parser.php"
+#line 230 "lib/Haanga/Compiler/Parser.y"
+    function yy_r78(){ if (!is_array($this->yystack[$this->yyidx + -2]->minor)) { $this->_retvalue = array($this->yystack[$this->yyidx + -2]->minor); } else { $this->_retvalue = $this->yystack[$this->yyidx + -2]->minor; } $this->_retvalue[] = ($this->compiler->var_is_object($this->_retvalue)) ? array('object' => $this->yystack[$this->yyidx + 0]->minor) : $this->yystack[$this->yyidx + 0]->minor;    }
+#line 1766 "lib/Haanga/Compiler/Parser.php"
+#line 231 "lib/Haanga/Compiler/Parser.y"
+    function yy_r79(){ if (!is_array($this->yystack[$this->yyidx + -3]->minor)) { $this->_retvalue = array($this->yystack[$this->yyidx + -3]->minor); } else { $this->_retvalue = $this->yystack[$this->yyidx + -3]->minor; }  $this->_retvalue[]=$this->yystack[$this->yyidx + -1]->minor;    }
+#line 1769 "lib/Haanga/Compiler/Parser.php"
 
     /**
      * placeholder for the left hand side in a reduce operation.
@@ -1863,14 +1872,14 @@ static public $yy_action = array(
      */
     function yy_syntax_error($yymajor, $TOKEN)
     {
-#line 57 "lib/Haanga/Compiler/Parser.y"
+#line 66 "lib/Haanga/Compiler/Parser.y"
 
     $expect = array();
     foreach ($this->yy_get_expected_tokens($yymajor) as $token) {
         $expect[] = self::$yyTokenName[$token];
     }
     throw new Exception('Unexpected ' . $this->tokenName($yymajor) . '(' . $TOKEN. '), expected one of: ' . implode(',', $expect));
-#line 1880 "lib/Haanga/Compiler/Parser.php"
+#line 1889 "lib/Haanga/Compiler/Parser.php"
     }
 
     /**
@@ -1888,9 +1897,9 @@ static public $yy_action = array(
         }
         /* Here code is inserted which will be executed whenever the
         ** parser accepts */
-#line 44 "lib/Haanga/Compiler/Parser.y"
+#line 53 "lib/Haanga/Compiler/Parser.y"
 
-#line 1901 "lib/Haanga/Compiler/Parser.php"
+#line 1910 "lib/Haanga/Compiler/Parser.php"
     }
 
     /**

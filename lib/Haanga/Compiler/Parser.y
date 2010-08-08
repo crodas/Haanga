@@ -39,6 +39,15 @@
 
 %declare_class { class Haanga_Compiler_Parser }
 %include_class {
+    protected $lex;
+    function __construct($lex)
+    {
+        $this->lex = $lex;
+    }
+
+    function throwError($text)
+    {
+    }
 
 }
 
@@ -73,7 +82,7 @@ body(A) ::= . { A = array(); }
 code(A) ::= T_OPEN_TAG stmts(B). { A = B; }
 code(A) ::= T_HTML(B). { A = array('operation' => 'html', 'html' => B); }
 code(A) ::= T_COMMENT_OPEN T_COMMENT(B). { B=rtrim(B); A = array('operation' => 'comment', 'comment' => substr(B, 0, strlen(B)-2)); } 
-code(A) ::= T_PRINT_OPEN filtered_var(B) T_PRINT_CLOSE.  { A = array('operation' => 'print_var', 'variable' => B); }
+code(A) ::= T_PRINT_OPEN filtered_var(B) T_PRINT_CLOSE.  { A = array('operation' => 'print_var', 'variable' => B, 'line' => $this->lex->getLine() ); }
 
 stmts(A) ::= T_EXTENDS var_or_string(B) T_CLOSE_TAG. { A = array('operation' => 'base', B); }
 stmts(A) ::= stmt(B) T_CLOSE_TAG. { A = B; }
