@@ -22,7 +22,7 @@ class templateTest extends PHPUnit_Framework_TestCase
         TestSuite::init();
         if ($test_file == 'assert_templates/strip_whitespace.tpl') {
             Haanga_Compiler::setOption('strip_whitespace', TRUE);
-            $expected = trim($expected). ' '; /* weird output */
+            $expected = rtrim($expected). ' '; /* weird output */
         } else if (class_exists('Haanga_Compiler')) {
             Haanga_Compiler::setOption('strip_whitespace', FALSE);
         }
@@ -39,7 +39,7 @@ class templateTest extends PHPUnit_Framework_TestCase
         TestSuite::init();
         if ($test_file == 'assert_templates/strip_whitespace.tpl') {
             Haanga_Compiler::setOption('strip_whitespace', TRUE);
-            $expected = trim($expected). ' '; /* weird output */
+            $expected = rtrim($expected). ' '; /* weird output */
         } else if (class_exists('Haanga_Compiler')) {
             Haanga_Compiler::setOption('strip_whitespace', FALSE);
         }

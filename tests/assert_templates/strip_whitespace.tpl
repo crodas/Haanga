@@ -1,4 +1,9 @@
-{{ test_global.b }} {{ test_global.b }}
+{% if test_global %}
+{% for i in test_global %}
+    {{ i }} {{ i }}
+{%endfor  %}
+
+{% endif %}
 
 <b> 
 
