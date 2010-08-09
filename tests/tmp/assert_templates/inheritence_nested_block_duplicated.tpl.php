@@ -14,10 +14,10 @@ new stuff
     $buffer2  = '
 new inner2
 ';
-    $blocks["inner2"]  = (isset($blocks["inner2"]) ? (strpos($blocks["inner2"], '{{block.1b3231655cebb7a1f783eddf27d254ca}}') === FALSE ? $blocks["inner2"] : str_replace('{{block.1b3231655cebb7a1f783eddf27d254ca}}', $buffer2, $blocks["inner2"])) : $buffer2);
-    $buffer1 .= $blocks["inner2"].'
+    $blocks['inner2']  = (isset($blocks['inner2']) ? (strpos($blocks['inner2'], '{{block.1b3231655cebb7a1f783eddf27d254ca}}') === FALSE ? $blocks['inner2'] : str_replace('{{block.1b3231655cebb7a1f783eddf27d254ca}}', $buffer2, $blocks['inner2'])) : $buffer2);
+    $buffer1 .= $blocks['inner2'].'
 ';
-    $blocks["outer"]  = (isset($blocks["outer"]) ? (strpos($blocks["outer"], '{{block.1b3231655cebb7a1f783eddf27d254ca}}') === FALSE ? $blocks["outer"] : str_replace('{{block.1b3231655cebb7a1f783eddf27d254ca}}', $buffer1, $blocks["outer"])) : $buffer1);
+    $blocks['outer']  = (isset($blocks['outer']) ? (strpos($blocks['outer'], '{{block.1b3231655cebb7a1f783eddf27d254ca}}') === FALSE ? $blocks['outer'] : str_replace('{{block.1b3231655cebb7a1f783eddf27d254ca}}', $buffer1, $blocks['outer'])) : $buffer1);
     echo Haanga::Load('assert_templates/nested_block.tpl', $vars, TRUE, $blocks);
     if ($return == TRUE) {
         return ob_get_clean();

@@ -7,7 +7,7 @@ function haanga_d7c4d5b38d3a7e0818e446612beff5c975ed8985($vars, $return=FALSE, $
     if ($return == TRUE) {
         ob_start();
     }
-    echo '<b> Texto laargo </b> <pre>
+    echo htmlentities($test_global['b']).' '.htmlentities($test_global['b']).' <b> Texto laargo </b> <pre>
 Este es un texto 
 
 con

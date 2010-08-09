@@ -15,7 +15,7 @@ function haanga_e3288a8c38d2925df1b81c50c72b7eee31f8c2f9($vars, $return=FALSE, $
     $sorted_users  = Haanga_Extension_Filter_Dictsort::main($users, $regroup_by);
     $temp_group  = Array();
     foreach ($sorted_users as  $item) {
-        $temp_group[$item["age"]][]  = $item;
+        $temp_group[$item['age']][]  = $item;
     }
     /* Proper format */
     $sorted_users  = Array();
@@ -36,7 +36,7 @@ function haanga_e3288a8c38d2925df1b81c50c72b7eee31f8c2f9($vars, $return=FALSE, $
     /* Temporary sorting */
     $temp_group  = Array();
     foreach ($t_users as  $item) {
-        $temp_group[$item["age"]][]  = $item;
+        $temp_group[$item['age']][]  = $item;
     }
     /* Proper format */
     $sorted_users1  = Array();
@@ -58,17 +58,17 @@ function haanga_e3288a8c38d2925df1b81c50c72b7eee31f8c2f9($vars, $return=FALSE, $
     $forcounter1_1  = 1;
     foreach ($sorted_users as  $user) {
         echo '
-    '.htmlentities($user["grouper"]).'
+    '.htmlentities($user['grouper']).'
     ';
         $forcounter1_2  = 1;
-        $psize_2  = count($user["list"]);
+        $psize_2  = count($user['list']);
         $islast_2  = $forcounter1_2 == $psize_2;
         $isfirst_2  = TRUE;
         $revcount_2  = $psize_2;
         $revcount0_2  = $psize_2 - 1;
-        foreach ($user["list"] as  $u) {
+        foreach ($user['list'] as  $u) {
             echo '
-        '.$forcounter1_2.'-'.$revcount_2.'-'.$revcount0_2.' ('.$forcounter1_1.'). '.htmlentities(ucfirst($u["name"])).' (';
+        '.$forcounter1_2.'-'.$revcount_2.'-'.$revcount0_2.' ('.$forcounter1_1.'). '.htmlentities(ucfirst($u['name'])).' (';
             if (empty($isfirst_2) === FALSE) {
                 echo 'first';
             } else {

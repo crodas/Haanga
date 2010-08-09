@@ -1,3 +1,5 @@
+{{ test_global.b }} {{ test_global.b }}
+
 <b> 
 
             Texto          laargo 

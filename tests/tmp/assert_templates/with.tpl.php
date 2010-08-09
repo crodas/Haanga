@@ -10,7 +10,7 @@ function haanga_6b7e79ed219629bc512aa130b0742545436edf01($vars, $return=FALSE, $
     foreach ($users as  $user) {
         echo '
     
-        '.htmlentities(strtoupper($user["name"])).' == '.htmlentities(strtoupper($user["name"])).'
+        '.htmlentities(strtoupper($user['name'])).' == '.htmlentities(strtoupper($user['name'])).'
     
 ';
     }
