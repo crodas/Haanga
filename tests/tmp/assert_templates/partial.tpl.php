@@ -1,4 +1,5 @@
 <?php
+$HAANGA_VERSION  = '1.1.1';
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/partial.tpl */
 function haanga_1e7ad0daf3a6652932dc9adf0aecfb68ab0bfa2e($vars, $return=FALSE, $blocks=array())
 {
