@@ -2,11 +2,13 @@
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/load.tpl */
 function haanga_8d56a9a504af63b0aa1f9e966ad860de9c65c99b($vars, $return=FALSE, $blocks=array())
 {
+    global $test_global;
     extract($vars);
     if ($return == TRUE) {
         ob_start();
     }
-    echo "\n";
+    echo '
+';
     $mnm_current  = $page;
     $mnm_total  = ceil($total / $results_per_page);
     $mnm_start  = max($mnm_current - intval(5 / 2), 1);
@@ -14,37 +16,67 @@ function haanga_8d56a9a504af63b0aa1f9e966ad860de9c65c99b($vars, $return=FALSE, $
     $mnm_prev  = (1 == $mnm_current ? FALSE : $mnm_current - 1);
     $mnm_next  = ($total < 0 || $mnm_current < $mnm_total ? $mnm_current + 1 : FALSE);
     $mnm_pages  = range($mnm_start, ($mnm_end < $mnm_total ? $mnm_end : $mnm_total));
-    echo "\n";
+    echo '
+';
     if (empty($mnm_prev) === FALSE) {
-        echo "\n    <span class=\"nextprev\">&#171; Previous</span>\n";
+        echo '
+    <span class="nextprev">&#171; Previous</span>
+';
     } else {
-        echo "\n    <a href=\"?page".htmlentities($mnm_prev)."\">&#171; Previous</a>\n";
+        echo '
+    <a href="?page'.htmlentities($mnm_prev).'">&#171; Previous</a>
+';
     }
-    echo "\n\n";
+    echo '
+
+';
     if ($mnm_start > 1) {
-        echo "\n    <a href=\"?page=1\">1</a>';\n    <span>...</span>\n";
+        echo '
+    <a href="?page=1">1</a>\';
+    <span>...</span>
+';
     }
-    echo "\n\n";
+    echo '
+
+';
     foreach ($mnm_pages as  $page) {
-        echo "\n    ";
+        echo '
+    ';
         if ($mnm_current == $page) {
-            echo "\n        <span class=\"current\">".htmlentities($page)."</span>\n    ";
+            echo '
+        <span class="current">'.htmlentities($page).'</span>
+    ';
         } else {
-            echo "\n        <a href=\"?page=".htmlentities($page)."\">".htmlentities($page)."</a>\n    ";
+            echo '
+        <a href="?page='.htmlentities($page).'">'.htmlentities($page).'</a>
+    ';
         }
-        echo "\n";
+        echo '
+';
     }
-    echo "\n\n";
+    echo '
+
+';
     if ($mnm_total > $mnm_end) {
-        echo "\n    <span>...</span>\n    <a href=\"?page=".htmlentities($mnm_total)."\">".htmlentities($mnm_total)."</a>\n";
+        echo '
+    <span>...</span>
+    <a href="?page='.htmlentities($mnm_total).'">'.htmlentities($mnm_total).'</a>
+';
     }
-    echo "\n\n";
+    echo '
+
+';
     if (empty($mnm_next) === FALSE) {
-        echo "\n    <a href=\"?page=".htmlentities($mnm_next)."\">&#187; Next</a>\n";
+        echo '
+    <a href="?page='.htmlentities($mnm_next).'">&#187; Next</a>
+';
     } else {
-        echo "\n    <span class=\"nextprev\">&#187; Next</span>\n";
+        echo '
+    <span class="nextprev">&#187; Next</span>
+';
     }
-    echo "\n";
+    echo '
+';
     if ($return == TRUE) {
         return ob_get_clean();
     }

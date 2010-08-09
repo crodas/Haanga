@@ -431,14 +431,15 @@ class Haanga_Generator_PHP
                 $code .= $this->php_generate_stmt(array($value[0]))." => ".$this->php_generate_stmt(array($value[1]));
                 break;
             case 'string':
-                if ($code != "" && $code[strlen($code)-1] == '"') {
+                if ($code != "" && $code[strlen($code)-1] == "'") {
                     $code = substr($code, 0, -1);
                 } else {
-                    $code .= '"';
+                    $code .= "'";
                 }
-                $html  = addslashes($value);
-                $html  = str_replace(array('$', "\r", "\t", "\n","\\'"), array('\\$', '\r', '\t', '\n',"'"), $html);
-                $code .= $html.'"';
+                $html = str_replace("'", "\\'", $value);
+                //$html  = addslashes($value);
+                //$html  = str_replace(array('$', "\r", "\t", "\n","\\'"), array('\\$', '\r', '\t', '\n',"'"), $html);
+                $code .= $html."'";
                 break;
             case 'var':
                 if (strlen($code) != 0 && $code[strlen($code) -1] != '.') {

@@ -24,7 +24,8 @@ class TestSuite extends PHPUnit_Framework_TestSuite
             'debug' => TRUE,
             'use_hash_filename' => FALSE,
             'compiler' => array(
-                'allow_exec' => TRUE   
+                'allow_exec' => TRUE,
+                'global' => array('test_global')
             )
         );
 

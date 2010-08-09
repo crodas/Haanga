@@ -2,22 +2,33 @@
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/ifequals.tpl */
 function haanga_0c118610d6837670c71af0327fb53e43cea00877($vars, $return=FALSE, $blocks=array())
 {
+    global $test_global;
     extract($vars);
     if ($return == TRUE) {
         ob_start();
     }
     if (1 == 2) {
-        echo "\n    Equals\n";
+        echo '
+    Equals
+';
     } else {
-        echo "\n    Non Equals\n";
+        echo '
+    Non Equals
+';
     }
-    echo "\n";
+    echo '
+';
     if (1 != 2) {
-        echo "\n    Non Equals\n";
+        echo '
+    Non Equals
+';
     } else {
-        echo "\n    Equals\n";
+        echo '
+    Equals
+';
     }
-    echo "\n";
+    echo '
+';
     if ($return == TRUE) {
         return ob_get_clean();
     }

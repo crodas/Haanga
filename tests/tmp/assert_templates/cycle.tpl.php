@@ -2,30 +2,40 @@
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/cycle.tpl */
 function haanga_ce9ab0a21d381cdfd181f6d4b9c01a720d4c7320($vars, $return=FALSE, $blocks=array())
 {
+    global $test_global;
     extract($vars);
     if ($return == TRUE) {
         ob_start();
     }
     foreach ($array as  $user) {
-        echo "\n    ";
+        echo '
+    ';
         if (isset($def_cycle_0) == FALSE) {
-            $def_cycle_0  = Array("uno", "dos", "tres");
+            $def_cycle_0  = Array('uno', 'dos', 'tres');
         }
         $index_0  = (isset($index_0) == FALSE ? 0 : ($index_0 + 1) % count($def_cycle_0));
-        echo $def_cycle_0[$index_0]."\n";
+        echo $def_cycle_0[$index_0].'
+';
     }
-    echo "\n-----------------------------------------------\n";
-    $def_cycle_1  = Array("uno", "dos", "tres");
+    echo '
+-----------------------------------------------
+';
+    $def_cycle_1  = Array('uno', 'dos', 'tres');
     $index_1  = -1;
-    echo "\n";
+    echo '
+';
     $index_1  = ($index_1 + 1) % count($def_cycle_1);
-    echo $def_cycle_1[$index_1]."\n";
+    echo $def_cycle_1[$index_1].'
+';
     $index_1  = ($index_1 + 1) % count($def_cycle_1);
-    echo $def_cycle_1[$index_1]."\n";
+    echo $def_cycle_1[$index_1].'
+';
     $index_1  = ($index_1 + 1) % count($def_cycle_1);
-    echo $def_cycle_1[$index_1]."\n";
+    echo $def_cycle_1[$index_1].'
+';
     $index_1  = ($index_1 + 1) % count($def_cycle_1);
-    echo $def_cycle_1[$index_1]."\n";
+    echo $def_cycle_1[$index_1].'
+';
     if ($return == TRUE) {
         return ob_get_clean();
     }
