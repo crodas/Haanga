@@ -1,5 +1,5 @@
 <?php
-$HAANGA_VERSION  = '1.1.1';
+$HAANGA_VERSION  = '1.1.2';
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/nested_block_second_parent_override.tpl */
 function haanga_d905488f199a96b638d52d62c0fc424fd291ed39($vars, $return=FALSE, $blocks=array())
 {
