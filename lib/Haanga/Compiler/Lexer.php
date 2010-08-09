@@ -57,7 +57,7 @@ class Haanga_Compiler_Lexer
         $this->line     = 1;
     }
 
-    function init($template, $compiler)
+    static function init($template, $compiler)
     {
         $lexer  = new Haanga_Compiler_Lexer($template, $compiler);
         $parser = new Haanga_Compiler_Parser($lexer);

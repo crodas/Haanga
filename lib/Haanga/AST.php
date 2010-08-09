@@ -98,12 +98,12 @@ class Haanga_AST
     }
 
 
-    function str($string)
+    public static function str($string)
     {
         return array("string" => $string);
     }
 
-    function num($number)
+    public static function num($number)
     {
         return array("number" => $number);
     }
@@ -122,7 +122,7 @@ class Haanga_AST
         return $this;
     }
 
-    function constant($str)
+    static function constant($str)
     {
         return array('constant' => $str);
     }

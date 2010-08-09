@@ -4,7 +4,7 @@ class Haanga_Extension_Tag_MeneamePagination
 {
     public $is_block = FALSE;
 
-    function generator($cmp, $args, $redirected)
+    static function generator($cmp, $args, $redirected)
     {
         if (count($args) != 3 && count($args) != 4) {
             throw new Haanga_CompilerException("Memeame_Pagination requires 3 or 4 parameters");
