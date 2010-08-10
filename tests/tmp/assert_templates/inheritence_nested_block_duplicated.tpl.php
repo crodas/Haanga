@@ -1,5 +1,5 @@
 <?php
-$HAANGA_VERSION  = '1.1.2';
+$HAANGA_VERSION  = '1.1.3';
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/inheritence_nested_block_duplicated.tpl */
 function haanga_2f06ae0d3b252465fa65c3a02cc1ebab4d90396f($vars, $return=FALSE, $blocks=array())
 {

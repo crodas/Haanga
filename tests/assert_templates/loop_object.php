@@ -4,4 +4,6 @@ $obj = new stdclass;
 $obj->foo = 'bar';
 $obj->nombre = 'crodas';
 
-$data = compact('obj');
+$objects = array($obj);
+
+$data = compact('obj', 'objects');
