@@ -246,7 +246,7 @@ class Haanga
             }
         } 
         
-        if (TRUE||!is_file($php) || ($check && filemtime($tpl) > filemtime($php))) {
+        if (!is_file($php) || ($check && filemtime($tpl) > filemtime($php))) {
 
             if (!is_file($tpl)) {
                 /* There is no template nor compiled file */
