@@ -14,16 +14,16 @@ Partial part
 
 ';
     $buffer2  = '
-    another text
+    another <b>text</b>
 ';
     $html1  = $buffer2;
     $buffer1 .= '
-'.htmlentities($html1).'
+'.$html1.'
 
 ';
     $html  = $buffer1;
     echo '
-'.htmlentities($html).'
+'.$html.'
 ';
     if ($return == TRUE) {
         return ob_get_clean();

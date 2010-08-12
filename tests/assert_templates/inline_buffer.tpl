@@ -1,4 +1,4 @@
 {% buffer html1 %}
-    another text
+    another <b>text</b>
 {% endbuffer %}
 {{ html1 }}

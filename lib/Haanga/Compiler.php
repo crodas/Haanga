@@ -499,6 +499,7 @@ class Haanga_Compiler
         $this->generate_op_code($details['body'], $body);
         $body->decl($details['name'], hvar('buffer'.$this->ob_start));
         $this->ob_start--;
+        $this->set_safe($details['name']);
     }
     // }}}
 
