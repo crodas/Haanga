@@ -15,6 +15,7 @@ class errorTest extends PHPUnit_Framework_TestCase
         Haanga_Compiler::setOption('allow_exec', FALSE);
         try {
             Haanga::Load($tpl);
+            $this->assertTrue(FALSE);
         } Catch (Haanga_Compiler_Exception $e) {
             $i = preg_match("/in.*:[0-9]+/", $e->getMessage());
             $this->assertEquals(1, $i);
