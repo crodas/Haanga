@@ -13,8 +13,12 @@ class errorTest extends PHPUnit_Framework_TestCase
     {
         TestSuite::init();
         Haanga_Compiler::setOption('allow_exec', FALSE);
-        $this->setExpectedException('Haanga_Compiler_Exception');
-        Haanga::Load($tpl);
+        try {
+            Haanga::Load($tpl);
+        } Catch (Haanga_Compiler_Exception $e) {
+            $i = preg_match("/in.*:[0-9]+/", $e->getMessage());
+            $this->assertEquals(1, $i);
+        }
     }
 
     public function tplProvider()
