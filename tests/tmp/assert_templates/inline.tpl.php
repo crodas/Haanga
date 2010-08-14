@@ -1,5 +1,5 @@
 <?php
-$HAANGA_VERSION  = '1.1.3';
+$HAANGA_VERSION  = '1.0.3';
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/inline.tpl */
 function haanga_f59d9314f581283c9140ff747fa5e3efeadc54a7($vars, $return=FALSE, $blocks=array())
 {
@@ -23,7 +23,7 @@ Partial part
 ';
     $html  = $buffer1;
     echo '
-',$html,'
+'.$html.'
 ';
     if ($return == TRUE) {
         return ob_get_clean();

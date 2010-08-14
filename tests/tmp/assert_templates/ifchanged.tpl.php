@@ -1,5 +1,5 @@
 <?php
-$HAANGA_VERSION  = '1.1.3';
+$HAANGA_VERSION  = '1.0.3';
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/ifchanged.tpl */
 function haanga_be17029b5fd2998df7c922a92652b6886d7780fd($vars, $return=FALSE, $blocks=array())
 {
@@ -25,7 +25,7 @@ function haanga_be17029b5fd2998df7c922a92652b6886d7780fd($vars, $return=FALSE, $
             $ifchanged1  = $buffer1;
         }
         echo '
-    ',htmlentities($user['name']),'
+    '.htmlentities($user['name']).'
 ';
     }
     echo '
@@ -35,13 +35,13 @@ function haanga_be17029b5fd2998df7c922a92652b6886d7780fd($vars, $return=FALSE, $
         echo '
     ';
         if ((isset($ifchanged2[0]) == FALSE || $ifchanged2[0] != $user['age']) && (isset($ifchanged2[1]) == FALSE || $ifchanged2[1] != $user['foo'])) {
-            echo 'Users with ',htmlentities($user['age']),' years';
+            echo 'Users with '.htmlentities($user['age']).' years';
             $ifchanged2  = Array($user['age'], $user['foo']);
         } else {
             echo 'continue';
         }
         echo '
-    ',htmlentities($user['name']),'
+    '.htmlentities($user['name']).'
 ';
     }
     echo '

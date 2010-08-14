@@ -1,7 +1,7 @@
 <?php
 /* Load filter dictsort definition */
 require_once('/home/crodas/projects/playground/haanga/lib/Haanga/Extension/Filter/Dictsort.php');
-$HAANGA_VERSION  = '1.1.3';
+$HAANGA_VERSION  = '1.0.3';
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/regroup.tpl */
 function haanga_e3288a8c38d2925df1b81c50c72b7eee31f8c2f9($vars, $return=FALSE, $blocks=array())
 {
@@ -59,7 +59,7 @@ function haanga_e3288a8c38d2925df1b81c50c72b7eee31f8c2f9($vars, $return=FALSE, $
     $forcounter1_1  = 1;
     foreach ($sorted_users as  $user) {
         echo '
-    ',htmlentities($user['grouper']),'
+    '.htmlentities($user['grouper']).'
     ';
         $forcounter1_2  = 1;
         $psize_2  = count($user['list']);
@@ -69,7 +69,7 @@ function haanga_e3288a8c38d2925df1b81c50c72b7eee31f8c2f9($vars, $return=FALSE, $
         $revcount0_2  = $psize_2 - 1;
         foreach ($user['list'] as  $u) {
             echo '
-        ',$forcounter1_2,'-',$revcount_2,'-',$revcount0_2,' (',$forcounter1_1,'). ',htmlentities(ucfirst($u['name'])),' (';
+        '.$forcounter1_2.'-'.$revcount_2.'-'.$revcount0_2.' ('.$forcounter1_1.'). '.htmlentities(ucfirst($u['name'])).' (';
             if (empty($isfirst_2) === FALSE) {
                 echo 'first';
             } else {

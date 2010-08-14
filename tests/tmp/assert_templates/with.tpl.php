@@ -1,5 +1,5 @@
 <?php
-$HAANGA_VERSION  = '1.1.3';
+$HAANGA_VERSION  = '1.0.3';
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/with.tpl */
 function haanga_6b7e79ed219629bc512aa130b0742545436edf01($vars, $return=FALSE, $blocks=array())
 {
@@ -11,7 +11,7 @@ function haanga_6b7e79ed219629bc512aa130b0742545436edf01($vars, $return=FALSE, $
     foreach ($users as  $user) {
         echo '
     
-        ',htmlentities(strtoupper($user['name'])),' == ',htmlentities(strtoupper($user['name'])),'
+        '.htmlentities(strtoupper($user['name'])).' == '.htmlentities(strtoupper($user['name'])).'
     
 ';
     }

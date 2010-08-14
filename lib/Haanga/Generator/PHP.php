@@ -515,7 +515,7 @@ class Haanga_Generator_PHP
      */
     protected function php_print($op)
     {
-        $output = $this->php_generate_stmt($op, ',');
+        $output = $this->php_generate_stmt($op, '.');
         if ($output == "' '" && Haanga_Compiler::getOption('strip_whitespace')) {
             return; /* ignore this */
         }
@@ -531,7 +531,7 @@ class Haanga_Generator_PHP
      */
     protected function php_inc($op)
     {
-        return $this->php_get_varname($op['name'])."++;";
+        return "++".$this->php_get_varname($op['name']);
     }
     // }}}
 

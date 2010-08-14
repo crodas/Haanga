@@ -1,5 +1,5 @@
 <?php
-$HAANGA_VERSION  = '1.1.3';
+$HAANGA_VERSION  = '1.0.3';
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/loop.tpl */
 function haanga_4726e18009acee8a1c86a79b620c7ded71be5ddf($vars, $return=FALSE, $blocks=array())
 {
@@ -12,7 +12,7 @@ function haanga_4726e18009acee8a1c86a79b620c7ded71be5ddf($vars, $return=FALSE, $
     $revcount0_1  = $psize_1 - 1;
     foreach ($array as  $i) {
         echo '
-    ',$revcount0_1,'
+    '.$revcount0_1.'
 ';
         $revcount0_1  = $revcount0_1 - 1;
     }
@@ -23,7 +23,7 @@ function haanga_4726e18009acee8a1c86a79b620c7ded71be5ddf($vars, $return=FALSE, $
     $revcount_1  = $psize_1;
     foreach ($array as  $i) {
         echo '
-    ',$revcount_1,'
+    '.$revcount_1.'
 ';
         $revcount_1  = $revcount_1 - 1;
     }

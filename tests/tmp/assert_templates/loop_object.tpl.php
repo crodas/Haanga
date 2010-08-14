@@ -1,5 +1,5 @@
 <?php
-$HAANGA_VERSION  = '1.1.3';
+$HAANGA_VERSION  = '1.0.3';
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/loop_object.tpl */
 function haanga_2def2b6ad1167d6f400b0d9db576e1c9d2b51fa9($vars, $return=FALSE, $blocks=array())
 {
@@ -11,7 +11,7 @@ function haanga_2def2b6ad1167d6f400b0d9db576e1c9d2b51fa9($vars, $return=FALSE, $
     $obj_arr  = get_object_vars($obj);
     foreach ($obj_arr as  $prop => $value) {
         echo '
-    ',htmlentities($prop),' ',htmlentities($value),'
+    '.htmlentities($prop).' '.htmlentities($value).'
 ';
     }
     echo '
@@ -19,7 +19,7 @@ function haanga_2def2b6ad1167d6f400b0d9db576e1c9d2b51fa9($vars, $return=FALSE, $
 ';
     foreach ($objects as  $i) {
         echo '
-    ',htmlentities($i->foo),'
+    '.htmlentities($i->foo).'
 ';
     }
     echo '
