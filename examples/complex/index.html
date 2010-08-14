@@ -3,11 +3,11 @@
 <h1>Users ({{ people|length }} in {{ gender_list|length }} genders)</h1>
 <ul>
 {% for i,gender in gender_list %}
-    <li>"{{ gender.grouper }}" is equals to "{{ gender_list[i]["grouper"] }}"
+    <li>"{{ gender['grouper'] }}" is equals to "{{ gender_list[i]["grouper"] }}"
     <ul>
-        {% for item in gender.list %}
-        <li>{{ item.first_name|upper|safe }} {{ item.last_name|safe }} ({% firstof item.foobar item.bar "unset both" %}) {{ item.bar|default:"default value"|upper }} 
-        {% if "das" in item.last_name %}
+        {% for item in gender['list'] %}
+        <li>{{ item['first_name']|upper|safe }} {{ item['last_name']|safe }} ({% firstof item['foobar'] item['bar'] "unset both" %}) {{ item['bar']|default:"default value"|upper }} 
+        {% if "das" in item['last_name'] %}
             (Last name contains "das")
         {% endif %}
         {% if forloop.last %} 
