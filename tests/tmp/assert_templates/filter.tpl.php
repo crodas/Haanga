@@ -8,24 +8,24 @@ function haanga_7c948c919295fb106667df66f458e608eb775422($vars, $return=FALSE, $
     if ($return == TRUE) {
         ob_start();
     }
-    echo htmlentities(strtoupper($var)).'
-'.htmlentities(strtolower(strtoupper($var))).'
-'.htmlentities(str_replace('u', '', $var)).'
-'.(is_array($var) ? count($var) : strlen($var)).'
-'.htmlentities(strtoupper((empty($foobar) == TRUE ? 'default value' : $foobar))).'
+    echo htmlentities(strtoupper($var)),'
+',htmlentities(strtolower(strtoupper($var))),'
+',htmlentities(str_replace('u', '', $var)),'
+',(is_array($var) ? count($var) : strlen($var)),'
+',htmlentities(strtoupper((empty($foobar) == TRUE ? 'default value' : $foobar))),'
 ';
     $buffer1  = '
     hola que 
 ';
-    echo strtoupper($buffer1).'
+    echo strtoupper($buffer1),'
 ';
     $buffer1  = 'TAL';
-    echo strtolower($buffer1).'
+    echo strtolower($buffer1),'
 ';
     $buffer1  = '
     hello world
 ';
-    echo str_replace('e', '', strtolower(strtoupper($buffer1))).'
+    echo str_replace('e', '', strtolower(strtoupper($buffer1))),'
 ';
     if ($return == TRUE) {
         return ob_get_clean();

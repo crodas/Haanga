@@ -8,12 +8,12 @@ function haanga_8c184871ca921f028f7795f4ca92714bb3dce1c7($vars, $return=FALSE, $
     if ($return == TRUE) {
         ob_start();
     }
-    echo 'message'.($num1 <= 1 ? '' : 's').'
-walrus'.($num1 <= 1 ? '' : 'es').'
-cherr'.($num1 <= 1 ? 'y' : 'ies').'
-message'.($num2 <= 1 ? '' : 's').'
-walrus'.($num2 <= 1 ? '' : 'es').'
-cherr'.($num2 <= 1 ? 'y' : 'ies').'
+    echo 'message',($num1 <= 1 ? '' : 's'),'
+walrus',($num1 <= 1 ? '' : 'es'),'
+cherr',($num1 <= 1 ? 'y' : 'ies'),'
+message',($num2 <= 1 ? '' : 's'),'
+walrus',($num2 <= 1 ? '' : 'es'),'
+cherr',($num2 <= 1 ? 'y' : 'ies'),'
 ';
     if ($return == TRUE) {
         return ob_get_clean();

@@ -8,7 +8,7 @@ function haanga_dd5c8878b71dd3298b301bb14c576dd0b842f320($vars, $return=FALSE, $
     if ($return == TRUE) {
         ob_start();
     }
-    echo php_uname().'
+    echo php_uname(),'
 ';
     if ($return == TRUE) {
         return ob_get_clean();

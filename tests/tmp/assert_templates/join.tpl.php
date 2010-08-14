@@ -8,9 +8,9 @@ function haanga_1d992f3d68f25e0f67960320816915d87f8e6120($vars, $return=FALSE, $
     if ($return == TRUE) {
         ob_start();
     }
-    echo htmlentities(implode(' // ', $array)).'
-'.htmlentities(implode('', $array)).'
-'.htmlentities(implode(' // ', array_reverse($array, TRUE))).'
+    echo htmlentities(implode(' // ', $array)),'
+',htmlentities(implode('', $array)),'
+',htmlentities(implode(' // ', array_reverse($array, TRUE))),'
 ';
     if ($return == TRUE) {
         return ob_get_clean();

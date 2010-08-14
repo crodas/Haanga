@@ -12,7 +12,7 @@ function haanga_4726e18009acee8a1c86a79b620c7ded71be5ddf($vars, $return=FALSE, $
     $revcount0_1  = $psize_1 - 1;
     foreach ($array as  $i) {
         echo '
-    '.$revcount0_1.'
+    ',$revcount0_1,'
 ';
         $revcount0_1  = $revcount0_1 - 1;
     }
@@ -23,7 +23,7 @@ function haanga_4726e18009acee8a1c86a79b620c7ded71be5ddf($vars, $return=FALSE, $
     $revcount_1  = $psize_1;
     foreach ($array as  $i) {
         echo '
-    '.$revcount_1.'
+    ',$revcount_1,'
 ';
         $revcount_1  = $revcount_1 - 1;
     }

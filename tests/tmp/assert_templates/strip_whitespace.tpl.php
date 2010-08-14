@@ -11,7 +11,7 @@ function haanga_d7c4d5b38d3a7e0818e446612beff5c975ed8985($vars, $return=FALSE, $
     if (empty($test_global) === FALSE) {
         
         foreach ($test_global as  $i) {
-            echo ' '.htmlentities($i).' '.htmlentities($i).' ';
+            echo ' ',htmlentities($i),' ',htmlentities($i),' ';
         }
         
     }

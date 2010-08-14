@@ -19,8 +19,8 @@ function haanga_b81b868120adb871819ede8f37c652aea054b73d($vars, $return=FALSE, $
         $islast_1  = $forcounter1_1 == $psize_1;
         foreach ($users as  $id => $user) {
             echo '
-    '.$islast_1.'
-    '.$forcounter0_1.'
+    ',$islast_1,'
+    ',$forcounter0_1,'
     Inside loop
 ';
             $forcounter1_1  = $forcounter1_1 + 1;

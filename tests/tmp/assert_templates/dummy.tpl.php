@@ -15,7 +15,7 @@ function haanga_d2345f9cf4a619dac02b83afccf7c2e1c4530687($vars, $return=FALSE, $
     $buffer1  = '
     testing DUMMY TaG
 ';
-    echo Haanga_Extension_Tag_Dummy::main($buffer1).'
+    echo Haanga_Extension_Tag_Dummy::main($buffer1),'
 ';
     if ($return == TRUE) {
         return ob_get_clean();

@@ -23,7 +23,7 @@ Partial part
 ';
     $html  = $buffer1;
     echo '
-'.$html.'
+',$html,'
 ';
     if ($return == TRUE) {
         return ob_get_clean();
