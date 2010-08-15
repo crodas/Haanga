@@ -12,6 +12,7 @@ class templateTest extends PHPUnit_Framework_TestCase
         foreach (glob("tmp/*/*") as $file) {
             @unlink($file);
         }
+        TestSuite::init();
     }
 
     /** 
@@ -19,7 +20,6 @@ class templateTest extends PHPUnit_Framework_TestCase
      */
     public function testRuntime($test_file, $data, $expected)
     {
-        TestSuite::init();
         if ($test_file == 'assert_templates/strip_whitespace.tpl') {
             Haanga_Compiler::setOption('strip_whitespace', TRUE);
             $expected = rtrim($expected). ' '; /* weird output */
@@ -36,7 +36,6 @@ class templateTest extends PHPUnit_Framework_TestCase
     public function testIsCached($test_file, $data, $expected)
     {
         /* same as above, but we ensure that the file wasn't compiled */
-        TestSuite::init();
         if ($test_file == 'assert_templates/strip_whitespace.tpl') {
             Haanga_Compiler::setOption('strip_whitespace', TRUE);
             $expected = rtrim($expected). ' '; /* weird output */
