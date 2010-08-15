@@ -1,6 +1,7 @@
 <?php
 
 require dirname(__FILE__)."/../lib/Haanga.php";
+require dirname(__FILE__)."/../lib/Haanga/Compiler.php";
 require dirname(__FILE__)."/templateTest.php";
 require dirname(__FILE__)."/errorTest.php";
 

@@ -83,6 +83,7 @@ class Haanga_Compiler
     static protected $strip_whitespace = FALSE;
     static protected $is_exec_enabled  = FALSE;
     static protected $global_context = array();
+    static protected $echo_concat = '.';
 
     /**
      *  Debug file
@@ -112,6 +113,9 @@ class Haanga_Compiler
         case 'dot_as_object':
             $value = self::$dot_as_object;
             break;
+        case 'echo_concat':
+            $value = self::$echo_concat;
+            break;
         case 'strip_whitespace':
             $value = self::$strip_whitespace;
             break;
@@ -139,6 +143,12 @@ class Haanga_Compiler
         case 'if_empty':
             self::$if_empty = (bool)$value;
             break;
+        case 'echo_concat':
+            if ($value == '.' || $value == ',') {
+                self::$echo_concat = $value;
+            }
+            break;
+
         case 'autoescape':
             self::$autoescape = (bool)$value;
             break;
@@ -160,7 +170,7 @@ class Haanga_Compiler
             break;
         }
     }
-    // }}}
+    // }}} 
 
     // setDebug($file) {{{
     function setDebug($file)

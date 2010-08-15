@@ -515,7 +515,7 @@ class Haanga_Generator_PHP
      */
     protected function php_print($op)
     {
-        $output = $this->php_generate_stmt($op, '.');
+        $output = $this->php_generate_stmt($op, Haanga_Compiler::getOption('echo_concat'));
         if ($output == "' '" && Haanga_Compiler::getOption('strip_whitespace')) {
             return; /* ignore this */
         }

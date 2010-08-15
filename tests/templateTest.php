@@ -23,7 +23,7 @@ class templateTest extends PHPUnit_Framework_TestCase
         if ($test_file == 'assert_templates/strip_whitespace.tpl') {
             Haanga_Compiler::setOption('strip_whitespace', TRUE);
             $expected = rtrim($expected). ' '; /* weird output */
-        } else if (class_exists('Haanga_Compiler')) {
+        } else {
             Haanga_Compiler::setOption('strip_whitespace', FALSE);
         }
         $output = Haanga::Load($test_file, $data, TRUE);
@@ -40,14 +40,13 @@ class templateTest extends PHPUnit_Framework_TestCase
         if ($test_file == 'assert_templates/strip_whitespace.tpl') {
             Haanga_Compiler::setOption('strip_whitespace', TRUE);
             $expected = rtrim($expected). ' '; /* weird output */
-        } else if (class_exists('Haanga_Compiler')) {
+        } else {
             Haanga_Compiler::setOption('strip_whitespace', FALSE);
         }
         $output = Haanga::Load($test_file, $data, TRUE);
         $this->assertEquals($output, $expected);
         $this->assertFalse(Haanga::$has_compiled);
     }
-
 
     /** 
      * @dataProvider tplProvider 
