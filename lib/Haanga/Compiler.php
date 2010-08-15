@@ -84,6 +84,7 @@ class Haanga_Compiler
     static protected $is_exec_enabled  = FALSE;
     static protected $global_context = array();
     static protected $echo_concat = '.';
+    static protected $enable_load = TRUE;
 
     /**
      *  Debug file
@@ -104,6 +105,9 @@ class Haanga_Compiler
     {
         $value = NULL;
         switch (strtolower($option)) {
+        case 'enable_load':
+            $value = self::$enable_load;
+            break;
         case 'if_empty':
             $value = self::$if_empty;
             break;
@@ -143,6 +147,8 @@ class Haanga_Compiler
         case 'if_empty':
             self::$if_empty = (bool)$value;
             break;
+        case 'enable_load':
+            self::$enable_load = (bool)$value;
         case 'echo_concat':
             if ($value == '.' || $value == ',') {
                 self::$echo_concat = $value;
@@ -499,17 +505,6 @@ class Haanga_Compiler
                 $this->check_expr($expr['false']);
             }
         }
-    }
-    // }}}
-
-    // buffer <varname> {{{
-    public function generate_op_buffer($details, &$body)
-    {
-        $this->ob_start($body);
-        $this->generate_op_code($details['body'], $body);
-        $body->decl($details['name'], hvar('buffer'.$this->ob_start));
-        $this->ob_start--;
-        $this->set_safe($details['name']);
     }
     // }}}
 
@@ -1200,9 +1195,20 @@ class Haanga_Compiler
             $this->generate_op_code($details['body'], $body);
             $target = hvar('buffer'.$this->ob_start);
             if ($tags->hasGenerator($tag_name)) {
-                $exec = $tags->generator($tag_name, $this, array($target));
+                $args = array_merge(array($target), $details['list']);
+                $exec = $tags->generator($tag_name, $this, $args);
                 if (!$exec InstanceOf Haanga_AST) {
                     $this->Error("Invalid output of custom filter {$tag_name}");
+                }
+                if ($exec->stack_size() >= 2 || $exec->doesPrint) {
+                    /* 
+                        The generator returned more than one statement,
+                        so we assume the output is already handled
+                        by one of those stmts.
+                    */
+                    $body->append_ast($exec);
+                    $this->ob_start--;
+                    return;
                 }
             } else {
                 $exec = hexec($function, $target);

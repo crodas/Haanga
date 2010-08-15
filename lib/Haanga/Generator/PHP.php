@@ -495,7 +495,7 @@ class Haanga_Generator_PHP
                 $code = $value;
                 break;
             default:
-                throw new Exception("Don't know how to declare {$key} = {$value} (".print_r($op[$i], TRUE));
+                throw new Exception("Don't know how to declare {$key} = {$value} (".print_r($op, TRUE));
             }
         }
 
