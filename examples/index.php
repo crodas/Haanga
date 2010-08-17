@@ -1,6 +1,7 @@
 <?php
 
 require "../lib/Haanga.php";
+#apd_set_pprof_trace('/tmp/apd/');
 $config = array(
     'cache_dir' => 'tmp/',
     'template_dir' => 'complex/',

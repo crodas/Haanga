@@ -10,7 +10,7 @@ function haanga_3b6900b2fc1304e5fbbae2d5df785169d9f530ee($vars, $return=FALSE, $
     }
     echo htmlentities($variable).'
 '.htmlentities($variable).'
-'.$variable.'
+{ '.$variable.' }
 
     '.$variable.'
     

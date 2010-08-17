@@ -228,7 +228,7 @@ class Haanga_Compiler
     {
         $this->name = $name;
 
-        $parsed = Haanga_Compiler_Lexer::init($code, $this, $file);
+        $parsed = Haanga_Compiler_Tokenizer::init($code, $this, $file);
         $code   = "";
         $this->subtemplate = FALSE;
 
@@ -351,7 +351,7 @@ class Haanga_Compiler
     {
         $oldfile    = $this->file;
         $this->file = $file;
-        $parsed = Haanga_Compiler_Lexer::init($code, $this, $file);
+        $parsed = Haanga_Compiler_Tokenizer::init($code, $this, $file);
         $body = new Haanga_AST;
         if (isset($parsed[0]) && $parsed[0]['operation'] == 'base') {
             $this->Error("{% base is not supported on inlines %}");

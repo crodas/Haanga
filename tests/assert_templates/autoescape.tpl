@@ -1,6 +1,6 @@
 {{ variable }}
 {{ variable|escape }}
-{{ variable|safe }}
+{ {{ variable|safe }} }
 {% autoescape off %}
     {{ variable }}
     {% autoescape on %}

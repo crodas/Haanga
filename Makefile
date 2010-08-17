@@ -1,7 +1,7 @@
 all: build test
 
 build:
-	plex lib/Haanga/Compiler/Lexer.lex
+	#plex lib/Haanga/Compiler/Lexer.lex
 	phplemon lib/Haanga/Compiler/Parser.y
 
 
@@ -14,4 +14,4 @@ test-fast:
 
 
 edit:
-	vim lib/Haanga/Compiler/Parser.y  lib/Haanga/Compiler/Lexer.lex -O
+	vim lib/Haanga/Compiler/Parser.y  lib/Haanga/Compiler/Tokenizer.php -O
