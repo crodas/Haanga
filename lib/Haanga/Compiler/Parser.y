@@ -87,8 +87,8 @@ code(A) ::= T_OPEN_TAG stmts(B). { if (count(B)) B['line'] = $this->lex->getLine
 code(A) ::= T_HTML(B). {
     A = array('operation' => 'html', 'html' => B, 'line' => $this->lex->getLine() ); 
 }
-code(A) ::= T_COMMENT_OPEN T_COMMENT(B). {
-    B=rtrim(B); A = array('operation' => 'comment', 'comment' => substr(B, 0, strlen(B)-2)); 
+code(A) ::= T_COMMENT(B). {
+    B=rtrim(B); A = array('operation' => 'comment', 'comment' => B); 
 } 
 code(A) ::= T_PRINT_OPEN filtered_var(B) T_PRINT_CLOSE.  {
     A = array('operation' => 'print_var', 'variable' => B, 'line' => $this->lex->getLine() ); 
@@ -345,13 +345,7 @@ fvar_or_string(A) ::= string(B).        { A = array('string' => B); }
 
 /* */
 string(A)    ::= T_STRING(B).   { A = B; }
-string(A)    ::= T_INTL string(B) T_RPARENT.      { A = B; }
-string(A)    ::= T_STRING_SINGLE_INIT  T_STRING_SINGLE_END. {  A = ""; }
-string(A)    ::= T_STRING_DOUBLE_INIT  T_STRING_DOUBLE_END. {  A = ""; }
-string(A)    ::= T_STRING_SINGLE_INIT s_content(B)  T_STRING_SINGLE_END. {  A = B; }
-string(A)    ::= T_STRING_DOUBLE_INIT s_content(B)  T_STRING_DOUBLE_END. {  A = B; }
-s_content(A) ::= s_content(B) T_STRING_CONTENT(C). { A = B.C; }
-s_content(A) ::= T_STRING_CONTENT(B). { A = B; }
+string(A)    ::= T_INTL T_STRING(B) T_RPARENT. { A = B; }
 
 /* expr */
 expr(A) ::= T_NOT expr(B). { A = array('op_expr' => 'not', B); }
