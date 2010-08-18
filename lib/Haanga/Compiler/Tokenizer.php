@@ -308,16 +308,16 @@ class Haanga_Compiler_Tokenizer
                         }
                         break;
                     default: 
-                        if (!$this->is_token_end($data[$i]) &&
-                            !isset(self::$operations[$data[$i]]) || $value[$e-1] == '.') {
-                            $this->error("Unexpected '{$data[$i]}'");
-                        }
-                        $this->value = $value;
-                        $this->token = HG_Parser::T_NUMERIC;
-                        break 4; /* break the main loop */
+                        break 2; /* break the main loop */
                     }
                 }
-                break;
+                if (!$this->is_token_end($data[$i]) &&
+                    !isset(self::$operations[$data[$i]]) || $value[$e-1] == '.') {
+                    $this->error("Unexpected '{$data[$i]}'");
+                }
+                $this->value = $value;
+                $this->token = HG_Parser::T_NUMERIC;
+                break 2;
             /* }}} */
 
             case "\n":
