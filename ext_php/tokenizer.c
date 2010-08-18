@@ -129,12 +129,12 @@ struct iTokenize {
     int free;
 
     /* init/end */
-    unsigned char * open_tag;
-    unsigned char * open_echo;
-    unsigned char * open_comment;
-    unsigned char * close_tag;
-    unsigned char * close_echo;
-    unsigned char * close_comment;
+    unsigned char open_tag[20];
+    unsigned char open_echo[20];
+    unsigned char open_comment[20];
+    unsigned char close_tag[20];
+    unsigned char close_echo[20];
+    unsigned char close_comment[20];
 
     /* current offset */
     int offset;
@@ -144,15 +144,21 @@ struct iTokenize {
 
     /* Last token information */
     int tType;
+    int tErr;
     unsigned char * tValue;
     int tLength;
 };
 
-#define HAANGA_TOKENIZER_NONE       0x00
-#define HAANGA_TOKENIZER_HTML       0x01
-#define HAANGA_TOKENIZER_ECHO       0x02
-#define HAANGA_TOKENIZER_TAG        0x03
-#define HAANGA_TOKENIZER_COMMENT    0x04
+#define HAANGA_TK_NONE       0x00
+#define HAANGA_TK_HTML       0x01
+#define HAANGA_TK_ECHO       0x02
+#define HAANGA_TK_TAG        0x03
+#define HAANGA_TK_COMMENT    0x04
+
+/* Invalid or malformed number */
+#define HAANGA_TK_ERR_NUM      0x01
+
+/* TRUE|FALSE */
 #define True    0x001
 #define False   0x002
 
@@ -160,7 +166,7 @@ static int haanga_gettoken_html(iTokenize * ztok);
 static int haanga_gettoken_main(iTokenize * ztok);
 static int _is_token_end(char z);
 
-iTokenize *  haanga_tokenizer_init(const char *z, int length, int alloc)
+iTokenize *  haanga_tk_init(const char *z, int length, int alloc)
 {
     iTokenize * ztok;
     ztok = (iTokenize *) malloc(sizeof(struct iTokenize));
@@ -184,22 +190,31 @@ iTokenize *  haanga_tokenizer_init(const char *z, int length, int alloc)
             return NULL;
         }
         strncpy(ztok->str, z, length); 
+        *(ztok->str+length) = '\0';
         ztok->free = 1;
     } else {
         ztok->str  = z;
         ztok->free = 0;
     }
 
+    strcpy(ztok->open_tag,      "{%");
+    strcpy(ztok->open_echo,     "{{");
+    strcpy(ztok->open_comment,  "{#");
+    strcpy(ztok->close_tag,     "%}");
+    strcpy(ztok->close_echo,    "}}");
+    strcpy(ztok->close_comment, "#}");
+
     ztok->tType   = 0;
     ztok->tLength = 0; 
     ztok->length  = length;
     ztok->offset  = 0;
-    ztok->state   = HAANGA_TOKENIZER_NONE;
+    ztok->tErr    = 0; /* no error (so far :P) */
+    ztok->state   = HAANGA_TK_NONE;
 
     return ztok;
 }
 
-void haanga_tokenizer_destroy(iTokenize ** ztok)
+void haanga_tk_destroy(iTokenize ** ztok)
 {
     if ((*ztok)->free) {
         free((*ztok)->str);
@@ -214,28 +229,45 @@ int haanga_gettoken(iTokenize * ztok, int * tokenType)
     int i;
     unsigned char * start;
 
-    ztok->tType = 0;
+    ztok->tType   = 0;
+    ztok->tLength = 0;
 
-    if (ztok->state == HAANGA_TOKENIZER_NONE) {
+    if (ztok->state == HAANGA_TK_NONE) {
         /* get information about the next state */
         start = ztok->str + ztok->offset; 
         if (strncmp(start, ztok->open_tag, strlen(ztok->open_tag)) == 0) {
-        } else if (strncmp(start, ztok->open_comment, strlen(ztok->open_comment)) == 0) {
+            ztok->state   = HAANGA_TK_TAG;
+            ztok->tLength = strlen(ztok->open_tag); 
+            strcpy(ztok->tValue, ztok->open_tag);
         } else if (strncmp(start, ztok->open_echo, strlen(ztok->open_echo)) == 0) {
+            ztok->state   = HAANGA_TK_ECHO;
+            ztok->tLength = strlen(ztok->open_echo); 
+            strcpy(ztok->tValue, ztok->open_echo);
+        } else if (strncmp(start, ztok->open_comment, strlen(ztok->open_comment)) == 0) {
         } else {
-            ztok->state = HAANGA_TOKENIZER_HTML;
+            ztok->state = HAANGA_TK_HTML;
         }
+
+        if (ztok->state != HAANGA_TK_HTML) {
+            ztok->offset += ztok->tLength;
+            *(ztok->tValue + ztok->tLength) = '\0';
+            return;
+        }
+
     }
 
     switch (ztok->state) {
-    case HAANGA_TOKENIZER_HTML:
+    case HAANGA_TK_HTML:
         haanga_gettoken_html(ztok);
         break;
-    case HAANGA_TOKENIZER_ECHO:
-    case HAANGA_TOKENIZER_TAG:
+    case HAANGA_TK_ECHO:
+    case HAANGA_TK_TAG:
         haanga_gettoken_main(ztok);
         break;
     }
+
+
+    *(ztok->tValue + ztok->tLength) = '\0';
 
 }
 
@@ -250,6 +282,9 @@ static int haanga_gettoken_main(iTokenize * ztok)
     token = ztok->tValue;
     start = str;
 
+    ztok->tLength = 0;
+    ztok->tErr    = 0; /* No error */
+
     for (; *str && ztok->tType == 0; str++, ztok->offset++) {
         switch (*str) {
 
@@ -263,26 +298,34 @@ static int haanga_gettoken_main(iTokenize * ztok)
                 case '5': case '6': case '7': case '8': case '9': 
                     *token = *str;
                     token++;
+                    ztok->tLength++;
                     break;
                 case '.':
                     if (dot == -1) {
                         *token = *str;
+                        ztok->tLength++;
                         token++;
                         dot = 1;
                     } else {
                         /* error */
-                        return Error;
+                        ztok->tErr = HAANGA_TK_ERR_NUM;
+                        return False;
                     }
                     break;
                 default:
+                    ztok->offset--;
                     n = 0; /* break loop */
                     break;
                 }
             }
             if (*token == '.' || !_is_token_end(*token)) {
                 /* error */
-                return Error;
+                ztok->tErr = HAANGA_TK_ERR_NUM;
+                return False;
             }
+
+            return True; /* token detected successfully */
+
         /* number }}} */
 
         default:
@@ -293,9 +336,12 @@ static int haanga_gettoken_main(iTokenize * ztok)
                     ztok->tType     = iOperatorsTable[i].tokenType;            
                     ztok->tValue[0] = *str;
                     ztok->tLength   = 1;
+                    ztok->offset++;
                     return True;
                 }
             }
+
+            return False;
         }
     }
     
@@ -321,14 +367,16 @@ static int _is_token_end(char z)
 
 static int haanga_gettoken_html(iTokenize * ztok)
 {
-    unsigned char * tag, comment, echo;
+    unsigned char *str, * tag, *comment, *echo;
     unsigned char * zLowest =-1;
     int zLength;
 
     /* Search in the HTML open tag,echo and comment */
-    tag     = strstr(ztok->str + ztok->offset, ztok->open_tag);
-    echo    = strstr(ztok->str + ztok->offset, ztok->open_echo);
-    comment = strstr(ztok->str + ztok->offset, ztok->open_comment);
+    str     = ztok->str + ztok->offset;
+    tag     = strstr(str, ztok->open_tag);
+    echo    = strstr(str, ztok->open_echo);
+    comment = strstr(str, ztok->open_comment);
+
 
     /* select the first comment */
     if (tag != NULL) {
@@ -341,8 +389,6 @@ static int haanga_gettoken_html(iTokenize * ztok)
         zLowest = comment;
     }
 
-    /* pointer to the token start */
-    ztok->tValue  = ztok->str + ztok->offset; 
 
     if (zLowest == -1) {
         /* no tags were found, everything is HTML */
@@ -351,9 +397,12 @@ static int haanga_gettoken_html(iTokenize * ztok)
         /* Length = pointer to tag - pointer to the string */
         ztok->tLength = zLowest - ztok->str;
     }
+    
+    strncpy(ztok->tValue, str, ztok->tLength); 
+    ztok->offset =+ ztok->tLength;
 
     /* reset tokenizer state */
-    ztok->state  = HAANGA_TOKENIZER_NONE;
+    ztok->state  = HAANGA_TK_NONE;
 
     return 1;
 
@@ -361,7 +410,25 @@ static int haanga_gettoken_html(iTokenize * ztok)
 
 int main()
 {
+    iTokenize * tk;
     char * str, *tmp;
+#define s "<br>\n<html>{{15+1}}\n\n{% custom tag %}"
+    tk = haanga_tk_init(s,strlen(s),1); 
+
+    haanga_gettoken(tk, NULL);
+    printf("token = %s, offset=%d\n", tk->tValue, tk->offset);
+    haanga_gettoken(tk, NULL);
+    printf("token = %s, offset=%d\n", tk->tValue, tk->offset);
+    haanga_gettoken(tk, NULL);
+    printf("token = %s, offset=%d\n", tk->tValue, tk->offset);
+    haanga_gettoken(tk, NULL);
+    printf("token = %s, offset=%d\n", tk->tValue, tk->offset);
+    haanga_gettoken(tk, NULL);
+    printf("token = %s, offset=%d\n", tk->tValue, tk->offset);
+
+    haanga_tk_destroy(&tk);
+    return;
+
     str = strdup("token end!");
     tmp = str;
     while (*str) {
