@@ -36,9 +36,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "Parser.h"
+#include <string.h>
+#include "parser.h"
 
 typedef struct Keyword Keyword;
+typedef struct Operator Operator;
 typedef struct iTokenize iTokenize;
 
 struct Keyword {
@@ -48,6 +50,13 @@ struct Keyword {
     int iNext;
 };
 
+struct Operator {
+    char zName;
+    int tokenType;
+};
+
+
+/* keywords (key sensitive) */
 static Keyword aKeywordTable[] = {
     {"block",       T_BLOCK        },
     {"load",        T_LOAD         },
@@ -77,20 +86,35 @@ static Keyword aKeywordTable[] = {
     {"_(",          T_INTL         },
 };
 
-static Keyword aOperationTable[] = {
+/* operators that has more than one letter */
+static Keyword aOperatorsTable[] = {
     {"&&",      T_AND  },
     {"===",     T_EQ   },
     {"==",      T_EQ   },
     {"->",      T_OBJ  },
     {"||",      T_OR   },
-    {"[",       T_BRACKETS_OPEN    },
-    {"]",       T_BRACKETS_CLOSE   },
-    {"-",       T_MINUS },
-    {"+",       T_PLUS  },
-    {"*",       T_TIMES },
-    {"/",       T_DIV   },
-    {":",       T_DIV   },
-    {".",       T_DOT   },
+    {"<=",      T_LE   },
+    {">=",      T_GE   },
+    {"!=",      T_NE   },
+};
+
+static Operator iOperatorsTable[] = {
+    {'<',   T_LT                },
+    {'>',   T_GT                },
+    {',',   T_COMMA             },
+    {'(',   T_LPARENT           },
+    {')',   T_RPARENT           },
+    {'%',   T_MOD               },
+    {'!',   T_NOT               },
+    {'|',   T_PIPE              },
+    {'+',   T_PLUS              },
+    {'-',   T_MINUS             },
+    {'*',   T_TIMES             },
+    {'/',   T_DIV               },
+    {'.',   T_DOT               },
+    {':',   T_COLON             },
+    {'[',   T_BRACKETS_OPEN     },
+    {']',   T_BRACKETS_CLOSE    },
 };
 
 
@@ -129,10 +153,9 @@ struct iTokenize {
 #define HAANGA_TOKENIZER_TAG        0x03
 #define HAANGA_TOKENIZER_COMMENT    0x04
 
-#define KEY_HASH_SIZE   101
-static int aiHashTable[KEY_HASH_SIZE];
-
 static int haanga_gettoken_html(iTokenize * ztok);
+static int haanga_gettoken_main(iTokenize * ztok);
+static int _is_token_end(char z);
 
 iTokenize *  haanga_tokenizer_init(const char *z, int length, int alloc)
 {
@@ -194,9 +217,68 @@ int haanga_gettoken(iTokenize * ztok, int * tokenType)
         break;
     case HAANGA_TOKENIZER_ECHO:
     case HAANGA_TOKENIZER_TAG:
+        haanga_gettoken_main(ztok);
         break;
     }
 
+}
+
+static int haanga_gettoken_main(iTokenize * ztok)
+{
+    unsigned char * str;
+    unsigned char * start;
+    int dot = -1;
+
+    str   = ztok->str + ztok->offset;
+    start = str;
+
+    for (; *str; str++, ztok->offset++) {
+        switch (*str) {
+
+        /* number {{{ */
+        case '0': case '1': case '2': case '3': case '4':
+        case '5': case '6': case '7': case '8': case '9': 
+            for (; *str; str++, ztok->offset++) {
+                switch (*str) {
+                case '0': case '1': case '2': case '3': case '4':
+                case '5': case '6': case '7': case '8': case '9': 
+                    break;
+                case '.':
+                    if (dot == -1) {
+                        dot = 1;
+                    } else {
+                        /* error */
+                    }
+                    break;
+                default:
+                    if (*(str-1) == '.') {
+                        /* error */
+                    }
+                }
+            }
+        /* number }}} */
+
+        }
+    }
+    
+}
+
+/**
+ *  Return 1 if the character is considered as "token end" (not 
+ *  part of a valid ID). It is useful to avoid treat TRUEfoo (T_ALPHA) as 
+ *  TRUE (T_TRUE) and foo (T_ALPHA);
+ *
+ *  @crodas
+ */
+static int _is_token_end(char z)
+{
+    /* [^a-zA-Z0-9_] */
+    return !(
+        ('a' <= z && 'z' >= z) ||
+        ('A' <= z && 'Z' >= z) || 
+        ('0' <= z && '9' >= z) || 
+        z == '_' 
+    );
 }
 
 static int haanga_gettoken_html(iTokenize * ztok)
@@ -237,4 +319,16 @@ static int haanga_gettoken_html(iTokenize * ztok)
 
     return 1;
 
+}
+
+int main()
+{
+    char * str, *tmp;
+    str = strdup("token end!");
+    tmp = str;
+    while (*str) {
+        printf("%c %d\n", *str, _is_token_end(*str));
+        str++;
+    }
+    free(tmp);
 }
