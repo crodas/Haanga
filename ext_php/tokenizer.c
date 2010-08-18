@@ -51,7 +51,7 @@ struct Keyword {
 };
 
 struct Operator {
-    char zName;
+    char zOp;
     int tokenType;
 };
 
@@ -143,6 +143,7 @@ struct iTokenize {
     int state;
 
     /* Last token information */
+    int tType;
     unsigned char * tValue;
     int tLength;
 };
@@ -152,6 +153,8 @@ struct iTokenize {
 #define HAANGA_TOKENIZER_ECHO       0x02
 #define HAANGA_TOKENIZER_TAG        0x03
 #define HAANGA_TOKENIZER_COMMENT    0x04
+#define True    0x001
+#define False   0x002
 
 static int haanga_gettoken_html(iTokenize * ztok);
 static int haanga_gettoken_main(iTokenize * ztok);
@@ -166,9 +169,17 @@ iTokenize *  haanga_tokenizer_init(const char *z, int length, int alloc)
         return NULL;
     }
 
+    ztok->tValue = malloc((length+2) * sizeof(char));
+    if (ztok->tValue == NULL) {
+        free(ztok);
+        return NULL;
+    }
+
+
     if (alloc) {
         ztok->str = (unsigned char *) malloc((length+2) * sizeof(char));
         if (ztok->str == NULL) {
+            free(ztok->tValue);
             free(ztok);
             return NULL;
         }
@@ -179,9 +190,11 @@ iTokenize *  haanga_tokenizer_init(const char *z, int length, int alloc)
         ztok->free = 0;
     }
 
-    ztok->length = length;
-    ztok->offset = 0;
-    ztok->state  = HAANGA_TOKENIZER_NONE;
+    ztok->tType   = 0;
+    ztok->tLength = 0; 
+    ztok->length  = length;
+    ztok->offset  = 0;
+    ztok->state   = HAANGA_TOKENIZER_NONE;
 
     return ztok;
 }
@@ -191,6 +204,7 @@ void haanga_tokenizer_destroy(iTokenize ** ztok)
     if ((*ztok)->free) {
         free((*ztok)->str);
     }
+    free((*ztok)->tValue);
     free(*ztok);
     *ztok = NULL;
 }
@@ -199,6 +213,8 @@ int haanga_gettoken(iTokenize * ztok, int * tokenType)
 {
     int i;
     unsigned char * start;
+
+    ztok->tType = 0;
 
     if (ztok->state == HAANGA_TOKENIZER_NONE) {
         /* get information about the next state */
@@ -226,38 +242,60 @@ int haanga_gettoken(iTokenize * ztok, int * tokenType)
 static int haanga_gettoken_main(iTokenize * ztok)
 {
     unsigned char * str;
-    unsigned char * start;
+    unsigned char * start, *token;
     int dot = -1;
+    int n,i;
 
     str   = ztok->str + ztok->offset;
+    token = ztok->tValue;
     start = str;
 
-    for (; *str; str++, ztok->offset++) {
+    for (; *str && ztok->tType == 0; str++, ztok->offset++) {
         switch (*str) {
 
         /* number {{{ */
         case '0': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9': 
-            for (; *str; str++, ztok->offset++) {
+            n = 1;
+            for (; n && *str; str++, ztok->offset++) {
                 switch (*str) {
                 case '0': case '1': case '2': case '3': case '4':
                 case '5': case '6': case '7': case '8': case '9': 
+                    *token = *str;
+                    token++;
                     break;
                 case '.':
                     if (dot == -1) {
+                        *token = *str;
+                        token++;
                         dot = 1;
                     } else {
                         /* error */
+                        return Error;
                     }
                     break;
                 default:
-                    if (*(str-1) == '.') {
-                        /* error */
-                    }
+                    n = 0; /* break loop */
+                    break;
                 }
+            }
+            if (*token == '.' || !_is_token_end(*token)) {
+                /* error */
+                return Error;
             }
         /* number }}} */
 
+        default:
+
+            n = sizeof(iOperatorsTable)/sizeof(iOperatorsTable[0]);
+            for (i=0; i < n; i++) {
+                if (iOperatorsTable[i].zOp == *str) {
+                    ztok->tType     = iOperatorsTable[i].tokenType;            
+                    ztok->tValue[0] = *str;
+                    ztok->tLength   = 1;
+                    return True;
+                }
+            }
         }
     }
     
@@ -330,5 +368,6 @@ int main()
         printf("%c %d\n", *str, _is_token_end(*str));
         str++;
     }
+    printf("%d", sizeof(iOperatorsTable)/sizeof(iOperatorsTable[0]));
     free(tmp);
 }
