@@ -1,0 +1,7 @@
+Experimental feature
+
++ Attempt to move Haanga Tokenizer and Parser as a PHP extension (much faster than PHP code)
+
+Do not use this code yet
+
+@crodas 
