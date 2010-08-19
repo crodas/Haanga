@@ -11,7 +11,7 @@ function haanga_7c948c919295fb106667df66f458e608eb775422($vars, $return=FALSE, $
     echo htmlentities(strtoupper($var)).'
 '.htmlentities(strtolower(strtoupper($var))).'
 '.htmlentities(str_replace('u', '', $var)).'
-'.(is_array($var) ? count($var) : strlen($var)).'
+'.strlen($var).'
 '.htmlentities(strtoupper((empty($foobar) == TRUE ? 'default value' : $foobar))).'
 ';
     $buffer1  = '
