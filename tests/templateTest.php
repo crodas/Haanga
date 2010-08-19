@@ -18,6 +18,22 @@ class templateTest extends PHPUnit_Framework_TestCase
     /** 
      * @dataProvider tplProvider
      */
+    public function testLambda($test_file, $data, $expected)
+    {
+        if ($test_file == 'assert_templates/strip_whitespace.tpl') {
+            Haanga_Compiler::setOption('strip_whitespace', TRUE);
+            $expected = rtrim($expected). ' '; /* weird output */
+        } else {
+            Haanga_Compiler::setOption('strip_whitespace', FALSE);
+        }
+        $callback = Haanga::compile(file_get_contents($test_file), $data);
+        $output   = $callback($data);
+        $this->assertEquals($output, $expected);
+    }
+
+    /** 
+     * @dataProvider tplProvider
+     */
     public function testRuntime($test_file, $data, $expected)
     {
         if ($test_file == 'assert_templates/strip_whitespace.tpl') {

@@ -11,31 +11,31 @@ function haanga_ce9ab0a21d381cdfd181f6d4b9c01a720d4c7320($vars, $return=FALSE, $
     foreach ($array as  $user) {
         echo '
     ';
-        if (isset($def_cycle_0) == FALSE) {
-            $def_cycle_0  = Array('uno', 'dos', 'tres');
+        if (isset($def_cycle_6) == FALSE) {
+            $def_cycle_6  = Array('uno', 'dos', 'tres');
         }
-        $index_0  = (isset($index_0) == FALSE ? 0 : ($index_0 + 1) % count($def_cycle_0));
-        echo $def_cycle_0[$index_0].'
+        $index_6  = (isset($index_6) == FALSE ? 0 : ($index_6 + 1) % count($def_cycle_6));
+        echo $def_cycle_6[$index_6].'
 ';
     }
     echo '
 -----------------------------------------------
 ';
-    $def_cycle_1  = Array('uno', 'dos', 'tres');
-    $index_1  = -1;
+    $def_cycle_7  = Array('uno', 'dos', 'tres');
+    $index_7  = -1;
     echo '
 ';
-    $index_1  = ($index_1 + 1) % count($def_cycle_1);
-    echo $def_cycle_1[$index_1].'
+    $index_7  = ($index_7 + 1) % count($def_cycle_7);
+    echo $def_cycle_7[$index_7].'
 ';
-    $index_1  = ($index_1 + 1) % count($def_cycle_1);
-    echo $def_cycle_1[$index_1].'
+    $index_7  = ($index_7 + 1) % count($def_cycle_7);
+    echo $def_cycle_7[$index_7].'
 ';
-    $index_1  = ($index_1 + 1) % count($def_cycle_1);
-    echo $def_cycle_1[$index_1].'
+    $index_7  = ($index_7 + 1) % count($def_cycle_7);
+    echo $def_cycle_7[$index_7].'
 ';
-    $index_1  = ($index_1 + 1) % count($def_cycle_1);
-    echo $def_cycle_1[$index_1].'
+    $index_7  = ($index_7 + 1) % count($def_cycle_7);
+    echo $def_cycle_7[$index_7].'
 ';
     if ($return == TRUE) {
         return ob_get_clean();
