@@ -354,14 +354,10 @@ static int haanga_gettoken_main(iTokenize * ztok)
             SWITCH_STATE_IF(str, ztok->close_echo, T_PRINT_CLOSE,  NONE, 1);
 
             /* try to get keyword */
-            if (_get_keyword(str, aKeywordTable, sizeof(aKeywordTable)/sizeof(aKeywordTable[0]), &ztok->tType, &ztok->tLength) == True && _is_token_end(*(str+ztok->tLength))) {
+            if (_get_keyword(str, aKeywordTable, sizeof(aKeywordTable)/sizeof(aKeywordTable[0]), &ztok->tType, &ztok->tLength) == True) {
                 ztok->offset += ztok->tLength;
                 strncpy(ztok->tValue, str, ztok->tLength);
                 return True;
-            } else {
-                /* reset values */
-                ztok->tType = 0; 
-                ztok->tLength = 0; 
             }
 
             n = sizeof(iOperatorsTable)/sizeof(iOperatorsTable[0]);
@@ -431,13 +427,13 @@ static int _get_keyword(unsigned char *z, Keyword * table, int n, int * token, i
 {
     int i;
     for (i=0; i < n; i++) {
-        if (strncmp(z, table[i].zName, strlen(table[i].zName)) == 0) {
-            *len   = strlen(table[i].zName);
+        *len = strlen(table[i].zName); 
+        if (strncmp(z, table[i].zName, *len) == 0 && _is_token_end(*(z+ *len))) {
             *token = table[i].tokenType;
             return True;
         }
     }
-
+    *len = 0;
     return False;
 }
 
