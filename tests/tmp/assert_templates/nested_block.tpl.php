@@ -3,7 +3,7 @@ $HAANGA_VERSION  = '1.0.3';
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/nested_block.tpl */
 function haanga_57c4ad33715ae7aa88250c99f9339224979afde7($vars, $return=FALSE, $blocks=array())
 {
-    global $test_global;
+    global $test_global, $global1;
     extract($vars);
     if ($return == TRUE) {
         ob_start();

@@ -3,7 +3,7 @@ $HAANGA_VERSION  = '1.0.3';
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/inheritence_nested_block_duplicated.tpl */
 function haanga_2f06ae0d3b252465fa65c3a02cc1ebab4d90396f($vars, $return=FALSE, $blocks=array())
 {
-    global $test_global;
+    global $test_global, $global1;
     extract($vars);
     if ($return == TRUE) {
         ob_start();

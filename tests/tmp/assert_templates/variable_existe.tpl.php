@@ -3,7 +3,7 @@ $HAANGA_VERSION  = '1.0.3';
 /* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/variable_existe.tpl */
 function haanga_d0e8258f9bf65ffe46eddfe8347bb2467fc069ea($vars, $return=FALSE, $blocks=array())
 {
-    global $test_global;
+    global $test_global, $global1;
     extract($vars);
     if ($return == TRUE) {
         ob_start();
