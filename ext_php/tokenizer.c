@@ -354,10 +354,14 @@ static int haanga_gettoken_main(iTokenize * ztok)
             SWITCH_STATE_IF(str, ztok->close_echo, T_PRINT_CLOSE,  NONE, 1);
 
             /* try to get keyword */
-            if (_get_keyword(str, aKeywordTable, sizeof(aKeywordTable)/sizeof(aKeywordTable[0]), &ztok->tType, &ztok->tLength) == True) {
+            if (_get_keyword(str, aKeywordTable, sizeof(aKeywordTable)/sizeof(aKeywordTable[0]), &ztok->tType, &ztok->tLength) == True && _is_token_end(*(str+ztok->tLength))) {
                 ztok->offset += ztok->tLength;
                 strncpy(ztok->tValue, str, ztok->tLength);
                 return True;
+            } else {
+                /* reset values */
+                ztok->tType = 0; 
+                ztok->tLength = 0; 
             }
 
             n = sizeof(iOperatorsTable)/sizeof(iOperatorsTable[0]);
@@ -462,12 +466,12 @@ int main()
     iTokenize * tk;
     char * str, *tmp;
     int i;
-#define s "<br>\n<html><title>foobar</title>{{  15   +1 }}\ncesar\n{{ 9.4545 * (9211.442 / 2)}}{% load  \"cesar.html\" %} cesar"
+#define s "<br>\n<html><title>foobar</title>{{  15   +1 }}\ncesar\n{{ 9.4545 * (9211.442 / 2)}}{% load loading  \"cesar.html\" %} cesar"
     tk = haanga_tk_init(s,strlen(s),1); 
 
-    for (i=0; i < 20; i++) {
+    for (i=0; i < 22; i++) {
         haanga_gettoken(tk, NULL);
-        printf("token = (%d, %s)\n", tk->tType, tk->tValue, tk->offset);
+        printf("token = (%d, %s)\toffset=%d\n", tk->tType, tk->tValue, tk->offset);
     }
 
     haanga_tk_destroy(&tk);
