@@ -365,18 +365,19 @@ class Haanga
                     ** load it 
                     */
                     require $php;
-                    return $callback($vars, $return, $blocks);
+                    if (is_callable($callback)) {
+                        return $callback($vars, $return, $blocks);
+                    }
                 }
                 /*
                 ** no luck, probably the template is new
                 ** the compilation will be done, but we won't
-                ** save
+                ** save it (we'll use eval instead)
                 */
                 unset($fp);
             }
 
             /* recompile */
-
             $compiler = self::getCompiler();
 
             if (self::$debug) {
@@ -387,8 +388,12 @@ class Haanga
                 $code = $compiler->compile_file($tpl, FALSE, $vars);
             } catch (Exception $e) {
                 if (isset($fp)) {
-                    fclose($fp);
-                    unlink($php);
+                    /*
+                    ** set the $php file as old (to force future
+                    ** recompilation)
+                    */
+                    touch($php, 300, 300);
+                    chmod($php, 0777);
                 }
                 /* re-throw exception */
                 throw $e;
@@ -403,11 +408,22 @@ class Haanga
                 /* local eval */
                 eval($code);
             }
+
             self::$has_compiled = TRUE;
         }
 
         if (!is_callable($callback)) {
+            /* Load the cached PHP file */
             require $php;
+            if (!is_callable($callback)) {
+                /* 
+                   really weird case ($php is empty, another process is compiling
+                   the $tpl for the first time), so create a lambda function
+                   for the template
+                 */
+                $lambda= self::compile(file_get_contents($tpl), $vars);
+                return $lambda($vars, $return, $blocks);
+            }
         }
 
         if (!isset($HAANGA_VERSION) || $HAANGA_VERSION != HAANGA_VERSION) {
