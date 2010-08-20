@@ -15,10 +15,7 @@ class templateTest extends PHPUnit_Framework_TestCase
         TestSuite::init();
     }
 
-    /** 
-     * @dataProvider tplProvider
-     */
-    public function testLambda($test_file, $data, $expected)
+    public function init($test_file, &$expected)
     {
         if ($test_file == 'assert_templates/strip_whitespace.tpl') {
             Haanga_Compiler::setOption('strip_whitespace', TRUE);
@@ -26,6 +23,14 @@ class templateTest extends PHPUnit_Framework_TestCase
         } else {
             Haanga_Compiler::setOption('strip_whitespace', FALSE);
         }
+    }
+
+    /** 
+     * @dataProvider tplProvider
+     */
+    public function testLambda($test_file, $data, $expected)
+    {
+        $this->init($test_file, $expected);
         $callback = Haanga::compile(file_get_contents($test_file), $data);
         $output   = $callback($data);
         $this->assertEquals($output, $expected);
@@ -36,12 +41,7 @@ class templateTest extends PHPUnit_Framework_TestCase
      */
     public function testRuntime($test_file, $data, $expected)
     {
-        if ($test_file == 'assert_templates/strip_whitespace.tpl') {
-            Haanga_Compiler::setOption('strip_whitespace', TRUE);
-            $expected = rtrim($expected). ' '; /* weird output */
-        } else {
-            Haanga_Compiler::setOption('strip_whitespace', FALSE);
-        }
+        $this->init($test_file, $expected);
         $output = Haanga::Load($test_file, $data, TRUE);
         $this->assertEquals($output, $expected);
     }
@@ -52,12 +52,7 @@ class templateTest extends PHPUnit_Framework_TestCase
     public function testIsCached($test_file, $data, $expected)
     {
         /* same as above, but we ensure that the file wasn't compiled */
-        if ($test_file == 'assert_templates/strip_whitespace.tpl') {
-            Haanga_Compiler::setOption('strip_whitespace', TRUE);
-            $expected = rtrim($expected). ' '; /* weird output */
-        } else {
-            Haanga_Compiler::setOption('strip_whitespace', FALSE);
-        }
+        $this->init($test_file, $expected);
         $output = Haanga::Load($test_file, $data, TRUE);
         $this->assertEquals($output, $expected);
         $this->assertFalse(Haanga::$has_compiled);
