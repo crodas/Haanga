@@ -1,9 +1,9 @@
 <?php
 
-require "lib/Haanga.php";
+require "../lib/Haanga.php";
 
 $fnc = Haanga::compile(<<<EOT
-    <h1>{{foobar}}</h1>
+    <h1>{{foobar}}{{    foobar  }}</h1>
 
     Este template será compilado a una función PHP ({{foo|default:foobar}})
 
