@@ -165,10 +165,20 @@ struct iTokenize {
 #define True    0x001
 #define False   0x002
 
+#define SWITCH_STATE_IF(str, token, type, new_state, do_return) \
+    if (strncmp(str, token, strlen(token)) == 0) { \
+        ztok->tType   = type; \
+        ztok->state   = HAANGA_TK_##new_state;  \
+        ztok->tLength = strlen(token);  \
+        strcpy(ztok->tValue,  token); \
+        if (do_return) return True; \
+    }
+
 static int haanga_gettoken_html(iTokenize * ztok);
 static int haanga_gettoken_main(iTokenize * ztok);
 static int _is_token_end(char z);
 static unsigned char * _get_first_occurrence(unsigned char * z, int n, ...);
+static int _get_keyword(unsigned char *z, Keyword * table, int n, int * token, int * len);
 
 iTokenize *  haanga_tk_init(const char *z, int length, int alloc)
 {
@@ -240,18 +250,14 @@ int haanga_gettoken(iTokenize * ztok, int * tokenType)
     if (ztok->state == HAANGA_TK_NONE) {
         /* get information about the next state */
         start = ztok->str + ztok->offset; 
-        if (strncmp(start, ztok->open_tag, strlen(ztok->open_tag)) == 0) {
-            ztok->tType   = T_OPEN_TAG;
-            ztok->state   = HAANGA_TK_TAG;
-            ztok->tLength = strlen(ztok->open_tag); 
-            strcpy(ztok->tValue, ztok->open_tag);
-        } else if (strncmp(start, ztok->open_echo, strlen(ztok->open_echo)) == 0) {
-            ztok->tType   = T_PRINT_OPEN;
-            ztok->state   = HAANGA_TK_ECHO;
-            ztok->tLength = strlen(ztok->open_echo); 
-            strcpy(ztok->tValue, ztok->open_echo);
-        } else if (strncmp(start, ztok->open_comment, strlen(ztok->open_comment)) == 0) {
-        } else {
+
+        /* select correct state */
+        SWITCH_STATE_IF(start, ztok->open_tag,  T_OPEN_TAG,  TAG,0);
+        SWITCH_STATE_IF(start, ztok->open_comment, T_COMMENT, COMMENT, 0);
+        SWITCH_STATE_IF(start, ztok->open_echo, T_PRINT_OPEN, ECHO, 0);
+
+        if (ztok->tType == 0) {
+            /* by default */
             ztok->state = HAANGA_TK_HTML;
         }
 
@@ -344,20 +350,13 @@ static int haanga_gettoken_main(iTokenize * ztok)
 
         default:
             /* look for end tags */
-            if (strncmp(str, ztok->close_tag, strlen(ztok->close_tag)) == 0) {
-                ztok->tType   = T_CLOSE_TAG;
-                ztok->tLength = strlen(ztok->close_tag); 
-                ztok->state   = HAANGA_TK_NONE; /* reset state */
-                ztok->offset += ztok->tLength;
-                strcpy(ztok->tValue, ztok->close_tag);
-                return True;
-            } else if (strncmp(str, ztok->close_echo, strlen(ztok->close_echo)) == 0) {
-                ztok->tType   = T_PRINT_CLOSE;
-                ztok->tLength = strlen(ztok->close_echo); 
-                ztok->state   = HAANGA_TK_NONE; /* reset state */
-                ztok->offset += ztok->tLength;
-                strcpy(ztok->tValue, ztok->close_echo);
+            SWITCH_STATE_IF(str, ztok->close_tag,  T_CLOSE_TAG,    NONE, 1);
+            SWITCH_STATE_IF(str, ztok->close_echo, T_PRINT_CLOSE,  NONE, 1);
 
+            /* try to get keyword */
+            if (_get_keyword(str, aKeywordTable, sizeof(aKeywordTable)/sizeof(aKeywordTable[0]), &ztok->tType, &ztok->tLength) == True) {
+                ztok->offset += ztok->tLength;
+                strncpy(ztok->tValue, str, ztok->tLength);
                 return True;
             }
 
@@ -424,6 +423,21 @@ static int haanga_gettoken_html(iTokenize * ztok)
     return True;
 }
 
+static int _get_keyword(unsigned char *z, Keyword * table, int n, int * token, int * len)
+{
+    int i;
+    for (i=0; i < n; i++) {
+        if (strncmp(z, table[i].zName, strlen(table[i].zName)) == 0) {
+            *len   = strlen(table[i].zName);
+            *token = table[i].tokenType;
+            return True;
+        }
+    }
+
+    return False;
+}
+
+
 static unsigned char * _get_first_occurrence(unsigned char * z, int n, ...)
 {
     unsigned char * zLowest = NULL, *tmp, *ptr;
@@ -448,12 +462,12 @@ int main()
     iTokenize * tk;
     char * str, *tmp;
     int i;
-#define s "<br>\n<html><title>foobar</title>{{  15   +1 }}\ncesar\n{% custom tag %} cesar"
+#define s "<br>\n<html><title>foobar</title>{{  15   +1 }}\ncesar\n{{ 9.4545 * (9211.442 / 2)}}{% load  \"cesar.html\" %} cesar"
     tk = haanga_tk_init(s,strlen(s),1); 
 
-    for (i=0; i < 10; i++) {
+    for (i=0; i < 20; i++) {
         haanga_gettoken(tk, NULL);
-        printf("token = (%d, %s), offset=%d\n", tk->tType, tk->tValue, tk->offset);
+        printf("token = (%d, %s)\n", tk->tType, tk->tValue, tk->offset);
     }
 
     haanga_tk_destroy(&tk);
