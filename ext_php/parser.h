@@ -1,4 +1,4 @@
-#define T_OPEN_TAG                      1
+#define T_TAG_OPEN                      1
 #define T_NOT                           2
 #define T_AND                           3
 #define T_OR                            4
@@ -19,7 +19,7 @@
 #define T_PRINT_OPEN                   19
 #define T_PRINT_CLOSE                  20
 #define T_EXTENDS                      21
-#define T_CLOSE_TAG                    22
+#define T_TAG_CLOSE                    22
 #define T_INCLUDE                      23
 #define T_AUTOESCAPE                   24
 #define T_CUSTOM_END                   25

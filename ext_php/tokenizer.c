@@ -37,13 +37,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "haanga.h"
 #include "parser.h"
 #include <stdarg.h>
 
 
 typedef struct Keyword Keyword;
 typedef struct Operator Operator;
-typedef struct iTokenize iTokenize;
 
 struct Keyword {
     char * zName;
@@ -60,97 +60,65 @@ struct Operator {
 
 /* keywords (key sensitive) */
 static Keyword aKeywordTable[] = {
-    {"block",       T_BLOCK        },
-    {"load",        T_LOAD         },
-    {"for",         T_FOR          },
-    {"empty",       T_EMPTY        },
-    {"TRUE",        T_TRUE         },
-    {"FALSE",       T_FALSE        },
     {"AND",         T_AND          },
-    {"OR",          T_OR           },
+    {"FALSE",       T_FALSE        },
     {"NOT",         T_NOT          },
-    {"not",         T_NOT          },
-    {"if",          T_IF           },
+    {"OR",          T_OR           },
+    {"TRUE",        T_TRUE         },
+    {"_(",          T_INTL         },
+    {"as",          T_AS           },
+    {"autoescape",  T_AUTOESCAPE   },
+    {"block",       T_BLOCK        },
+    {"by",          T_BY           },
     {"else",        T_ELSE         },
+    {"empty",       T_EMPTY        },
+    {"extends",     T_EXTENDS      },
+    {"filter",      T_FILTER       },
+    {"for",         T_FOR          },
+    {"if",          T_IF           },
+    {"ifchanged",   T_IFCHANGED    },
     {"ifequal",     T_IFEQUAL      },
     {"ifnotequal",  T_IFNOTEQUAL   },
-    {"ifchanged",   T_IFCHANGED    },
-    {"spacefull",   T_SPACEFULL    },
-    {"autoescape",  T_AUTOESCAPE   },
-    {"filter",      T_FILTER       },
-    {"include",     T_INCLUDE      },
     {"in",          T_IN           },
-    {"as",          T_AS           },
-    {"by",          T_BY           },
-    {"extends",     T_EXTENDS      },
+    {"include",     T_INCLUDE      },
+    {"load",        T_LOAD         },
+    {"not",         T_NOT          },
     {"regroup",     T_REGROUP      },
+    {"spacefull",   T_SPACEFULL    },
     {"with",        T_WITH         },
-    {"_(",          T_INTL         },
 };
 
 /* operators that has more than one letter */
 static Keyword aOperatorsTable[] = {
-    {"&&",      T_AND  },
-    {"===",     T_EQ   },
-    {"==",      T_EQ   },
-    {"->",      T_OBJ  },
-    {"||",      T_OR   },
-    {"<=",      T_LE   },
-    {">=",      T_GE   },
     {"!=",      T_NE   },
+    {"&&",      T_AND  },
+    {"->",      T_OBJ  },
+    {"<=",      T_LE   },
+    {"==",      T_EQ   },
+    {"===",     T_EQ   },
+    {">=",      T_GE   },
+    {"||",      T_OR   },
 };
 
 static Operator iOperatorsTable[] = {
-    {'<',   T_LT                },
-    {'>',   T_GT                },
-    {',',   T_COMMA             },
+    {'!',   T_NOT               },
+    {'%',   T_MOD               },
     {'(',   T_LPARENT           },
     {')',   T_RPARENT           },
-    {'%',   T_MOD               },
-    {'!',   T_NOT               },
-    {'|',   T_PIPE              },
-    {'+',   T_PLUS              },
-    {'-',   T_MINUS             },
     {'*',   T_TIMES             },
-    {'/',   T_DIV               },
+    {'+',   T_PLUS              },
+    {',',   T_COMMA             },
+    {'-',   T_MINUS             },
     {'.',   T_DOT               },
+    {'/',   T_DIV               },
     {':',   T_COLON             },
+    {'<',   T_LT                },
+    {'>',   T_GT                },
     {'[',   T_BRACKETS_OPEN     },
     {']',   T_BRACKETS_CLOSE    },
+    {'|',   T_PIPE              },
 };
 
-
-struct iTokenize {
-    /* string */
-    unsigned char * str; 
-
-    /* string length */
-    int length;
-    int line;
-
-    /* should be free the str? */
-    int free;
-
-    /* init/end */
-    unsigned char open_tag[20];
-    unsigned char open_echo[20];
-    unsigned char open_comment[20];
-    unsigned char close_tag[20];
-    unsigned char close_echo[20];
-    unsigned char close_comment[20];
-
-    /* current offset */
-    int offset;
-
-    /* where is the tokenizer? */
-    int state;
-
-    /* Last token information */
-    int tType;
-    int tErr;
-    unsigned char * tValue;
-    int tLength;
-};
 
 #define HAANGA_TK_NONE       0x00
 #define HAANGA_TK_HTML       0x01
@@ -170,6 +138,7 @@ struct iTokenize {
         ztok->tType   = type; \
         ztok->state   = HAANGA_TK_##new_state;  \
         ztok->tLength = strlen(token);  \
+        ztok->offset += ztok->tLength; \
         strcpy(ztok->tValue,  token); \
         if (do_return) return True; \
     }
@@ -179,6 +148,7 @@ static int haanga_gettoken_main(iTokenize * ztok);
 static int _is_token_end(char z);
 static unsigned char * _get_first_occurrence(unsigned char * z, int n, ...);
 static int _get_keyword(unsigned char *z, Keyword * table, int n, int * token, int * len);
+static int _get_id(unsigned char *z, int * len);
 
 iTokenize *  haanga_tk_init(const char *z, int length, int alloc)
 {
@@ -252,7 +222,7 @@ int haanga_gettoken(iTokenize * ztok, int * tokenType)
         start = ztok->str + ztok->offset; 
 
         /* select correct state */
-        SWITCH_STATE_IF(start, ztok->open_tag,  T_OPEN_TAG,  TAG,0);
+        SWITCH_STATE_IF(start, ztok->open_tag,  T_TAG_OPEN,  TAG,0);
         SWITCH_STATE_IF(start, ztok->open_comment, T_COMMENT, COMMENT, 0);
         SWITCH_STATE_IF(start, ztok->open_echo, T_PRINT_OPEN, ECHO, 0);
 
@@ -262,7 +232,6 @@ int haanga_gettoken(iTokenize * ztok, int * tokenType)
         }
 
         if (ztok->state != HAANGA_TK_HTML) {
-            ztok->offset += ztok->tLength;
             *(ztok->tValue + ztok->tLength) = '\0';
             return;
         }
@@ -350,11 +319,19 @@ static int haanga_gettoken_main(iTokenize * ztok)
 
         default:
             /* look for end tags */
-            SWITCH_STATE_IF(str, ztok->close_tag,  T_CLOSE_TAG,    NONE, 1);
+            SWITCH_STATE_IF(str, ztok->close_tag,  T_TAG_CLOSE,    NONE, 1);
             SWITCH_STATE_IF(str, ztok->close_echo, T_PRINT_CLOSE,  NONE, 1);
 
             /* try to get keyword */
             if (_get_keyword(str, aKeywordTable, sizeof(aKeywordTable)/sizeof(aKeywordTable[0]), &ztok->tType, &ztok->tLength) == True) {
+                ztok->offset += ztok->tLength;
+                strncpy(ztok->tValue, str, ztok->tLength);
+                return True;
+            }
+
+            /* try to get a identifier */
+            if (_get_id(str, &ztok->tLength) == True) {
+                ztok->tType   = T_ALPHA;
                 ztok->offset += ztok->tLength;
                 strncpy(ztok->tValue, str, ztok->tLength);
                 return True;
@@ -368,6 +345,9 @@ static int haanga_gettoken_main(iTokenize * ztok)
                     ztok->tLength   = 1;
                     ztok->offset++;
                     return True;
+                }
+                if (iOperatorsTable[i].zOp > *str) {
+                    break;
                 }
             }
 
@@ -412,10 +392,14 @@ static int haanga_gettoken_html(iTokenize * ztok)
         /* Length = pointer to tag - pointer to the string */
         ztok->tLength = zLowest - str;
     }
-    
+
     strncpy(ztok->tValue, str, ztok->tLength); 
     ztok->offset += ztok->tLength;
     ztok->tType  = T_HTML;
+
+    if (ztok->tLength == 0) {
+        ztok->tType = 0;
+    }
 
     /* reset tokenizer state */
     ztok->state  = HAANGA_TK_NONE;
@@ -425,18 +409,51 @@ static int haanga_gettoken_html(iTokenize * ztok)
 
 static int _get_keyword(unsigned char *z, Keyword * table, int n, int * token, int * len)
 {
-    int i;
+    int i, loop=1;
     for (i=0; i < n; i++) {
         *len = strlen(table[i].zName); 
-        if (strncmp(z, table[i].zName, *len) == 0 && _is_token_end(*(z+ *len))) {
-            *token = table[i].tokenType;
-            return True;
+        switch (strncmp(z, table[i].zName, *len)) {
+        case -1:
+            i = n; /* break loop */
+            break;
+        case 0:
+            if (_is_token_end(*(z+ *len))) {
+                *token = table[i].tokenType;
+                return True;
+            }
+            return False;
         }
     }
-    *len = 0;
+
+    /* custom end */
+    if (strncmp(z, "end", 3) == 0 && _get_id(z, len) == True) {
+        *token = T_CUSTOM_END;
+        return True;
+    }
+
+    *len   = 0;
+    *token = 0;
     return False;
 }
 
+/* [a-zA-Z_][a-zA-Z0-9_]* */
+static int _get_id(unsigned char *z, int * len)
+{
+    int i;
+    if (  !('a' <= *z && 'z' >= *z) &&
+        !('A' <= *z && 'Z' >= *z) && *z != '_') {
+        return False;
+    }
+
+    for (*len=0; *z; z++, *len+=1) {
+        if ( !('a' <= *z && 'z' >= *z) && !('A' <= *z && 'Z' >= *z) && 
+             !('0' <= *z && '9' >= *z) && *z != "_") {
+            break;
+        }
+    }
+
+    return *len == 0 ? False : True;
+}
 
 static unsigned char * _get_first_occurrence(unsigned char * z, int n, ...)
 {
@@ -457,12 +474,14 @@ static unsigned char * _get_first_occurrence(unsigned char * z, int n, ...)
     return zLowest; 
 }
 
+/**
+
 int main()
 {
     iTokenize * tk;
     char * str, *tmp;
     int i;
-#define s "<br>\n<html><title>foobar</title>{{  15   +1 }}\ncesar\n{{ 9.4545 * (9211.442 / 2)}}{% load loading  \"cesar.html\" %} cesar"
+#define s "<br>\n<html><title>foobar</title>{{ 15   +1 }}\ncesar\n{{ 9.4545 * (9211.442 / 2)}}{% load loading endfoo  \"cesar.html\" %} cesar"
     tk = haanga_tk_init(s,strlen(s),1); 
 
     for (i=0; i < 22; i++) {
@@ -482,3 +501,4 @@ int main()
     printf("%d", sizeof(iOperatorsTable)/sizeof(iOperatorsTable[0]));
     free(tmp);
 }
+**/

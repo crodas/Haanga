@@ -4,7 +4,7 @@
 /* First off, code is included that follows the "include" declaration
 ** in the input grammar file. */
 #include <stdio.h>
-#line 2 "parser.y"
+#line 2 "parser-source.y"
 
 /*
   +---------------------------------------------------------------------------------+
@@ -41,7 +41,7 @@
   | Authors: César Rodas <crodas@php.net>                                           |
   +---------------------------------------------------------------------------------+
 */
-#line 45 "parser.c"
+#line 45 "parser-source.c"
 /* Next is all token values, in a form suitable for use by makeheaders.
 ** This section will be null unless lemon is run with the -m switch.
 */
@@ -548,12 +548,12 @@ void Haanga_Trace(FILE *TraceFILE, char *zTracePrompt){
 /* For tracing shifts, the names of all terminals and nonterminals
 ** are required.  The following table supplies these names */
 static const char *const yyTokenName[] = { 
-  "$",             "T_OPEN_TAG",    "T_NOT",         "T_AND",       
+  "$",             "T_TAG_OPEN",    "T_NOT",         "T_AND",       
   "T_OR",          "T_EQ",          "T_NE",          "T_GT",        
   "T_GE",          "T_LT",          "T_LE",          "T_IN",        
   "T_PLUS",        "T_MINUS",       "T_TIMES",       "T_DIV",       
   "T_MOD",         "T_HTML",        "T_COMMENT",     "T_PRINT_OPEN",
-  "T_PRINT_CLOSE",  "T_EXTENDS",     "T_CLOSE_TAG",   "T_INCLUDE",   
+  "T_PRINT_CLOSE",  "T_EXTENDS",     "T_TAG_CLOSE",   "T_INCLUDE",   
   "T_AUTOESCAPE",  "T_CUSTOM_END",  "T_CUSTOM_TAG",  "T_AS",        
   "T_CUSTOM_BLOCK",  "T_SPACEFULL",   "T_WITH",        "T_LOAD",      
   "T_FOR",         "T_COMMA",       "T_EMPTY",       "T_IF",        
@@ -579,51 +579,51 @@ static const char *const yyRuleName[] = {
  /*   0 */ "start ::= body",
  /*   1 */ "body ::= body code",
  /*   2 */ "body ::=",
- /*   3 */ "code ::= T_OPEN_TAG stmts",
+ /*   3 */ "code ::= T_TAG_OPEN stmts",
  /*   4 */ "code ::= T_HTML",
  /*   5 */ "code ::= T_COMMENT",
  /*   6 */ "code ::= T_PRINT_OPEN filtered_var T_PRINT_CLOSE",
- /*   7 */ "stmts ::= T_EXTENDS var_or_string T_CLOSE_TAG",
- /*   8 */ "stmts ::= stmt T_CLOSE_TAG",
+ /*   7 */ "stmts ::= T_EXTENDS var_or_string T_TAG_CLOSE",
+ /*   8 */ "stmts ::= stmt T_TAG_CLOSE",
  /*   9 */ "stmts ::= for_stmt",
  /*  10 */ "stmts ::= ifchanged_stmt",
  /*  11 */ "stmts ::= block_stmt",
  /*  12 */ "stmts ::= filter_stmt",
  /*  13 */ "stmts ::= if_stmt",
- /*  14 */ "stmts ::= T_INCLUDE var_or_string T_CLOSE_TAG",
+ /*  14 */ "stmts ::= T_INCLUDE var_or_string T_TAG_CLOSE",
  /*  15 */ "stmts ::= custom_tag",
  /*  16 */ "stmts ::= alias",
  /*  17 */ "stmts ::= ifequal",
- /*  18 */ "stmts ::= T_AUTOESCAPE varname T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
- /*  19 */ "custom_tag ::= T_CUSTOM_TAG T_CLOSE_TAG",
- /*  20 */ "custom_tag ::= T_CUSTOM_TAG T_AS varname T_CLOSE_TAG",
- /*  21 */ "custom_tag ::= T_CUSTOM_TAG params T_CLOSE_TAG",
- /*  22 */ "custom_tag ::= T_CUSTOM_TAG params T_AS varname T_CLOSE_TAG",
- /*  23 */ "custom_tag ::= T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
- /*  24 */ "custom_tag ::= T_CUSTOM_BLOCK params T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
- /*  25 */ "custom_tag ::= T_SPACEFULL T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
- /*  26 */ "alias ::= T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
+ /*  18 */ "stmts ::= T_AUTOESCAPE varname T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
+ /*  19 */ "custom_tag ::= T_CUSTOM_TAG T_TAG_CLOSE",
+ /*  20 */ "custom_tag ::= T_CUSTOM_TAG T_AS varname T_TAG_CLOSE",
+ /*  21 */ "custom_tag ::= T_CUSTOM_TAG params T_TAG_CLOSE",
+ /*  22 */ "custom_tag ::= T_CUSTOM_TAG params T_AS varname T_TAG_CLOSE",
+ /*  23 */ "custom_tag ::= T_CUSTOM_BLOCK T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
+ /*  24 */ "custom_tag ::= T_CUSTOM_BLOCK params T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
+ /*  25 */ "custom_tag ::= T_SPACEFULL T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
+ /*  26 */ "alias ::= T_WITH varname T_AS varname T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
  /*  27 */ "stmt ::= regroup",
  /*  28 */ "stmt ::= T_LOAD string",
- /*  29 */ "for_def ::= T_FOR varname T_IN filtered_var T_CLOSE_TAG",
- /*  30 */ "for_def ::= T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG",
- /*  31 */ "for_stmt ::= for_def body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
- /*  32 */ "for_stmt ::= for_def body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
- /*  33 */ "if_stmt ::= T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
- /*  34 */ "if_stmt ::= T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
- /*  35 */ "ifchanged_stmt ::= T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
- /*  36 */ "ifchanged_stmt ::= T_IFCHANGED params T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
- /*  37 */ "ifchanged_stmt ::= T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
- /*  38 */ "ifchanged_stmt ::= T_IFCHANGED params T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
- /*  39 */ "ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
- /*  40 */ "ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
- /*  41 */ "ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
- /*  42 */ "ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
- /*  43 */ "block_stmt ::= T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
- /*  44 */ "block_stmt ::= T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END varname T_CLOSE_TAG",
- /*  45 */ "block_stmt ::= T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
- /*  46 */ "block_stmt ::= T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_NUMERIC T_CLOSE_TAG",
- /*  47 */ "filter_stmt ::= T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG",
+ /*  29 */ "for_def ::= T_FOR varname T_IN filtered_var T_TAG_CLOSE",
+ /*  30 */ "for_def ::= T_FOR varname T_COMMA varname T_IN filtered_var T_TAG_CLOSE",
+ /*  31 */ "for_stmt ::= for_def body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
+ /*  32 */ "for_stmt ::= for_def body T_TAG_OPEN T_EMPTY T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
+ /*  33 */ "if_stmt ::= T_IF expr T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
+ /*  34 */ "if_stmt ::= T_IF expr T_TAG_CLOSE body T_TAG_OPEN T_ELSE T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
+ /*  35 */ "ifchanged_stmt ::= T_IFCHANGED T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
+ /*  36 */ "ifchanged_stmt ::= T_IFCHANGED params T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
+ /*  37 */ "ifchanged_stmt ::= T_IFCHANGED T_TAG_CLOSE body T_TAG_OPEN T_ELSE T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
+ /*  38 */ "ifchanged_stmt ::= T_IFCHANGED params T_TAG_CLOSE body T_TAG_OPEN T_ELSE T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
+ /*  39 */ "ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
+ /*  40 */ "ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_TAG_CLOSE body T_TAG_OPEN T_ELSE T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
+ /*  41 */ "ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
+ /*  42 */ "ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_TAG_CLOSE body T_TAG_OPEN T_ELSE T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
+ /*  43 */ "block_stmt ::= T_BLOCK varname T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
+ /*  44 */ "block_stmt ::= T_BLOCK varname T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END varname T_TAG_CLOSE",
+ /*  45 */ "block_stmt ::= T_BLOCK T_NUMERIC T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
+ /*  46 */ "block_stmt ::= T_BLOCK T_NUMERIC T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_NUMERIC T_TAG_CLOSE",
+ /*  47 */ "filter_stmt ::= T_FILTER filtered_var T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE",
  /*  48 */ "regroup ::= T_REGROUP filtered_var T_BY varname T_AS varname",
  /*  49 */ "filtered_var ::= filtered_var T_PIPE varname_args",
  /*  50 */ "filtered_var ::= varname_args",
@@ -1093,56 +1093,56 @@ static void yy_reduce(
   **     break;
   */
       case 0: /* start ::= body */
-#line 63 "parser.y"
+#line 63 "parser-source.y"
 { $this->body = yymsp[0].minor.yy0; }
-#line 1099 "parser.c"
+#line 1099 "parser-source.c"
         break;
       case 1: /* body ::= body code */
-#line 65 "parser.y"
+#line 65 "parser-source.y"
 { yygotominor.yy0=yymsp[-1].minor.yy0; yygotominor.yy0[] = yymsp[0].minor.yy0; }
-#line 1104 "parser.c"
+#line 1104 "parser-source.c"
         break;
       case 2: /* body ::= */
-#line 66 "parser.y"
+#line 66 "parser-source.y"
 { yygotominor.yy0 = array(); }
-#line 1109 "parser.c"
+#line 1109 "parser-source.c"
         break;
-      case 3: /* code ::= T_OPEN_TAG stmts */
-#line 69 "parser.y"
+      case 3: /* code ::= T_TAG_OPEN stmts */
+#line 69 "parser-source.y"
 { if (count(yymsp[0].minor.yy0)) yymsp[0].minor.yy0['line'] = $this->lex->getLine();  yygotominor.yy0 = yymsp[0].minor.yy0; }
-#line 1114 "parser.c"
+#line 1114 "parser-source.c"
         break;
       case 4: /* code ::= T_HTML */
-#line 70 "parser.y"
+#line 70 "parser-source.y"
 {
     yygotominor.yy0 = array('operation' => 'html', 'html' => yymsp[0].minor.yy0, 'line' => $this->lex->getLine() ); 
 }
-#line 1121 "parser.c"
+#line 1121 "parser-source.c"
         break;
       case 5: /* code ::= T_COMMENT */
-#line 73 "parser.y"
+#line 73 "parser-source.y"
 {
     yymsp[0].minor.yy0=rtrim(yymsp[0].minor.yy0); yygotominor.yy0 = array('operation' => 'comment', 'comment' => yymsp[0].minor.yy0); 
 }
-#line 1128 "parser.c"
+#line 1128 "parser-source.c"
         break;
       case 6: /* code ::= T_PRINT_OPEN filtered_var T_PRINT_CLOSE */
-#line 76 "parser.y"
+#line 76 "parser-source.y"
 {
     yygotominor.yy0 = array('operation' => 'print_var', 'variable' => yymsp[-1].minor.yy0, 'line' => $this->lex->getLine() ); 
 }
-#line 1135 "parser.c"
+#line 1135 "parser-source.c"
         break;
-      case 7: /* stmts ::= T_EXTENDS var_or_string T_CLOSE_TAG */
-#line 80 "parser.y"
+      case 7: /* stmts ::= T_EXTENDS var_or_string T_TAG_CLOSE */
+#line 80 "parser-source.y"
 { yygotominor.yy0 = array('operation' => 'base', yymsp[-1].minor.yy0); }
-#line 1140 "parser.c"
+#line 1140 "parser-source.c"
         break;
-      case 8: /* stmts ::= stmt T_CLOSE_TAG */
+      case 8: /* stmts ::= stmt T_TAG_CLOSE */
       case 65: /* string ::= T_INTL T_STRING T_RPARENT */ yytestcase(yyruleno==65);
-#line 81 "parser.y"
+#line 81 "parser-source.y"
 { yygotominor.yy0 = yymsp[-1].minor.yy0; }
-#line 1146 "parser.c"
+#line 1146 "parser-source.c"
         break;
       case 9: /* stmts ::= for_stmt */
       case 10: /* stmts ::= ifchanged_stmt */ yytestcase(yyruleno==10);
@@ -1158,17 +1158,17 @@ static void yy_reduce(
       case 73: /* expr ::= fvar_or_string */ yytestcase(yyruleno==73);
       case 77: /* varname ::= T_ALPHA */ yytestcase(yyruleno==77);
       case 78: /* varname ::= T_BLOCK|T_CUSTOM_TAG|T_CUSTOM_BLOCK */ yytestcase(yyruleno==78);
-#line 82 "parser.y"
+#line 82 "parser-source.y"
 { yygotominor.yy0 = yymsp[0].minor.yy0; }
-#line 1164 "parser.c"
+#line 1164 "parser-source.c"
         break;
-      case 14: /* stmts ::= T_INCLUDE var_or_string T_CLOSE_TAG */
-#line 87 "parser.y"
+      case 14: /* stmts ::= T_INCLUDE var_or_string T_TAG_CLOSE */
+#line 87 "parser-source.y"
 { yygotominor.yy0 = array('operation' => 'include', yymsp[-1].minor.yy0); }
-#line 1169 "parser.c"
+#line 1169 "parser-source.c"
         break;
-      case 18: /* stmts ::= T_AUTOESCAPE varname T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 91 "parser.y"
+      case 18: /* stmts ::= T_AUTOESCAPE varname T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 91 "parser-source.y"
 { 
     yymsp[-5].minor.yy0 = strtolower(yymsp[-5].minor.yy0);
     if (yymsp[-5].minor.yy0 != 'on' && yymsp[-5].minor.yy0 != 'off') {
@@ -1179,88 +1179,88 @@ static void yy_reduce(
     }
     yygotominor.yy0 = array('operation' => 'autoescape', 'value' => yymsp[-5].minor.yy0, 'body' => yymsp[-3].minor.yy0); 
 }
-#line 1183 "parser.c"
+#line 1183 "parser-source.c"
         break;
-      case 19: /* custom_tag ::= T_CUSTOM_TAG T_CLOSE_TAG */
-#line 105 "parser.y"
+      case 19: /* custom_tag ::= T_CUSTOM_TAG T_TAG_CLOSE */
+#line 105 "parser-source.y"
 {
     yygotominor.yy0 = array('operation' => 'custom_tag', 'name' => yymsp[-1].minor.yy0, 'list'=>array()); 
 }
-#line 1190 "parser.c"
+#line 1190 "parser-source.c"
         break;
-      case 20: /* custom_tag ::= T_CUSTOM_TAG T_AS varname T_CLOSE_TAG */
-#line 108 "parser.y"
+      case 20: /* custom_tag ::= T_CUSTOM_TAG T_AS varname T_TAG_CLOSE */
+#line 108 "parser-source.y"
 {
     yygotominor.yy0 = array('operation' => 'custom_tag', 'name' => yymsp[-3].minor.yy0, 'as' => yymsp[-1].minor.yy0, 'list'=>array()); 
 }
-#line 1197 "parser.c"
+#line 1197 "parser-source.c"
         break;
-      case 21: /* custom_tag ::= T_CUSTOM_TAG params T_CLOSE_TAG */
-#line 111 "parser.y"
+      case 21: /* custom_tag ::= T_CUSTOM_TAG params T_TAG_CLOSE */
+#line 111 "parser-source.y"
 { 
     yygotominor.yy0 = array('operation' => 'custom_tag', 'name' => yymsp[-2].minor.yy0, 'list' => yymsp[-1].minor.yy0); 
 }
-#line 1204 "parser.c"
+#line 1204 "parser-source.c"
         break;
-      case 22: /* custom_tag ::= T_CUSTOM_TAG params T_AS varname T_CLOSE_TAG */
-#line 114 "parser.y"
+      case 22: /* custom_tag ::= T_CUSTOM_TAG params T_AS varname T_TAG_CLOSE */
+#line 114 "parser-source.y"
 {
     yygotominor.yy0 = array('operation' => 'custom_tag', 'name' => yymsp[-4].minor.yy0, 'as' => yymsp[-1].minor.yy0, 'list' => yymsp[-3].minor.yy0);
 }
-#line 1211 "parser.c"
+#line 1211 "parser-source.c"
         break;
-      case 23: /* custom_tag ::= T_CUSTOM_BLOCK T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 119 "parser.y"
+      case 23: /* custom_tag ::= T_CUSTOM_BLOCK T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 119 "parser-source.y"
 {
     if ('end'.yymsp[-5].minor.yy0 != yymsp[-1].minor.yy0) { 
         $this->error("Unexpected ".yymsp[-1].minor.yy0); 
     } 
     yygotominor.yy0 = array('operation' => 'custom_tag', 'name' => yymsp[-5].minor.yy0, 'body' => yymsp[-3].minor.yy0, 'list' => array());
 }
-#line 1221 "parser.c"
+#line 1221 "parser-source.c"
         break;
-      case 24: /* custom_tag ::= T_CUSTOM_BLOCK params T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 125 "parser.y"
+      case 24: /* custom_tag ::= T_CUSTOM_BLOCK params T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 125 "parser-source.y"
 {
     if ('end'.yymsp[-6].minor.yy0 != yymsp[-1].minor.yy0) { 
         $this->error("Unexpected ".yymsp[-1].minor.yy0); 
     } 
     yygotominor.yy0 = array('operation' => 'custom_tag', 'name' => yymsp[-6].minor.yy0, 'body' => yymsp[-3].minor.yy0, 'list' => yymsp[-5].minor.yy0);
 }
-#line 1231 "parser.c"
+#line 1231 "parser-source.c"
         break;
-      case 25: /* custom_tag ::= T_SPACEFULL T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 133 "parser.y"
+      case 25: /* custom_tag ::= T_SPACEFULL T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 133 "parser-source.y"
 {
     if ('endspacefull' != yymsp[-1].minor.yy0) {
         $this->error("Unexpected ".yymsp[-1].minor.yy0);
     } 
     yygotominor.yy0 = array('operation' => 'spacefull', 'body' => yymsp[-3].minor.yy0);
 }
-#line 1241 "parser.c"
+#line 1241 "parser-source.c"
         break;
-      case 26: /* alias ::= T_WITH varname T_AS varname T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 141 "parser.y"
+      case 26: /* alias ::= T_WITH varname T_AS varname T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 141 "parser-source.y"
 {
     if (yymsp[-1].minor.yy0 != "endwith") {
         $this->Error("Unexpected ".yymsp[-1].minor.yy0.", expecting endwith");
     }
     yygotominor.yy0 = array('operation' => 'alias', 'var' => yymsp[-7].minor.yy0, 'as' => yymsp[-5].minor.yy0, 'body' => yymsp[-3].minor.yy0); 
 }
-#line 1251 "parser.c"
+#line 1251 "parser-source.c"
         break;
       case 28: /* stmt ::= T_LOAD string */
-#line 150 "parser.y"
+#line 150 "parser-source.y"
 {
     if (!is_file(yymsp[0].minor.yy0) || !Haanga_Compiler::getOption('enable_load')) {
         $this->error(yymsp[0].minor.yy0." is not a valid file"); 
     } 
     require_once yymsp[0].minor.yy0;
 }
-#line 1261 "parser.c"
+#line 1261 "parser-source.c"
         break;
-      case 29: /* for_def ::= T_FOR varname T_IN filtered_var T_CLOSE_TAG */
-#line 158 "parser.y"
+      case 29: /* for_def ::= T_FOR varname T_IN filtered_var T_TAG_CLOSE */
+#line 158 "parser-source.y"
 {
     /* Try to get the variable */
     $var = $this->compiler->get_context(is_array(yymsp[-1].minor.yy0[0]) ? yymsp[-1].minor.yy0[0] : array(yymsp[-1].minor.yy0[0]));
@@ -1271,10 +1271,10 @@ static void yy_reduce(
 
     yygotominor.yy0 = array('operation' => 'loop', 'variable' => yymsp[-3].minor.yy0, 'index' => NULL, 'array' => yymsp[-1].minor.yy0);
 }
-#line 1275 "parser.c"
+#line 1275 "parser-source.c"
         break;
-      case 30: /* for_def ::= T_FOR varname T_COMMA varname T_IN filtered_var T_CLOSE_TAG */
-#line 169 "parser.y"
+      case 30: /* for_def ::= T_FOR varname T_COMMA varname T_IN filtered_var T_TAG_CLOSE */
+#line 169 "parser-source.y"
 {
     /* Try to get the variable */
     $var = $this->compiler->get_context(is_array(yymsp[-1].minor.yy0[0]) ? yymsp[-1].minor.yy0[0] : array(yymsp[-1].minor.yy0[0]));
@@ -1284,10 +1284,10 @@ static void yy_reduce(
     }
     yygotominor.yy0 = array('operation' => 'loop', 'variable' => yymsp[-3].minor.yy0, 'index' => yymsp[-5].minor.yy0, 'array' => yymsp[-1].minor.yy0);
 }
-#line 1288 "parser.c"
+#line 1288 "parser-source.c"
         break;
-      case 31: /* for_stmt ::= for_def body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 180 "parser.y"
+      case 31: /* for_stmt ::= for_def body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 180 "parser-source.y"
 { 
     if (yymsp[-1].minor.yy0 != "endfor") {
         $this->Error("Unexpected ".yymsp[-1].minor.yy0.", expecting endfor");
@@ -1295,10 +1295,10 @@ static void yy_reduce(
     yygotominor.yy0 = yymsp[-4].minor.yy0;
     yygotominor.yy0['body'] = yymsp[-3].minor.yy0;
 }
-#line 1299 "parser.c"
+#line 1299 "parser-source.c"
         break;
-      case 32: /* for_stmt ::= for_def body T_OPEN_TAG T_EMPTY T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 188 "parser.y"
+      case 32: /* for_stmt ::= for_def body T_TAG_OPEN T_EMPTY T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 188 "parser-source.y"
 { 
     if (yymsp[-1].minor.yy0 != "endfor") {
         $this->Error("Unexpected ".yymsp[-1].minor.yy0.", expecting endfor");
@@ -1307,241 +1307,241 @@ static void yy_reduce(
     yygotominor.yy0['body']  = yymsp[-7].minor.yy0;
     yygotominor.yy0['empty'] = yymsp[-3].minor.yy0;
 }
-#line 1311 "parser.c"
+#line 1311 "parser-source.c"
         break;
-      case 33: /* if_stmt ::= T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 197 "parser.y"
+      case 33: /* if_stmt ::= T_IF expr T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 197 "parser-source.y"
 {
     if (yymsp[-1].minor.yy0 != "endif") {
         $this->Error("Unexpected ".yymsp[-1].minor.yy0.", expecting endif");
     }
     yygotominor.yy0 = array('operation' => 'if', 'expr' => yymsp[-5].minor.yy0, 'body' => yymsp[-3].minor.yy0);
 }
-#line 1321 "parser.c"
+#line 1321 "parser-source.c"
         break;
-      case 34: /* if_stmt ::= T_IF expr T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 203 "parser.y"
+      case 34: /* if_stmt ::= T_IF expr T_TAG_CLOSE body T_TAG_OPEN T_ELSE T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 203 "parser-source.y"
 {
     if (yymsp[-1].minor.yy0 != "endif") {
         $this->Error("Unexpected ".yymsp[-1].minor.yy0.", expecting endif");
     }
     yygotominor.yy0 = array('operation' => 'if', 'expr' => yymsp[-9].minor.yy0, 'body' => yymsp[-7].minor.yy0, 'else' => yymsp[-3].minor.yy0);
 }
-#line 1331 "parser.c"
+#line 1331 "parser-source.c"
         break;
-      case 35: /* ifchanged_stmt ::= T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 211 "parser.y"
+      case 35: /* ifchanged_stmt ::= T_IFCHANGED T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 211 "parser-source.y"
 { 
     if (yymsp[-1].minor.yy0 != "endifchanged") {
         $this->Error("Unexpected ".yymsp[-1].minor.yy0.", expecting endifchanged");
     }
     yygotominor.yy0 = array('operation' => 'ifchanged', 'body' => yymsp[-3].minor.yy0); 
 }
-#line 1341 "parser.c"
+#line 1341 "parser-source.c"
         break;
-      case 36: /* ifchanged_stmt ::= T_IFCHANGED params T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 218 "parser.y"
+      case 36: /* ifchanged_stmt ::= T_IFCHANGED params T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 218 "parser-source.y"
 { 
     if (yymsp[-1].minor.yy0 != "endifchanged") {
         $this->Error("Unexpected ".yymsp[-1].minor.yy0.", expecting endifchanged");
     }
     yygotominor.yy0 = array('operation' => 'ifchanged', 'body' => yymsp[-3].minor.yy0, 'check' => yymsp[-5].minor.yy0);
 }
-#line 1351 "parser.c"
+#line 1351 "parser-source.c"
         break;
-      case 37: /* ifchanged_stmt ::= T_IFCHANGED T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 224 "parser.y"
+      case 37: /* ifchanged_stmt ::= T_IFCHANGED T_TAG_CLOSE body T_TAG_OPEN T_ELSE T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 224 "parser-source.y"
 { 
     if (yymsp[-1].minor.yy0 != "endifchanged") {
         $this->Error("Unexpected ".yymsp[-1].minor.yy0.", expecting endifchanged");
     }
     yygotominor.yy0 = array('operation' => 'ifchanged', 'body' => yymsp[-7].minor.yy0, 'else' => yymsp[-3].minor.yy0); 
 }
-#line 1361 "parser.c"
+#line 1361 "parser-source.c"
         break;
-      case 38: /* ifchanged_stmt ::= T_IFCHANGED params T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 231 "parser.y"
+      case 38: /* ifchanged_stmt ::= T_IFCHANGED params T_TAG_CLOSE body T_TAG_OPEN T_ELSE T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 231 "parser-source.y"
 { 
     if (yymsp[-1].minor.yy0 != "endifchanged") {
         $this->Error("Unexpected ".yymsp[-1].minor.yy0.", expecting endifchanged");
     }
     yygotominor.yy0 = array('operation' => 'ifchanged', 'body' => yymsp[-7].minor.yy0, 'check' => yymsp[-9].minor.yy0, 'else' => yymsp[-3].minor.yy0);
 }
-#line 1371 "parser.c"
+#line 1371 "parser-source.c"
         break;
-      case 39: /* ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 239 "parser.y"
+      case 39: /* ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 239 "parser-source.y"
 {
     if (yymsp[-1].minor.yy0 != "endifequal") {
         $this->Error("Unexpected ".yymsp[-1].minor.yy0.", expecting endifequal");
     }
     yygotominor.yy0 = array('operation' => 'ifequal', 'cmp' => '==', 1 => yymsp[-6].minor.yy0, 2 => yymsp[-5].minor.yy0, 'body' => yymsp[-3].minor.yy0); 
 }
-#line 1381 "parser.c"
+#line 1381 "parser-source.c"
         break;
-      case 40: /* ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 245 "parser.y"
+      case 40: /* ifequal ::= T_IFEQUAL fvar_or_string fvar_or_string T_TAG_CLOSE body T_TAG_OPEN T_ELSE T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 245 "parser-source.y"
 {
     if (yymsp[-1].minor.yy0 != "endifequal") {
         $this->Error("Unexpected ".yymsp[-1].minor.yy0.", expecting endifequal");
     }
     yygotominor.yy0 = array('operation' => 'ifequal', 'cmp' => '==', 1 => yymsp[-10].minor.yy0, 2 => yymsp[-9].minor.yy0, 'body' => yymsp[-7].minor.yy0, 'else' => yymsp[-3].minor.yy0); 
 }
-#line 1391 "parser.c"
+#line 1391 "parser-source.c"
         break;
-      case 41: /* ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 251 "parser.y"
+      case 41: /* ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 251 "parser-source.y"
 {
     if (yymsp[-1].minor.yy0 != "endifnotequal") {
         $this->Error("Unexpected ".yymsp[-1].minor.yy0.", expecting endifnotequal");
     }
     yygotominor.yy0 = array('operation' => 'ifequal', 'cmp' => '!=', 1 => yymsp[-6].minor.yy0, 2 => yymsp[-5].minor.yy0, 'body' => yymsp[-3].minor.yy0);
 }
-#line 1401 "parser.c"
+#line 1401 "parser-source.c"
         break;
-      case 42: /* ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_CLOSE_TAG body T_OPEN_TAG T_ELSE T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 257 "parser.y"
+      case 42: /* ifequal ::= T_IFNOTEQUAL fvar_or_string fvar_or_string T_TAG_CLOSE body T_TAG_OPEN T_ELSE T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 257 "parser-source.y"
 {
     if (yymsp[-1].minor.yy0 != "endifnotequal") {
         $this->Error("Unexpected ".yymsp[-1].minor.yy0.", expecting endifnotequal");
     }
     yygotominor.yy0 = array('operation' => 'ifequal', 'cmp' => '!=', 1 => yymsp[-10].minor.yy0, 2 => yymsp[-9].minor.yy0, 'body' => yymsp[-7].minor.yy0, 'else' => yymsp[-3].minor.yy0); 
 }
-#line 1411 "parser.c"
+#line 1411 "parser-source.c"
         break;
-      case 43: /* block_stmt ::= T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 265 "parser.y"
+      case 43: /* block_stmt ::= T_BLOCK varname T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 265 "parser-source.y"
 { 
     if (yymsp[-1].minor.yy0 != "endblock") {
         $this->Error("Unexpected ".yymsp[-1].minor.yy0.", expecting endblock");
     }
     yygotominor.yy0 = array('operation' => 'block', 'name' => yymsp[-5].minor.yy0, 'body' => yymsp[-3].minor.yy0); 
 }
-#line 1421 "parser.c"
+#line 1421 "parser-source.c"
         break;
-      case 44: /* block_stmt ::= T_BLOCK varname T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END varname T_CLOSE_TAG */
-      case 46: /* block_stmt ::= T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_NUMERIC T_CLOSE_TAG */ yytestcase(yyruleno==46);
-#line 272 "parser.y"
+      case 44: /* block_stmt ::= T_BLOCK varname T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END varname T_TAG_CLOSE */
+      case 46: /* block_stmt ::= T_BLOCK T_NUMERIC T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_NUMERIC T_TAG_CLOSE */ yytestcase(yyruleno==46);
+#line 272 "parser-source.y"
 {
     if (yymsp[-2].minor.yy0 != "endblock") {
         $this->Error("Unexpected ".yymsp[-2].minor.yy0.", expecting endblock");
     }
     yygotominor.yy0 = array('operation' => 'block', 'name' => yymsp[-6].minor.yy0, 'body' => yymsp[-4].minor.yy0); 
 }
-#line 1432 "parser.c"
+#line 1432 "parser-source.c"
         break;
-      case 45: /* block_stmt ::= T_BLOCK T_NUMERIC T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 279 "parser.y"
+      case 45: /* block_stmt ::= T_BLOCK T_NUMERIC T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 279 "parser-source.y"
 {
     if (yymsp[-1].minor.yy0 != "endblock") {
         $this->Error("Unexpected ".yymsp[-1].minor.yy0.", expecting endblock");
     }
     yygotominor.yy0 = array('operation' => 'block', 'name' => yymsp[-5].minor.yy0, 'body' => yymsp[-3].minor.yy0); 
 }
-#line 1442 "parser.c"
+#line 1442 "parser-source.c"
         break;
-      case 47: /* filter_stmt ::= T_FILTER filtered_var T_CLOSE_TAG body T_OPEN_TAG T_CUSTOM_END T_CLOSE_TAG */
-#line 294 "parser.y"
+      case 47: /* filter_stmt ::= T_FILTER filtered_var T_TAG_CLOSE body T_TAG_OPEN T_CUSTOM_END T_TAG_CLOSE */
+#line 294 "parser-source.y"
 {
     if (yymsp[-1].minor.yy0 != "endfilter") {
         $this->Error("Unexpected ".yymsp[-1].minor.yy0.", expecting endfilter");
     }
     yygotominor.yy0 = array('operation' => 'filter', 'functions' => yymsp[-5].minor.yy0, 'body' => yymsp[-3].minor.yy0);
 }
-#line 1452 "parser.c"
+#line 1452 "parser-source.c"
         break;
       case 48: /* regroup ::= T_REGROUP filtered_var T_BY varname T_AS varname */
-#line 302 "parser.y"
+#line 302 "parser-source.y"
 { yygotominor.yy0=array('operation' => 'regroup', 'array' => yymsp[-4].minor.yy0, 'row' => yymsp[-2].minor.yy0, 'as' => yymsp[0].minor.yy0); }
-#line 1457 "parser.c"
+#line 1457 "parser-source.c"
         break;
       case 49: /* filtered_var ::= filtered_var T_PIPE varname_args */
       case 54: /* params ::= params T_COMMA var_or_string */ yytestcase(yyruleno==54);
-#line 305 "parser.y"
+#line 305 "parser-source.y"
 { yygotominor.yy0 = yymsp[-2].minor.yy0; yygotominor.yy0[] = yymsp[0].minor.yy0; }
-#line 1463 "parser.c"
+#line 1463 "parser-source.c"
         break;
       case 50: /* filtered_var ::= varname_args */
       case 55: /* params ::= var_or_string */ yytestcase(yyruleno==55);
-#line 306 "parser.y"
+#line 306 "parser-source.y"
 { yygotominor.yy0 = array(yymsp[0].minor.yy0); }
-#line 1469 "parser.c"
+#line 1469 "parser-source.c"
         break;
       case 51: /* varname_args ::= varname T_COLON var_or_string */
-#line 308 "parser.y"
+#line 308 "parser-source.y"
 { yygotominor.yy0 = array(yymsp[-2].minor.yy0, 'args'=>array(yymsp[0].minor.yy0)); }
-#line 1474 "parser.c"
+#line 1474 "parser-source.c"
         break;
       case 53: /* params ::= params var_or_string */
-#line 312 "parser.y"
+#line 312 "parser-source.y"
 { yygotominor.yy0 = yymsp[-1].minor.yy0; yygotominor.yy0[] = yymsp[0].minor.yy0; }
-#line 1479 "parser.c"
+#line 1479 "parser-source.c"
         break;
       case 56: /* var_or_string ::= varname */
-#line 318 "parser.y"
+#line 318 "parser-source.y"
 { yygotominor.yy0 = array('var' => yymsp[0].minor.yy0); }
-#line 1484 "parser.c"
+#line 1484 "parser-source.c"
         break;
       case 57: /* var_or_string ::= T_NUMERIC */
       case 61: /* fvar_or_string ::= T_NUMERIC */ yytestcase(yyruleno==61);
-#line 319 "parser.y"
+#line 319 "parser-source.y"
 { yygotominor.yy0 = array('number' => yymsp[0].minor.yy0); }
-#line 1490 "parser.c"
+#line 1490 "parser-source.c"
         break;
       case 58: /* var_or_string ::= T_TRUE|T_FALSE */
       case 62: /* fvar_or_string ::= T_TRUE|T_FALSE */ yytestcase(yyruleno==62);
-#line 320 "parser.y"
+#line 320 "parser-source.y"
 { yygotominor.yy0 = trim(yymsp[0].major); }
-#line 1496 "parser.c"
+#line 1496 "parser-source.c"
         break;
       case 59: /* var_or_string ::= string */
       case 63: /* fvar_or_string ::= string */ yytestcase(yyruleno==63);
-#line 321 "parser.y"
+#line 321 "parser-source.y"
 { yygotominor.yy0 = array('string' => yymsp[0].minor.yy0); }
-#line 1502 "parser.c"
+#line 1502 "parser-source.c"
         break;
       case 60: /* fvar_or_string ::= filtered_var */
-#line 324 "parser.y"
+#line 324 "parser-source.y"
 { yygotominor.yy0 = array('var_filter' => yymsp[0].minor.yy0); }
-#line 1507 "parser.c"
+#line 1507 "parser-source.c"
         break;
       case 66: /* expr ::= T_NOT expr */
-#line 334 "parser.y"
+#line 334 "parser-source.y"
 { yygotominor.yy0 = array('op_expr' => 'not', yymsp[0].minor.yy0); }
-#line 1512 "parser.c"
+#line 1512 "parser-source.c"
         break;
       case 67: /* expr ::= expr T_AND expr */
       case 68: /* expr ::= expr T_OR expr */ yytestcase(yyruleno==68);
       case 69: /* expr ::= expr T_PLUS|T_MINUS expr */ yytestcase(yyruleno==69);
       case 71: /* expr ::= expr T_TIMES|T_DIV|T_MOD expr */ yytestcase(yyruleno==71);
-#line 335 "parser.y"
+#line 335 "parser-source.y"
 { yygotominor.yy0 = array('op_expr' => yymsp[-1].major, yymsp[-2].minor.yy0, yymsp[0].minor.yy0); }
-#line 1520 "parser.c"
+#line 1520 "parser-source.c"
         break;
       case 70: /* expr ::= expr T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN expr */
-#line 338 "parser.y"
+#line 338 "parser-source.y"
 { yygotominor.yy0 = array('op_expr' => trim(yymsp[-1].major), yymsp[-2].minor.yy0, yymsp[0].minor.yy0); }
-#line 1525 "parser.c"
+#line 1525 "parser-source.c"
         break;
       case 72: /* expr ::= T_LPARENT expr T_RPARENT */
-#line 340 "parser.y"
+#line 340 "parser-source.y"
 { yygotominor.yy0 = array('op_expr' => 'expr', yymsp[-1].minor.yy0); }
-#line 1530 "parser.c"
+#line 1530 "parser-source.c"
         break;
       case 74: /* varname ::= varname T_OBJ T_ALPHA */
-#line 344 "parser.y"
+#line 344 "parser-source.y"
 { if (!is_array(yymsp[-2].minor.yy0)) { yygotominor.yy0 = array(yymsp[-2].minor.yy0); } else { yygotominor.yy0 = yymsp[-2].minor.yy0; }  yygotominor.yy0[]=array('object' => yymsp[0].minor.yy0);}
-#line 1535 "parser.c"
+#line 1535 "parser-source.c"
         break;
       case 75: /* varname ::= varname T_DOT T_ALPHA */
-#line 345 "parser.y"
+#line 345 "parser-source.y"
 { if (!is_array(yymsp[-2].minor.yy0)) { yygotominor.yy0 = array(yymsp[-2].minor.yy0); } else { yygotominor.yy0 = yymsp[-2].minor.yy0; } yygotominor.yy0[] = ($this->compiler->var_is_object(yygotominor.yy0)) ? array('object' => yymsp[0].minor.yy0) : yymsp[0].minor.yy0;}
-#line 1540 "parser.c"
+#line 1540 "parser-source.c"
         break;
       case 76: /* varname ::= varname T_BRACKETS_OPEN var_or_string T_BRACKETS_CLOSE */
-#line 346 "parser.y"
+#line 346 "parser-source.y"
 { if (!is_array(yymsp[-3].minor.yy0)) { yygotominor.yy0 = array(yymsp[-3].minor.yy0); } else { yygotominor.yy0 = yymsp[-3].minor.yy0; }  yygotominor.yy0[]=yymsp[-1].minor.yy0;}
-#line 1545 "parser.c"
+#line 1545 "parser-source.c"
         break;
       default:
         break;
@@ -1603,14 +1603,14 @@ static void yy_syntax_error(
 ){
   Haanga_ARG_FETCH;
 #define TOKEN (yyminor.yy0)
-#line 54 "parser.y"
+#line 54 "parser-source.y"
 
     $expect = array();
     foreach ($this->yy_get_expected_tokens($yymajor) as $token) {
         $expect[] = self::$yyTokenName[$token];
     }
     $this->Error('Unexpected ' . $this->tokenName($yymajor) . '(' . $TOKEN. '), expected one of: ' . implode(',', $expect));
-#line 1614 "parser.c"
+#line 1614 "parser-source.c"
   Haanga_ARG_STORE; /* Suppress warning about unused %extra_argument variable */
 }
 
@@ -1629,9 +1629,9 @@ static void yy_accept(
   while( yypParser->yyidx>=0 ) yy_pop_parser_stack(yypParser);
   /* Here code is inserted which will be executed whenever the
   ** parser accepts */
-#line 41 "parser.y"
+#line 41 "parser-source.y"
 
-#line 1635 "parser.c"
+#line 1635 "parser-source.c"
   Haanga_ARG_STORE; /* Suppress warning about unused %extra_argument variable */
 }
 
