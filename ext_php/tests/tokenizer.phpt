@@ -5,7 +5,7 @@ simple test
 
 $array = haanga_tokenizer("{{foobar}}{% 
             load 1+299.9 %}
-        <h1>cesar</h1>{{'cesar \\'\\n
+        <h1>cesar</h1>{{'cesar \\'foobar\\'\\n
         
         rodas' }}");
 var_dump($array);
@@ -117,7 +117,7 @@ array(13) {
     ["token"]=>
     int(49)
     ["value"]=>
-    string(31) "cesar '
+    string(38) "cesar 'foobar'
 
         
         rodas"
