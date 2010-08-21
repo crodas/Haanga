@@ -192,7 +192,7 @@ iTokenize *  haanga_tk_init(const char *z, int length, int alloc)
     ztok->tLength = 0; 
     ztok->length  = length;
     ztok->offset  = 0;
-    ztok->line    = 0;
+    ztok->line    = 1;
     ztok->tErr    = 0; /* no error (so far :P) */
     ztok->state   = HAANGA_TK_NONE;
 
@@ -255,7 +255,7 @@ int haanga_gettoken(iTokenize * ztok, int * tokenType)
 static int haanga_gettoken_main(iTokenize * ztok)
 {
     unsigned char * str;
-    unsigned char * start;
+    unsigned char * start, cchar;
     int dot = -1;
     int n,i;
 
@@ -267,12 +267,60 @@ static int haanga_gettoken_main(iTokenize * ztok)
 
     for (; *str && ztok->tType == 0; str++, ztok->offset++) {
         switch (*str) {
+
+        /* whitespace {{{ */
         case '\n':
             ztok->line++;
             /* new line, increment line */
         case ' ': case '\t': case '\r': case '\f': 
             /* whitespaces are ignored */
             break;
+        /* }}} */
+
+        /* string {{{ */
+        case '"':
+        case '\'':
+            cchar = *str;
+            for (n=0, str++; *str && *str!=cchar; str++, n++, ztok->offset++) {
+                switch (*str) {
+                case '\\':
+                    str++;
+                    ztok->offset++;
+                    switch (*str) {
+                    case 'n':
+                        ztok->tValue[n] =  '\n';
+                        break;
+                    case 't':
+                        ztok->tValue[n] =  '\t';
+                        break;
+                    default:
+                        ztok->tValue[n] =  *str;
+                        break;
+                    }
+                    break;
+                default: 
+                    if (*str == '\n') {
+                        ztok->line++;
+                    }
+                    ztok->tValue[n] =  *str;
+                    break;
+                }
+            }
+
+            if (*str != cchar) {
+                ztok->tErr = 1;
+                return False;
+            }
+
+
+            ztok->tLength = n;
+            ztok->tType   = T_STRING;
+            ztok->offset+=2; /* missing offset last char and cchar */
+
+            return True;
+
+
+        /* }}} */
 
         /* number {{{ */
         case '0': case '1': case '2': case '3': case '4':
@@ -394,9 +442,18 @@ static int haanga_gettoken_html(iTokenize * ztok)
         ztok->tLength = zLowest - str;
     }
 
+
     strncpy(ztok->tValue, str, ztok->tLength); 
     ztok->offset += ztok->tLength;
     ztok->tType  = T_HTML;
+
+    /* line counts */
+    int e;
+    for (e=0; e < ztok->tLength; e++) {
+        if (str[e] == '\n') {
+            ztok->line++;
+        }
+    }
 
     if (ztok->tLength == 0) {
         ztok->tType = 0;

@@ -71,8 +71,9 @@ PHP_FUNCTION(haanga_tokenizer)
         MAKE_STD_ZVAL(subarray);
         array_init(subarray);
 
-        add_next_index_long(subarray, tk->tType);
-        add_next_index_string(subarray, tk->tValue, 1);
+        add_assoc_long(subarray, "token", tk->tType);
+        add_assoc_string(subarray, "value", tk->tValue, 1);
+        add_assoc_long(subarray, "line", tk->line);
 
         add_next_index_zval(return_value, subarray);
     }
