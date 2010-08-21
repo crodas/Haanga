@@ -142,13 +142,13 @@ class Haanga_Compiler_Tokenizer
         var_dump($tmp2, $tmp1 === $tmp2);die(); /**/
 
         self::$close_tags =array(
-            self::$end_tag   => HG_Parser::T_CLOSE_TAG,
+            self::$end_tag   => HG_Parser::T_TAG_CLOSE,
             self::$end_print => HG_Parser::T_PRINT_CLOSE,
         );
 
 
         $this->open_tags = array(
-            self::$open_tag     => HG_Parser::T_OPEN_TAG,
+            self::$open_tag     => HG_Parser::T_TAG_OPEN,
             self::$open_print   => HG_Parser::T_PRINT_OPEN,
             self::$open_comment => HG_Parser::T_COMMENT,
         );
@@ -177,7 +177,7 @@ class Haanga_Compiler_Tokenizer
                     $this->token  = $token;
                     $i += $len;
                     switch ($this->token) {
-                    case HG_Parser::T_OPEN_TAG:
+                    case HG_Parser::T_TAG_OPEN:
                         $this->status = self::IN_TAG;
                         break;
                     case HG_Parser::T_COMMENT:
@@ -354,7 +354,7 @@ class Haanga_Compiler_Tokenizer
             }
         }
 
-        if ($this->token == HG_Parser::T_CLOSE_TAG ||
+        if ($this->token == HG_Parser::T_TAG_CLOSE ||
             $this->token == HG_Parser::T_PRINT_CLOSE) {
             $this->status = self::IN_NONE;
         }
