@@ -255,12 +255,11 @@ int haanga_gettoken(iTokenize * ztok, int * tokenType)
 static int haanga_gettoken_main(iTokenize * ztok)
 {
     unsigned char * str;
-    unsigned char * start, *token;
+    unsigned char * start;
     int dot = -1;
     int n,i;
 
     str   = ztok->str + ztok->offset;
-    token = ztok->tValue;
     start = str;
 
     ztok->tLength = 0;
@@ -279,19 +278,16 @@ static int haanga_gettoken_main(iTokenize * ztok)
         case '0': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9': 
             n = 1;
+            start = str;
             for (; n && *str; str++, ztok->offset++) {
                 switch (*str) {
                 case '0': case '1': case '2': case '3': case '4':
                 case '5': case '6': case '7': case '8': case '9': 
-                    *token = *str;
-                    token++;
                     ztok->tLength++;
                     break;
                 case '.':
                     if (dot == -1) {
-                        *token = *str;
                         ztok->tLength++;
-                        token++;
                         dot = 1;
                     } else {
                         /* error */
@@ -305,11 +301,16 @@ static int haanga_gettoken_main(iTokenize * ztok)
                     break;
                 }
             }
-            if (*token == '.' || !_is_token_end(*token)) {
+
+            str--;
+
+            if (*str == '.' || !_is_token_end(*str)) {
                 /* error */
                 ztok->tErr = HAANGA_TK_ERR_NUM;
                 return False;
             }
+
+            strncpy(ztok->tValue, start, ztok->tLength);
 
             ztok->tType = T_NUMERIC;
 
