@@ -64,6 +64,29 @@ PHP_FUNCTION(haanga_tokenizer)
         zval *subarray;
         haanga_gettoken(tk, NULL);
 
+        if (tk->tErr != 0) {
+            zval_dtor(&return_value); /* destroy array */
+            
+            zval * tc_ex;
+            char errmsg[200];
+            MAKE_STD_ZVAL(tc_ex);
+            object_init_ex(tc_ex, zend_exception_get_default(TSRMLS_C));
+
+            switch (tk->tErr) {
+            case HAANGA_TK_ERR_NUM:
+                sprintf(errmsg, "Invalid number at line %d", tk->line);
+                break;
+            case HAANGA_TK_ERR_STR:
+                sprintf(errmsg, "Invalid string at line %d", tk->line);
+                break;
+            }
+
+            zend_update_property_string(zend_exception_get_default(TSRMLS_C), tc_ex, "message", sizeof("message") - 1, errmsg TSRMLS_CC);
+            zend_throw_exception_object(tc_ex TSRMLS_CC);
+
+            break; /* break loop */
+        }
+
         if (tk->tType == 0) {
             break;
         }
@@ -77,6 +100,8 @@ PHP_FUNCTION(haanga_tokenizer)
 
         add_next_index_zval(return_value, subarray);
     }
+
+
 
     haanga_tk_destroy(&tk);
 }

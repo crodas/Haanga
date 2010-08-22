@@ -62,6 +62,9 @@ extern zend_module_entry haanga_module_entry;
 PHP_MINIT_FUNCTION(haanga);
 PHP_MINFO_FUNCTION(haanga);
 
+/* Common errors */
+#define HAANGA_TK_ERR_NUM      0x01
+#define HAANGA_TK_ERR_STR      0x02
 
 #define CALL_METHOD(Class, Method, retval, thisptr)  PHP_FN(Class##_##Method)(0, retval, NULL, thisptr, 0 TSRMLS_CC);
 

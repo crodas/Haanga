@@ -126,8 +126,11 @@ static Operator iOperatorsTable[] = {
 #define HAANGA_TK_TAG        0x03
 #define HAANGA_TK_COMMENT    0x04
 
-/* Invalid or malformed number */
-#define HAANGA_TK_ERR_NUM      0x01
+#define HAANGA_ERROR(type) \
+    ztok->tType = 0; \
+    ztok->tErr  = HAANGA_TK_ERR_##type; \
+    return False;
+    
 
 /* TRUE|FALSE */
 #define True    0x001
@@ -248,7 +251,10 @@ int haanga_gettoken(iTokenize * ztok, int * tokenType)
         break;
     }
 
-    *(ztok->tValue + ztok->tLength) = '\0';
+    if (ztok->tErr == 0) {
+        /* if no error */
+        *(ztok->tValue + ztok->tLength) = '\0';
+    }
 
 }
 
@@ -308,8 +314,7 @@ static int haanga_gettoken_main(iTokenize * ztok)
             }
 
             if (*str != cchar) {
-                ztok->tErr = 1;
-                return False;
+                HAANGA_ERROR(STR);
             }
 
 
@@ -339,8 +344,7 @@ static int haanga_gettoken_main(iTokenize * ztok)
                         dot = 1;
                     } else {
                         /* error */
-                        ztok->tErr = HAANGA_TK_ERR_NUM;
-                        return False;
+                        HAANGA_ERROR(NUM);
                     }
                     break;
                 default:
@@ -354,8 +358,7 @@ static int haanga_gettoken_main(iTokenize * ztok)
 
             if (*str == '.' || !_is_token_end(*str)) {
                 /* error */
-                ztok->tErr = HAANGA_TK_ERR_NUM;
-                return False;
+                HAANGA_ERROR(NUM);
             }
 
             strncpy(ztok->tValue, start, ztok->tLength);
