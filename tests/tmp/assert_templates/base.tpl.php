@@ -23,7 +23,7 @@ function haanga_d2f931b3242b3187b9a3d407f38c7d9d691df84f($vars, $return=FALSE, $
         ';
     foreach ($menu as  $item) {
         $buffer1 .= '
-            <li><a href="'.$item['url'].'">'.htmlentities($item['name']).'</a></li>
+            <li><a href="'.$item['url'].'">'.htmlspecialchars($item['name']).'</a></li>
         ';
     }
     $buffer1 .= '

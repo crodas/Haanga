@@ -8,7 +8,7 @@ function haanga_97d0fec2255e31f51478c5d222c422dc247322f7($vars, $return=FALSE, $
     if ($return == TRUE) {
         ob_start();
     }
-    echo htmlentities(intval($float)).'
+    echo htmlspecialchars(intval($float)).'
 ';
     if ($return == TRUE) {
         return ob_get_clean();

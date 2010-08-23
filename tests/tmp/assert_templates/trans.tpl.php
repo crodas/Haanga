@@ -10,8 +10,8 @@ function haanga_8d35b55be0c9b118eda2226b6b520297156d8d6d($vars, $return=FALSE, $
     }
     echo _('Translation').'
 '.sprintf(_('Translation by %s'), 'cesar').'
-'.htmlentities(_($text)).'
-'.htmlentities(ucfirst(_($text))).'
+'.htmlspecialchars(_($text)).'
+'.htmlspecialchars(ucfirst(_($text))).'
 ';
     if ($return == TRUE) {
         return ob_get_clean();

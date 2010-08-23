@@ -25,7 +25,7 @@ function haanga_8d56a9a504af63b0aa1f9e966ad860de9c65c99b($vars, $return=FALSE, $
 ';
     } else {
         echo '
-    <a href="?page'.htmlentities($mnm_prev).'">&#171; Previous</a>
+    <a href="?page'.htmlspecialchars($mnm_prev).'">&#171; Previous</a>
 ';
     }
     echo '
@@ -45,11 +45,11 @@ function haanga_8d56a9a504af63b0aa1f9e966ad860de9c65c99b($vars, $return=FALSE, $
     ';
         if ($mnm_current == $page) {
             echo '
-        <span class="current">'.htmlentities($page).'</span>
+        <span class="current">'.htmlspecialchars($page).'</span>
     ';
         } else {
             echo '
-        <a href="?page='.htmlentities($page).'">'.htmlentities($page).'</a>
+        <a href="?page='.htmlspecialchars($page).'">'.htmlspecialchars($page).'</a>
     ';
         }
         echo '
@@ -61,7 +61,7 @@ function haanga_8d56a9a504af63b0aa1f9e966ad860de9c65c99b($vars, $return=FALSE, $
     if ($mnm_total > $mnm_end) {
         echo '
     <span>...</span>
-    <a href="?page='.htmlentities($mnm_total).'">'.htmlentities($mnm_total).'</a>
+    <a href="?page='.htmlspecialchars($mnm_total).'">'.htmlspecialchars($mnm_total).'</a>
 ';
     }
     echo '
@@ -69,7 +69,7 @@ function haanga_8d56a9a504af63b0aa1f9e966ad860de9c65c99b($vars, $return=FALSE, $
 ';
     if (empty($mnm_next) === FALSE) {
         echo '
-    <a href="?page='.htmlentities($mnm_next).'">&#187; Next</a>
+    <a href="?page='.htmlspecialchars($mnm_next).'">&#187; Next</a>
 ';
     } else {
         echo '

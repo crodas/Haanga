@@ -19,13 +19,13 @@ function haanga_be17029b5fd2998df7c922a92652b6886d7780fd($vars, $return=FALSE, $
     foreach ($sorted_users as  $user) {
         echo '
     ';
-        $buffer1  = 'Users with '.htmlentities($user['age']).' years';
+        $buffer1  = 'Users with '.htmlspecialchars($user['age']).' years';
         if (isset($ifchanged3) == FALSE || $ifchanged3 != $buffer1) {
             echo $buffer1;
             $ifchanged3  = $buffer1;
         }
         echo '
-    '.htmlentities($user['name']).'
+    '.htmlspecialchars($user['name']).'
 ';
     }
     echo '
@@ -35,13 +35,13 @@ function haanga_be17029b5fd2998df7c922a92652b6886d7780fd($vars, $return=FALSE, $
         echo '
     ';
         if ((isset($ifchanged4[0]) == FALSE || $ifchanged4[0] != $user['age']) && (isset($ifchanged4[1]) == FALSE || $ifchanged4[1] != $user['foo'])) {
-            echo 'Users with '.htmlentities($user['age']).' years';
+            echo 'Users with '.htmlspecialchars($user['age']).' years';
             $ifchanged4  = Array($user['age'], $user['foo']);
         } else {
             echo 'continue';
         }
         echo '
-    '.htmlentities($user['name']).'
+    '.htmlspecialchars($user['name']).'
 ';
     }
     echo '

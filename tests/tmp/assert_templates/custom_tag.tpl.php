@@ -11,7 +11,7 @@ function haanga_d10dbccd9d65b519706f053a50a078dbb3e14070($vars, $return=FALSE, $
     echo date('Y').'
 ';
     $foo  = date('U');
-    echo htmlentities(date('Y', $foo)).'
+    echo htmlspecialchars(date('Y', $foo)).'
 ';
     if ($return == TRUE) {
         return ob_get_clean();

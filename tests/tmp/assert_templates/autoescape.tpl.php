@@ -8,16 +8,16 @@ function haanga_3b6900b2fc1304e5fbbae2d5df785169d9f530ee($vars, $return=FALSE, $
     if ($return == TRUE) {
         ob_start();
     }
-    echo htmlentities($variable).'
-'.htmlentities($variable).'
+    echo htmlspecialchars($variable).'
+'.htmlspecialchars($variable).'
 { '.$variable.' }
 
     '.$variable.'
     
-        '.htmlentities($variable).'
+        '.htmlspecialchars($variable).'
     
 
-'.htmlentities($variable).'
+'.htmlspecialchars($variable).'
 ';
     if ($return == TRUE) {
         return ob_get_clean();

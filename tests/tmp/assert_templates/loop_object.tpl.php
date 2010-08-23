@@ -11,7 +11,7 @@ function haanga_2def2b6ad1167d6f400b0d9db576e1c9d2b51fa9($vars, $return=FALSE, $
     $obj_arr  = get_object_vars($obj);
     foreach ($obj_arr as  $prop => $value) {
         echo '
-    '.htmlentities($prop).' '.htmlentities($value).'
+    '.htmlspecialchars($prop).' '.htmlspecialchars($value).'
 ';
     }
     echo '
@@ -19,7 +19,7 @@ function haanga_2def2b6ad1167d6f400b0d9db576e1c9d2b51fa9($vars, $return=FALSE, $
 ';
     foreach ($objects as  $i) {
         echo '
-    '.htmlentities($i->foo).'
+    '.htmlspecialchars($i->foo).'
 ';
     }
     echo '

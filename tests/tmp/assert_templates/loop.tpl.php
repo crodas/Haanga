@@ -37,7 +37,7 @@ function haanga_4726e18009acee8a1c86a79b620c7ded71be5ddf($vars, $return=FALSE, $
         $buffer1  = '
     ';
         if (empty($islast_1) === FALSE) {
-            $buffer1 .= ' Last '.htmlentities($i);
+            $buffer1 .= ' Last '.htmlspecialchars($i);
         }
         $buffer1 .= '
 
@@ -63,7 +63,7 @@ function haanga_4726e18009acee8a1c86a79b620c7ded71be5ddf($vars, $return=FALSE, $
                 $buffer1 .= '
             ';
                 if (empty($islast_1) === FALSE) {
-                    $buffer1 .= ' Last '.htmlentities($k);
+                    $buffer1 .= ' Last '.htmlspecialchars($k);
                 }
                 $buffer1 .= '
         ';
@@ -93,7 +93,7 @@ function haanga_4726e18009acee8a1c86a79b620c7ded71be5ddf($vars, $return=FALSE, $
                 $buffer1 .= '
             ';
                 if (empty($isfirst_1) === FALSE) {
-                    $buffer1 .= ' first '.htmlentities($k);
+                    $buffer1 .= ' first '.htmlspecialchars($k);
                 }
                 $buffer1 .= '
         ';

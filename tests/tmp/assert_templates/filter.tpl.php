@@ -8,11 +8,11 @@ function haanga_7c948c919295fb106667df66f458e608eb775422($vars, $return=FALSE, $
     if ($return == TRUE) {
         ob_start();
     }
-    echo htmlentities(strtoupper($var)).'
-'.htmlentities(strtolower(strtoupper($var))).'
-'.htmlentities(str_replace('u', '', $var)).'
+    echo htmlspecialchars(strtoupper($var)).'
+'.htmlspecialchars(strtolower(strtoupper($var))).'
+'.htmlspecialchars(str_replace('u', '', $var)).'
 '.strlen($var).'
-'.htmlentities(strtoupper((empty($foobar) == TRUE ? 'default value' : $foobar))).'
+'.htmlspecialchars(strtoupper((empty($foobar) == TRUE ? 'default value' : $foobar))).'
 ';
     $buffer1  = '
     hola que 

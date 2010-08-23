@@ -10,8 +10,8 @@ function haanga_33ff616729fa5b4a494db28dee3c3f04cecdd01d($vars, $return=FALSE, $
     if ($return == TRUE) {
         ob_start();
     }
-    echo htmlentities(ucwords(strtolower(Haanga_Extension_Filter_Truncatewords::main($short_text, 2)))).'
-'.htmlentities(ucwords(strtolower(Haanga_Extension_Filter_Truncatewords::main($text, 2)))).'
+    echo htmlspecialchars(ucwords(strtolower(Haanga_Extension_Filter_Truncatewords::main($short_text, 2)))).'
+'.htmlspecialchars(ucwords(strtolower(Haanga_Extension_Filter_Truncatewords::main($text, 2)))).'
 ';
     if ($return == TRUE) {
         return ob_get_clean();

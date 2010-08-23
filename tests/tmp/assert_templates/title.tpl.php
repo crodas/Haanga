@@ -8,7 +8,7 @@ function haanga_02538e36710a9b95d7e6c8d1e1bba6e65b566aa4($vars, $return=FALSE, $
     if ($return == TRUE) {
         ob_start();
     }
-    echo htmlentities(ucwords(strtolower($title))).'
+    echo htmlspecialchars(ucwords(strtolower($title))).'
 ';
     if ($return == TRUE) {
         return ob_get_clean();
