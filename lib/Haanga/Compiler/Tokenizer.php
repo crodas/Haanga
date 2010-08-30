@@ -97,12 +97,13 @@ class Haanga_Compiler_Tokenizer
         '|'     => HG_Parser::T_PIPE,
     );
     static $operators = array(
+        '!=='   => HG_Parser::T_NE,
+        '==='   => HG_Parser::T_EQ,
         '!='    => HG_Parser::T_NE,
         '&&'    => HG_Parser::T_AND,
         '->'    => HG_Parser::T_OBJ,
         '<='    => HG_Parser::T_LE,
         '=='    => HG_Parser::T_EQ,
-        '==='   => HG_Parser::T_EQ,
         '>='    => HG_Parser::T_GE,
         '||'    => HG_Parser::T_OR,
     );
@@ -323,7 +324,7 @@ class Haanga_Compiler_Tokenizer
                     }
                 }
                 if (!$this->is_token_end($data[$i]) &&
-                    !isset(self::$operators[$data[$i]]) || $value[$e-1] == '.') {
+                    !isset(self::$operators_single[$data[$i]]) || $value[$e-1] == '.') {
                     $this->error("Unexpected '{$data[$i]}'");
                 }
                 $this->value = $value;
@@ -429,7 +430,10 @@ class Haanga_Compiler_Tokenizer
             $len = $lencache[$value];
             switch (strncmp($data, $value, $len)) {
             case -1:
-                break 2;
+                if (strlen($data) == $len) {
+                    break 2;
+                }
+                break;
             case 0:
                 $this->token = $token;
                 $this->value = $value;
