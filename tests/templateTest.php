@@ -24,6 +24,15 @@ class templateTest extends PHPUnit_Framework_TestCase
             Haanga_Compiler::setOption('strip_whitespace', FALSE);
         }
     }
+    /** 
+     * @dataProvider tplProvider
+     */
+    public function testRuntime($test_file, $data, $expected)
+    {
+        $this->init($test_file, $expected);
+        $output = Haanga::Load($test_file, $data, TRUE);
+        $this->assertEquals($output, $expected);
+    }
 
     /** 
      * @dataProvider tplProvider
@@ -36,15 +45,6 @@ class templateTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($output, $expected);
     }
 
-    /** 
-     * @dataProvider tplProvider
-     */
-    public function testRuntime($test_file, $data, $expected)
-    {
-        $this->init($test_file, $expected);
-        $output = Haanga::Load($test_file, $data, TRUE);
-        $this->assertEquals($output, $expected);
-    }
 
     /** 
      * @dataProvider tplProvider
