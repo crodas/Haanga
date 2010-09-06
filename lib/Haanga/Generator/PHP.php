@@ -581,7 +581,11 @@ class Haanga_Generator_PHP
                         $var_str .= '['.$var[$i]['number'].']';
                     } else if (isset($var[$i]['object'])) {
                         /* Accessing a object's property */
-                        $var_str .= '->'.$var[$i]['object'];
+                        if (is_array($var[$i]['object'])) {
+                            $var_str .= '->{'.$this->php_get_varname($var[$i]['object']['var']).'}';
+                        } else {
+                            $var_str .= '->'.$var[$i]['object'];
+                        }
                     } else if ($var[$i] === array()) {
                         /* index is a NULL (do append) */
                         $var_str .= '[]';

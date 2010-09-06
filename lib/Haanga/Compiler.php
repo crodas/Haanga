@@ -829,21 +829,28 @@ class Haanga_Compiler
             foreach ($variable as $id => $part) {
                 if ($id != 0) {
                     if (is_array($part) && isset($part['object'])) {
-                        if (!isset($var->$part['object'])) {
-                            $var = NULL;
-                            break;
+                        if (is_array($part['object']) && isset($part['object']['var'])) {
+                            /* object $foo->$bar */
+                            $name = $part['object']['var']; 
+                            $name = $this->get_context($name);
+                            if (!isset($var->$name)) {
+                                return NULL;
+                            }
+                            $var = &$var->$name;
+                        } else {
+                            if (!isset($var->$part['object'])) {
+                                return NULL;
+                            }
+                            $var = &$var->$part['object'];
                         }
-                        $var = &$var->$part['object'];
                     } else if (is_object($var)) {
                         if (!isset($var->$part)) {
-                            $var = NULL;
-                            break;
+                            return NULL;
                         }
                         $var = &$var->$part;
                     } else {
                         if (!isset($var[$part])) {
-                            $var = NULL;
-                            break;
+                            return NULL;
                         }
                         $var = &$var[$part];
                     }
@@ -955,7 +962,9 @@ class Haanga_Compiler
                         if (isset($variable[$i]['object'])) {
                             $def_arr = FALSE;
                         }
-                        $variable[$i] = current($variable[$i]);
+                        if (!Haanga_AST::is_var($variable[$i])) {
+                            $variable[$i] = current($variable[$i]);
+                        }
                     }
 
                     $is_obj = $this->var_is_object($var_part, 'unknown');
