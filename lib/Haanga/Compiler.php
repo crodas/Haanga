@@ -964,6 +964,8 @@ class Haanga_Compiler
                         }
                         if (!Haanga_AST::is_var($variable[$i])) {
                             $variable[$i] = current($variable[$i]);
+                        } else {
+                            $variable[$i] = $this->generate_variable_name($variable[$i]['var']);
                         }
                     }
 

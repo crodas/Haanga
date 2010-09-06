@@ -1,6 +1,7 @@
 <?php
-
-$data = array('index' => 'foo');
+$obj = new stdclass;
+$obj->str = 'foo';
+$data = array('index' => array('name' => $obj), 'indexstr' => 'foo');
 $obj  = new Stdclass;
 $obj->foo = array('bar' => 'c');
 
