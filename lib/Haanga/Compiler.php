@@ -829,10 +829,22 @@ class Haanga_Compiler
             foreach ($variable as $id => $part) {
                 if ($id != 0) {
                     if (is_array($part) && isset($part['object'])) {
+                        if (!isset($var->$part['object'])) {
+                            $var = NULL;
+                            break;
+                        }
                         $var = &$var->$part['object'];
                     } else if (is_object($var)) {
+                        if (!isset($var->$part)) {
+                            $var = NULL;
+                            break;
+                        }
                         $var = &$var->$part;
                     } else {
+                        if (!isset($var[$part])) {
+                            $var = NULL;
+                            break;
+                        }
                         $var = &$var[$part];
                     }
                 }
@@ -881,7 +893,8 @@ class Haanga_Compiler
                 if (!$this->forid) {
                     $this->Error("Invalid forloop reference outside of a loop");
                 }
-                switch ($variable[1]) {
+
+                switch ($variable[1]['object']) {
                 case 'counter':
                     $this->forloop[$this->forid]['counter'] = TRUE; 
                     $variable = 'forcounter1_'.$this->forid;
@@ -932,11 +945,31 @@ class Haanga_Compiler
                 return Haanga_AST::str(self::$block_var);
                 break;
             default:
+                /* choose array or objects */
+
+                for ($i=1; $i < count($variable); $i++) {
+                    $var_part = array_slice($variable, 0, $i);
+                    $def_arr  = TRUE;
+
+                    if (is_array($variable[$i])) {
+                        if (isset($variable[$i]['object'])) {
+                            $def_arr = FALSE;
+                        }
+                        $variable[$i] = current($variable[$i]);
+                    }
+
+                    $is_obj = $this->var_is_object($var_part, 'unknown');
+
+                    if ( $is_obj === TRUE || ($is_obj == 'unknown' && !$def_arr)) {
+                        $variable[$i] = array('object' => $variable[$i]); 
+                    }
+                }
+
                 break;
             } 
 
         } else if (isset($this->var_alias[$variable])) {
-            $variable = $this->var_alias[$variable];
+            $variable = $this->var_alias[$variable]['var'];
         }
 
         return hvar($variable)->getArray();
@@ -1270,7 +1303,7 @@ class Haanga_Compiler
      */
     function generate_op_alias($details, &$body)
     {
-        $this->var_alias[ $details['as'] ] = $details['var'];
+        $this->var_alias[ $details['as'] ] = $this->generate_variable_name($details['var']);
         $this->generate_op_code($details['body'], $body);
         unset($this->var_alias[ $details['as'] ] );
     }
