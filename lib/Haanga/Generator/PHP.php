@@ -128,6 +128,7 @@ class Haanga_Generator_PHP
                 throw new Exception("CodeGenerator: Missing method $method");
             }
             switch ($op['op']) {
+            case 'end_for':
             case 'end_foreach':
             case 'end_if':
             case 'end_function':
@@ -264,6 +265,18 @@ class Haanga_Generator_PHP
     }
     // }}}
 
+    // php_end_for() {{{
+    /**
+     *  Return code to end a for
+     *
+     *  @return string
+     */
+    protected function php_end_for()
+    {
+        return $this->php_end_block();
+    }
+    // }}}
+
     // php_end_foreach() {{{
     /**
      *  Return code to end a foreach
@@ -273,6 +286,34 @@ class Haanga_Generator_PHP
     protected function php_end_foreach()
     {
         return $this->php_end_block();
+    }
+    // }}}
+
+    // php_for() {{{
+    /**
+     *
+     */
+    protected function php_for($op)
+    {
+        $index = $this->php_get_varname($op['index']);
+        $min  = $op['min'];
+        $max  = $op['max'];
+        $step = $op['step']; 
+        $cmp  = "<=";
+        if (is_numeric($step) && $step < 0) {
+            $cmp = ">=";
+        }
+        if (is_numeric($min) && is_numeric($max) && $max < $min) {
+            if (is_numeric($step) && $step > 0) {
+                $step *= -1;
+            }
+            $cmp = ">=";
+        }
+
+        $code = "for ({$index} = {$min}; {$index} {$cmp} {$max}; {$index} += {$step}) {"; 
+        $this->ident++;
+
+        return $code;
     }
     // }}}
 

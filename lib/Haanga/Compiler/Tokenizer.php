@@ -74,6 +74,7 @@ class Haanga_Compiler_Tokenizer
         'not'           => HG_Parser::T_NOT,
         'regroup'       => HG_Parser::T_REGROUP,
         'spacefull'     => HG_Parser::T_SPACEFULL,
+        'step'          => HG_Parser::T_STEP,
         'with'          => HG_Parser::T_WITH,
     );
 
