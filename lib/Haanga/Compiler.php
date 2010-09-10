@@ -1033,7 +1033,6 @@ class Haanga_Compiler
                 $this->set_context($details['variable'], current($var));
             }
 
-
             /* Check if the array to iterate is an object */
             $var = &$details['array'][0];
             if (is_string($var) && $this->var_is_object(array($var), FALSE)) {
@@ -1050,6 +1049,7 @@ class Haanga_Compiler
                 $this->set_safe(hvar($details['variable']));
             }
 
+            $details['array'] = $this->generate_variable_name($details['array']);
         }
 
         /* for_body {{{ */
@@ -1133,6 +1133,15 @@ class Haanga_Compiler
                 $this->set_unsafe($details['variable']);
             }            
         } else {
+            for ($i=0; $i < 2; $i++) {
+                if (Haanga_AST::is_var($details['range'][$i])) {
+                    $details['range'][$i] = $this->generate_variable_name($details['range'][$i]['var']);
+                }
+            }
+
+            if (Haanga_AST::is_var($details['step'])) {
+                $details['step'] = $this->generate_variable_name($details['step']['var']);
+            }
             $body->do_for($details['variable'], $details['range'][0], $details['range'][1], $details['step'], $for_body);
             $this->set_unsafe(hvar($details['variable']));
         }

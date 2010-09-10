@@ -107,6 +107,7 @@ class Haanga_Compiler_Tokenizer
         '=='    => HG_Parser::T_EQ,
         '>='    => HG_Parser::T_GE,
         '||'    => HG_Parser::T_OR,
+        '..'    => HG_Parser::T_DOTDOT,
     );
 
     static $close_tags = array();

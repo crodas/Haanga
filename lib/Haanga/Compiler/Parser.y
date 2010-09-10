@@ -360,17 +360,17 @@ expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = array('op_expr' => 'expr', B); }
 expr(A) ::= fvar_or_string(B). { A = B; }
 
 /* Variable name */
-varname(A) ::= varname(B) T_OBJ T_ALPHA(C). { if (!is_array(B)) { A = array(B); } else { A = B; }  A[]=array('object' => C);}
-varname(A) ::= varname(B) T_DOT T_ALPHA(C). { if (!is_array(B)) { A = array(B); } else { A = B; } A[] = array('object' => C);}
+varname(A) ::= varname(B) T_OBJ T_ALPHA|T_CUSTOM_TAG|T_CUSTOM_BLOCK(C). { if (!is_array(B)) { A = array(B); } else { A = B; }  A[]=array('object' => C);}
+varname(A) ::= varname(B) T_DOT T_ALPHA|T_CUSTOM_TAG|T_CUSTOM_BLOCK(C). { if (!is_array(B)) { A = array(B); } else { A = B; } A[] = array('object' => C);}
 varname(A) ::= varname(B) T_BRACKETS_OPEN var_or_string(C) T_BRACKETS_CLOSE. { if (!is_array(B)) { A = array(B); } else { A = B; }  A[]=C;}
 varname(A) ::= T_ALPHA(B). { A = B; } 
 /* T_BLOCK|T_CUSTOM|T_CUSTOM_BLOCK are also T_ALPHA */
 varname(A) ::= T_BLOCK|T_CUSTOM_TAG|T_CUSTOM_BLOCK(B). { A = B; } 
 
-range(A)  ::= numvar(B) T_DOT T_DOT numvar(C). { A = array(B, C); }
+range(A)  ::= numvar(B) T_DOTDOT numvar(C). { A = array(B, C); }
 
 numvar(A) ::= number(B).  { A = B; }
-numvar(A) ::= varname(B). { A = B; }
+numvar(A) ::= varname(B). { A = array('var' => B); }
 
 number(A) ::= T_NUMERIC(B). { A = B; }
 number(A) ::= T_MINUS T_NUMERIC(B). { A = -1 * (B); }

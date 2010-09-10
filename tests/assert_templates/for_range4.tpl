@@ -1,3 +1,3 @@
-{% for i in 5 .. 1 step 2 %}
+{% for i in min .. max step -2 %}
     {{i}}
 {% endfor %}

@@ -296,9 +296,13 @@ class Haanga_Generator_PHP
     protected function php_for($op)
     {
         $index = $this->php_get_varname($op['index']);
-        $min  = $op['min'];
-        $max  = $op['max'];
-        $step = $op['step']; 
+        foreach (array('min', 'max', 'step') as $type) {
+            if (is_array($op[$type])) {
+                $$type = $this->php_get_varname($op[$type]['var']);
+            } else {
+                $$type = $op[$type];
+            }
+        }
         $cmp  = "<=";
         if (is_numeric($step) && $step < 0) {
             $cmp = ">=";
