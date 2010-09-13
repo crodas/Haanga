@@ -1157,6 +1157,7 @@ class Haanga_Compiler
         $var = $this->generate_variable_name($details['var']);
         $this->check_expr($details['expr']);
         $body->decl_raw($var, $details['expr']);
+        $body->decl(hvar('vars', $var['var']), $var);
     }
 
 
