@@ -16,7 +16,7 @@ function haanga_f5ad40d56c2438ea6bb3882d3b5e5ebf18352938($vars, $return=FALSE, $
     $vars['bar']  = $bar;
     echo '
 '.htmlspecialchars($foo).'
-'.htmlspecialchars($bar).'
+'.Haanga::Load('assert_templates/sub_set.tpl', $vars, TRUE, $blocks).'
 ';
     if ($return == TRUE) {
         return ob_get_clean();
