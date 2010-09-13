@@ -883,8 +883,8 @@ class Haanga_Compiler
         }
 
         $variable = $this->get_context($variable);
-        if (isset($variable)) {
-            return !is_array($variable);
+        if (is_array($variable) || is_object($variable)) {
+            return is_object($variable);
         }
 
         return $default===NULL ? self::$dot_as_object : $default;
@@ -1151,6 +1151,14 @@ class Haanga_Compiler
         }
     }
     // }}}
+
+    function generate_op_set($details, &$body)
+    {
+        $var = $this->generate_variable_name($details['var']);
+        $this->check_expr($details['expr']);
+        $body->decl_raw($var, $details['expr']);
+    }
+
 
     // ifchanged [<var1> <var2] {{{
     protected function generate_op_ifchanged($details, &$body)
