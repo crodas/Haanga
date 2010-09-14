@@ -8,7 +8,7 @@ function haanga_e7733880179030f69680f92d682d991e9f93c62e($vars, $return=FALSE, $
     if ($return == TRUE) {
         ob_start();
     }
-    if (1 + 2 == 3) {
+    if (1 == 2 || 1 + 2 == 3) {
         echo 'True';
     } else {
         echo 'False';
