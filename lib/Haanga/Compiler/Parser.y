@@ -67,6 +67,7 @@
 %nonassoc T_IN.
 %left T_PLUS T_MINUS T_CONCAT.
 %left T_TIMES T_DIV T_MOD.
+%left T_PIPE T_BITWISE.
 
 %syntax_error {
     $expect = array();
@@ -357,6 +358,7 @@ expr(A) ::= expr(B) T_OR(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
 expr(A) ::= expr(B) T_PLUS|T_MINUS|T_CONCAT(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
 expr(A) ::= expr(B) T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN(X)  expr(C).  { A = array('op_expr' => trim(@X), B, C); }
 expr(A) ::= expr(B) T_TIMES|T_DIV|T_MOD(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
+expr(A) ::= expr(B) T_BITWISE|T_PIPE(X)  expr(C).  { A = array('op_expr' => 'expr', array('op_expr' => @X, B, C)); }
 expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = array('op_expr' => 'expr', B); }
 expr(A) ::= fvar_or_string(B). { A = B; }
 

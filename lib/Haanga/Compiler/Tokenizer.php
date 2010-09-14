@@ -82,6 +82,7 @@ class Haanga_Compiler_Tokenizer
     /* common operations */
     static $operators_single = array(
         '!'     => HG_Parser::T_NOT,
+        '&'     => HG_Parser::T_BITWISE,
         '%'     => HG_Parser::T_MOD,
         '('     => HG_Parser::T_LPARENT,
         ')'     => HG_Parser::T_RPARENT,
@@ -106,8 +107,10 @@ class Haanga_Compiler_Tokenizer
         '&&'    => HG_Parser::T_AND,
         '->'    => HG_Parser::T_OBJ,
         '<='    => HG_Parser::T_LE,
+        '<<'    => HG_Parser::T_BITWISE,
         '=='    => HG_Parser::T_EQ,
         '>='    => HG_Parser::T_GE,
+        '>>'    => HG_Parser::T_BITWISE,
         '||'    => HG_Parser::T_OR,
         '..'    => HG_Parser::T_DOTDOT,
     );
