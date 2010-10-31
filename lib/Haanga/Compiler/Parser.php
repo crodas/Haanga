@@ -1983,7 +1983,7 @@ static public $yy_action = array(
 #line 369 "lib/Haanga/Compiler/Parser.y"
     function yy_r79(){ 
     if (!is_array($this->yystack[$this->yyidx + -2]->minor)) { $this->_retvalue = array($this->yystack[$this->yyidx + -2]->minor); } 
-    else { $this->_retvalue = $this->yystack[$this->yyidx + -2]->minor; }  $this->_retvalue[]=array('class' => $this->yystack[$this->yyidx + 0]->minor);
+    else { $this->_retvalue = $this->yystack[$this->yyidx + -2]->minor; }  $this->_retvalue[]=array('class' => '$'.$this->yystack[$this->yyidx + 0]->minor);
     }
 #line 1994 "lib/Haanga/Compiler/Parser.php"
 #line 373 "lib/Haanga/Compiler/Parser.y"

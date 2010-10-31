@@ -369,7 +369,7 @@ varname(A) ::= varname(B) T_OBJ|T_DOT T_ALPHA|T_CUSTOM_TAG|T_CUSTOM_BLOCK(C). {
 }
 varname(A) ::= varname(B) T_CLASS T_ALPHA|T_CUSTOM_TAG|T_CUSTOM_BLOCK(C). { 
     if (!is_array(B)) { A = array(B); } 
-    else { A = B; }  A[]=array('class' => C);
+    else { A = B; }  A[]=array('class' => '$'.C);
 }
 varname(A) ::= varname(B) T_BRACKETS_OPEN var_or_string(C) T_BRACKETS_CLOSE. {
     if (!is_array(B)) { A = array(B); } 

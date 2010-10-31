@@ -3,6 +3,11 @@
 class Foo_Bar {
     static $Bar = 'haanga';
     static $Arr = array('foo', 'Bar' => 'Foo');
+
+    static function something()
+    {
+        return 'something';
+    }
 }
 
 /**
