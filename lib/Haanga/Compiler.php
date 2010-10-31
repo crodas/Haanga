@@ -959,6 +959,10 @@ class Haanga_Compiler
                     $def_arr  = TRUE;
 
                     if (is_array($variable[$i])) {
+                        if (isset($variable[$i]['class'])) {
+                            // no type guess for static properties
+                            continue;
+                        }
                         if (isset($variable[$i]['object'])) {
                             $def_arr = FALSE;
                         }

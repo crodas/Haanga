@@ -1,5 +1,10 @@
 <?php
 
+class Foo_Bar {
+    static $Bar = 'haanga';
+    static $Arr = array('foo', 'Bar' => 'Foo');
+}
+
 /**
  *  @runTestsInSeparateProcess
  */

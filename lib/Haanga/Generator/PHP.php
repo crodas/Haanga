@@ -631,6 +631,14 @@ class Haanga_Generator_PHP
                         } else {
                             $var_str .= '->'.$var[$i]['object'];
                         }
+                    } else if (isset($var[$i]['class'])) {
+                        /* Accessing a class' property */
+                        $var_str = substr($var_str, 1);
+                        if (is_array($var[$i]['class'])) {
+                            $var_str .= '::${'.$this->php_get_varname($var[$i]['class']['var']).'}';
+                        } else {
+                            $var_str .= '::$'.$var[$i]['class'];
+                        }
                     } else if ($var[$i] === array()) {
                         /* index is a NULL (do append) */
                         $var_str .= '[]';
