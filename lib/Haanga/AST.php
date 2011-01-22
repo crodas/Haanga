@@ -35,6 +35,118 @@
   +---------------------------------------------------------------------------------+
 */
 
+class Haanga_New_AST
+{
+    public $block = array();
+    public $current = 0;
+
+    public function __construct()
+    {
+        $this->initBlock('init');
+    }
+
+    public function end()
+    {
+        $this->endBlock();
+        return $this;
+    }
+
+    protected function add(Array $value)
+    {
+        $this->block[ $this->current ]['ast'][] = $value;
+
+        return $this;
+    }
+
+    protected function endBlock()
+    {
+        if (isset($this->block[$this->current])) {
+            $current  = array_pop($this->block);
+            $callback = array($this, 'end_' . $current['type']);
+            $this->current--;
+            if (is_callable($callback)) {
+                call_user_func($callback, $current['ast']);
+            }
+        } else {
+            throw new Exception("Invalid call of end()");
+        }
+    }
+
+    protected function initBlock($name)
+    {
+        $this->block[] = array('type' => $name, 'ast' => array());
+        $this->current = count($this->block) - 1;
+    }
+
+    public function pzFunction($name)
+    {
+        $this->initBlock('function');
+        $this->add($name);
+        return $this;
+    }
+
+    public function end_function($ast) 
+    {
+        $this->add(array('op' => 'function', 'name' => $ast[0]));
+        foreach (array_slice($ast, 1) as $op) {
+            $this->add($op);
+        }
+        $this->add(array('op' => 'end_function'));
+    }
+
+    public function pzReturn()
+    {
+        $this->initBlock('return');
+        return $this;
+    }
+
+    public function end_return($ast)
+    {
+        $this->add(array('op' => 'return', $ast[0]));
+    }
+
+    public function exec($name=null)
+    {
+        $this->initBlock('exec');
+        if (is_string($name) && !empty($name)) {
+            $this->string($name);
+        }
+        return $this;
+    }
+
+    public function end_exec(Array $ast)
+    {
+        $exec = array('exec' => $ast[0], 'args' => array_slice($ast, 1));
+        if ($this->current == 0) {
+            $this->add(array('op' => 'expr', $exec));
+        } else {
+            $this->add($exec);
+        }
+    }
+
+    public function string($value) 
+    {
+        $this->add(array('string' => $value));
+        return $this;
+    }
+
+    public function number($value)
+    {
+        $this->add(array('number' => $value));
+        return $this;
+    }
+}
+
+$AST = new Haanga_New_AST;
+$AST->pzFunction('foobar');
+
+$AST->exec('print')->string('cesar')->number(5)->end();
+$AST->exec('print')->string('david')->end();
+
+$AST->pzReturn()->number(5)->end()->end();
+
+var_dump($AST);
+
 /**
  *  Simple AST (abstract syntax tree) helper class. This
  *  helps to generate array structure that is then translated by 
