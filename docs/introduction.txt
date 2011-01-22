@@ -1,0 +1,239 @@
+======
+Haanga
+======
+
+:author: César Rodas <crodas@php.net>
+:version: 0.1
+:revision: 0.1
+
+.. raw:: pdf
+
+   PageBreak oneColumn
+
+.. header::
+
+   .. oddeven::
+
+      .. class:: headertable
+
+      +---+---------------------+----------------+
+      |   |.. class:: centered  |.. class:: right|
+      |   |                     |                |
+      |   |Section ###Section###|Page ###Page### |
+      +---+---------------------+----------------+
+
+      .. class:: headertable
+
+      +---------------+---------------------+---+
+      |               |.. class:: centered  |   |
+      |               |                     |   |
+      |Page ###Page###|Section ###Section###|   |
+      +---------------+---------------------+---+
+
+
+.. contents::
+
+.. section-numbering::
+
+.. raw:: pdf
+
+   PageBreak oneColumn
+
+Introduction
+============
+
+Haanga is a template engine that uses Django_ syntax. In the beginning it was developed for Menéame_, but we decided to release it as an independent project so it can be used by anyone :-)
+
+Some features:
+
+    * Human readable.
+    * Easy to use and mantain.
+    * Highly efficient because every template is *compiled* into a PHP script.
+    * The generated code is ready to take advantage from any PHP optimizer (like xcache).
+
+Why yet another template engine?    
+--------------------------------
+
+At Menéame_ performance is critical, we cannot afford to waster CPU cycles. We tested all alternatives, unfortunately none of them fulfilled our needs, so we decided to build our template engine, so we started Haanga_ with the following goals:
+
+    1. It has to be very efficient.
+    2. The template itself has to work as less as possible.
+    3. It *must* generate self-contained code.
+    4. We liked django style, therefore we wanted to build something like this.
+
+
+What is a Haanga?
+-------------------
+
+A **template** is a text document, or a normal PHP string, that is marked-up using the Django template language. A template can contain **block tags** or **variables**.
+
+This definition is deliberately vague. For example, a block tag can output content, serve as a control structure (an ``if`` statement or ``for`` loop), grab content from a database or enable access to other template tags.
+
+Block tags are surrounded by ``{%`` and ``%}``.
+
+Example template with block tags:
+
+.. code-block:: django
+
+    {% if is_logged_in %}Thanks for logging in!{% else %}Please log in.{% endif %}
+
+A variable is a symbol within a template that outputs a value.
+
+Variable tags are surrounded by ``{{`` and ``}}``.
+
+Example template with variables:
+
+.. code-block:: django
+
+    My first name is {{ first_name }}. My last name is {{ last_name }}.
+
+.. raw:: pdf
+
+   PageBreak oneColumn
+
+Installation
+============
+
+There are several ways to install Haanga. If you are unsure what to do, go with the tarball method.
+
+Tarball
+-------
+
+  * Download the most recent tarball from the download_ page.
+  * Unpack the tarball
+  * Move the *lib/* directory to your project
+
+PEAR
+----
+
+Install PEAR, then execute this from your console.
+
+.. code-block:: shell
+
+    pear channel-discover pearhub.org
+    pear install pearhub/Haanga
+
+Installing the development version
+----------------------------------
+
+In order to install the development version, you must install GIT_ locally, then execute this from you console.
+
+.. code-block:: shell
+
+    git clone git://github.com/crodas/Haanga.git
+
+.. raw:: pdf
+
+   PageBreak oneColumn
+
+Basics
+======
+
+
+Basic usage
+-----------
+
+The most basic setup of Haanga as follows, although there are more options:
+
+.. code-block:: php
+
+    <?php
+    require "lib/Haanga.php";
+    Haanga::configure(array(
+        'template_dir' => '../templates/',
+        'cache_dir' => '../compiled/',
+    ));
+    $vars = array(
+        'user' => "crodas";
+        'url'  => "http://cesarodas.com/";
+    );
+    Haanga::Load("test.html", $vars);
+
+And this is ``test.html``:
+
+.. code-block:: django
+
+    <h1>
+        Hi there, I'm {{user}}
+        {% if url %}
+            and my URL is <a href="{{url|safe}}">{{url}}</a>
+        {% endif %}
+    </h1>
+
+Evaluating templates at run-time
+--------------------------------
+
+Haanga also provides a way to evaluate templates "at run-time", this means that any string-template is compiled to a PHP function. The usage of this feature is not recommended because there is no-way to cache the string and avoid repetitive compilations.
+
+.. code-block:: php
+
+    <?php
+    $function = Haanga::compile("Hi {{user}}! Welcome here");
+    echo $function(array('user' => 'crodas'));
+
+The following code might be useful to evaluate "un-safe" templates, think in a template editor, a ``test-before-save`` would look like this:
+
+.. code-block:: php
+
+    <?php
+    function is_valid_tpl($content) {
+        try {
+            $function = Haanga::compile($content);
+            return TRUE;
+        } catch (Exception $e) {
+            // show $e->getMessage() somewhere
+            return FALSE;
+        }
+    }
+
+Variables
+=========
+
+Variables look like this: ``{{ variable }}``. When the template engine encounters a variable, it evaluates that variable and replaces it with the result.
+
+In order to keep performance, we evaluate variables type at compile time, not at run time. If a variable in the template uses *dot* or *square brackets*, its type is checked, if it doesn't exists in the variable list at compile time, then  *dot* (``.``) access attributes of an object and *square brackets* (``[]``) access array indexes.
+
+The following code works because all variables exists at compile time, but you're encouraged to use dot for objects and square brackets for arrays in order to avoid problems.
+
+.. code-block:: php
+
+    <?php
+    $obj = new stdclass;
+    $obj->foo = 'bar';
+    $arr = array('foo' => 'bar'); 
+
+    $vars = array(
+        'obj' => $obj,
+        'arr' => $arr,
+    );
+
+    $tpl = Hanga::compile("{{obj.foo}}, {{obj['foo']}}, {{arr.foo}}, {{arr['foo']}}", $vars);
+
+Because Haanga_ generates PHP code, it is a fatal error if you try to access array as objects and object as array (if it doesn't implements the ``ArrayAccess`` Interface). **If a template variable, whether array or object,  changes its type, then your template will have a fatal error**. In order to avoid this, be utterly sure to delete all your templates generated files when variables types has been changed.
+
+Variable lookups can be nested multiple levels deep. The following code will generate ``$obj->arr['obj']->bar`` regardless if they are declared as objects or arrays in the template.
+
+.. code-block:: php
+
+    <?php
+    $obj1 = new stdclass;
+    $obj1->bar = 'bar'
+
+    $obj = new stdclass;
+    $obj->arr = array('obj' => $obj1);
+
+    Haanga::compile("{{obj.arr.obj.bar}} and {{obj.arr['obj'].bar}}", compact('obj'));
+
+.. raw:: pdf
+
+   PageBreak oneColumn
+
+
+Block tags
+==========
+
+.. _GIT: http://git-scm.org/
+.. _download: http://github.com/crodas/Haanga/downloads
+.. _Django: http://www.djangoproject.net/
+.. _Menéame: http://www.meneame.net/
+.. _Haanga: http://www.haanga.org/
