@@ -884,7 +884,7 @@ class Haanga_Compiler
 
         $variable = $this->get_context($variable);
         if (is_array($variable) || is_object($variable)) {
-            return is_object($variable);
+            return $default ? is_object($variable) : is_object($variable) && !$variable InstanceOf Iterator;
         }
 
         return $default===NULL ? self::$dot_as_object : $default;
