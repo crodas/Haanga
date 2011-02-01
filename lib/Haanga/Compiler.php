@@ -1053,7 +1053,13 @@ class Haanga_Compiler
                 $this->set_safe(hvar($details['variable']));
             }
 
-            $details['array'] = $this->generate_variable_name($details['array']);
+            if ($array Instanceof Haanga_AST) {
+                // filtered var
+                $tmp = hvar('tmp'.($oldid+1));
+                $body->decl($tmp, $array);
+                $array = $tmp;
+            }
+            $details['array'] = $array;
         }
 
         /* for_body {{{ */
