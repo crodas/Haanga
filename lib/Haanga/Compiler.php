@@ -1030,9 +1030,19 @@ class Haanga_Compiler
         if (isset($details['range'])) {
             $this->set_safe($details['variable']);
         } else {
-            /* variable context */
-             $var = $this->get_context(is_array($details['array'][0]) ? $details['array'][0] : array($details['array'][0]));
-            if (is_array($var)) {
+            /* check variable context */
+
+            /* get the proper variable */
+            $pzName = is_array($details['array'][0]) ? $details['array'][0] : array($details['array'][0]);
+            $pzName = $this->generate_variable_name($pzName);
+            if (empty($pzName['var'])) {
+                // this is an error, but it is catched in the code generator
+                $pzName['var'] = '';
+            }
+            $var = $this->get_context($pzName['var']);
+
+            /* check the content of the first element */
+            if (is_array($var) || $var instanceof Iterator) {
                 /* let's check if it is an object or array */
                 $this->set_context($details['variable'], current($var));
             }
