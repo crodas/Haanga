@@ -892,7 +892,7 @@ class Haanga_Compiler
     // }}} 
 
     // Get variable name {{{
-    protected function generate_variable_name($variable)
+    function generate_variable_name($variable)
     {
         if (is_array($variable)) {
             switch ($variable[0]) {

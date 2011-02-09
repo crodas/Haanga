@@ -336,7 +336,7 @@ params(A) ::= var_or_string(B).                       { A = array(B); }
 
 
 /* variable or string (used on params) */
-var_or_string(A) ::= varname(B).    { A = array('var' => B); }  
+var_or_string(A) ::= varname(B).    { /*A = array('var' => B);*/ A = $this->compiler->generate_variable_name(B); }  
 var_or_string(A) ::= number(B).  { A = array('number' => B); }  
 var_or_string(A) ::= T_TRUE|T_FALSE(B).   { A = trim(@B); }  
 var_or_string(A) ::= string(B).     { A = array('string' => B); }
