@@ -892,11 +892,14 @@ class Haanga_Compiler
     // }}} 
 
     // Get variable name {{{
-    function generate_variable_name($variable)
+    function generate_variable_name($variable, $special=true)
     {
         if (is_array($variable)) {
             switch ($variable[0]) {
             case 'forloop':
+                if (!$special) {
+                    return array('var' => $variable);
+                }
                 if (!$this->forid) {
                     $this->Error("Invalid forloop reference outside of a loop");
                 }
@@ -941,6 +944,9 @@ class Haanga_Compiler
                 $this->var_is_safe = TRUE;
                 break;
             case 'block':
+                if (!$special) {
+                    return array('var' => $variable);
+                }
                 if ($this->in_block == 0) {
                     $this->Error("Can't use block.super outside a block");
                 }
@@ -953,6 +959,11 @@ class Haanga_Compiler
                 break;
             default:
                 /* choose array or objects */
+
+                if ($special) {
+                    // this section is resolved on the parser.y
+                    return array('var' => $variable);
+                }
 
                 for ($i=1; $i < count($variable); $i++) {
                     $var_part = array_slice($variable, 0, $i);
@@ -1031,21 +1042,6 @@ class Haanga_Compiler
             $this->set_safe($details['variable']);
         } else {
             /* check variable context */
-
-            /* get the proper variable */
-            $pzName = is_array($details['array'][0]) ? $details['array'][0] : array($details['array'][0]);
-            $pzName = $this->generate_variable_name($pzName);
-            if (empty($pzName['var'])) {
-                // this is an error, but it is catched in the code generator
-                $pzName['var'] = '';
-            }
-            $var = $this->get_context($pzName['var']);
-
-            /* check the content of the first element */
-            if (is_array($var) || $var instanceof Iterator) {
-                /* let's check if it is an object or array */
-                $this->set_context($details['variable'], current($var));
-            }
 
             /* Check if the array to iterate is an object */
             $var = &$details['array'][0];
