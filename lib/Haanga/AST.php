@@ -58,6 +58,10 @@ class Haanga_Generator_PHP {
         return implode(",", $args);
     }
 
+    public function exec($args) {
+        return "{$args[0]}({$args[1]})";
+    }
+
     public function expr($args) {
         $prev  = null;
         $code  = '';
@@ -88,17 +92,31 @@ class Haanga_Generator_PHP {
         return $code;
     }
 
-    public function defElse($args, $body) {
+    public function blockElse($args, $body) {
         return "else {$body}";
     }
 
-    public function defIf($args, $body) {
+    public function blockIf($args, $body) {
         return "if ({$args[0]}) {$body}";
     }
 
 
-    public function defFunction($args, $body) {
+    public function blockFunction($args, $body) {
         $code = "function {$args[0]}({$args[1]}) {$body}";
+        return $code;
+    }
+
+    public function blockClass($args, $body) {
+        $code = "class {$args[0]} {$body}";
+        return $code;
+    }
+
+    public function blockForEach($args, $body) {
+        $code = "foreach ({$args[0]} as ";
+        if (!empty($args[1])) {
+            $code .= "{$args[1]} => ";
+        }
+        $code .= " {$args[2]}) {$body}";
         return $code;
     }
 
@@ -107,15 +125,19 @@ class Haanga_Generator_PHP {
             return "";
         }
         $this->ident++;
-        $ident = str_repeat("\t", $this->ident);
-        $code  =  "\n" . str_repeat("\t", $this->ident-1) . "{\n";
+        $pident = str_repeat("\t", $this->ident-1);
+        $ident  = str_repeat("\t", $this->ident);
+        $code  = "{\n";
         foreach ($array as $stmt) {
+            if (empty($stmt)) {
+                continue;
+            }
             $code .= "{$ident}{$stmt}";
-            if (!$stmt instanceof Haanga_Node_BasicStmts) {
+            if (!$stmt instanceof Haanga_Node_Blocks) {
                 $code .= ";\n";
             }
         }
-        $code .=  str_repeat("\t", $this->ident-1) . "}\n";
+        $code .=  "{$pident}}\n";
         $this->ident--;
         return $code;
     }
@@ -152,14 +174,19 @@ $assign1 = new Haanga_Node_Assign($var, $expr);
 $assign2 = new Haanga_Node_Assign($var, new Haanga_Node_Expr(array('cesar', 'rodas', $expr, $var)));
 $assign3 = new Haanga_Node_Assign($var, new Haanga_Node_Expr(array(5, 'cesar')));
 
-$if = new Haanga_Node_defIf($expr, array($assign1, $assign2));
-$else = new Haanga_Node_defElse(null, array($assign3));
+$if = new Haanga_Node_blockIf($expr, array($assign1, $assign2));
+$else = new Haanga_Node_blockElse(null, array($assign3));
+$args  = new Haanga_Node_StmtList(array(5, 6));
+$exec1 = new Haanga_Node_Exec('cesar', $args);
+$exec2 = new Haanga_Node_Exec(new Haanga_Node_Variable(array('david', new Haanga_Node_Property('foo'))), $args);
 
 
-$stmts = array($assign1, $assign2, $assign3, $if);
+$stmts = array($assign1, $assign2, $assign3, $exec1, $exec2, $if, $else);
 $args  = new Haanga_Node_StmtList(array(new Haanga_Node_Assign(new Haanga_Node_Variable('cesar'), new Haanga_Node_Expr(array(5)))));
-$fnc   = (new Haanga_Node_defFunction('cesar', $args, $stmts));
-die('<?php ' . $fnc->addNode($else) );
+$for   = new Haanga_Node_blockForeach(new Haanga_Node_Variable('foo'), null, new Haanga_Node_Variable('each'), $stmts);
+$fnc   = (new Haanga_Node_blockFunction('cesar', $args, $for));
+$fnc   = new Haanga_Node_blockClass('david', $fnc);
+die("<?php\n" . $fnc );
 exit;
 
 class Haanga_New_AST

@@ -47,8 +47,14 @@ abstract class Haanga_Node
 
     protected static $generator;
 
-    public function __construct(array $nodes, Array $attrs=array(), $line=0)
+    public function __construct($nodes, $attrs=array(), $line=0)
     {
+        if (!is_array($nodes)) {
+            $nodes = array($nodes);
+        }
+        if (!is_array($attrs)) {
+            $attrs = array($attrs);
+        }
         $this->nodes = $nodes;
         $this->attrs = $attrs;
         $this->line  = $line;
@@ -128,11 +134,11 @@ abstract class Haanga_Node_Basic extends Haanga_Node
  *  and nodes.
  *
  */
-abstract class Haanga_Node_BasicStmts extends Haanga_Node
+abstract class Haanga_Node_Blocks extends Haanga_Node
 {
     function __construct($expr, $stmts, $line=0)
     {
-        parent::__construct($stmts, array($expr), $line);
+        parent::__construct($stmts, $expr, $line);
     }
 }
 
@@ -201,18 +207,44 @@ final class Haanga_Node_Expr extends Haanga_Node
     }
 }
 
-final class Haanga_Node_defFunction extends Haanga_Node
+final class Haanga_Node_blockFunction extends Haanga_Node_Blocks
 {
-    function __construct($name, Haanga_Node_StmtList $args=null, array $stmts=array(), $line = 0)
+    function __construct($name, Haanga_Node_StmtList $args=null, $stmts=array(), $line = 0)
     {
-        parent::__construct($stmts, array($name, $args), $line);
+        parent::__construct(array($name, $args), $stmts, $line);
     }
 }
 
-final class Haanga_Node_defIf extends Haanga_Node_BasicStmts 
+final class Haanga_Node_blockIf extends Haanga_Node_Blocks 
 {
 }
 
-final class Haanga_Node_defElse extends Haanga_Node_BasicStmts 
+final class Haanga_Node_blockElse extends Haanga_Node_Blocks 
 {
 }
+
+final class Haanga_Node_Exec extends Haanga_Node
+{
+    function __construct($name, Haanga_Node_StmtList $args=null, $line = 0)
+    {
+        parent::__construct(array(), array($name, $args), $line);
+    }
+}
+
+final class Haanga_Node_blockForeach extends Haanga_Node_Blocks {
+    function __construct(Haanga_Node_Variable $array, $key, Haanga_Node_Variable $value, array $body, $line = 0) {
+        if (!is_null($key) && !$key instanceof Haanga_Node_Variable) {
+            throw new Exception("\$key must be an instace of Haanga_Node_Variable");
+        }
+        parent::__construct(array($array, $key, $value), $body, $line);
+    }
+}
+
+final class Haanga_Node_blockClass extends Haanga_Node_Blocks
+{
+    public function __construct($name, $stmts, $line=0)
+    {
+        parent::__construct(array($name), $stmts, $line);
+    }
+}
+
