@@ -24,6 +24,12 @@ abstract class Haanga_Node
         return $this->attrs;
     }
 
+    public function addNode(Haanga_Node $node)
+    {
+        $this->nodes[] = $node;
+        return $this;
+    }
+
     public function getType()
     {
         return substr(get_class($this), strlen(__CLASS__) +1);

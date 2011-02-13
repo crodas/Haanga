@@ -156,9 +156,10 @@ $if = new Haanga_Node_defIf($expr, array($assign1, $assign2));
 $else = new Haanga_Node_defElse(null, array($assign3));
 
 
-$stmts = array($assign1, $assign2, $assign3, $if, $else);
+$stmts = array($assign1, $assign2, $assign3, $if);
 $args  = new Haanga_Node_StmtList(array(new Haanga_Node_Assign(new Haanga_Node_Variable('cesar'), new Haanga_Node_Expr(array(5)))));
-die('<?php ' . new Haanga_Node_defFunction('cesar', $args, $stmts));
+$fnc   = (new Haanga_Node_defFunction('cesar', $args, $stmts));
+die('<?php ' . $fnc->addNode($else) );
 exit;
 
 class Haanga_New_AST
