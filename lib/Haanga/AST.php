@@ -92,6 +92,10 @@ class Haanga_Generator_PHP {
         return $code;
     }
 
+    public function PrintOut($args) {
+        return "echo {$args[0]}";
+    }
+
     public function blockElse($args, $body) {
         return "else {$body}";
     }
@@ -180,8 +184,10 @@ $args  = new Haanga_Node_StmtList(array(5, 6));
 $exec1 = new Haanga_Node_Exec('cesar', $args);
 $exec2 = new Haanga_Node_Exec(new Haanga_Node_Variable(array('david', new Haanga_Node_Property('foo'))), $args);
 
-
-$stmts = array($assign1, $assign2, $assign3, $exec1, $exec2, $if, $else);
+$stmts = array($assign1, $assign2, $assign3, $exec1, $exec2, $if, $else, 
+    new Haanga_Node_blockIf($expr, new Haanga_Node_PrintOut(new Haanga_Node_String('hello'))),
+    new Haanga_Node_blockElse(null, new Haanga_Node_PrintOut(new Haanga_Node_String('there'))),
+);
 $args  = new Haanga_Node_StmtList(array(new Haanga_Node_Assign(new Haanga_Node_Variable('cesar'), new Haanga_Node_Expr(array(5)))));
 $for   = new Haanga_Node_blockForeach(new Haanga_Node_Variable('foo'), null, new Haanga_Node_Variable('each'), $stmts);
 $fnc   = (new Haanga_Node_blockFunction('cesar', $args, $for));

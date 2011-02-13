@@ -113,12 +113,20 @@ abstract class Haanga_Node
     }
 }
 
+abstract class Haanga_Node_Simple extends Haanga_Node
+{
+    public function __construct($name, $line=0)
+    {
+        parent::__construct(array(), array($name), $line);
+    }
+}
+
 /**
  *  Abstraction for Basic nodes (those which requires 
  *  just one text parameter).
  *
  */
-abstract class Haanga_Node_Basic extends Haanga_Node
+abstract class Haanga_Node_BlockSimple extends Haanga_Node
 {
     public function __construct($text, $line=0)
     {
@@ -142,28 +150,24 @@ abstract class Haanga_Node_Blocks extends Haanga_Node
     }
 }
 
-final class Haanga_Node_Number extends Haanga_Node_Basic
+final class Haanga_Node_Number extends Haanga_Node_BlockSimple
 {
 }
 
-final class Haanga_Node_String extends Haanga_Node_Basic
+final class Haanga_Node_String extends Haanga_Node_BlockSimple
 {
 }
 
-final class Haanga_Node_Operator extends Haanga_Node_Basic 
+final class Haanga_Node_Operator extends Haanga_Node_BlockSimple 
 {
 }
 
-final class Haanga_Node_StmtList extends Haanga_Node_Basic
+final class Haanga_Node_StmtList extends Haanga_Node_BlockSimple
 {
 }
 
-final class Haanga_Node_Property extends Haanga_Node
+final class Haanga_Node_Property extends Haanga_Node_Simple
 {
-    public function __construct($name, $line=0)
-    {
-        parent::__construct(array(), array($name), $line);
-    }
 }
 
 final class Haanga_Node_Variable extends Haanga_Node
@@ -193,6 +197,9 @@ final class Haanga_Node_Assign extends Haanga_Node
     }
 }
 
+final class Haanga_Node_PrintOut extends Haanga_Node_Simple
+{
+}
 
 final class Haanga_Node_Expr extends Haanga_Node
 {
