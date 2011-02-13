@@ -51,7 +51,7 @@ class Haanga_Generator_PHP {
     }
 
     public function assign ($args) {
-        return $args[0] . '=' . $args[1];
+        return $args[0] . ' = ' . $args[1];
     }
 
     public function stmtList($args) {
@@ -62,8 +62,20 @@ class Haanga_Generator_PHP {
         $prev  = null;
         $code  = '';
         foreach ($args as $val) {
-            if ($prev && $prev->getType()  == "String") {
-                $code .= '.';
+            if ($prev && $prev->getType() != 'Operator') {
+                switch ($val->getType()) {
+                case "String":
+                case "Variable":
+                    $code .= ' . ';
+                    break;
+                default:
+                    switch ($prev->getType()) {
+                    case "String":
+                    case "Variable":
+                        $code .= ' . ';
+                        break;
+                    }
+                }
             }
             if ($val->getType() == 'Expr') {
                 $code .= '(' . $val . ')';
@@ -76,23 +88,40 @@ class Haanga_Generator_PHP {
         return $code;
     }
 
-    public function defFunction($args) {
+    public function defElse($args, $body) {
+        return "else {$body}";
+    }
+
+    public function defIf($args, $body) {
+        return "if ({$args[0]}) {$body}";
+    }
+
+
+    public function defFunction($args, $body) {
+        $code = "function {$args[0]}({$args[1]}) {$body}";
+        return $code;
+    }
+
+    public function nodes($array) {
+        if (empty($array)) {
+            return;
+        }
         $this->ident++;
-        $code = "function {$args[0]}({$args[1]}) {\n{$args[2]}}";
+        $ident = str_repeat("\t", $this->ident);
+        $code  =  "\n" . str_repeat("\t", $this->ident-1) . "{\n";
+        foreach ($array as $stmt) {
+            $code .= "{$ident}{$stmt}";
+            if (!$stmt instanceof Haanga_Node_BasicStmts) {
+                $code .= ";\n";
+            }
+        }
+        $code .=  str_repeat("\t", $this->ident-1) . "}\n";
         $this->ident--;
         return $code;
     }
 
     public function number($args) {
         return (string)$args[0];
-    }
-
-    public function stmts($args) {
-        $code = "";
-        foreach ($args as $stmt) {
-            $code .= str_repeat("\t", $this->ident) .  "{$stmt};\n";
-        }
-        return $code;
     }
 
     public function variable($args) {
@@ -143,13 +172,11 @@ abstract class Haanga_Node
     }
 
     final public function __toString() {
+        $generator = self::$generator;
+
         $class = $this->getType();
-        $callback = array(self::$generator, $class);
-        if (is_callable($callback)) {
-            return call_user_func($callback, $this->getAttributes());
-        } else {
-            throw new Exception("Don't know how to generate {$class}");
-        }
+        $body  = $generator->nodes($this->nodes);
+        return $generator->$class($this->getAttributes(), $body);
     }
 
     public static function convertNative($value) {
@@ -190,8 +217,6 @@ final class Haanga_Node_Number extends Haanga_Node_Basic { }
 final class Haanga_Node_String extends Haanga_Node_Basic { }
 
 final class Haanga_Node_Operator extends Haanga_Node_Basic { }
-
-final class Haanga_Node_Stmts extends Haanga_Node_Basic { }
 
 final class Haanga_Node_StmtList extends Haanga_Node_Basic { }
 
@@ -237,11 +262,24 @@ final class Haanga_Node_Expr extends Haanga_Node {
 }
 
 final class Haanga_Node_defFunction extends Haanga_Node {
-    function __construct($name, Haanga_Node_StmtList $args=null, Haanga_Node_Stmts  $stmts=null, $line = 0) {
-        parent::__construct(array(), array($name, $args, $stmts), $line);
+    function __construct($name, Haanga_Node_StmtList $args=null, array $stmts=array(), $line = 0) {
+        parent::__construct($stmts, array($name, $args), $line);
     }
 }
 
+abstract class Haanga_Node_BasicStmts extends Haanga_Node {
+    function __construct(Haanga_Node_Expr $expr, $stmts, $line=0) {
+        parent::__construct($stmts, array($expr), $line);
+    }
+}
+
+final class Haanga_Node_defIf extends Haanga_Node_BasicStmts 
+{
+}
+
+final class Haanga_Node_defElse extends Haanga_Node_BasicStmts 
+{
+}
 
 $def = array('cesar', new Haanga_Node_String('rodas'),  new Haanga_Node_Property('cesar'), 'david', 5, 9.99, new Haanga_Node_Property(new Haanga_Node_Variable('b')));
 $var = new Haanga_Node_Variable($def);
@@ -249,11 +287,16 @@ $var = new Haanga_Node_Variable($def);
 $expr = new Haanga_Node_Expr(array(5, '+', 9));
 $expr = new Haanga_Node_Expr(array(1, '+', $expr));
 $assign1 = new Haanga_Node_Assign($var, $expr);
-$assign2 = new Haanga_Node_Assign($var, new Haanga_Node_Expr(array('cesar', 'rodas', $expr)));
+$assign2 = new Haanga_Node_Assign($var, new Haanga_Node_Expr(array('cesar', 'rodas', $expr, $var)));
+$assign3 = new Haanga_Node_Assign($var, new Haanga_Node_Expr(array(5, 'cesar')));
 
-$stmts = new Haanga_Node_Stmts(array($assign1, $assign2));
+$if = new Haanga_Node_defIf($expr, array($assign1, $assign2));
+$else = new Haanga_Node_defElse($expr, array($assign3));
+
+
+$stmts = array($assign1, $assign2, $assign3, $if, $else);
 $args  = new Haanga_Node_StmtList(array(new Haanga_Node_Assign(new Haanga_Node_Variable('cesar'), new Haanga_Node_Expr(array(5)))));
-var_dump((string) new Haanga_Node_defFunction('cesar', $args, $stmts));
+die('<?php ' . new Haanga_Node_defFunction('cesar', $args, $stmts));
 exit;
 
 class Haanga_New_AST
