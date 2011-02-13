@@ -213,6 +213,7 @@ class Haanga
 
             /* Load needed files (to avoid autoload as much as possible) */
             $dir = dirname(__FILE__);
+            require_once "{$dir}/Haanga/Node.php";
             require_once "{$dir}/Haanga/AST.php";
             require_once "{$dir}/Haanga/Compiler.php";
             require_once "{$dir}/Haanga/Compiler/Runtime.php";
