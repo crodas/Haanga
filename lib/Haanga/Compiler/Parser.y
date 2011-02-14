@@ -176,11 +176,22 @@ stmt ::= T_LOAD string(B). {
 /* FOR loop */
 
 for_def(A) ::= T_FOR varname(B) T_IN filtered_var(C) T_TAG_CLOSE . {
+    $var = $this->compiler->get_context(C[0]);
+    if (is_array($var) || $var instanceof Iterator) {
+        /* let's check if it is an object or array */
+        $this->compiler->set_context(B, current($var));
+    }
     A = array('operation' => 'loop', 'variable' => B, 'index' => NULL, 'array' => C);
 }
 
 for_def(A) ::= T_FOR varname(I) T_COMMA varname(B) T_IN filtered_var(C) T_TAG_CLOSE . {
+    $var = $this->compiler->get_context(C[0]);
+    if (is_array($var) || $var instanceof Iterator) {
+        /* let's check if it is an object or array */
+        $this->compiler->set_context(B, current($var));
+    }
     A = array('operation' => 'loop', 'variable' => B, 'index' => I, 'array' => C);
+
 }
 
 
@@ -363,21 +374,23 @@ expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = array('op_expr' => 'expr', B); }
 expr(A) ::= fvar_or_string(B). { A = B; }
 
 /* Variable name */
-varname(A) ::= varname(B) T_OBJ|T_DOT T_ALPHA|T_CUSTOM_TAG|T_CUSTOM_BLOCK(C). { 
+
+varname(A) ::= varpart(B). { A = current($this->compiler->generate_variable_name(B, false)); }
+varpart(A) ::= varname(B) T_OBJ|T_DOT T_ALPHA|T_CUSTOM_TAG|T_CUSTOM_BLOCK(C). { 
     if (!is_array(B)) { A = array(B); } 
     else { A = B; }  A[]=array('object' => C);
 }
-varname(A) ::= varname(B) T_CLASS T_ALPHA|T_CUSTOM_TAG|T_CUSTOM_BLOCK(C). { 
+varpart(A) ::= varname(B) T_CLASS T_ALPHA|T_CUSTOM_TAG|T_CUSTOM_BLOCK(C). { 
     if (!is_array(B)) { A = array(B); } 
     else { A = B; }  A[]=array('class' => '$'.C);
 }
-varname(A) ::= varname(B) T_BRACKETS_OPEN var_or_string(C) T_BRACKETS_CLOSE. {
+varpart(A) ::= varname(B) T_BRACKETS_OPEN var_or_string(C) T_BRACKETS_CLOSE. {
     if (!is_array(B)) { A = array(B); } 
     else { A = B; }  A[]=C;
 }
-varname(A) ::= T_ALPHA(B). { A = B; } 
+varpart(A) ::= T_ALPHA(B). { A = B; } 
 /* T_BLOCK|T_CUSTOM|T_CUSTOM_BLOCK are also T_ALPHA */
-varname(A) ::= T_BLOCK|T_CUSTOM_TAG|T_CUSTOM_BLOCK(B). { A = B; } 
+varpart(A) ::= T_BLOCK|T_CUSTOM_TAG|T_CUSTOM_BLOCK(B). { A = B; } 
 
 range(A)  ::= numvar(B) T_DOTDOT numvar(C). { A = array(B, C); }
 
