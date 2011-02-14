@@ -35,137 +35,6 @@
   +---------------------------------------------------------------------------------+
 */
 
-class Haanga_Generator_PHP {
-    protected $ident = 0;
-
-    public function string($args) {
-        return  "'" . addslashes($args[0]) . "'";
-    }
-
-    public function operator($args) {
-        return $args[0];
-    }
-
-    public function property($args) {
-        return "->" . $args[0];
-    }
-
-    public function assign ($args) {
-        return $args[0] . ' = ' . $args[1];
-    }
-
-    public function stmtList($args) {
-        return implode(",", $args);
-    }
-
-    public function exec($args) {
-        return "{$args[0]}({$args[1]})";
-    }
-
-    public function expr($args) {
-        $prev  = null;
-        $code  = '';
-        foreach ($args as $val) {
-            if ($prev && $prev->getType() != 'Operator') {
-                switch ($val->getType()) {
-                case "String":
-                case "Variable":
-                    $code .= ' . ';
-                    break;
-                default:
-                    switch ($prev->getType()) {
-                    case "String":
-                    case "Variable":
-                        $code .= ' . ';
-                        break;
-                    }
-                }
-            }
-            if ($val->getType() == 'Expr') {
-                $code .= '(' . $val . ')';
-            } else {
-                $code .= $val;
-            }
-
-            $prev  = $val;
-        }
-        return $code;
-    }
-
-    public function PrintOut($args) {
-        return "echo {$args[0]}";
-    }
-
-    public function blockElse($args, $body) {
-        return "else {$body}";
-    }
-
-    public function blockIf($args, $body) {
-        return "if ({$args[0]}) {$body}";
-    }
-
-
-    public function blockFunction($args, $body) {
-        $code = "function {$args[0]}({$args[1]}) {$body}";
-        return $code;
-    }
-
-    public function blockClass($args, $body) {
-        $code = "class {$args[0]} {$body}";
-        return $code;
-    }
-
-    public function blockForEach($args, $body) {
-        $code = "foreach ({$args[0]} as ";
-        if (!empty($args[1])) {
-            $code .= "{$args[1]} => ";
-        }
-        $code .= " {$args[2]}) {$body}";
-        return $code;
-    }
-
-    public function nodes($array) {
-        if (empty($array)) {
-            return "";
-        }
-        $this->ident++;
-        $pident = str_repeat("\t", $this->ident-1);
-        $ident  = str_repeat("\t", $this->ident);
-        $code  = "{\n";
-        foreach ($array as $stmt) {
-            if (empty($stmt)) {
-                continue;
-            }
-            $code .= "{$ident}{$stmt}";
-            if (!$stmt instanceof Haanga_Node_Blocks) {
-                $code .= ";\n";
-            }
-        }
-        $code .=  "{$pident}}\n";
-        $this->ident--;
-        return $code;
-    }
-
-    public function number($args) {
-        return (string)$args[0];
-    }
-
-    public function variable($args) {
-        foreach ($args as $value) {
-            if (empty($var)) {
-                $var = '$' . $value;
-            } else {
-                if ($value InstanceOf Haanga_Node_Property) {
-                    $var .= $value;
-                } else {
-                    $var .= "[" .  $value  . "]";
-                }
-            }
-        }
-        return $var;
-    }
-}
-
 Haanga_Node::setGenerator(new Haanga_Generator_PHP);
 
 
@@ -191,6 +60,7 @@ $stmts = array($assign1, $assign2, $assign3, $exec1, $exec2, $if, $else,
 $args  = new Haanga_Node_StmtList(array(new Haanga_Node_Assign(new Haanga_Node_Variable('cesar'), new Haanga_Node_Expr(array(5)))));
 $for   = new Haanga_Node_blockForeach(new Haanga_Node_Variable('foo'), null, new Haanga_Node_Variable('each'), $stmts);
 $fnc   = (new Haanga_Node_blockFunction('cesar', $args, $for));
+$fnc->addNode( new Haanga_Node_doReturn(new Haanga_Node_Number(5)) );
 $fnc   = new Haanga_Node_blockClass('david', $fnc);
 die("<?php\n" . $fnc );
 exit;

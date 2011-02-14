@@ -44,6 +44,7 @@ abstract class Haanga_Node
     protected $line;
     protected $attrs;
     protected $nodes;
+    protected $parent;
 
     protected static $generator;
 
@@ -55,6 +56,14 @@ abstract class Haanga_Node
         if (!is_array($attrs)) {
             $attrs = array($attrs);
         }
+
+        // add reference to parent node
+        foreach ($nodes as $node) {
+            if ($node instanceof Haanga_Node) {
+                $node->parent = $this;
+            }
+        }
+
         $this->nodes = $nodes;
         $this->attrs = $attrs;
         $this->line  = $line;
@@ -69,6 +78,15 @@ abstract class Haanga_Node
     {
         $this->nodes[] = $node;
         return $this;
+    }
+
+    /**
+     *  Get Parent node.
+     *
+     */
+    public function getParent()
+    {
+        return $this->parent;
     }
 
     public function getType()
@@ -169,6 +187,11 @@ final class Haanga_Node_StmtList extends Haanga_Node_BlockSimple
 final class Haanga_Node_Property extends Haanga_Node_Simple
 {
 }
+
+final class Haanga_Node_doReturn extends Haanga_Node_Simple
+{
+}
+
 
 final class Haanga_Node_Variable extends Haanga_Node
 {

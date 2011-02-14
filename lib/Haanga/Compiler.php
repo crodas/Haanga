@@ -236,6 +236,7 @@ class Haanga_Compiler
         }
 
         $parsed = Haanga_Compiler_Tokenizer::init($code, $this, $file);
+        var_dump($parsed);exit;
         $code   = "";
         $this->subtemplate = FALSE;
 
