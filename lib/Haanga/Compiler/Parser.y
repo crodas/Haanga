@@ -92,6 +92,7 @@ code(A) ::= T_COMMENT(B). {
     B=rtrim(B); A = array('operation' => 'comment', 'comment' => B); 
 } 
 code(A) ::= T_PRINT_OPEN filtered_var(B) T_PRINT_CLOSE.  {
+    var_dump((string)B[0]);exit;
     A = array('operation' => 'print_var', 'variable' => B, 'line' => $this->lex->getLine() ); 
 }
 
@@ -347,20 +348,20 @@ params(A) ::= var_or_string(B).                       { A = array(B); }
 
 
 /* variable or string (used on params) */
-var_or_string(A) ::= varname(B).    { A = array('var' => B); }  
-var_or_string(A) ::= number(B).  { A = array('number' => B); }  
+var_or_string(A) ::= varname(B).    { A = B; }  
+var_or_string(A) ::= number(B).  { A =  B; }  
+var_or_string(A) ::= string(B).     { A = B; }
 var_or_string(A) ::= T_TRUE|T_FALSE(B).   { A = trim(@B); }  
-var_or_string(A) ::= string(B).     { A = array('string' => B); }
 
 /* filtered variables */
 fvar_or_string(A) ::= filtered_var(B).  { A = array('var_filter' => B); }  
 fvar_or_string(A) ::= number(B).     { A = array('number' => B); }  
 fvar_or_string(A) ::= T_TRUE|T_FALSE(B).   { A = trim(@B); }  
-fvar_or_string(A) ::= string(B).        { A = array('string' => B); }
+fvar_or_string(A) ::= string(B).        { A = B; }
 
 /* */
-string(A)    ::= T_STRING(B).   { A = B; }
-string(A)    ::= T_INTL T_STRING(B) T_RPARENT. { A = B; }
+string(A)    ::= T_STRING(B).   { A = new Haanga_Node_String(B); }
+string(A)    ::= T_INTL T_STRING(B) T_RPARENT. { A = new Haanga_Node_String(B); }
 
 /* expr */
 expr(A) ::= T_NOT expr(B). { A = array('op_expr' => 'not', B); }
@@ -374,28 +375,33 @@ expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = array('op_expr' => 'expr', B); }
 expr(A) ::= fvar_or_string(B). { A = B; }
 
 /* Variable name */
+varname(A) ::= varpart(B). { 
+    A = new Haanga_Node_Variable(B);
+}
+varpart(A) ::= varpart(B) T_OBJ|T_DOT alpha(C). { 
+    B[] = new Haanga_Node_Property(C);
+    A   = B;
+}
+varpart(A) ::= varpart(B) T_CLASS alpha(C). { 
+    B[] = C; 
+    A   = B;
+}
+varpart(A) ::= varpart(B) T_BRACKETS_OPEN var_or_string(C) T_BRACKETS_CLOSE. {
+    B[] = C; 
+    A   = B;
+}
+varpart(A) ::= alpha(B). {
+    A = array(B); 
+} 
 
-varname(A) ::= varpart(B). { A = current($this->compiler->generate_variable_name(B, false)); }
-varpart(A) ::= varname(B) T_OBJ|T_DOT T_ALPHA|T_CUSTOM_TAG|T_CUSTOM_BLOCK(C). { 
-    if (!is_array(B)) { A = array(B); } 
-    else { A = B; }  A[]=array('object' => C);
-}
-varpart(A) ::= varname(B) T_CLASS T_ALPHA|T_CUSTOM_TAG|T_CUSTOM_BLOCK(C). { 
-    if (!is_array(B)) { A = array(B); } 
-    else { A = B; }  A[]=array('class' => '$'.C);
-}
-varpart(A) ::= varname(B) T_BRACKETS_OPEN var_or_string(C) T_BRACKETS_CLOSE. {
-    if (!is_array(B)) { A = array(B); } 
-    else { A = B; }  A[]=C;
-}
-varpart(A) ::= T_ALPHA(B). { A = B; } 
+alpha(A) ::= T_ALPHA(A)|T_BLOCK|T_CUSTOM_TAG|T_CUSTOM_BLOCK(B). { A = B; }
+
 /* T_BLOCK|T_CUSTOM|T_CUSTOM_BLOCK are also T_ALPHA */
-varpart(A) ::= T_BLOCK|T_CUSTOM_TAG|T_CUSTOM_BLOCK(B). { A = B; } 
 
 range(A)  ::= numvar(B) T_DOTDOT numvar(C). { A = array(B, C); }
 
 numvar(A) ::= number(B).  { A = B; }
-numvar(A) ::= varname(B). { A = array('var' => B); }
+numvar(A) ::= varname(B). { A = B; }
 
-number(A) ::= T_NUMERIC(B). { A = B; }
-number(A) ::= T_MINUS T_NUMERIC(B). { A = -1 * (B); }
+number(A) ::= T_NUMERIC(B). { A = new Haanga_Node_Number(B); }
+number(A) ::= T_MINUS T_NUMERIC(B). { A = new Haanga_Node_Number(-1 * (B)); }

@@ -74,6 +74,11 @@ abstract class Haanga_Node
         return $this->attrs;
     }
 
+    public function addAttribute($obj)
+    {
+        $this->attrs[] = self::convertNative($obj);
+    }
+
     public function addNode(Haanga_Node $node)
     {
         $this->nodes[] = $node;
@@ -262,7 +267,8 @@ final class Haanga_Node_Exec extends Haanga_Node
 }
 
 final class Haanga_Node_blockForeach extends Haanga_Node_Blocks {
-    function __construct(Haanga_Node_Variable $array, $key, Haanga_Node_Variable $value, array $body, $line = 0) {
+    function __construct(Haanga_Node_Variable $array, $key, Haanga_Node_Variable $value, array $body, $line = 0)
+    {
         if (!is_null($key) && !$key instanceof Haanga_Node_Variable) {
             throw new Exception("\$key must be an instace of Haanga_Node_Variable");
         }

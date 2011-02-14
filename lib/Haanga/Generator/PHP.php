@@ -171,3 +171,4 @@ class Haanga_Generator_PHP {
     }
 }
 
+Haanga_Node::setGenerator(new Haanga_Generator_PHP);
