@@ -85,10 +85,10 @@ body(A) ::= . { A = array(); }
 
 /* List of statements */
 code(A) ::= T_TAG_OPEN stmts(B). {
-    if (count(B)) {
-        var_dump(B);
-        B->setLine($this->lex->getLine());
+    if (!is_object(B)) {
+        var_dump(B);exit;
     }
+    B->setLine($this->lex->getLine());
     A = B; 
 }
 code(A) ::= T_HTML(B). {
@@ -127,16 +127,16 @@ stmts(A) ::= T_AUTOESCAPE varname(B) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTOM_END
 
 /* CUSTOM TAGS */
 custom_tag(A) ::= T_CUSTOM_TAG(B) T_TAG_CLOSE. {
-    A = array('operation' => 'custom_tag', 'name' => B, 'list'=>array()); 
+    A = new Haanga_Node_Exec(B);
 }
 custom_tag(A) ::= T_CUSTOM_TAG(B) T_AS varname(C) T_TAG_CLOSE. {
-    A = array('operation' => 'custom_tag', 'name' => B, 'as' => C, 'list'=>array()); 
+    A = new Haanga_Node_Assign(C, new Haanga_Node_Exec(B));
 }
 custom_tag(A) ::= T_CUSTOM_TAG(B) params(X) T_TAG_CLOSE. { 
-    A = array('operation' => 'custom_tag', 'name' => B, 'list' => X); 
+    A = new Haanga_Node_Exec(B, X);
 }
 custom_tag(A) ::= T_CUSTOM_TAG(B) params(X) T_AS varname(C) T_TAG_CLOSE. {
-    A = array('operation' => 'custom_tag', 'name' => B, 'as' => C, 'list' => X);
+    A = new Haanga_Node_Assign(C, new Haanga_Node_Exec(B, X));
 }
 
 /* tags as blocks */
@@ -350,9 +350,10 @@ filter_args(A) ::= alpha(B) T_COLON var_or_string(X) . { A = new Haanga_Node_Exe
 filter_args(A) ::= alpha(B). { A = new Haanga_Node_Exec(B); }
 
 /* List of variables */
-params(A) ::= params(B) var_or_string(C).           { A = B; A[] = C; }
-params(A) ::= params(B) T_COMMA var_or_string(C).   { A = B; A[] = C; }
-params(A) ::= var_or_string(B).                       { A = array(B); }
+params(A)  ::=  iparams(B). { A = new Haanga_Node_StmtList(B); }
+iparams(A) ::= iparams(B) var_or_string(C).           { A = B; A[] = C; }
+iparams(A) ::= iparams(B) T_COMMA var_or_string(C).   { A = B; A[] = C; }
+iparams(A) ::= var_or_string(B).                       { A = array(B); }
 
 
 /* variable or string (used on params) */
