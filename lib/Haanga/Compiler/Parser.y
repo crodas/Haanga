@@ -84,7 +84,13 @@ body(A) ::= body(B) code(C). { A=B; A[] = C; }
 body(A) ::= . { A = array(); }
 
 /* List of statements */
-code(A) ::= T_TAG_OPEN stmts(B). { if (count(B)) B['line'] = $this->lex->getLine();  A = B; }
+code(A) ::= T_TAG_OPEN stmts(B). {
+    if (count(B)) {
+        var_dump(B);
+        B->setLine($this->lex->getLine());
+    }
+    A = B; 
+}
 code(A) ::= T_HTML(B). {
     A = array('operation' => 'html', 'html' => B, 'line' => $this->lex->getLine() ); 
 }
@@ -92,8 +98,7 @@ code(A) ::= T_COMMENT(B). {
     B=rtrim(B); A = array('operation' => 'comment', 'comment' => B); 
 } 
 code(A) ::= T_PRINT_OPEN filtered_var(B) T_PRINT_CLOSE.  {
-    var_dump((string)B[0]);exit;
-    A = array('operation' => 'print_var', 'variable' => B, 'line' => $this->lex->getLine() ); 
+    A = new Haanga_Node_PrintOut(B);
 }
 
 stmts(A) ::= T_EXTENDS var_or_string(B) T_TAG_CLOSE. { A = array('operation' => 'base', B); }
@@ -166,7 +171,6 @@ alias(A) ::= T_WITH varname(B) T_AS varname(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_
 
 /* Simple statements (don't require a end_tag or a body ) */
 stmt(A) ::= T_SET varname(C) T_ASSIGN expr(X). { A = array('operation' => 'set', 'var' => C,'expr' => X); }
-stmt(A) ::= regroup(B). { A = B; }
 stmt ::= T_LOAD string(B). {
     if (!is_file(B) || !Haanga_Compiler::getOption('enable_load')) {
         $this->error(B." is not a valid file"); 
@@ -177,6 +181,8 @@ stmt ::= T_LOAD string(B). {
 /* FOR loop */
 
 for_def(A) ::= T_FOR varname(B) T_IN filtered_var(C) T_TAG_CLOSE . {
+    A = new Haanga_Node_Foreach(C, NULL, B);
+    return;
     $var = $this->compiler->get_context(C[0]);
     if (is_array($var) || $var instanceof Iterator) {
         /* let's check if it is an object or array */
@@ -186,13 +192,7 @@ for_def(A) ::= T_FOR varname(B) T_IN filtered_var(C) T_TAG_CLOSE . {
 }
 
 for_def(A) ::= T_FOR varname(I) T_COMMA varname(B) T_IN filtered_var(C) T_TAG_CLOSE . {
-    $var = $this->compiler->get_context(C[0]);
-    if (is_array($var) || $var instanceof Iterator) {
-        /* let's check if it is an object or array */
-        $this->compiler->set_context(B, current($var));
-    }
-    A = array('operation' => 'loop', 'variable' => B, 'index' => I, 'array' => C);
-
+    A = new Haanga_Node_Foreach(C, I, B);
 }
 
 
@@ -201,7 +201,7 @@ for_stmt(A) ::= for_def(B) body(D) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
         $this->Error("Unexpected ".Z.", expecting endfor");
     }
     A = B;
-    A['body'] = D;
+    A->setBody(D);
 }
 
 for_stmt(A) ::= T_FOR varname(B) T_IN range(X) T_TAG_CLOSE body(E) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
@@ -331,15 +331,23 @@ filter_stmt(A) ::= T_FILTER filtered_var(B) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUS
     A = array('operation' => 'filter', 'functions' => B, 'body' => X);
 }
 
-/* regroup stmt */
-regroup(A) ::= T_REGROUP filtered_var(B) T_BY varname(C) T_AS varname(X). { A=array('operation' => 'regroup', 'array' => B, 'row' => C, 'as' => X); }
-
 /* variables with filters */
-filtered_var(A) ::= filtered_var(B) T_PIPE varname_args(C). { A = B; A[] = C; }
-filtered_var(A) ::= varname_args(B). { A = array(B); }
+filtered_var(A) ::= varname(B) filters(C). { 
+    C[0]->addParameter(B);
+    $len = count(C);
+    for ($i=1; $i < $len; $i++) {
+        C[$i]->addParameter(C[$i-1]);
+    }
+    A = C[$i-1];
+}
 
-varname_args(A) ::= varname(B) T_COLON var_or_string(X) . { A = array(B, 'args'=>array(X)); }
-varname_args(A) ::= varname(B). { A = B; }
+filtered_var(A) ::= varname(B). { A = B; }
+
+filters(A) ::= filters(B) T_PIPE filter_args(C). { A = B; A[] = C; }
+filters(A) ::= T_PIPE filter_args(B). { A = array(B); }
+
+filter_args(A) ::= alpha(B) T_COLON var_or_string(X) . { A = new Haanga_Node_Exec(B, new Haanga_Node_StmtList(array(X))); }
+filter_args(A) ::= alpha(B). { A = new Haanga_Node_Exec(B); }
 
 /* List of variables */
 params(A) ::= params(B) var_or_string(C).           { A = B; A[] = C; }
@@ -348,10 +356,10 @@ params(A) ::= var_or_string(B).                       { A = array(B); }
 
 
 /* variable or string (used on params) */
-var_or_string(A) ::= varname(B).    { A = B; }  
-var_or_string(A) ::= number(B).  { A =  B; }  
-var_or_string(A) ::= string(B).     { A = B; }
-var_or_string(A) ::= T_TRUE|T_FALSE(B).   { A = trim(@B); }  
+var_or_string(A) ::= varname(B).          { A = B; }  
+var_or_string(A) ::= number(B).           { A = B; }  
+var_or_string(A) ::= string(B).           { A = B; }
+var_or_string(A) ::= T_TRUE|T_FALSE(B).   { A = new Haanga_Node_Bool(trim(@B)); }  
 
 /* filtered variables */
 fvar_or_string(A) ::= filtered_var(B).  { A = array('var_filter' => B); }  

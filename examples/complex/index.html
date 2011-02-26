@@ -1,7 +1,7 @@
 {{ dpeople.name['age'][foo].bar.xxx }}
 {% regroup people by gender as gender_list %}
 
-<h1>Users ({{ people|length }} in {{ gender_list|length }} genders)</h1>
+<h1>Users ({{ people|upper|length }} in {{ gender_list|lower|length }} genders)</h1>
 <ul>
 {% for i,gender in gender_list %}
     <li>"{{ gender['grouper'] }}" is equals to "{{ gender_list[i]["grouper"] }}"
