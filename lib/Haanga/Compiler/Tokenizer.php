@@ -105,6 +105,7 @@ class Haanga_Compiler_Tokenizer
         '..'    => HG_Parser::T_DOTDOT,
         '::'    => HG_Parser::T_CLASS,
         '<<'    => HG_Parser::T_BITWISE,
+        '<|'    => HG_Parser::T_PIPEBITWISE,
         '<='    => HG_Parser::T_LE,
         '==='   => HG_Parser::T_EQ,
         '=='    => HG_Parser::T_EQ,

@@ -67,7 +67,7 @@
 %nonassoc T_IN.
 %left T_PLUS T_MINUS T_CONCAT.
 %left T_TIMES T_DIV T_MOD.
-%left T_PIPE T_BITWISE.
+%left T_PIPEBITWISE T_BITWISE.
 
 %syntax_error {
     $expect = array();
@@ -97,18 +97,18 @@ code(A) ::= T_HTML(B). {
 code(A) ::= T_COMMENT(B). {
     B=rtrim(B); A = array('operation' => 'comment', 'comment' => B); 
 } 
-code(A) ::= T_PRINT_OPEN filtered_var(B) T_PRINT_CLOSE.  {
+code(A) ::= T_PRINT_OPEN expr(B) T_PRINT_CLOSE.  {
     A = new Haanga_Node_PrintOut(B);
 }
 
-stmts(A) ::= T_EXTENDS var_or_string(B) T_TAG_CLOSE. { A = array('operation' => 'base', B); }
+stmts(A) ::= T_EXTENDS complex_arg(B) T_TAG_CLOSE. { A = array('operation' => 'base', B); }
 stmts(A) ::= stmt(B) T_TAG_CLOSE. { A = B; }
 stmts(A) ::= for_stmt(B). { A = B; }
 stmts(A) ::= ifchanged_stmt(B). { A = B; }
 stmts(A) ::= block_stmt(B). { A = B; }
 stmts(A) ::= filter_stmt(B). { A = B; }
 stmts(A) ::= if_stmt(B). { A = B; }
-stmts(A) ::= T_INCLUDE var_or_string(B) T_TAG_CLOSE. { A = array('operation' => 'include', B); }
+stmts(A) ::= T_INCLUDE complex_arg(B) T_TAG_CLOSE. { A = array('operation' => 'include', B); }
 stmts(A) ::= custom_tag(B). { A = B; }
 stmts(A) ::= alias(B). { A = B; }
 stmts(A) ::= ifequal(B). { A = B; }
@@ -180,7 +180,7 @@ stmt ::= T_LOAD string(B). {
 
 /* FOR loop */
 
-for_def(A) ::= T_FOR varname(B) T_IN filtered_var(C) T_TAG_CLOSE . {
+for_def(A) ::= T_FOR varname(B) T_IN var_filter(C) T_TAG_CLOSE . {
     A = new Haanga_Node_Foreach(C, NULL, B);
     return;
     $var = $this->compiler->get_context(C[0]);
@@ -191,7 +191,7 @@ for_def(A) ::= T_FOR varname(B) T_IN filtered_var(C) T_TAG_CLOSE . {
     A = array('operation' => 'loop', 'variable' => B, 'index' => NULL, 'array' => C);
 }
 
-for_def(A) ::= T_FOR varname(I) T_COMMA varname(B) T_IN filtered_var(C) T_TAG_CLOSE . {
+for_def(A) ::= T_FOR varname(I) T_COMMA varname(B) T_IN var_filter(C) T_TAG_CLOSE . {
     A = new Haanga_Node_Foreach(C, I, B);
 }
 
@@ -269,25 +269,25 @@ ifchanged_stmt(A) ::= T_IFCHANGED params(X) T_TAG_CLOSE body(B) T_TAG_OPEN T_ELS
 }
 
 /* ifequal */
-ifequal(A) ::= T_IFEQUAL var_or_string(B) var_or_string(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
+ifequal(A) ::= T_IFEQUAL complex_arg(B) complex_arg(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
     if (Z != "endifequal") {
         $this->Error("Unexpected ".Z.", expecting endifequal");
     }
     A = array('operation' => 'ifequal', 'cmp' => '==', 1 => B, 2 => C, 'body' => X); 
 }
-ifequal(A) ::= T_IFEQUAL var_or_string(B) var_or_string(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_ELSE T_TAG_CLOSE body(Y) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
+ifequal(A) ::= T_IFEQUAL complex_arg(B) complex_arg(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_ELSE T_TAG_CLOSE body(Y) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
     if (Z != "endifequal") {
         $this->Error("Unexpected ".Z.", expecting endifequal");
     }
     A = array('operation' => 'ifequal', 'cmp' => '==', 1 => B, 2 => C, 'body' => X, 'else' => Y); 
 }
-ifequal(A) ::= T_IFNOTEQUAL var_or_string(B) var_or_string(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
+ifequal(A) ::= T_IFNOTEQUAL complex_arg(B) complex_arg(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
     if (Z != "endifnotequal") {
         $this->Error("Unexpected ".Z.", expecting endifnotequal");
     }
     A = array('operation' => 'ifequal', 'cmp' => '!=', 1 => B, 2 => C, 'body' => X);
 }
-ifequal(A) ::= T_IFNOTEQUAL var_or_string(B) var_or_string(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_ELSE T_TAG_CLOSE body(Y) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
+ifequal(A) ::= T_IFNOTEQUAL complex_arg(B) complex_arg(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_ELSE T_TAG_CLOSE body(Y) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
     if (Z != "endifnotequal") {
         $this->Error("Unexpected ".Z.", expecting endifnotequal");
     }
@@ -324,7 +324,7 @@ block_stmt(A) ::= T_BLOCK number(B) T_TAG_CLOSE body(C) T_TAG_OPEN T_CUSTOM_END(
 }
 
 /* filter stmt */
-filter_stmt(A) ::= T_FILTER filtered_var(B) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
+filter_stmt(A) ::= T_FILTER var_filter(B) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
     if (Z != "endfilter") {
         $this->Error("Unexpected ".Z.", expecting endfilter");
     }
@@ -332,7 +332,7 @@ filter_stmt(A) ::= T_FILTER filtered_var(B) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUS
 }
 
 /* variables with filters */
-filtered_var(A) ::= varname(B) T_PIPE filters(C). { 
+var_filter(A) ::= varname(B) T_PIPE filters(C). { 
     C[0]->addParameter(B);
     $len = count(C);
     for ($i=1; $i < $len; $i++) {
@@ -340,44 +340,44 @@ filtered_var(A) ::= varname(B) T_PIPE filters(C). {
     }
     A = C[$i-1];
 }
-
-filtered_var(A) ::= varname(B). { A = B; }
+var_filter(A) ::= varname(B). { A = B; }
 
 filters(A) ::= filters(B) T_PIPE filter_args(C). { A = B; A[] = C; }
-filters(A) ::= T_PIPE filter_args(B). { A = array(B); }
-
-filter_args(A) ::= alpha(B) T_COLON var_or_string(X) . { A = new Haanga_Node_Exec(B, new Haanga_Node_StmtList(array(X))); }
+filters(A) ::= filter_args(B).                   { A = array(B); }
+filter_args(A) ::= alpha(B) T_COLON arg(X) . { A = new Haanga_Node_Exec(B, new Haanga_Node_StmtList(array(X))); }
 filter_args(A) ::= alpha(B). { A = new Haanga_Node_Exec(B); }
 
-/* List of variables */
-params(A)  ::=  iparams(B). { A = new Haanga_Node_StmtList(B); }
-iparams(A) ::= iparams(B) var_or_string(C).           { A = B; A[] = C; }
-iparams(A) ::= iparams(B) T_COMMA var_or_string(C).   { A = B; A[] = C; }
-iparams(A) ::= var_or_string(B).                       { A = array(B); }
 
+/* List of variables {{{ */
+params(A)  ::= iparams(B). { A = new Haanga_Node_StmtList(B); }
+iparams(A) ::= iparams(B) complex_arg(C).           { A = B; A[] = C; }
+iparams(A) ::= iparams(B) T_COMMA complex_arg(C).   { A = B; A[] = C; }
+iparams(A) ::= complex_arg(B).                       { A = array(B); }
+/* }}} */
 
-/* variable or string (used on params) */
-var_or_string(A) ::= filtered_var(B).          { A = B; }  
-var_or_string(A) ::= number(B).           { A = B; }  
-var_or_string(A) ::= string(B).           { A = B; }
-var_or_string(A) ::= T_TRUE|T_FALSE(B).   { A = new Haanga_Node_Bool(trim(@B)); }  
+/* variable or string (used on params) {{{ */
+complex_arg(A) ::= var_filter(B). { A = B; }  
+complex_arg(A) ::= constant(B).   { A = B; }  
+/* }}} */
 
-/* */
-string(A)    ::= T_STRING(B).   { A = new Haanga_Node_String(B); }
-string(A)    ::= T_INTL T_STRING(B) T_RPARENT. { A = new Haanga_Node_String(B); }
+/* similar to complex_arg but it takes varname instead of var_filter {{{ */
+arg(A) ::= varname(B).   { A = B; }  
+arg(A) ::= constant(B).  { A = B; }  
+/* }}} */
 
-/* expr */
+/* expr {{{ */
 expr(A) ::= T_NOT expr(B). { A = new Haanga_Node_Expr(array(new Haanga_Node_Operator('!'), B)); }
 expr(A) ::= expr(B) T_AND expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator('&&'), C)); }
 expr(A) ::= expr(B) T_OR  expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator('||'), C)); }
 expr(A) ::= expr(B) T_PLUS|T_MINUS|T_CONCAT(X)  expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator(@X), C)); }
 expr(A) ::= expr(B) T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN(X)  expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator(@X), C)); }
 expr(A) ::= expr(B) T_TIMES|T_DIV|T_MOD(X)  expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator(@X), C)); }
-expr(A) ::= expr(B) T_BITWISE|T_PIPE(X)  expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator(@X), C)); }
+expr(A) ::= expr(B) T_BITWISE|T_PIPEBITWISE(X)  expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator(@X), C)); }
 expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = new Haanga_Node_Expr(array(B)); }
-expr(A) ::= var_or_string(B). { A = B; }
+expr(A) ::= complex_arg(B). { A = B; }
+/* }}} */
 
-/* Variable name */
+/* Variable name {{{ */
 varname(A) ::= varpart(B). { 
     A = new Haanga_Node_Variable(B);
 }
@@ -389,7 +389,7 @@ varpart(A) ::= varpart(B) T_CLASS alpha(C). {
     B[] = C; 
     A   = B;
 }
-varpart(A) ::= varpart(B) T_BRACKETS_OPEN var_or_string(C) T_BRACKETS_CLOSE. {
+varpart(A) ::= varpart(B) T_BRACKETS_OPEN complex_arg(C) T_BRACKETS_CLOSE. {
     B[] = C; 
     A   = B;
 }
@@ -397,14 +397,24 @@ varpart(A) ::= alpha(B). {
     A = array(B); 
 } 
 
-alpha(A) ::= T_ALPHA(A)|T_BLOCK|T_CUSTOM_TAG|T_CUSTOM_BLOCK(B). { A = B; }
-
 /* T_BLOCK|T_CUSTOM|T_CUSTOM_BLOCK are also T_ALPHA */
+alpha(A) ::= T_ALPHA|T_BLOCK|T_CUSTOM_TAG|T_CUSTOM_BLOCK(B). { A = B; }
+/* }}} */
 
+/* range, number or variable {{{ */
 range(A)  ::= numvar(B) T_DOTDOT numvar(C). { A = array(B, C); }
-
 numvar(A) ::= number(B).  { A = B; }
 numvar(A) ::= varname(B). { A = B; }
+/* }}} */
 
+/* number, string, bool {{{ */
 number(A) ::= T_NUMERIC(B). { A = new Haanga_Node_Number(B); }
 number(A) ::= T_MINUS T_NUMERIC(B). { A = new Haanga_Node_Number(-1 * (B)); }
+string(A) ::= T_STRING(B).   { A = new Haanga_Node_String(B); }
+string(A) ::= T_INTL T_STRING(B) T_RPARENT. { A = new Haanga_Node_String(B); }
+bool(A)   ::= T_TRUE|T_FALSE(B).   { A = new Haanga_Node_Bool(trim(@B)); }  
+constant(A) ::= number(B). { A = B; }
+constant(A) ::= string(B). { A = B; }
+constant(A) ::= bool(B). { A = B; }
+/* }}} */
+
