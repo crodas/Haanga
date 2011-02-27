@@ -38,31 +38,31 @@
 class Haanga_Generator_PHP {
     protected $ident = 0;
 
-    public function string($args) {
+    public function generateString($args) {
         return  "'" . addslashes($args[0]) . "'";
     }
 
-    public function operator($args) {
+    public function generateOperator($args) {
         return $args[0];
     }
 
-    public function property($args) {
+    public function generateProperty($args) {
         return "->" . $args[0];
     }
 
-    public function assign ($args) {
+    public function generateAssign ($args) {
         return $args[0] . ' = ' . $args[1];
     }
 
-    public function stmtList($args) {
+    public function generateStmtList($args) {
         return implode(",", $args);
     }
 
-    public function exec($args) {
+    public function generateExec($args) {
         return "{$args[0]}({$args[1]})";
     }
 
-    public function expr($args) {
+    public function generateExpr($args) {
         $prev  = null;
         $code  = '';
         foreach ($args as $val) {
@@ -92,15 +92,15 @@ class Haanga_Generator_PHP {
         return $code;
     }
 
-    public function PrintOut($args) {
+    public function generatePrint($args) {
         return "echo {$args[0]}";
     }
 
-    public function blockElse($args, $body) {
+    public function generateElse($args, $body) {
         return "else {$body}";
     }
 
-    public function blockIf($args, $body) {
+    public function generateIf($args, $body) {
         return "if ({$args[0]}) {$body}";
     }
 
@@ -115,7 +115,7 @@ class Haanga_Generator_PHP {
         return $code;
     }
 
-    public function blockForEach($args, $body) {
+    public function generateForEach($args, $body) {
         $code = "foreach ({$args[0]} as ";
         if (!empty($args[1])) {
             $code .= "{$args[1]} => ";
@@ -151,11 +151,11 @@ class Haanga_Generator_PHP {
         return $code;
     }
 
-    public function number($args) {
+    public function generateNumber($args) {
         return (string)$args[0];
     }
 
-    public function variable($args) {
+    public function generateVariable($args) {
         foreach ($args as $value) {
             if (empty($var)) {
                 $var = '$' . $value;

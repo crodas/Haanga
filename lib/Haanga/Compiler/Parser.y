@@ -92,13 +92,13 @@ code(A) ::= T_TAG_OPEN stmts(B). {
     A = B; 
 }
 code(A) ::= T_HTML(B). {
-    A = array('operation' => 'html', 'html' => B, 'line' => $this->lex->getLine() ); 
+    A = new Haanga_Node_Print(new Haanga_Node_String(B));
 }
 code(A) ::= T_COMMENT(B). {
     B=rtrim(B); A = array('operation' => 'comment', 'comment' => B); 
 } 
 code(A) ::= T_PRINT_OPEN expr(B) T_PRINT_CLOSE.  {
-    A = new Haanga_Node_PrintOut(B);
+    A = new Haanga_Node_Print(B);
 }
 
 stmts(A) ::= T_EXTENDS complex_arg(B) T_TAG_CLOSE. { A = array('operation' => 'base', B); }
@@ -331,7 +331,7 @@ filter_stmt(A) ::= T_FILTER var_filter(B) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTO
     A = array('operation' => 'filter', 'functions' => B, 'body' => X);
 }
 
-/* variables with filters */
+/* variables with filters {{{ */
 var_filter(A) ::= varname(B) T_PIPE filters(C). { 
     C[0]->addParameter(B);
     $len = count(C);
@@ -346,7 +346,7 @@ filters(A) ::= filters(B) T_PIPE filter_args(C). { A = B; A[] = C; }
 filters(A) ::= filter_args(B).                   { A = array(B); }
 filter_args(A) ::= alpha(B) T_COLON arg(X) . { A = new Haanga_Node_Exec(B, new Haanga_Node_StmtList(array(X))); }
 filter_args(A) ::= alpha(B). { A = new Haanga_Node_Exec(B); }
-
+/* }}} */
 
 /* List of variables {{{ */
 params(A)  ::= iparams(B). { A = new Haanga_Node_StmtList(B); }

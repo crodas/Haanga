@@ -1696,7 +1696,7 @@ static public $yy_action = array(
 #line 1702 "Parser.php"
 #line 93 "Parser.y"
     function yy_r4(){
-    $this->_retvalue = array('operation' => 'html', 'html' => $this->yystack[$this->yyidx + 0]->minor, 'line' => $this->lex->getLine() ); 
+    $this->_retvalue = new Haanga_Node_Print(new Haanga_Node_String($this->yystack[$this->yyidx + 0]->minor));
     }
 #line 1707 "Parser.php"
 #line 96 "Parser.y"
@@ -1706,7 +1706,7 @@ static public $yy_action = array(
 #line 1712 "Parser.php"
 #line 99 "Parser.y"
     function yy_r6(){
-    $this->_retvalue = new Haanga_Node_PrintOut($this->yystack[$this->yyidx + -1]->minor);
+    $this->_retvalue = new Haanga_Node_Print($this->yystack[$this->yyidx + -1]->minor);
     }
 #line 1717 "Parser.php"
 #line 103 "Parser.y"

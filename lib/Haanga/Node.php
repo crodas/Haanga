@@ -113,7 +113,7 @@ abstract class Haanga_Node
     {
         $generator = self::$generator;
 
-        $class = $this->getType();
+        $class = 'generate' . $this->getType();
         $body  = $generator->nodes($this->nodes);
         return $generator->$class($this->getAttributes(), $body);
     }
@@ -246,7 +246,7 @@ final class Haanga_Node_Assign extends Haanga_Node
     }
 }
 
-final class Haanga_Node_PrintOut extends Haanga_Node_Simple
+final class Haanga_Node_Print extends Haanga_Node_Simple
 {
 }
 
