@@ -231,7 +231,7 @@ if_stmt(A) ::= T_IF expr(B) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG
     if (Z != "endif") {
         $this->Error("Unexpected ".Z.", expecting endif");
     }
-    A = array('operation' => 'if', 'expr' => B, 'body' => X);
+    A = new Haanga_Node_If(B, X);
 }
 if_stmt(A) ::= T_IF expr(B) T_TAG_CLOSE body(X) T_TAG_OPEN T_ELSE T_TAG_CLOSE body(Y) T_TAG_OPEN T_CUSTOM_END(Z)  T_TAG_CLOSE. {
     if (Z != "endif") {
@@ -269,25 +269,25 @@ ifchanged_stmt(A) ::= T_IFCHANGED params(X) T_TAG_CLOSE body(B) T_TAG_OPEN T_ELS
 }
 
 /* ifequal */
-ifequal(A) ::= T_IFEQUAL fvar_or_string(B) fvar_or_string(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
+ifequal(A) ::= T_IFEQUAL var_or_string(B) var_or_string(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
     if (Z != "endifequal") {
         $this->Error("Unexpected ".Z.", expecting endifequal");
     }
     A = array('operation' => 'ifequal', 'cmp' => '==', 1 => B, 2 => C, 'body' => X); 
 }
-ifequal(A) ::= T_IFEQUAL fvar_or_string(B) fvar_or_string(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_ELSE T_TAG_CLOSE body(Y) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
+ifequal(A) ::= T_IFEQUAL var_or_string(B) var_or_string(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_ELSE T_TAG_CLOSE body(Y) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
     if (Z != "endifequal") {
         $this->Error("Unexpected ".Z.", expecting endifequal");
     }
     A = array('operation' => 'ifequal', 'cmp' => '==', 1 => B, 2 => C, 'body' => X, 'else' => Y); 
 }
-ifequal(A) ::= T_IFNOTEQUAL fvar_or_string(B) fvar_or_string(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
+ifequal(A) ::= T_IFNOTEQUAL var_or_string(B) var_or_string(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
     if (Z != "endifnotequal") {
         $this->Error("Unexpected ".Z.", expecting endifnotequal");
     }
     A = array('operation' => 'ifequal', 'cmp' => '!=', 1 => B, 2 => C, 'body' => X);
 }
-ifequal(A) ::= T_IFNOTEQUAL fvar_or_string(B) fvar_or_string(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_ELSE T_TAG_CLOSE body(Y) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
+ifequal(A) ::= T_IFNOTEQUAL var_or_string(B) var_or_string(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_ELSE T_TAG_CLOSE body(Y) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
     if (Z != "endifnotequal") {
         $this->Error("Unexpected ".Z.", expecting endifnotequal");
     }
@@ -332,7 +332,7 @@ filter_stmt(A) ::= T_FILTER filtered_var(B) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUS
 }
 
 /* variables with filters */
-filtered_var(A) ::= varname(B) filters(C). { 
+filtered_var(A) ::= varname(B) T_PIPE filters(C). { 
     C[0]->addParameter(B);
     $len = count(C);
     for ($i=1; $i < $len; $i++) {
@@ -357,31 +357,25 @@ iparams(A) ::= var_or_string(B).                       { A = array(B); }
 
 
 /* variable or string (used on params) */
-var_or_string(A) ::= varname(B).          { A = B; }  
+var_or_string(A) ::= filtered_var(B).          { A = B; }  
 var_or_string(A) ::= number(B).           { A = B; }  
 var_or_string(A) ::= string(B).           { A = B; }
 var_or_string(A) ::= T_TRUE|T_FALSE(B).   { A = new Haanga_Node_Bool(trim(@B)); }  
-
-/* filtered variables */
-fvar_or_string(A) ::= filtered_var(B).  { A = array('var_filter' => B); }  
-fvar_or_string(A) ::= number(B).     { A = array('number' => B); }  
-fvar_or_string(A) ::= T_TRUE|T_FALSE(B).   { A = trim(@B); }  
-fvar_or_string(A) ::= string(B).        { A = B; }
 
 /* */
 string(A)    ::= T_STRING(B).   { A = new Haanga_Node_String(B); }
 string(A)    ::= T_INTL T_STRING(B) T_RPARENT. { A = new Haanga_Node_String(B); }
 
 /* expr */
-expr(A) ::= T_NOT expr(B). { A = array('op_expr' => 'not', B); }
-expr(A) ::= expr(B) T_AND(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
-expr(A) ::= expr(B) T_OR(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
-expr(A) ::= expr(B) T_PLUS|T_MINUS|T_CONCAT(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
-expr(A) ::= expr(B) T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN(X)  expr(C).  { A = array('op_expr' => trim(@X), B, C); }
-expr(A) ::= expr(B) T_TIMES|T_DIV|T_MOD(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
-expr(A) ::= expr(B) T_BITWISE|T_PIPE(X)  expr(C).  { A = array('op_expr' => 'expr', array('op_expr' => @X, B, C)); }
-expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = array('op_expr' => 'expr', B); }
-expr(A) ::= fvar_or_string(B). { A = B; }
+expr(A) ::= T_NOT expr(B). { A = new Haanga_Node_Expr(array(new Haanga_Node_Operator('!'), B)); }
+expr(A) ::= expr(B) T_AND expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator('&&'), C)); }
+expr(A) ::= expr(B) T_OR  expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator('||'), C)); }
+expr(A) ::= expr(B) T_PLUS|T_MINUS|T_CONCAT(X)  expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator(@X), C)); }
+expr(A) ::= expr(B) T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN(X)  expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator(@X), C)); }
+expr(A) ::= expr(B) T_TIMES|T_DIV|T_MOD(X)  expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator(@X), C)); }
+expr(A) ::= expr(B) T_BITWISE|T_PIPE(X)  expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator(@X), C)); }
+expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = new Haanga_Node_Expr(array(B)); }
+expr(A) ::= var_or_string(B). { A = B; }
 
 /* Variable name */
 varname(A) ::= varpart(B). { 
