@@ -85,10 +85,15 @@ body(A) ::= . { A = array(); }
 
 /* List of statements */
 code(A) ::= T_TAG_OPEN stmts(B). {
-    if (!is_object(B)) {
-        var_dump(B);exit;
+    if (is_object(B)) {
+        B->setLine($this->lex->getLine());
+    } else {
+        foreach (B as $i) {
+            if (!is_object($i)) {
+                var_dump($i);exit;
+            }
+        }
     }
-    B->setLine($this->lex->getLine());
     A = B; 
 }
 code(A) ::= T_HTML(B). {
@@ -108,7 +113,7 @@ stmts(A) ::= ifchanged_stmt(B). { A = B; }
 stmts(A) ::= block_stmt(B). { A = B; }
 stmts(A) ::= filter_stmt(B). { A = B; }
 stmts(A) ::= if_stmt(B). { A = B; }
-stmts(A) ::= T_INCLUDE complex_arg(B) T_TAG_CLOSE. { A = array('operation' => 'include', B); }
+stmts(A) ::= T_INCLUDE complex_arg(B) T_TAG_CLOSE. { A = new Haanga_Node_Exec('haanga_include', new Haanga_Node_StmtList(array(B))); }
 stmts(A) ::= custom_tag(B). { A = B; }
 stmts(A) ::= alias(B). { A = B; }
 stmts(A) ::= ifequal(B). { A = B; }
@@ -226,6 +231,7 @@ for_stmt(A) ::= for_def(B) body(D) T_TAG_OPEN T_EMPTY T_TAG_CLOSE body(E)  T_TAG
     A['body']  = D;
     A['empty'] = E;
 }
+
 /* IF */
 if_stmt(A) ::= T_IF expr(B) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
     if (Z != "endif") {
@@ -240,33 +246,38 @@ if_stmt(A) ::= T_IF expr(B) T_TAG_CLOSE body(X) T_TAG_OPEN T_ELSE T_TAG_CLOSE bo
     A = array('operation' => 'if', 'expr' => B, 'body' => X, 'else' => Y);
 }
 
-/* ifchanged */
+/* ifchanged {{{ */
 ifchanged_stmt(A) ::= T_IFCHANGED T_TAG_CLOSE body(B) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. { 
     if (Z != "endifchanged") {
         $this->Error("Unexpected ".Z.", expecting endifchanged");
     }
-    A = array('operation' => 'ifchanged', 'body' => B); 
+    $obj = new Haanga_Node_StmtList(array('body' => B));
+    A    = new Haanga_Node_Exec('haanga_ifchanged', $obj);
 }
 
 ifchanged_stmt(A) ::= T_IFCHANGED params(X) T_TAG_CLOSE body(B) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. { 
     if (Z != "endifchanged") {
         $this->Error("Unexpected ".Z.", expecting endifchanged");
     }
-    A = array('operation' => 'ifchanged', 'body' => B, 'check' => X);
+    $obj = new Haanga_Node_StmtList(array('body' => B, 'check' => X));
+    A    = new Haanga_Node_Exec('haanga_ifchanged', $obj);
 }
 ifchanged_stmt(A) ::= T_IFCHANGED T_TAG_CLOSE body(B) T_TAG_OPEN T_ELSE T_TAG_CLOSE body(C) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. { 
     if (Z != "endifchanged") {
         $this->Error("Unexpected ".Z.", expecting endifchanged");
     }
-    A = array('operation' => 'ifchanged', 'body' => B, 'else' => C); 
+    $obj = new Haanga_Node_StmtList(array('body' => B, 'else' => C));
+    A    = new Haanga_Node_Exec('haanga_ifchanged', $obj);
 }
 
 ifchanged_stmt(A) ::= T_IFCHANGED params(X) T_TAG_CLOSE body(B) T_TAG_OPEN T_ELSE T_TAG_CLOSE body(C) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. { 
     if (Z != "endifchanged") {
         $this->Error("Unexpected ".Z.", expecting endifchanged");
     }
-    A = array('operation' => 'ifchanged', 'body' => B, 'check' => X, 'else' => C);
+    $obj = new Haanga_Node_StmtList(array('body' => B, 'check' => X, 'else' => C));
+    A    = new Haanga_Node_Exec('haanga_ifchanged', $obj);
 }
+/* }}} */
 
 /* ifequal */
 ifequal(A) ::= T_IFEQUAL complex_arg(B) complex_arg(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. {
@@ -328,7 +339,7 @@ filter_stmt(A) ::= T_FILTER var_filter(B) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTO
     if (Z != "endfilter") {
         $this->Error("Unexpected ".Z.", expecting endfilter");
     }
-    A = array('operation' => 'filter', 'functions' => B, 'body' => X);
+    A = new Haanga_New_Exec('haanga_filter', array(B, X));
 }
 
 /* variables with filters {{{ */

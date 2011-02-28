@@ -115,7 +115,19 @@ abstract class Haanga_Node
 
         $class = 'generate' . $this->getType();
         $body  = $generator->nodes($this->nodes);
-        return $generator->$class($this->getAttributes(), $body);
+
+        if ($this instanceof Haanga_Node_Exec) {
+            $callback = array($generator, 'exec_' . $this->attrs[0]);
+            if (is_callable($callback)) {
+                $code = call_user_func($callback, $this->getAttributes(), $body);
+            }
+        }
+
+        if (empty($code)) {
+            $code = $generator->$class($this->getAttributes(), $body);
+        }
+
+        return $code;
     }
 
     public static function convertNative($value)
@@ -179,7 +191,7 @@ abstract class Haanga_Node_Blocks extends Haanga_Node
 
     public function setBody(Array $stmts)
     {
-        $this->attrs = $stmts;
+        $this->nodes = $stmts;
     }
 }
 
@@ -294,6 +306,15 @@ final class Haanga_Node_Exec extends Haanga_Node
         $this->attrs[1]->push($param);
     }
 }
+
+final class Haanga_Node_BuiltIn extends Haanga_Node 
+{
+    function __construct($name, Haanga_Node_StmtList $args=null, $line = 0)
+    {
+        parent::__construct(array(), array($name, $args), $line);
+    }
+}
+
 
 final class Haanga_Node_Foreach extends Haanga_Node_Blocks {
     function __construct(Haanga_Node_Variable $array, $key, Haanga_Node_Variable $value, array $body = array(), $line = 0)

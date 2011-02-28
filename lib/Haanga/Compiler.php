@@ -236,7 +236,8 @@ class Haanga_Compiler
         }
 
         $parsed = Haanga_Compiler_Tokenizer::init($code, $this, $file);
-        var_dump($parsed);exit;
+        $fnc    = new Haanga_Node_Function('foobar', null, $parsed);
+        die($fnc);
         $code   = "";
         $this->subtemplate = FALSE;
 

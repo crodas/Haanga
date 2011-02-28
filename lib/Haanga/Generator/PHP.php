@@ -37,6 +37,12 @@
 
 class Haanga_Generator_PHP {
     protected $ident = 0;
+    protected $safe  = false;
+    
+    protected $exec = array(
+        'lower' => 'strtolower',
+        'upper' => 'strtoupper',
+    );
 
     public function generateString($args) {
         return  "'" . addslashes($args[0]) . "'";
@@ -59,6 +65,9 @@ class Haanga_Generator_PHP {
     }
 
     public function generateExec($args) {
+        if (isset($this->exec[$args[0]])) {
+            $args[0] = $this->exec[$args[0]];
+        }
         return "{$args[0]}({$args[1]})";
     }
 
@@ -105,7 +114,7 @@ class Haanga_Generator_PHP {
     }
 
 
-    public function blockFunction($args, $body) {
+    public function generateFunction($args, $body) {
         $code = "function {$args[0]}({$args[1]}) {$body}";
         return $code;
     }
@@ -169,6 +178,21 @@ class Haanga_Generator_PHP {
         }
         return $var;
     }
+
+    public function exec_length($obj) {
+    }
+
+    public function exec_safe($obj) {
+        $prev = $this->safe;
+        $this->safe = true;
+
+        $code = (string)$obj[1];
+
+        $this->safe = $prev;
+        
+        return $code;
+    }
+
 }
 
 Haanga_Node::setGenerator(new Haanga_Generator_PHP);
