@@ -74,29 +74,19 @@ class Haanga_Generator_PHP {
     public function generateExpr($args) {
         $prev  = null;
         $code  = '';
-        foreach ($args as $val) {
-            if ($prev && $prev->getType() != 'Operator') {
-                switch ($val->getType()) {
-                case "String":
-                case "Variable":
-                    $code .= ' . ';
-                    break;
-                default:
-                    switch ($prev->getType()) {
-                    case "String":
-                    case "Variable":
-                        $code .= ' . ';
-                        break;
-                    }
-                }
-            }
-            if ($val->getType() == 'Expr') {
-                $code .= '(' . $val . ')';
+        if ($args[0]->getType() != 'Operator') {
+            if ($args[0]->getType() == 'Expr') {
+                return "(" . $args[0] . ")";
             } else {
-                $code .= $val;
+                throw new Exception("Malformed Expr");
             }
-
-            $prev  = $val;
+        }
+        switch ((string)$args[0]) {
+        case 'in':
+            $code = "strpos({$args[2]}, {$args[1]}) !== false";
+            break;
+        default:
+            $code = $args[1] . $args[0] . $args[2];
         }
         return $code;
     }
@@ -179,17 +169,15 @@ class Haanga_Generator_PHP {
         return $var;
     }
 
-    public function exec_length($obj) {
+    public function exec_length($obj)
+    {
     }
 
-    public function exec_safe($obj) {
-        $prev = $this->safe;
+    public function exec_safe($obj)
+    {
         $this->safe = true;
-
-        $code = (string)$obj[1];
-
-        $this->safe = $prev;
-        
+        $code       = (string)$obj[1];
+        $this->safe = false;
         return $code;
     }
 

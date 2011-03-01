@@ -2001,13 +2001,13 @@ static public $yy_action = array(
     function yy_r64(){ $this->_retvalue = new Haanga_Node_Expr(array(new Haanga_Node_Operator('!'), $this->yystack[$this->yyidx + 0]->minor));     }
 #line 2008 "Parser.php"
 #line 379 "Parser.y"
-    function yy_r65(){ $this->_retvalue = new Haanga_Node_Expr(array($this->yystack[$this->yyidx + -2]->minor, new Haanga_Node_Operator('&&'), $this->yystack[$this->yyidx + 0]->minor));     }
+    function yy_r65(){ $this->_retvalue = new Haanga_Node_Expr(array(new Haanga_Node_Operator('&&'), $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor));     }
 #line 2011 "Parser.php"
 #line 380 "Parser.y"
-    function yy_r66(){ $this->_retvalue = new Haanga_Node_Expr(array($this->yystack[$this->yyidx + -2]->minor, new Haanga_Node_Operator('||'), $this->yystack[$this->yyidx + 0]->minor));     }
+    function yy_r66(){ $this->_retvalue = new Haanga_Node_Expr(array(new Haanga_Node_Operator('||'), $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor));     }
 #line 2014 "Parser.php"
 #line 381 "Parser.y"
-    function yy_r67(){ $this->_retvalue = new Haanga_Node_Expr(array($this->yystack[$this->yyidx + -2]->minor, new Haanga_Node_Operator(@$this->yystack[$this->yyidx + -1]->minor), $this->yystack[$this->yyidx + 0]->minor));     }
+    function yy_r67(){ $this->_retvalue = new Haanga_Node_Expr(array(new Haanga_Node_Operator(@$this->yystack[$this->yyidx + -1]->minor), $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor));     }
 #line 2017 "Parser.php"
 #line 385 "Parser.y"
     function yy_r71(){ $this->_retvalue = new Haanga_Node_Expr(array($this->yystack[$this->yyidx + -1]->minor));     }

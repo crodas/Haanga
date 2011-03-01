@@ -378,12 +378,12 @@ arg(A) ::= constant(B).  { A = B; }
 
 /* expr {{{ */
 expr(A) ::= T_NOT expr(B). { A = new Haanga_Node_Expr(array(new Haanga_Node_Operator('!'), B)); }
-expr(A) ::= expr(B) T_AND expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator('&&'), C)); }
-expr(A) ::= expr(B) T_OR  expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator('||'), C)); }
-expr(A) ::= expr(B) T_PLUS|T_MINUS|T_CONCAT(X)  expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator(@X), C)); }
-expr(A) ::= expr(B) T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN(X)  expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator(@X), C)); }
-expr(A) ::= expr(B) T_TIMES|T_DIV|T_MOD(X)  expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator(@X), C)); }
-expr(A) ::= expr(B) T_BITWISE|T_PIPEBITWISE(X)  expr(C).  { A = new Haanga_Node_Expr(array(B, new Haanga_Node_Operator(@X), C)); }
+expr(A) ::= expr(B) T_AND expr(C).  { A = new Haanga_Node_Expr(array(new Haanga_Node_Operator('&&'), B, C)); }
+expr(A) ::= expr(B) T_OR  expr(C).  { A = new Haanga_Node_Expr(array(new Haanga_Node_Operator('||'), B, C)); }
+expr(A) ::= expr(B) T_PLUS|T_MINUS|T_CONCAT(X)  expr(C).  { A = new Haanga_Node_Expr(array(new Haanga_Node_Operator(@X), B, C)); }
+expr(A) ::= expr(B) T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN(X)  expr(C).  { A = new Haanga_Node_Expr(array(new Haanga_Node_Operator(@X), B, C)); }
+expr(A) ::= expr(B) T_TIMES|T_DIV|T_MOD(X)  expr(C).  { A = new Haanga_Node_Expr(array(new Haanga_Node_Operator(@X), B, C)); }
+expr(A) ::= expr(B) T_BITWISE|T_PIPEBITWISE(X)  expr(C).  { A = new Haanga_Node_Expr(array(new Haanga_Node_Operator(@X), B, C)); }
 expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = new Haanga_Node_Expr(array(B)); }
 expr(A) ::= complex_arg(B). { A = B; }
 /* }}} */
