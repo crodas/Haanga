@@ -85,6 +85,9 @@ class Haanga_Generator_PHP {
         case 'in':
             $code = "strpos({$args[2]}, {$args[1]}) !== false";
             break;
+        case '?':
+            $code = "{$args[1]} ? {$args[2]} : {$args[3]}";
+            break;
         default:
             $code = $args[1] . $args[0] . $args[2];
         }
@@ -171,6 +174,8 @@ class Haanga_Generator_PHP {
 
     public function exec_length($obj)
     {
+        $id = '$s' . uniqid();
+        return "is_array($id = {$obj[1]}) ? count($id) : strlen($id)";
     }
 
     public function exec_safe($obj)

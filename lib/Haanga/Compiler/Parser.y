@@ -251,7 +251,7 @@ ifchanged_stmt(A) ::= T_IFCHANGED T_TAG_CLOSE body(B) T_TAG_OPEN T_CUSTOM_END(Z)
     if (Z != "endifchanged") {
         $this->Error("Unexpected ".Z.", expecting endifchanged");
     }
-    $obj = new Haanga_Node_StmtList(array('body' => B));
+    $obj = new Haanga_Node_StmtList(array(B));
     A    = new Haanga_Node_Exec('haanga_ifchanged', $obj);
 }
 
@@ -259,14 +259,14 @@ ifchanged_stmt(A) ::= T_IFCHANGED params(X) T_TAG_CLOSE body(B) T_TAG_OPEN T_CUS
     if (Z != "endifchanged") {
         $this->Error("Unexpected ".Z.", expecting endifchanged");
     }
-    $obj = new Haanga_Node_StmtList(array('body' => B, 'check' => X));
+    $obj = new Haanga_Node_StmtList(array(B, X));
     A    = new Haanga_Node_Exec('haanga_ifchanged', $obj);
 }
 ifchanged_stmt(A) ::= T_IFCHANGED T_TAG_CLOSE body(B) T_TAG_OPEN T_ELSE T_TAG_CLOSE body(C) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. { 
     if (Z != "endifchanged") {
         $this->Error("Unexpected ".Z.", expecting endifchanged");
     }
-    $obj = new Haanga_Node_StmtList(array('body' => B, 'else' => C));
+    $obj = new Haanga_Node_StmtList(array(B, NULL, C));
     A    = new Haanga_Node_Exec('haanga_ifchanged', $obj);
 }
 
@@ -274,7 +274,7 @@ ifchanged_stmt(A) ::= T_IFCHANGED params(X) T_TAG_CLOSE body(B) T_TAG_OPEN T_ELS
     if (Z != "endifchanged") {
         $this->Error("Unexpected ".Z.", expecting endifchanged");
     }
-    $obj = new Haanga_Node_StmtList(array('body' => B, 'check' => X, 'else' => C));
+    $obj = new Haanga_Node_StmtList(array(B, X, C));
     A    = new Haanga_Node_Exec('haanga_ifchanged', $obj);
 }
 /* }}} */
