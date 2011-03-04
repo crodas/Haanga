@@ -100,7 +100,7 @@ code(A) ::= T_HTML(B). {
     A = new Haanga_Node_Print(new Haanga_Node_String(B));
 }
 code(A) ::= T_COMMENT(B). {
-    B=rtrim(B); A = array('operation' => 'comment', 'comment' => B); 
+    A = new Haanga_Node_Comment(rtrim(B)); 
 } 
 code(A) ::= T_PRINT_OPEN expr(B) T_PRINT_CLOSE.  {
     A = new Haanga_Node_Print(B);

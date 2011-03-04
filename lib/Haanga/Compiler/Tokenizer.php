@@ -197,7 +197,7 @@ class Haanga_Compiler_Tokenizer
                             $this->error("unexpected end");
                         }
 
-                        $this->value  = substr($zdata, $i, $pos-2);
+                        $this->value  = substr($zdata, $i, $pos-$i);
                         $this->status = self::IN_NONE; 
                         $i = $pos + 2;
                         break;

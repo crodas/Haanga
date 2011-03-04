@@ -126,6 +126,11 @@ class Haanga_Generator_PHP {
         return $code;
     }
 
+    public function generateComment($string)
+    {
+        return "/* $string[0] */";
+    }
+
     public function doReturn($args)
     {
         return "return " .$args[0];
@@ -211,14 +216,15 @@ class Haanga_Generator_PHP {
         } else {
             /* check for variables */
             $expr   = "empty($var) || (";
-            $assign = "{$ident}\t$var = array();\n";
-            foreach ($nodes['params']->getAttributes() as $check) {
-                $name    = "{$var}['" . md5($check) . "']";
+            $assign = "{$ident}\t$var = array(";
+            foreach ($nodes['params']->getAttributes() as $id => $check) {
+                $name    = "{$var}[$id]";
                 $expr   .= "empty($name) || $name != $check && ";
-                $assign .= "{$ident}\t$name = $check;\n";
+                $assign .= "$id => $check,";
             }
-            $expr = substr($expr, 0, -4) . ")";
-            $code = "if ($expr) {\n";
+            $assign .= ");\n";
+            $expr    = substr($expr, 0, -4) . ")";
+            $code    = "if ($expr) {\n";
 
             $this->ident++;
             $code .= $this->nodes($nodes['body'], false);

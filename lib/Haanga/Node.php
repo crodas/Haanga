@@ -216,6 +216,10 @@ final class Haanga_Node_String extends Haanga_Node_BlockSimple
 {
 }
 
+final class Haanga_Node_Comment extends Haanga_Node_BlockSimple
+{
+}
+
 final class Haanga_Node_Operator extends Haanga_Node_BlockSimple 
 {
 }

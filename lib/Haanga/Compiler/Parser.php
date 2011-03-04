@@ -1706,7 +1706,7 @@ static public $yy_action = array(
 #line 1712 "Parser.php"
 #line 101 "Parser.y"
     function yy_r5(){
-    $this->yystack[$this->yyidx + 0]->minor=rtrim($this->yystack[$this->yyidx + 0]->minor); $this->_retvalue = array('operation' => 'comment', 'comment' => $this->yystack[$this->yyidx + 0]->minor); 
+    $this->_retvalue = new Haanga_Node_Comment(rtrim($this->yystack[$this->yyidx + 0]->minor)); 
     }
 #line 1717 "Parser.php"
 #line 104 "Parser.y"
