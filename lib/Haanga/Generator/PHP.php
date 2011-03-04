@@ -95,6 +95,13 @@ class Haanga_Generator_PHP {
     }
 
     public function generatePrint($args) {
+        if ($args[0] InstanceOf Haanga_Node_String) {
+            list($value) = $args[0]->getAttributes();
+            $value = trim($value);
+            if (empty($value)) {
+                return '';
+            }
+        }
         return "echo {$args[0]}";
     }
 
@@ -128,7 +135,7 @@ class Haanga_Generator_PHP {
 
     public function generateComment($string)
     {
-        return "/* $string[0] */";
+        return "/* $string[0] */\n";
     }
 
     public function doReturn($args)
@@ -153,8 +160,12 @@ class Haanga_Generator_PHP {
             if (empty($stmt)) {
                 continue;
             }
-            $code .= "{$ident}{$stmt}";
-            if (!$stmt instanceof Haanga_Node_Blocks) {
+            $current = "$stmt";
+            if (empty($current)) {
+                continue;
+            }
+            $code .= "{$ident}{$current}";
+            if (substr($code,-2, 1) != '}' && substr($code, -2, 1) != '/') {
                 $code .= ";\n";
             }
         }
