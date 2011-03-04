@@ -131,14 +131,19 @@ class Haanga_Generator_PHP {
         return "return " .$args[0];
     }
 
-    public function nodes($array) {
+    public function nodes($array, $newBlock=true) {
         if (empty($array)) {
             return "";
         }
-        $this->ident++;
+        if ($newBlock) {
+            $this->ident++;
+            $code  = "{\n";
+        } else {
+            $code = '';
+        }
+            
         $pident = str_repeat("\t", $this->ident-1);
         $ident  = str_repeat("\t", $this->ident);
-        $code  = "{\n";
         foreach ($array as $stmt) {
             if (empty($stmt)) {
                 continue;
@@ -148,8 +153,10 @@ class Haanga_Generator_PHP {
                 $code .= ";\n";
             }
         }
-        $code .=  "{$pident}}\n";
-        $this->ident--;
+        if ($newBlock) {
+            $code .=  "{$pident}}\n";
+            $this->ident--;
+        }
         return $code;
     }
 
@@ -176,6 +183,55 @@ class Haanga_Generator_PHP {
     {
         $id = '$s' . uniqid();
         return "is_array($id = {$obj[1]}) ? count($id) : strlen($id)";
+    }
+
+    public function exec_haanga_include($obj, $body) {
+        return "Haanga::Load({$obj[1]}, \$vars, \$blocks)";
+    }
+
+    public function exec_haanga_ifchanged($obj, $nodes) {
+        static $id = 0;
+        $id++;
+        $var    = "\$haanga_ifchanged_{$id}";
+        $buffer = "\$haanga_buffer_{$id}";
+
+
+        $ident = str_repeat("\t", $this->ident);
+
+        /* check if the content has changed */
+        if (empty($nodes['params'])) {
+            /* run the code in a buffer */
+            $code  = "ob_start();\n";
+            $code .= $this->nodes($nodes['body'], false);
+            $code .= "{$ident}$buffer = ob_get_clean();\n";
+            $code .= "{$ident}if (empty($var) || {$var} != $buffer) {\n";
+            $code .= "{$ident}\techo {$buffer};\n";
+            $code .= "{$ident}\t$var = {$buffer};\n";
+            $code .= "{$ident}}";
+        } else {
+            /* check for variables */
+            $expr   = "empty($var) || (";
+            $assign = "{$ident}\t$var = array();\n";
+            foreach ($nodes['params']->getAttributes() as $check) {
+                $name    = "{$var}['" . md5($check) . "']";
+                $expr   .= "empty($name) || $name != $check && ";
+                $assign .= "{$ident}\t$name = $check;\n";
+            }
+            $expr = substr($expr, 0, -4) . ")";
+            $code = "if ($expr) {\n";
+
+            $this->ident++;
+            $code .= $this->nodes($nodes['body'], false);
+            $this->ident--;
+            $code .= "{$assign}{$ident}}";
+        }
+
+        /* else */
+        if (!empty($nodes['else'])) {
+            $code .= " else " . $this->nodes($nodes['else']);
+        }
+
+        return $code;
     }
 
     public function exec_safe($obj)

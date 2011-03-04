@@ -74,15 +74,24 @@ abstract class Haanga_Node
         return $this->attrs;
     }
 
+    public function setAttribute($obj)
+    {
+        $this->attrs = $obj;
+    }
+
     public function addAttribute($obj)
     {
         $this->attrs[] = self::convertNative($obj);
     }
 
+    public function setNodes($nodes)
+    {
+        $this->nodes = $nodes;
+    }
+
     public function addNode(Haanga_Node $node)
     {
         $this->nodes[] = $node;
-        return $this;
     }
 
     /**
@@ -114,16 +123,16 @@ abstract class Haanga_Node
         $generator = self::$generator;
 
         $class = 'generate' . $this->getType();
-        $body  = $generator->nodes($this->nodes);
 
         if ($this instanceof Haanga_Node_Exec) {
             $callback = array($generator, 'exec_' . $this->attrs[0]);
             if (is_callable($callback)) {
-                $code = call_user_func($callback, $this->getAttributes(), $body);
+                $code = call_user_func($callback, $this->getAttributes(), $this->nodes);
             }
         }
 
         if (empty($code)) {
+            $body = $generator->nodes($this->nodes);
             $code = $generator->$class($this->getAttributes(), $body);
         }
 

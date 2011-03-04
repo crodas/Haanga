@@ -31,7 +31,8 @@
 
 {# Show list of dates #}
 {% for date in days %}
-    {% ifchanged %}<h3>{{ date|date:"F" }}</h3>{% endifchanged %}
+    {% ifchanged date foo bar.foo['bar'] %}<h3>{{ date|date:"F" }}</h3>{% else %} same as before {% endifchanged %}
+    {% ifchanged %}<h3>{{ date|date:"F" }}</h3>{% else %} same as before {% endifchanged %}
     <a href="{{ date|date:"M/d"|lower }}/">{{ date|date:"j" }}</a>
 {% endfor %}
 

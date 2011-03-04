@@ -1874,8 +1874,8 @@ static public $yy_action = array(
     if ($this->yystack[$this->yyidx + -1]->minor != "endifchanged") {
         $this->Error("Unexpected ".$this->yystack[$this->yyidx + -1]->minor.", expecting endifchanged");
     }
-    $obj = new Haanga_Node_StmtList(array($this->yystack[$this->yyidx + -3]->minor));
-    $this->_retvalue    = new Haanga_Node_Exec('haanga_ifchanged', $obj);
+    $this->_retvalue = new Haanga_Node_Exec('haanga_ifchanged');
+    $this->_retvalue->setNodes(array('body' => $this->yystack[$this->yyidx + -3]->minor));
     }
 #line 1886 "Parser.php"
 #line 256 "Parser.y"
@@ -1883,8 +1883,8 @@ static public $yy_action = array(
     if ($this->yystack[$this->yyidx + -1]->minor != "endifchanged") {
         $this->Error("Unexpected ".$this->yystack[$this->yyidx + -1]->minor.", expecting endifchanged");
     }
-    $obj = new Haanga_Node_StmtList(array($this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -5]->minor));
-    $this->_retvalue    = new Haanga_Node_Exec('haanga_ifchanged', $obj);
+    $this->_retvalue = new Haanga_Node_Exec('haanga_ifchanged');
+    $this->_retvalue->setNodes(array('body' => $this->yystack[$this->yyidx + -3]->minor, 'params'=> $this->yystack[$this->yyidx + -5]->minor));
     }
 #line 1895 "Parser.php"
 #line 263 "Parser.y"
@@ -1892,8 +1892,8 @@ static public $yy_action = array(
     if ($this->yystack[$this->yyidx + -1]->minor != "endifchanged") {
         $this->Error("Unexpected ".$this->yystack[$this->yyidx + -1]->minor.", expecting endifchanged");
     }
-    $obj = new Haanga_Node_StmtList(array($this->yystack[$this->yyidx + -7]->minor, NULL, $this->yystack[$this->yyidx + -3]->minor));
-    $this->_retvalue    = new Haanga_Node_Exec('haanga_ifchanged', $obj);
+    $this->_retvalue = new Haanga_Node_Exec('haanga_ifchanged');
+    $this->_retvalue->setNodes(array('body' => $this->yystack[$this->yyidx + -7]->minor, 'else' => $this->yystack[$this->yyidx + -3]->minor));
     }
 #line 1904 "Parser.php"
 #line 271 "Parser.y"
@@ -1901,8 +1901,8 @@ static public $yy_action = array(
     if ($this->yystack[$this->yyidx + -1]->minor != "endifchanged") {
         $this->Error("Unexpected ".$this->yystack[$this->yyidx + -1]->minor.", expecting endifchanged");
     }
-    $obj = new Haanga_Node_StmtList(array($this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -9]->minor, $this->yystack[$this->yyidx + -3]->minor));
-    $this->_retvalue    = new Haanga_Node_Exec('haanga_ifchanged', $obj);
+    $this->_retvalue = new Haanga_Node_Exec('haanga_ifchanged');
+    $this->_retvalue->setNodes(array('body' => $this->yystack[$this->yyidx + -7]->minor, 'else' => $this->yystack[$this->yyidx + -3]->minor, 'params' => $this->yystack[$this->yyidx + -9]->minor));
     }
 #line 1913 "Parser.php"
 #line 281 "Parser.y"
