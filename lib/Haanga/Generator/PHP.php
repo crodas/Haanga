@@ -165,7 +165,7 @@ class Haanga_Generator_PHP {
                 continue;
             }
             $code .= "{$ident}{$current}";
-            if (substr($code,-2, 1) != '}' && substr($code, -2, 1) != '/') {
+            if (!$stmt instanceof Haanga_Node_Blocks && substr($code, -1) != "\n") {
                 $code .= ";\n";
             }
         }
