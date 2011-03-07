@@ -83,7 +83,7 @@ class Haanga_Generator_PHP {
         }
         switch ((string)$args[0]) {
         case 'in':
-            $code = "strpos({$args[2]}, {$args[1]}) !== false";
+            $code = "(strpos({$args[2]}, {$args[1]}) !== false)";
             break;
         case '?':
             $code = "{$args[1]} ? {$args[2]} : {$args[3]}";
@@ -249,6 +249,30 @@ class Haanga_Generator_PHP {
         }
 
         return $code;
+    }
+
+    public function exec_firstof($obj)
+    {
+        $args  = $obj[1]->getAttributes();
+        $count = count($args);
+        $args  = array_reverse($args);
+        for ($i=0; $i < $count; $i++) {
+            if (isset($expr) && $args[$i] InstanceOf Haanga_Node_Variable) {
+                $expr = new Haanga_Node_Expr(array(
+                    new Haanga_Node_Operator('?'), 
+                    new Haanga_Node_Exec('!empty', new Haanga_Node_StmtList(array($args[$i]))), 
+                    $args[$i],
+                    $expr, 
+                ));
+                // ( $expr )
+                $expr = new Haanga_Node_Expr(array($expr));
+            } else {
+                $expr = $args[$i];
+            }
+        }
+
+        // generate print 
+        return $this->generatePrint(array($expr));
     }
 
     public function exec_safe($obj)
