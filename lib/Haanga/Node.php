@@ -304,6 +304,13 @@ final class Haanga_Node_Else extends Haanga_Node_Blocks
 {
 }
 
+final class Haanga_Node_Array extends Haanga_Node
+{
+    public function __construct($a) {
+        var_dump($a);exit;
+    }
+}
+
 final class Haanga_Node_Exec extends Haanga_Node
 {
     function __construct($name, Haanga_Node_StmtList $args=null, $line = 0)

@@ -95,7 +95,9 @@ class Haanga_Compiler_Tokenizer
         '>'     => HG_Parser::T_GT,
         '['     => HG_Parser::T_BRACKETS_OPEN,
         ']'     => HG_Parser::T_BRACKETS_CLOSE,
+        '{'     => HG_Parser::T_CURLY_OPEN,
         '|'     => HG_Parser::T_PIPE,
+        '}'     => HG_Parser::T_CURLY_CLOSE,
     );
     static $operators = array(
         '!=='   => HG_Parser::T_NE,
@@ -143,7 +145,7 @@ class Haanga_Compiler_Tokenizer
         $this->length   = strlen($data);
 
 
-        /*$tmp1 = self::$operators;
+        /*$tmp1 = self::$operators_single;
         $tmp2 = $tmp1;
         ksort($tmp2);
         var_dump($tmp2, $tmp1 === $tmp2);die();/**/

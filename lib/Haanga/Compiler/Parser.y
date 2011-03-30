@@ -90,7 +90,7 @@ code(A) ::= T_TAG_OPEN stmts(B). {
     } else {
         foreach (B as $i) {
             if (!is_object($i)) {
-                var_dump($i);exit;
+                var_dump('bye', $i);exit;
             }
         }
     }
@@ -151,7 +151,7 @@ custom_tag(A) ::= T_CUSTOM_BLOCK(B) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTOM_END(
     } 
     A = array('operation' => 'custom_tag', 'name' => B, 'body' => X, 'list' => array());
 }
-custom_tag(A) ::= T_CUSTOM_BLOCK(B) params(L) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTOM_END(C) T_TAG_CLOSE. {
+custom_tag(A) ::= T_CUSTOM_BLOCK(B) sparams(L) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUSTOM_END(C) T_TAG_CLOSE. {
     if ('end'.B != C) { 
         $this->error("Unexpected ".C); 
     } 
@@ -255,7 +255,7 @@ ifchanged_stmt(A) ::= T_IFCHANGED T_TAG_CLOSE body(B) T_TAG_OPEN T_CUSTOM_END(Z)
     A->setNodes(array('body' => B));
 }
 
-ifchanged_stmt(A) ::= T_IFCHANGED params(X) T_TAG_CLOSE body(B) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. { 
+ifchanged_stmt(A) ::= T_IFCHANGED sparams(X) T_TAG_CLOSE body(B) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. { 
     if (Z != "endifchanged") {
         $this->Error("Unexpected ".Z.", expecting endifchanged");
     }
@@ -270,7 +270,7 @@ ifchanged_stmt(A) ::= T_IFCHANGED T_TAG_CLOSE body(B) T_TAG_OPEN T_ELSE T_TAG_CL
     A->setNodes(array('body' => B, 'else' => C));
 }
 
-ifchanged_stmt(A) ::= T_IFCHANGED params(X) T_TAG_CLOSE body(B) T_TAG_OPEN T_ELSE T_TAG_CLOSE body(C) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. { 
+ifchanged_stmt(A) ::= T_IFCHANGED sparams(X) T_TAG_CLOSE body(B) T_TAG_OPEN T_ELSE T_TAG_CLOSE body(C) T_TAG_OPEN T_CUSTOM_END(Z) T_TAG_CLOSE. { 
     if (Z != "endifchanged") {
         $this->Error("Unexpected ".Z.", expecting endifchanged");
     }
@@ -360,10 +360,19 @@ filter_args(A) ::= alpha(B). { A = new Haanga_Node_Exec(B); }
 /* }}} */
 
 /* List of variables {{{ */
-params(A)  ::= iparams(B). { A = new Haanga_Node_StmtList(B); }
-iparams(A) ::= iparams(B) complex_arg(C).           { A = B; A[] = C; }
-iparams(A) ::= iparams(B) T_COMMA complex_arg(C).   { A = B; A[] = C; }
-iparams(A) ::= complex_arg(B).                       { A = array(B); }
+
+// parameters could be simple or advanced but not both
+params(A)  ::= sparams(B). { A = new Haanga_Node_StmtList(B); }
+params(A)  ::= xparams(B). { A = new Haanga_Node_StmtList(B); }
+
+// simple params 
+sparams(A) ::= sparams(B) complex_arg(C).           { A = B; A[] = C; }
+sparams(A) ::= complex_arg(B).                       { A = array(B); }
+
+// xparams, uncompatible with django
+xparams(A) ::= xparams(B) T_COMMA expr(C).   { A = B; A[] = C; }
+xparams(A) ::= expr(C) . { A = array(C); }
+
 /* }}} */
 
 /* variable or string (used on params) {{{ */
@@ -385,6 +394,7 @@ expr(A) ::= expr(B) T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN(X)  expr(C).  { A = new H
 expr(A) ::= expr(B) T_TIMES|T_DIV|T_MOD(X)  expr(C).  { A = new Haanga_Node_Expr(array(new Haanga_Node_Operator(@X), B, C)); }
 expr(A) ::= expr(B) T_BITWISE|T_PIPEBITWISE(X)  expr(C).  { A = new Haanga_Node_Expr(array(new Haanga_Node_Operator(@X), B, C)); }
 expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = new Haanga_Node_Expr(array(B)); }
+expr(A) ::= json(X) . { A = X; }
 expr(A) ::= complex_arg(B). { A = B; }
 /* }}} */
 
@@ -429,3 +439,16 @@ constant(A) ::= string(B). { A = B; }
 constant(A) ::= bool(B). { A = B; }
 /* }}} */
 
+
+/* JSON Parser */
+json(X) ::= T_CURLY_OPEN json_obj(Y) T_CURLY_CLOSE . { 
+    X = new Haanga_Node_Array(Y); 
+}
+json(X) ::= T_BRACKETS_OPEN xparams(Y) T_BRACKETS_CLOSE . {
+    X = new Haanga_Node_Array(Y); 
+}
+
+json_obj(X) ::= json_obj(Y) T_COMMA json_obj_def(Z). { X = array_merge(Y, Z); }
+json_obj(Y) ::= json_obj_def(X) . { Y = array(X); }
+
+json_obj_def(Y) ::= alpha(C) T_COLON expr(X). { Y=array(C => X); }
