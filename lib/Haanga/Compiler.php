@@ -595,8 +595,9 @@ class Haanga_Compiler
             $tmp    = $varname;
             $method = array_pop($tmp);
             $object = $this->get_context($tmp);
-            if (!empty($method['object'])) {
-                if (is_object($object) && is_callable(array($object, $method['object']))) {
+            if (!empty($method['object']) && is_string($method['object'])) {
+                $property = $method['object'];
+                if (is_object($object) && !isset($object->$property) && is_callable(array($object, $property))) {
                     $expr = hexec($varname);
                     return TRUE;
                 }
