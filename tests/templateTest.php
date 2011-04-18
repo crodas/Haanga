@@ -3,10 +3,15 @@
 class Foo_Bar {
     static $Bar = 'haanga';
     static $Arr = array('foo', 'Bar' => 'Foo');
+    protected $foo = 'algo';
 
     static function something()
     {
         return 'something';
+    }
+
+    function method() {
+        return $this->foo;
     }
 }
 

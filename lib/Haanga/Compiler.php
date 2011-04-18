@@ -589,6 +589,22 @@ class Haanga_Compiler
     }
     // }}}
 
+    function isMethod($varname, &$expr)
+    {
+        if (is_array($varname)) {
+            $tmp    = $varname;
+            $method = array_pop($tmp);
+            $object = $this->get_context($tmp);
+            if (!empty($method['object'])) {
+                if (is_object($object) && is_callable(array($object, $method['object']))) {
+                    $expr = hexec($varname);
+                    return TRUE;
+                }
+            }
+        }
+        return FALSE;
+    }
+
     // get_var_filtered {{{
     /**
      *  This method handles all the filtered variable (piped_list(X)'s 
@@ -615,6 +631,10 @@ class Haanga_Compiler
                 $this->Error("This variable can't have any filter");
             }
 
+            if ($this->isMethod($target['var'], $return)) {
+                $target = $return;
+            }
+
             for ($i=1; $i < $count; $i++) {
                 $func_name = $variable[$i];
                 if ($func_name == 'escape') {
@@ -630,6 +650,10 @@ class Haanga_Compiler
         } else {
             $details = $this->generate_variable_name($variable[0]);
             $varname = $variable[0];
+
+            if ($this->isMethod($varname, $return)) {
+                return $return;
+            }
 
             if (!Haanga_AST::is_var($details) && !$accept_string) {
                 /* generate_variable_name didn't replied a variable, weird case
