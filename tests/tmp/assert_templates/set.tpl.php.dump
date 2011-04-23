@@ -315,7 +315,7 @@ function haanga_f5ad40d56c2438ea6bb3882d3b5e5ebf18352938($vars, $return=FALSE, $
     if ($return == TRUE) {
         ob_start();
     }
-    $foo  = 5 + 1;
+    $foo  = (5 + 1);
     $vars['foo']  = $foo;
     echo '
 ';

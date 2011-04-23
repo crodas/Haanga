@@ -512,7 +512,7 @@ class Haanga_Generator_PHP
                 if (strlen($code) != 0 && $code[strlen($code) -1] != $concat) {
                     $code .= $concat;
                 }
-                $code .= $this->php_generate_expr($op[$i]);
+                $code .= '(' . $this->php_generate_expr($op[$i]) . ')';
                 $code .= $concat;
                 break;
             case 'expr':

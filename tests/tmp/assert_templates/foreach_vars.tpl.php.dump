@@ -521,7 +521,7 @@ function haanga_a6632e6016b7fd6dac1f8c9fdbeb007fa154dfb9($vars, $return=FALSE, $
                 ';
         $forcounter1_2  = 1;
         $psize_2  = count($category['subCategories']);
-        $islast_2  = $forcounter1_2 == $psize_2;
+        $islast_2  = ($forcounter1_2 == $psize_2);
         foreach ($category['subCategories'] as  $secondaryCategory) {
             echo '
                         <li class=\'secondaryCategoryList\'>
@@ -537,8 +537,8 @@ function haanga_a6632e6016b7fd6dac1f8c9fdbeb007fa154dfb9($vars, $return=FALSE, $
             }
             echo '
                 ';
-            $forcounter1_2  = $forcounter1_2 + 1;
-            $islast_2  = $forcounter1_2 == $psize_2;
+            $forcounter1_2  = ($forcounter1_2 + 1);
+            $islast_2  = ($forcounter1_2 == $psize_2);
         }
         echo '
                 </ul>

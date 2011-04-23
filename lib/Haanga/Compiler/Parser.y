@@ -85,12 +85,15 @@ body(A) ::= . { A = array(); }
 
 /* List of statements */
 code(A) ::= T_TAG_OPEN stmts(B). { if (count(B)) B['line'] = $this->lex->getLine();  A = B; }
+
 code(A) ::= T_HTML(B). {
     A = array('operation' => 'html', 'html' => B, 'line' => $this->lex->getLine() ); 
 }
+
 code(A) ::= T_COMMENT(B). {
     B=rtrim(B); A = array('operation' => 'comment', 'comment' => B); 
 } 
+
 code(A) ::= T_PRINT_OPEN filtered_var(B) T_PRINT_CLOSE.  {
     A = array('operation' => 'print_var', 'variable' => B, 'line' => $this->lex->getLine() ); 
 }

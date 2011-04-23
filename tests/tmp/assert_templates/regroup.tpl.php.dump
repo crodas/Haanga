@@ -1327,10 +1327,10 @@ function haanga_e3288a8c38d2925df1b81c50c72b7eee31f8c2f9($vars, $return=FALSE, $
     ';
         $forcounter1_2  = 1;
         $psize_2  = count($user['list']);
-        $islast_2  = $forcounter1_2 == $psize_2;
+        $islast_2  = ($forcounter1_2 == $psize_2);
         $isfirst_2  = TRUE;
         $revcount_2  = $psize_2;
-        $revcount0_2  = $psize_2 - 1;
+        $revcount0_2  = ($psize_2 - 1);
         foreach ($user['list'] as  $u) {
             echo '
         '.$forcounter1_2.'-'.$revcount_2.'-'.$revcount0_2.' ('.$forcounter1_1.'). '.htmlspecialchars(ucfirst($u['name'])).' (';
@@ -1343,15 +1343,15 @@ function haanga_e3288a8c38d2925df1b81c50c72b7eee31f8c2f9($vars, $return=FALSE, $
             }
             echo ')
     ';
-            $forcounter1_2  = $forcounter1_2 + 1;
-            $islast_2  = $forcounter1_2 == $psize_2;
+            $forcounter1_2  = ($forcounter1_2 + 1);
+            $islast_2  = ($forcounter1_2 == $psize_2);
             $isfirst_2  = FALSE;
-            $revcount_2  = $revcount_2 - 1;
-            $revcount0_2  = $revcount0_2 - 1;
+            $revcount_2  = ($revcount_2 - 1);
+            $revcount0_2  = ($revcount0_2 - 1);
         }
         echo '
 ';
-        $forcounter1_1  = $forcounter1_1 + 1;
+        $forcounter1_1  = ($forcounter1_1 + 1);
     }
     echo '
 ';

@@ -1008,11 +1008,11 @@ function haanga_8d56a9a504af63b0aa1f9e966ad860de9c65c99b($vars, $return=FALSE, $
     echo '
 ';
     $mnm_current  = $page;
-    $mnm_total  = ceil($total / $results_per_page);
-    $mnm_start  = max($mnm_current - intval(5 / 2), 1);
-    $mnm_end  = $mnm_start + 5 - 1;
-    $mnm_prev  = (1 == $mnm_current ? FALSE : $mnm_current - 1);
-    $mnm_next  = ($total < 0 || $mnm_current < $mnm_total ? $mnm_current + 1 : FALSE);
+    $mnm_total  = ceil(($total / $results_per_page));
+    $mnm_start  = max(($mnm_current - intval((5 / 2))), 1);
+    $mnm_end  = ($mnm_start + 5 - 1);
+    $mnm_prev  = (1 == $mnm_current ? FALSE : ($mnm_current - 1));
+    $mnm_next  = ($total < 0 || $mnm_current < $mnm_total ? ($mnm_current + 1) : FALSE);
     $mnm_pages  = range($mnm_start, ($mnm_end < $mnm_total ? $mnm_end : $mnm_total));
     echo '
 ';
