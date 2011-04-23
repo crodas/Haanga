@@ -1,0 +1,376 @@
+Array
+(
+    [0] => Array
+        (
+            [op] => declare
+            [name] => HAANGA_VERSION
+            [0] => Array
+                (
+                    [string] => 1.0.4
+                )
+
+        )
+
+    [1] => Array
+        (
+            [op] => comment
+            [comment] => Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/inheritence_nested_block.tpl
+        )
+
+    [2] => Array
+        (
+            [op] => function
+            [name] => haanga_a2c536c1d9b6f09d66feff81ca9b1e993d15d32e
+        )
+
+    [3] => Array
+        (
+            [op] => global
+            [vars] => Array
+                (
+                    [0] => test_global
+                    [1] => global1
+                )
+
+        )
+
+    [4] => Array
+        (
+            [op] => expr
+            [0] => Array
+                (
+                    [exec] => extract
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [var] => vars
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [5] => Array
+        (
+            [op] => if
+            [expr] => Array
+                (
+                    [op_expr] => ==
+                    [0] => Array
+                        (
+                            [var] => return
+                        )
+
+                    [1] => Array
+                        (
+                            [expr] => 1
+                        )
+
+                )
+
+        )
+
+    [6] => Array
+        (
+            [op] => expr
+            [0] => Array
+                (
+                    [exec] => ob_start
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [7] => Array
+        (
+            [op] => end_if
+        )
+
+    [8] => Array
+        (
+            [op] => declare
+            [name] => buffer1
+            [0] => Array
+                (
+                    [string] => 
+                )
+
+        )
+
+    [9] => Array
+        (
+            [op] => append_var
+            [name] => buffer1
+            [0] => Array
+                (
+                    [string] => 
+
+                )
+
+        )
+
+    [10] => Array
+        (
+            [op] => append_var
+            [name] => buffer1
+            [0] => Array
+                (
+                    [string] => {{block.1b3231655cebb7a1f783eddf27d254ca}}
+                )
+
+        )
+
+    [11] => Array
+        (
+            [op] => append_var
+            [name] => buffer1
+            [0] => Array
+                (
+                    [string] => 
+new stuff
+
+                )
+
+        )
+
+    [12] => Array
+        (
+            [op] => declare
+            [name] => Array
+                (
+                    [0] => blocks
+                    [1] => Array
+                        (
+                            [string] => outer
+                        )
+
+                )
+
+            [0] => Array
+                (
+                    [expr_cond] => Array
+                        (
+                            [exec] => isset
+                            [args] => Array
+                                (
+                                    [0] => Array
+                                        (
+                                            [var] => Array
+                                                (
+                                                    [0] => blocks
+                                                    [1] => Array
+                                                        (
+                                                            [string] => outer
+                                                        )
+
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                    [true] => Array
+                        (
+                            [expr_cond] => Array
+                                (
+                                    [op_expr] => ===
+                                    [0] => Array
+                                        (
+                                            [exec] => strpos
+                                            [args] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [var] => Array
+                                                                (
+                                                                    [0] => blocks
+                                                                    [1] => Array
+                                                                        (
+                                                                            [string] => outer
+                                                                        )
+
+                                                                )
+
+                                                        )
+
+                                                    [1] => Array
+                                                        (
+                                                            [string] => {{block.1b3231655cebb7a1f783eddf27d254ca}}
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [1] => Array
+                                        (
+                                            [expr] => 
+                                        )
+
+                                )
+
+                            [true] => Array
+                                (
+                                    [var] => Array
+                                        (
+                                            [0] => blocks
+                                            [1] => Array
+                                                (
+                                                    [string] => outer
+                                                )
+
+                                        )
+
+                                )
+
+                            [false] => Array
+                                (
+                                    [exec] => str_replace
+                                    [args] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [string] => {{block.1b3231655cebb7a1f783eddf27d254ca}}
+                                                )
+
+                                            [1] => Array
+                                                (
+                                                    [var] => buffer1
+                                                )
+
+                                            [2] => Array
+                                                (
+                                                    [var] => Array
+                                                        (
+                                                            [0] => blocks
+                                                            [1] => Array
+                                                                (
+                                                                    [string] => outer
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                    [false] => Array
+                        (
+                            [var] => buffer1
+                        )
+
+                )
+
+        )
+
+    [13] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [exec] => Haanga::Load
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [string] => assert_templates/nested_block.tpl
+                                )
+
+                            [1] => Array
+                                (
+                                    [var] => vars
+                                )
+
+                            [2] => Array
+                                (
+                                    [expr] => 1
+                                )
+
+                            [3] => Array
+                                (
+                                    [var] => blocks
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [14] => Array
+        (
+            [op] => if
+            [expr] => Array
+                (
+                    [op_expr] => ==
+                    [0] => Array
+                        (
+                            [var] => return
+                        )
+
+                    [1] => Array
+                        (
+                            [expr] => 1
+                        )
+
+                )
+
+        )
+
+    [15] => Array
+        (
+            [op] => return
+            [0] => Array
+                (
+                    [exec] => ob_get_clean
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [16] => Array
+        (
+            [op] => end_if
+        )
+
+    [17] => Array
+        (
+            [op] => end_function
+        )
+
+    [php] => 
+$HAANGA_VERSION  = '1.0.4';
+/* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/inheritence_nested_block.tpl */
+function haanga_a2c536c1d9b6f09d66feff81ca9b1e993d15d32e($vars, $return=FALSE, $blocks=array())
+{
+    global $test_global, $global1;
+    extract($vars);
+    if ($return == TRUE) {
+        ob_start();
+    }
+    $buffer1  = '
+{{block.1b3231655cebb7a1f783eddf27d254ca}}
+new stuff
+';
+    $blocks['outer']  = (isset($blocks['outer']) ? (strpos($blocks['outer'], '{{block.1b3231655cebb7a1f783eddf27d254ca}}') === FALSE ? $blocks['outer'] : str_replace('{{block.1b3231655cebb7a1f783eddf27d254ca}}', $buffer1, $blocks['outer'])) : $buffer1);
+    echo Haanga::Load('assert_templates/nested_block.tpl', $vars, TRUE, $blocks);
+    if ($return == TRUE) {
+        return ob_get_clean();
+    }
+}
+)

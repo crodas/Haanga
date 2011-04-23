@@ -1,0 +1,391 @@
+Array
+(
+    [0] => Array
+        (
+            [op] => declare
+            [name] => HAANGA_VERSION
+            [0] => Array
+                (
+                    [string] => 1.0.4
+                )
+
+        )
+
+    [1] => Array
+        (
+            [op] => comment
+            [comment] => Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/spaceless.tpl
+        )
+
+    [2] => Array
+        (
+            [op] => function
+            [name] => haanga_51446bb05a294ee636668b4fd94a6dd706202215
+        )
+
+    [3] => Array
+        (
+            [op] => global
+            [vars] => Array
+                (
+                    [0] => test_global
+                    [1] => global1
+                )
+
+        )
+
+    [4] => Array
+        (
+            [op] => expr
+            [0] => Array
+                (
+                    [exec] => extract
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [var] => vars
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [5] => Array
+        (
+            [op] => if
+            [expr] => Array
+                (
+                    [op_expr] => ==
+                    [0] => Array
+                        (
+                            [var] => return
+                        )
+
+                    [1] => Array
+                        (
+                            [expr] => 1
+                        )
+
+                )
+
+        )
+
+    [6] => Array
+        (
+            [op] => expr
+            [0] => Array
+                (
+                    [exec] => ob_start
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [7] => Array
+        (
+            [op] => end_if
+        )
+
+    [8] => Array
+        (
+            [op] => declare
+            [name] => buffer1
+            [0] => Array
+                (
+                    [string] => 
+                )
+
+        )
+
+    [9] => Array
+        (
+            [op] => append_var
+            [name] => buffer1
+            [0] => Array
+                (
+                    [string] => 
+<p>
+    <a href="foo/"> Foo </a>
+            </p>    
+                )
+
+        )
+
+    [10] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [exec] => preg_replace
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [array] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [string] => />[ \t\r\n]+</sU
+                                                )
+
+                                            [1] => Array
+                                                (
+                                                    [string] => /^[ \t\r\n]+</sU
+                                                )
+
+                                            [2] => Array
+                                                (
+                                                    [string] => />[ \t\r\n]+$/sU
+                                                )
+
+                                        )
+
+                                )
+
+                            [1] => Array
+                                (
+                                    [array] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [string] => ><
+                                                )
+
+                                            [1] => Array
+                                                (
+                                                    [string] => <
+                                                )
+
+                                            [2] => Array
+                                                (
+                                                    [string] => >
+                                                )
+
+                                        )
+
+                                )
+
+                            [2] => Array
+                                (
+                                    [var] => buffer1
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [11] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+===========================
+
+                )
+
+        )
+
+    [12] => Array
+        (
+            [op] => declare
+            [name] => buffer1
+            [0] => Array
+                (
+                    [string] => 
+                )
+
+        )
+
+    [13] => Array
+        (
+            [op] => append_var
+            [name] => buffer1
+            [0] => Array
+                (
+                    [string] => 
+<b>
+    <pre>
+    Something cool
+
+    </pre>
+
+
+
+
+
+
+
+
+</b> 
+                )
+
+        )
+
+    [14] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [exec] => preg_replace
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [array] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [string] => />[ \t\r\n]+</sU
+                                                )
+
+                                            [1] => Array
+                                                (
+                                                    [string] => /^[ \t\r\n]+</sU
+                                                )
+
+                                            [2] => Array
+                                                (
+                                                    [string] => />[ \t\r\n]+$/sU
+                                                )
+
+                                        )
+
+                                )
+
+                            [1] => Array
+                                (
+                                    [array] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [string] => ><
+                                                )
+
+                                            [1] => Array
+                                                (
+                                                    [string] => <
+                                                )
+
+                                            [2] => Array
+                                                (
+                                                    [string] => >
+                                                )
+
+                                        )
+
+                                )
+
+                            [2] => Array
+                                (
+                                    [var] => buffer1
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [15] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+
+                )
+
+        )
+
+    [16] => Array
+        (
+            [op] => if
+            [expr] => Array
+                (
+                    [op_expr] => ==
+                    [0] => Array
+                        (
+                            [var] => return
+                        )
+
+                    [1] => Array
+                        (
+                            [expr] => 1
+                        )
+
+                )
+
+        )
+
+    [17] => Array
+        (
+            [op] => return
+            [0] => Array
+                (
+                    [exec] => ob_get_clean
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [18] => Array
+        (
+            [op] => end_if
+        )
+
+    [19] => Array
+        (
+            [op] => end_function
+        )
+
+    [php] => 
+$HAANGA_VERSION  = '1.0.4';
+/* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/spaceless.tpl */
+function haanga_51446bb05a294ee636668b4fd94a6dd706202215($vars, $return=FALSE, $blocks=array())
+{
+    global $test_global, $global1;
+    extract($vars);
+    if ($return == TRUE) {
+        ob_start();
+    }
+    $buffer1  = '
+<p>
+    <a href="foo/"> Foo </a>
+            </p>    ';
+    echo preg_replace(Array('/>[ \\t\\r\\n]+</sU', '/^[ \\t\\r\\n]+</sU', '/>[ \\t\\r\\n]+$/sU'), Array('><', '<', '>'), $buffer1).'
+===========================
+';
+    $buffer1  = '
+<b>
+    <pre>
+    Something cool
+
+    </pre>
+
+
+
+
+
+
+
+
+</b> ';
+    echo preg_replace(Array('/>[ \\t\\r\\n]+</sU', '/^[ \\t\\r\\n]+</sU', '/>[ \\t\\r\\n]+$/sU'), Array('><', '<', '>'), $buffer1).'
+';
+    if ($return == TRUE) {
+        return ob_get_clean();
+    }
+}
+)

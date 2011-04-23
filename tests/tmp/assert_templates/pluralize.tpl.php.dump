@@ -1,0 +1,440 @@
+Array
+(
+    [0] => Array
+        (
+            [op] => declare
+            [name] => HAANGA_VERSION
+            [0] => Array
+                (
+                    [string] => 1.0.4
+                )
+
+        )
+
+    [1] => Array
+        (
+            [op] => comment
+            [comment] => Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/pluralize.tpl
+        )
+
+    [2] => Array
+        (
+            [op] => function
+            [name] => haanga_8c184871ca921f028f7795f4ca92714bb3dce1c7
+        )
+
+    [3] => Array
+        (
+            [op] => global
+            [vars] => Array
+                (
+                    [0] => test_global
+                    [1] => global1
+                )
+
+        )
+
+    [4] => Array
+        (
+            [op] => expr
+            [0] => Array
+                (
+                    [exec] => extract
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [var] => vars
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [5] => Array
+        (
+            [op] => if
+            [expr] => Array
+                (
+                    [op_expr] => ==
+                    [0] => Array
+                        (
+                            [var] => return
+                        )
+
+                    [1] => Array
+                        (
+                            [expr] => 1
+                        )
+
+                )
+
+        )
+
+    [6] => Array
+        (
+            [op] => expr
+            [0] => Array
+                (
+                    [exec] => ob_start
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [7] => Array
+        (
+            [op] => end_if
+        )
+
+    [8] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => message
+                )
+
+        )
+
+    [9] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [expr_cond] => Array
+                        (
+                            [op_expr] => <=
+                            [0] => Array
+                                (
+                                    [var] => num1
+                                )
+
+                            [1] => Array
+                                (
+                                    [number] => 1
+                                )
+
+                        )
+
+                    [true] => Array
+                        (
+                            [string] => 
+                        )
+
+                    [false] => Array
+                        (
+                            [string] => s
+                        )
+
+                )
+
+        )
+
+    [10] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+walrus
+                )
+
+        )
+
+    [11] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [expr_cond] => Array
+                        (
+                            [op_expr] => <=
+                            [0] => Array
+                                (
+                                    [var] => num1
+                                )
+
+                            [1] => Array
+                                (
+                                    [number] => 1
+                                )
+
+                        )
+
+                    [true] => Array
+                        (
+                            [string] => 
+                        )
+
+                    [false] => Array
+                        (
+                            [string] => es
+                        )
+
+                )
+
+        )
+
+    [12] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+cherr
+                )
+
+        )
+
+    [13] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [expr_cond] => Array
+                        (
+                            [op_expr] => <=
+                            [0] => Array
+                                (
+                                    [var] => num1
+                                )
+
+                            [1] => Array
+                                (
+                                    [number] => 1
+                                )
+
+                        )
+
+                    [true] => Array
+                        (
+                            [string] => y
+                        )
+
+                    [false] => Array
+                        (
+                            [string] => ies
+                        )
+
+                )
+
+        )
+
+    [14] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+message
+                )
+
+        )
+
+    [15] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [expr_cond] => Array
+                        (
+                            [op_expr] => <=
+                            [0] => Array
+                                (
+                                    [var] => num2
+                                )
+
+                            [1] => Array
+                                (
+                                    [number] => 1
+                                )
+
+                        )
+
+                    [true] => Array
+                        (
+                            [string] => 
+                        )
+
+                    [false] => Array
+                        (
+                            [string] => s
+                        )
+
+                )
+
+        )
+
+    [16] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+walrus
+                )
+
+        )
+
+    [17] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [expr_cond] => Array
+                        (
+                            [op_expr] => <=
+                            [0] => Array
+                                (
+                                    [var] => num2
+                                )
+
+                            [1] => Array
+                                (
+                                    [number] => 1
+                                )
+
+                        )
+
+                    [true] => Array
+                        (
+                            [string] => 
+                        )
+
+                    [false] => Array
+                        (
+                            [string] => es
+                        )
+
+                )
+
+        )
+
+    [18] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+cherr
+                )
+
+        )
+
+    [19] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [expr_cond] => Array
+                        (
+                            [op_expr] => <=
+                            [0] => Array
+                                (
+                                    [var] => num2
+                                )
+
+                            [1] => Array
+                                (
+                                    [number] => 1
+                                )
+
+                        )
+
+                    [true] => Array
+                        (
+                            [string] => y
+                        )
+
+                    [false] => Array
+                        (
+                            [string] => ies
+                        )
+
+                )
+
+        )
+
+    [20] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+
+                )
+
+        )
+
+    [21] => Array
+        (
+            [op] => if
+            [expr] => Array
+                (
+                    [op_expr] => ==
+                    [0] => Array
+                        (
+                            [var] => return
+                        )
+
+                    [1] => Array
+                        (
+                            [expr] => 1
+                        )
+
+                )
+
+        )
+
+    [22] => Array
+        (
+            [op] => return
+            [0] => Array
+                (
+                    [exec] => ob_get_clean
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [23] => Array
+        (
+            [op] => end_if
+        )
+
+    [24] => Array
+        (
+            [op] => end_function
+        )
+
+    [php] => 
+$HAANGA_VERSION  = '1.0.4';
+/* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/pluralize.tpl */
+function haanga_8c184871ca921f028f7795f4ca92714bb3dce1c7($vars, $return=FALSE, $blocks=array())
+{
+    global $test_global, $global1;
+    extract($vars);
+    if ($return == TRUE) {
+        ob_start();
+    }
+    echo 'message'.($num1 <= 1 ? '' : 's').'
+walrus'.($num1 <= 1 ? '' : 'es').'
+cherr'.($num1 <= 1 ? 'y' : 'ies').'
+message'.($num2 <= 1 ? '' : 's').'
+walrus'.($num2 <= 1 ? '' : 'es').'
+cherr'.($num2 <= 1 ? 'y' : 'ies').'
+';
+    if ($return == TRUE) {
+        return ob_get_clean();
+    }
+}
+)

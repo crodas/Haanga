@@ -1,0 +1,319 @@
+Array
+(
+    [0] => Array
+        (
+            [op] => declare
+            [name] => HAANGA_VERSION
+            [0] => Array
+                (
+                    [string] => 1.0.4
+                )
+
+        )
+
+    [1] => Array
+        (
+            [op] => comment
+            [comment] => Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/trans.tpl
+        )
+
+    [2] => Array
+        (
+            [op] => function
+            [name] => haanga_8d35b55be0c9b118eda2226b6b520297156d8d6d
+        )
+
+    [3] => Array
+        (
+            [op] => global
+            [vars] => Array
+                (
+                    [0] => test_global
+                    [1] => global1
+                )
+
+        )
+
+    [4] => Array
+        (
+            [op] => expr
+            [0] => Array
+                (
+                    [exec] => extract
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [var] => vars
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [5] => Array
+        (
+            [op] => if
+            [expr] => Array
+                (
+                    [op_expr] => ==
+                    [0] => Array
+                        (
+                            [var] => return
+                        )
+
+                    [1] => Array
+                        (
+                            [expr] => 1
+                        )
+
+                )
+
+        )
+
+    [6] => Array
+        (
+            [op] => expr
+            [0] => Array
+                (
+                    [exec] => ob_start
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [7] => Array
+        (
+            [op] => end_if
+        )
+
+    [8] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [exec] => _
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [string] => Translation
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [9] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+
+                )
+
+        )
+
+    [10] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [exec] => sprintf
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [exec] => _
+                                    [args] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [string] => Translation by %s
+                                                )
+
+                                        )
+
+                                )
+
+                            [1] => Array
+                                (
+                                    [string] => cesar
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [11] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+
+                )
+
+        )
+
+    [12] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [exec] => htmlspecialchars
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [exec] => _
+                                    [args] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [var] => text
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [13] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+
+                )
+
+        )
+
+    [14] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [exec] => htmlspecialchars
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [exec] => ucfirst
+                                    [args] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [exec] => _
+                                                    [args] => Array
+                                                        (
+                                                            [0] => Array
+                                                                (
+                                                                    [var] => text
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [15] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+
+                )
+
+        )
+
+    [16] => Array
+        (
+            [op] => if
+            [expr] => Array
+                (
+                    [op_expr] => ==
+                    [0] => Array
+                        (
+                            [var] => return
+                        )
+
+                    [1] => Array
+                        (
+                            [expr] => 1
+                        )
+
+                )
+
+        )
+
+    [17] => Array
+        (
+            [op] => return
+            [0] => Array
+                (
+                    [exec] => ob_get_clean
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [18] => Array
+        (
+            [op] => end_if
+        )
+
+    [19] => Array
+        (
+            [op] => end_function
+        )
+
+    [php] => 
+$HAANGA_VERSION  = '1.0.4';
+/* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/trans.tpl */
+function haanga_8d35b55be0c9b118eda2226b6b520297156d8d6d($vars, $return=FALSE, $blocks=array())
+{
+    global $test_global, $global1;
+    extract($vars);
+    if ($return == TRUE) {
+        ob_start();
+    }
+    echo _('Translation').'
+'.sprintf(_('Translation by %s'), 'cesar').'
+'.htmlspecialchars(_($text)).'
+'.htmlspecialchars(ucfirst(_($text))).'
+';
+    if ($return == TRUE) {
+        return ob_get_clean();
+    }
+}
+)

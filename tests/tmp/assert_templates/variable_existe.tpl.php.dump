@@ -1,0 +1,262 @@
+Array
+(
+    [0] => Array
+        (
+            [op] => declare
+            [name] => HAANGA_VERSION
+            [0] => Array
+                (
+                    [string] => 1.0.4
+                )
+
+        )
+
+    [1] => Array
+        (
+            [op] => comment
+            [comment] => Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/variable_existe.tpl
+        )
+
+    [2] => Array
+        (
+            [op] => function
+            [name] => haanga_d0e8258f9bf65ffe46eddfe8347bb2467fc069ea
+        )
+
+    [3] => Array
+        (
+            [op] => global
+            [vars] => Array
+                (
+                    [0] => test_global
+                    [1] => global1
+                )
+
+        )
+
+    [4] => Array
+        (
+            [op] => expr
+            [0] => Array
+                (
+                    [exec] => extract
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [var] => vars
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [5] => Array
+        (
+            [op] => if
+            [expr] => Array
+                (
+                    [op_expr] => ==
+                    [0] => Array
+                        (
+                            [var] => return
+                        )
+
+                    [1] => Array
+                        (
+                            [expr] => 1
+                        )
+
+                )
+
+        )
+
+    [6] => Array
+        (
+            [op] => expr
+            [0] => Array
+                (
+                    [exec] => ob_start
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [7] => Array
+        (
+            [op] => end_if
+        )
+
+    [8] => Array
+        (
+            [op] => if
+            [expr] => Array
+                (
+                    [expr_cond] => Array
+                        (
+                            [op_expr] => ==
+                            [0] => Array
+                                (
+                                    [exec] => empty
+                                    [args] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [var] => Array
+                                                        (
+                                                            [0] => var
+                                                            [1] => Array
+                                                                (
+                                                                    [object] => exists
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                )
+
+                            [1] => Array
+                                (
+                                    [expr] => 1
+                                )
+
+                        )
+
+                    [true] => Array
+                        (
+                            [string] => 
+                        )
+
+                    [false] => Array
+                        (
+                            [var] => Array
+                                (
+                                    [0] => var
+                                    [1] => Array
+                                        (
+                                            [object] => exists
+                                        )
+
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [9] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] =>  Yes 
+                )
+
+        )
+
+    [10] => Array
+        (
+            [op] => else
+        )
+
+    [11] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] =>  No 
+                )
+
+        )
+
+    [12] => Array
+        (
+            [op] => end_if
+        )
+
+    [13] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+
+                )
+
+        )
+
+    [14] => Array
+        (
+            [op] => if
+            [expr] => Array
+                (
+                    [op_expr] => ==
+                    [0] => Array
+                        (
+                            [var] => return
+                        )
+
+                    [1] => Array
+                        (
+                            [expr] => 1
+                        )
+
+                )
+
+        )
+
+    [15] => Array
+        (
+            [op] => return
+            [0] => Array
+                (
+                    [exec] => ob_get_clean
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [16] => Array
+        (
+            [op] => end_if
+        )
+
+    [17] => Array
+        (
+            [op] => end_function
+        )
+
+    [php] => 
+$HAANGA_VERSION  = '1.0.4';
+/* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/variable_existe.tpl */
+function haanga_d0e8258f9bf65ffe46eddfe8347bb2467fc069ea($vars, $return=FALSE, $blocks=array())
+{
+    global $test_global, $global1;
+    extract($vars);
+    if ($return == TRUE) {
+        ob_start();
+    }
+    if ((empty($var->exists) == TRUE ? '' : $var->exists)) {
+        echo ' Yes ';
+    } else {
+        echo ' No ';
+    }
+    echo '
+';
+    if ($return == TRUE) {
+        return ob_get_clean();
+    }
+}
+)

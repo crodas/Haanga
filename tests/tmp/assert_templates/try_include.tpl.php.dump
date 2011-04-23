@@ -1,0 +1,252 @@
+Array
+(
+    [0] => Array
+        (
+            [op] => declare
+            [name] => HAANGA_VERSION
+            [0] => Array
+                (
+                    [string] => 1.0.4
+                )
+
+        )
+
+    [1] => Array
+        (
+            [op] => comment
+            [comment] => Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/try_include.tpl
+        )
+
+    [2] => Array
+        (
+            [op] => function
+            [name] => haanga_2918f6e9aedbd5d32e8a5d091ed1985fcf7008e3
+        )
+
+    [3] => Array
+        (
+            [op] => global
+            [vars] => Array
+                (
+                    [0] => test_global
+                    [1] => global1
+                )
+
+        )
+
+    [4] => Array
+        (
+            [op] => expr
+            [0] => Array
+                (
+                    [exec] => extract
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [var] => vars
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [5] => Array
+        (
+            [op] => if
+            [expr] => Array
+                (
+                    [op_expr] => ==
+                    [0] => Array
+                        (
+                            [var] => return
+                        )
+
+                    [1] => Array
+                        (
+                            [expr] => 1
+                        )
+
+                )
+
+        )
+
+    [6] => Array
+        (
+            [op] => expr
+            [0] => Array
+                (
+                    [exec] => ob_start
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [7] => Array
+        (
+            [op] => end_if
+        )
+
+    [8] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [exec] => Haanga::Safe_Load
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [string] => foobar-tpl.tpl
+                                )
+
+                            [1] => Array
+                                (
+                                    [var] => vars
+                                )
+
+                            [2] => Array
+                                (
+                                    [expr] => 1
+                                )
+
+                            [3] => Array
+                                (
+                                    [array] => Array
+                                        (
+                                        )
+
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [9] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+
+                )
+
+        )
+
+    [10] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [exec] => Haanga::Safe_Load
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [string] => assert_templates/partial.tpl
+                                )
+
+                            [1] => Array
+                                (
+                                    [var] => vars
+                                )
+
+                            [2] => Array
+                                (
+                                    [expr] => 1
+                                )
+
+                            [3] => Array
+                                (
+                                    [array] => Array
+                                        (
+                                        )
+
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [11] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+
+                )
+
+        )
+
+    [12] => Array
+        (
+            [op] => if
+            [expr] => Array
+                (
+                    [op_expr] => ==
+                    [0] => Array
+                        (
+                            [var] => return
+                        )
+
+                    [1] => Array
+                        (
+                            [expr] => 1
+                        )
+
+                )
+
+        )
+
+    [13] => Array
+        (
+            [op] => return
+            [0] => Array
+                (
+                    [exec] => ob_get_clean
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [14] => Array
+        (
+            [op] => end_if
+        )
+
+    [15] => Array
+        (
+            [op] => end_function
+        )
+
+    [php] => 
+$HAANGA_VERSION  = '1.0.4';
+/* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/try_include.tpl */
+function haanga_2918f6e9aedbd5d32e8a5d091ed1985fcf7008e3($vars, $return=FALSE, $blocks=array())
+{
+    global $test_global, $global1;
+    extract($vars);
+    if ($return == TRUE) {
+        ob_start();
+    }
+    echo Haanga::Safe_Load('foobar-tpl.tpl', $vars, TRUE, Array()).'
+'.Haanga::Safe_Load('assert_templates/partial.tpl', $vars, TRUE, Array()).'
+';
+    if ($return == TRUE) {
+        return ob_get_clean();
+    }
+}
+)

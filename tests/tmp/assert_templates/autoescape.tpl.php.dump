@@ -1,0 +1,370 @@
+Array
+(
+    [0] => Array
+        (
+            [op] => declare
+            [name] => HAANGA_VERSION
+            [0] => Array
+                (
+                    [string] => 1.0.4
+                )
+
+        )
+
+    [1] => Array
+        (
+            [op] => comment
+            [comment] => Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/autoescape.tpl
+        )
+
+    [2] => Array
+        (
+            [op] => function
+            [name] => haanga_3b6900b2fc1304e5fbbae2d5df785169d9f530ee
+        )
+
+    [3] => Array
+        (
+            [op] => global
+            [vars] => Array
+                (
+                    [0] => test_global
+                    [1] => global1
+                )
+
+        )
+
+    [4] => Array
+        (
+            [op] => expr
+            [0] => Array
+                (
+                    [exec] => extract
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [var] => vars
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [5] => Array
+        (
+            [op] => if
+            [expr] => Array
+                (
+                    [op_expr] => ==
+                    [0] => Array
+                        (
+                            [var] => return
+                        )
+
+                    [1] => Array
+                        (
+                            [expr] => 1
+                        )
+
+                )
+
+        )
+
+    [6] => Array
+        (
+            [op] => expr
+            [0] => Array
+                (
+                    [exec] => ob_start
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [7] => Array
+        (
+            [op] => end_if
+        )
+
+    [8] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [exec] => htmlspecialchars
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [var] => variable
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [9] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+
+                )
+
+        )
+
+    [10] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [exec] => htmlspecialchars
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [var] => variable
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [11] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+{ 
+                )
+
+        )
+
+    [12] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [var] => variable
+                )
+
+        )
+
+    [13] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] =>  }
+
+                )
+
+        )
+
+    [14] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+    
+                )
+
+        )
+
+    [15] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [var] => variable
+                )
+
+        )
+
+    [16] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+    
+                )
+
+        )
+
+    [17] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+        
+                )
+
+        )
+
+    [18] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [exec] => htmlspecialchars
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [var] => variable
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [19] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+    
+                )
+
+        )
+
+    [20] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+
+                )
+
+        )
+
+    [21] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+
+                )
+
+        )
+
+    [22] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [exec] => htmlspecialchars
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [var] => variable
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [23] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [string] => 
+
+                )
+
+        )
+
+    [24] => Array
+        (
+            [op] => if
+            [expr] => Array
+                (
+                    [op_expr] => ==
+                    [0] => Array
+                        (
+                            [var] => return
+                        )
+
+                    [1] => Array
+                        (
+                            [expr] => 1
+                        )
+
+                )
+
+        )
+
+    [25] => Array
+        (
+            [op] => return
+            [0] => Array
+                (
+                    [exec] => ob_get_clean
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [26] => Array
+        (
+            [op] => end_if
+        )
+
+    [27] => Array
+        (
+            [op] => end_function
+        )
+
+    [php] => 
+$HAANGA_VERSION  = '1.0.4';
+/* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/autoescape.tpl */
+function haanga_3b6900b2fc1304e5fbbae2d5df785169d9f530ee($vars, $return=FALSE, $blocks=array())
+{
+    global $test_global, $global1;
+    extract($vars);
+    if ($return == TRUE) {
+        ob_start();
+    }
+    echo htmlspecialchars($variable).'
+'.htmlspecialchars($variable).'
+{ '.$variable.' }
+
+    '.$variable.'
+    
+        '.htmlspecialchars($variable).'
+    
+
+'.htmlspecialchars($variable).'
+';
+    if ($return == TRUE) {
+        return ob_get_clean();
+    }
+}
+)

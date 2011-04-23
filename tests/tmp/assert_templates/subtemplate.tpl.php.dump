@@ -1,0 +1,549 @@
+Array
+(
+    [0] => Array
+        (
+            [op] => declare
+            [name] => HAANGA_VERSION
+            [0] => Array
+                (
+                    [string] => 1.0.4
+                )
+
+        )
+
+    [1] => Array
+        (
+            [op] => comment
+            [comment] => Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/subtemplate.tpl
+        )
+
+    [2] => Array
+        (
+            [op] => function
+            [name] => haanga_8012978a44e77332b744185d044350c7eb89603f
+        )
+
+    [3] => Array
+        (
+            [op] => global
+            [vars] => Array
+                (
+                    [0] => test_global
+                    [1] => global1
+                )
+
+        )
+
+    [4] => Array
+        (
+            [op] => expr
+            [0] => Array
+                (
+                    [exec] => extract
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [var] => vars
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [5] => Array
+        (
+            [op] => if
+            [expr] => Array
+                (
+                    [op_expr] => ==
+                    [0] => Array
+                        (
+                            [var] => return
+                        )
+
+                    [1] => Array
+                        (
+                            [expr] => 1
+                        )
+
+                )
+
+        )
+
+    [6] => Array
+        (
+            [op] => expr
+            [0] => Array
+                (
+                    [exec] => ob_start
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [7] => Array
+        (
+            [op] => end_if
+        )
+
+    [8] => Array
+        (
+            [op] => declare
+            [name] => buffer1
+            [0] => Array
+                (
+                    [string] => 
+                )
+
+        )
+
+    [9] => Array
+        (
+            [op] => append_var
+            [name] => buffer1
+            [0] => Array
+                (
+                    [string] => My Title - 
+                )
+
+        )
+
+    [10] => Array
+        (
+            [op] => append_var
+            [name] => buffer1
+            [0] => Array
+                (
+                    [string] => {{block.1b3231655cebb7a1f783eddf27d254ca}}
+                )
+
+        )
+
+    [11] => Array
+        (
+            [op] => declare
+            [name] => Array
+                (
+                    [0] => blocks
+                    [1] => Array
+                        (
+                            [string] => title
+                        )
+
+                )
+
+            [0] => Array
+                (
+                    [expr_cond] => Array
+                        (
+                            [exec] => isset
+                            [args] => Array
+                                (
+                                    [0] => Array
+                                        (
+                                            [var] => Array
+                                                (
+                                                    [0] => blocks
+                                                    [1] => Array
+                                                        (
+                                                            [string] => title
+                                                        )
+
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                    [true] => Array
+                        (
+                            [expr_cond] => Array
+                                (
+                                    [op_expr] => ===
+                                    [0] => Array
+                                        (
+                                            [exec] => strpos
+                                            [args] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [var] => Array
+                                                                (
+                                                                    [0] => blocks
+                                                                    [1] => Array
+                                                                        (
+                                                                            [string] => title
+                                                                        )
+
+                                                                )
+
+                                                        )
+
+                                                    [1] => Array
+                                                        (
+                                                            [string] => {{block.1b3231655cebb7a1f783eddf27d254ca}}
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [1] => Array
+                                        (
+                                            [expr] => 
+                                        )
+
+                                )
+
+                            [true] => Array
+                                (
+                                    [var] => Array
+                                        (
+                                            [0] => blocks
+                                            [1] => Array
+                                                (
+                                                    [string] => title
+                                                )
+
+                                        )
+
+                                )
+
+                            [false] => Array
+                                (
+                                    [exec] => str_replace
+                                    [args] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [string] => {{block.1b3231655cebb7a1f783eddf27d254ca}}
+                                                )
+
+                                            [1] => Array
+                                                (
+                                                    [var] => buffer1
+                                                )
+
+                                            [2] => Array
+                                                (
+                                                    [var] => Array
+                                                        (
+                                                            [0] => blocks
+                                                            [1] => Array
+                                                                (
+                                                                    [string] => title
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                    [false] => Array
+                        (
+                            [var] => buffer1
+                        )
+
+                )
+
+        )
+
+    [12] => Array
+        (
+            [op] => declare
+            [name] => buffer1
+            [0] => Array
+                (
+                    [string] => 
+                )
+
+        )
+
+    [13] => Array
+        (
+            [op] => append_var
+            [name] => buffer1
+            [0] => Array
+                (
+                    [string] => 
+    
+                )
+
+        )
+
+    [14] => Array
+        (
+            [op] => append_var
+            [name] => buffer1
+            [0] => Array
+                (
+                    [string] => {{block.1b3231655cebb7a1f783eddf27d254ca}}
+                )
+
+        )
+
+    [15] => Array
+        (
+            [op] => append_var
+            [name] => buffer1
+            [0] => Array
+                (
+                    [string] => 
+
+    :-)
+
+                )
+
+        )
+
+    [16] => Array
+        (
+            [op] => declare
+            [name] => Array
+                (
+                    [0] => blocks
+                    [1] => Array
+                        (
+                            [string] => main.menu
+                        )
+
+                )
+
+            [0] => Array
+                (
+                    [expr_cond] => Array
+                        (
+                            [exec] => isset
+                            [args] => Array
+                                (
+                                    [0] => Array
+                                        (
+                                            [var] => Array
+                                                (
+                                                    [0] => blocks
+                                                    [1] => Array
+                                                        (
+                                                            [string] => main.menu
+                                                        )
+
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                    [true] => Array
+                        (
+                            [expr_cond] => Array
+                                (
+                                    [op_expr] => ===
+                                    [0] => Array
+                                        (
+                                            [exec] => strpos
+                                            [args] => Array
+                                                (
+                                                    [0] => Array
+                                                        (
+                                                            [var] => Array
+                                                                (
+                                                                    [0] => blocks
+                                                                    [1] => Array
+                                                                        (
+                                                                            [string] => main.menu
+                                                                        )
+
+                                                                )
+
+                                                        )
+
+                                                    [1] => Array
+                                                        (
+                                                            [string] => {{block.1b3231655cebb7a1f783eddf27d254ca}}
+                                                        )
+
+                                                )
+
+                                        )
+
+                                    [1] => Array
+                                        (
+                                            [expr] => 
+                                        )
+
+                                )
+
+                            [true] => Array
+                                (
+                                    [var] => Array
+                                        (
+                                            [0] => blocks
+                                            [1] => Array
+                                                (
+                                                    [string] => main.menu
+                                                )
+
+                                        )
+
+                                )
+
+                            [false] => Array
+                                (
+                                    [exec] => str_replace
+                                    [args] => Array
+                                        (
+                                            [0] => Array
+                                                (
+                                                    [string] => {{block.1b3231655cebb7a1f783eddf27d254ca}}
+                                                )
+
+                                            [1] => Array
+                                                (
+                                                    [var] => buffer1
+                                                )
+
+                                            [2] => Array
+                                                (
+                                                    [var] => Array
+                                                        (
+                                                            [0] => blocks
+                                                            [1] => Array
+                                                                (
+                                                                    [string] => main.menu
+                                                                )
+
+                                                        )
+
+                                                )
+
+                                        )
+
+                                )
+
+                        )
+
+                    [false] => Array
+                        (
+                            [var] => buffer1
+                        )
+
+                )
+
+        )
+
+    [17] => Array
+        (
+            [op] => print
+            [0] => Array
+                (
+                    [exec] => Haanga::Load
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [string] => assert_templates/base.tpl
+                                )
+
+                            [1] => Array
+                                (
+                                    [var] => vars
+                                )
+
+                            [2] => Array
+                                (
+                                    [expr] => 1
+                                )
+
+                            [3] => Array
+                                (
+                                    [var] => blocks
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [18] => Array
+        (
+            [op] => if
+            [expr] => Array
+                (
+                    [op_expr] => ==
+                    [0] => Array
+                        (
+                            [var] => return
+                        )
+
+                    [1] => Array
+                        (
+                            [expr] => 1
+                        )
+
+                )
+
+        )
+
+    [19] => Array
+        (
+            [op] => return
+            [0] => Array
+                (
+                    [exec] => ob_get_clean
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [20] => Array
+        (
+            [op] => end_if
+        )
+
+    [21] => Array
+        (
+            [op] => end_function
+        )
+
+    [php] => 
+$HAANGA_VERSION  = '1.0.4';
+/* Generated from /home/crodas/projects/playground/haanga/tests/assert_templates/subtemplate.tpl */
+function haanga_8012978a44e77332b744185d044350c7eb89603f($vars, $return=FALSE, $blocks=array())
+{
+    global $test_global, $global1;
+    extract($vars);
+    if ($return == TRUE) {
+        ob_start();
+    }
+    $buffer1  = 'My Title - {{block.1b3231655cebb7a1f783eddf27d254ca}}';
+    $blocks['title']  = (isset($blocks['title']) ? (strpos($blocks['title'], '{{block.1b3231655cebb7a1f783eddf27d254ca}}') === FALSE ? $blocks['title'] : str_replace('{{block.1b3231655cebb7a1f783eddf27d254ca}}', $buffer1, $blocks['title'])) : $buffer1);
+    $buffer1  = '
+    {{block.1b3231655cebb7a1f783eddf27d254ca}}
+
+    :-)
+';
+    $blocks['main.menu']  = (isset($blocks['main.menu']) ? (strpos($blocks['main.menu'], '{{block.1b3231655cebb7a1f783eddf27d254ca}}') === FALSE ? $blocks['main.menu'] : str_replace('{{block.1b3231655cebb7a1f783eddf27d254ca}}', $buffer1, $blocks['main.menu'])) : $buffer1);
+    echo Haanga::Load('assert_templates/base.tpl', $vars, TRUE, $blocks);
+    if ($return == TRUE) {
+        return ob_get_clean();
+    }
+}
+)
