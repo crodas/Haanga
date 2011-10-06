@@ -1997,7 +1997,10 @@ static public $yy_action = array(
     function yy_r76(){ $this->_retvalue = array('op_expr' => 'expr', $this->yystack[$this->yyidx + -1]->minor);     }
 #line 2004 "Parser.php"
 #line 375 "Parser.y"
-    function yy_r78(){ $this->_retvalue = current($this->compiler->generate_variable_name($this->yystack[$this->yyidx + 0]->minor, false));     }
+    function yy_r78(){
+        $var = $this->compiler->generate_variable_name($this->yystack[$this->yyidx + 0]->minor, false);
+        $this->_retvalue = current($var);
+    }
 #line 2007 "Parser.php"
 #line 376 "Parser.y"
     function yy_r79(){ 
