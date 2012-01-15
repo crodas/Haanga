@@ -259,7 +259,7 @@ class Haanga_Compiler
                 $body->do_if(hexpr(hexec('function_exists', $func_name), '===', FALSE));
             }
             if (!empty($this->file)) {
-                $body->comment("Generated from ".$this->file);
+                $body->comment("Generated from ".$file);
             }
 
             $body->declare_function($func_name);
