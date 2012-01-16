@@ -453,7 +453,7 @@ class Haanga_Compiler
                 continue;
             }
 
-            if ($strip_eol && $op['operation'] == 'html' && strpos($op['html'], PHP_EOL) == 0) {
+            if ($strip_eol && $op['operation'] == 'html' && strpos($op['html'], PHP_EOL) === 0) {
                 $op['html'] = substr($op['html'], $eol_len);
             }
             if (isset($op['body'])) {
@@ -466,7 +466,7 @@ class Haanga_Compiler
                 $this->preprocess_ops($op['empty'], true);
             }
 
-            $strip_eol = $operation != 'html' && $operation != 'print_var';
+            $strip_eol = $op['operation'] != 'html' && $op['operation'] != 'print_var';
         }
     }
     // }}}
