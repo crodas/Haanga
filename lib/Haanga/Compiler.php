@@ -556,7 +556,7 @@ class Haanga_Compiler
     }
     // }}}
 
-    // ifequal|ifnot equal <var_filtered|string|number> <var_fitlered|string|number> ... else ... {{{
+    // ifequal|ifnot equal <var_filtered|string|number> <var_filtered|string|number> ... else ... {{{
     protected function generate_op_ifequal($details, &$body)
     {
         $if['expr'] = hexpr($details[1], $details['cmp'], $details[2])->getArray();
@@ -568,7 +568,7 @@ class Haanga_Compiler
     }
     // }}}
 
-    // {% if <expr> %} HTML {% else %} TWO {% endif $} {{{
+    // {% if <expr> %} HTML {% else %} TWO {% endif %} {{{
     protected function generate_op_if($details, &$body)
     {
         if (self::$if_empty && $this->is_var_filter($details['expr']) && count($details['expr']['var_filter']) == 1) {
