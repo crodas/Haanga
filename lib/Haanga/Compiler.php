@@ -559,7 +559,9 @@ class Haanga_Compiler
     // ifequal|ifnot equal <var_filtered|string|number> <var_filtered|string|number> ... else ... {{{
     protected function generate_op_ifequal($details, &$body)
     {
-        $if['expr'] = hexpr($details[1], $details['cmp'], $details[2])->getArray();
+        $arg1 = $this->is_var_filter($details[1]) ? $this->get_filtered_var($details[1]['var_filter'], $var) : $details[1];
+        $arg2 = $this->is_var_filter($details[2]) ? $this->get_filtered_var($details[2]['var_filter'], $var) : $details[2];
+        $if['expr'] = hexpr($arg1, $details['cmp'], $arg2)->getArray();
         $if['body'] = $details['body'];
         if (isset($details['else'])) {
             $if['else'] =  $details['else'];
