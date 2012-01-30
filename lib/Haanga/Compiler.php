@@ -100,6 +100,24 @@ class Haanga_Compiler
         }
     }
 
+    public function getScopeVariable($part = NULL, $string = FALSE) 
+    {
+        static $var = NULL;
+
+        if ($var === NULL) {
+            $var = 'vars' . uniqid(true);
+        }
+
+        if ($string) {
+            return $var;
+        }
+
+        if ($part !== NULL) {
+            return hvar($var, $part);
+        }
+        return hvar($var);
+    }
+
     // getOption($option) {{{
     public static function getOption($option)
     {
@@ -269,7 +287,7 @@ class Haanga_Compiler
         }
 
 
-        $body->do_exec('extract', hvar('vars'));
+        $body->do_exec('extract', $this->getScopeVariable());
         $body->do_if(hexpr(hvar('return'), '==', TRUE));
         $body->do_exec('ob_start');
         $body->do_endif();
@@ -300,7 +318,7 @@ class Haanga_Compiler
         $op_code = $body->getArray(TRUE);
 
 
-        $code   .= $this->generator->getCode($op_code);
+        $code   .= $this->generator->getCode($op_code, $this->getScopeVariable(NULL, TRUE));
         if (!empty($this->append)) {
             $code .= $this->append;
         }
@@ -395,7 +413,7 @@ class Haanga_Compiler
     {
         return hexec(
             $this->get_function_name($this->subtemplate),
-            hvar('vars'), TRUE,
+            $this->getScopeVariable(), TRUE,
             hvar('blocks')
         );
     }
@@ -576,7 +594,7 @@ class Haanga_Compiler
         $this->append .= "\n\n{$code}";
         $this->do_print($body,
             hexec($this->get_function_name($name), 
-            hvar('vars'), TRUE, hvar('blocks'))
+            $this->getScopeVariable(), TRUE, hvar('blocks'))
         );
     }
     // }}}
@@ -1198,7 +1216,7 @@ class Haanga_Compiler
         $var = $this->generate_variable_name($details['var']);
         $this->check_expr($details['expr']);
         $body->decl_raw($var, $details['expr']);
-        $body->decl(hvar('vars', $var['var']), $var);
+        $body->decl($this->getScopeVariable($var['var']), $var);
     }
 
 
