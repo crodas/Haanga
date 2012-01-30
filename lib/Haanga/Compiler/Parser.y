@@ -94,8 +94,8 @@ code(A) ::= T_COMMENT(B). {
     B=rtrim(B); A = array('operation' => 'comment', 'comment' => B); 
 } 
 
-code(A) ::= T_PRINT_OPEN filtered_var(B) T_PRINT_CLOSE.  {
-    A = array('operation' => 'print_var', 'variable' => B, 'line' => $this->lex->getLine() ); 
+code(A) ::= T_PRINT_OPEN expr(B) T_PRINT_CLOSE.  {
+    A = array('operation' => 'print_var', 'expr' => B, 'line' => $this->lex->getLine() ); 
 }
 
 stmts(A) ::= T_EXTENDS var_or_string(B) T_TAG_CLOSE. { A = array('operation' => 'base', B); }
