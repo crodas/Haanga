@@ -236,7 +236,7 @@ class Haanga_AST
         } else if ($obj === TRUE) {
             $value = array('expr' => TRUE);
         } else if (is_array($obj)) {
-            foreach (array('exec', 'var', 'string', 'number', 'constant') as $type) {
+            foreach (array('op_expr', 'exec', 'var', 'string', 'number', 'constant') as $type) {
                 if (isset($obj[$type])) {
                     $value = $obj;
                     return;
@@ -298,6 +298,9 @@ class Haanga_AST
             }
             if (is_object($var1)) {
                 $var1 = $var1->getArray();
+            }
+            if (empty($var1['var'])) {
+                throw new Exception("Can't iterate, apparently $var isn't a variable");
             }
             $var1 = $var1['var'];
         }

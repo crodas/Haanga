@@ -272,7 +272,7 @@ class Haanga
 
         $code = $compiler->compile($tpl);
 
-        return create_function('$vars=array(), $return=TRUE, $blocks=array()', $code);
+        return create_function('$' . $compiler->getScopeVariable(NULL, TRUE) . '=array(), $return=TRUE, $blocks=array()', $code);
     }
     // }}}
 
