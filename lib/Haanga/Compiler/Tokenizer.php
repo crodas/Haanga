@@ -98,7 +98,7 @@ class Haanga_Compiler_Tokenizer
         '>'     => HG_Parser::T_GT,
         '['     => HG_Parser::T_BRACKETS_OPEN,
         ']'     => HG_Parser::T_BRACKETS_CLOSE,
-        '|'     => HG_Parser::T_PIPE,
+        '|'     => HG_Parser::T_FILTER_PIPE,
     );
     static $operators = array(
         '!=='   => HG_Parser::T_NE,
@@ -113,7 +113,7 @@ class Haanga_Compiler_Tokenizer
         '=='    => HG_Parser::T_EQ,
         '>='    => HG_Parser::T_GE,
         '>>'    => HG_Parser::T_BITWISE,
-        '||'    => HG_Parser::T_OR,
+        '||'    => HG_Parser::T_PIPE,
     );
 
     static $close_tags = array();

@@ -67,7 +67,7 @@
 %nonassoc T_IN.
 %left T_PLUS T_MINUS T_CONCAT.
 %left T_TIMES T_DIV T_MOD.
-%left T_PIPE T_BITWISE.
+%left T_PIPE T_BITWISE T_FILTER_PIPE.
 
 %syntax_error {
     $expect = array();
@@ -337,7 +337,8 @@ filter_stmt(A) ::= T_FILTER filtered_var(B) T_TAG_CLOSE body(X) T_TAG_OPEN T_CUS
 regroup(A) ::= T_REGROUP filtered_var(B) T_BY varname(C) T_AS varname(X). { A=array('operation' => 'regroup', 'array' => B, 'row' => C, 'as' => X); }
 
 /* variables with filters */
-filtered_var(A) ::= filtered_var(B) T_PIPE varname_args(C). { A = B; A[] = C; }
+filtered_var(A) ::= filtered_var(B) T_FILTER_PIPE varname_args(C). { A = B; A[] = C; }
+filtered_var(A) ::= string(B) T_FILTER_PIPE varname_args(C). { A = array(array('string' => B)); A[] = C; }
 filtered_var(A) ::= varname_args(B). { A = array(B); }
 
 varname_args(A) ::= varname(B) T_COLON var_or_string(X) . { A = array(B, 'args'=>array(X)); }
@@ -372,7 +373,8 @@ expr(A) ::= expr(B) T_OR(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
 expr(A) ::= expr(B) T_PLUS|T_MINUS|T_CONCAT(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
 expr(A) ::= expr(B) T_EQ|T_NE|T_GT|T_GE|T_LT|T_LE|T_IN(X)  expr(C).  { A = array('op_expr' => trim(@X), B, C); }
 expr(A) ::= expr(B) T_TIMES|T_DIV|T_MOD(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
-expr(A) ::= expr(B) T_BITWISE|T_PIPE(X)  expr(C).  { A = array('op_expr' => 'expr', array('op_expr' => @X, B, C)); }
+expr(A) ::= expr(B) T_BITWISE(X)  expr(C).  { A = array('op_expr' => 'expr', array('op_expr' => @X, B, C)); }
+expr(A) ::= expr(B) T_PIPE  expr(C).  { A = array('op_expr' => 'expr', array('op_expr' => '|', B, C)); }
 expr(A) ::= T_LPARENT expr(B) T_RPARENT. { A = array('op_expr' => 'expr', B); }
 expr(A) ::= fvar_or_string(B). { A = B; }
 
