@@ -135,6 +135,8 @@ class Haanga_Compiler_Tokenizer
     const IN_TAG     = 2;
     const IN_ECHO    = 3;
 
+    protected $echoFirstToken = false;
+
     function __construct($data, $compiler, $file)
     {
         $this->data     = $data;
@@ -205,6 +207,7 @@ class Haanga_Compiler_Tokenizer
                         break;
                     case HG_Parser::T_PRINT_OPEN:
                         $this->status = self::IN_ECHO;
+                        $this->echoFirstToken = false;
                         break;
                     }
                     return TRUE;
@@ -376,13 +379,22 @@ class Haanga_Compiler_Tokenizer
                     if (!$tag) {
                         $tag = Haanga_Extension::getInstance('Tag');
                     }
-                    $value = $tag->isValid($alpha);
-                    $this->token = $value ? $value : HG_Parser::T_ALPHA;
+
+                    if ($this->status == self::IN_ECHO && !$this->echoFirstToken) {
+                        $this->token =  HG_Parser::T_ALPHA;
+                    } else {
+                        $value = $tag->isValid($alpha);
+                        $this->token = $value ? $value : HG_Parser::T_ALPHA;
+                    }
                     $this->value = $alpha;
 
                 }
                 break 2;
             }
+        }
+    
+        if ($this->status == self::IN_ECHO) {
+            $this->echoFirstToken = true;
         }
 
         if ($this->token == HG_Parser::T_TAG_CLOSE ||
