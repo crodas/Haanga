@@ -646,19 +646,24 @@ class Haanga_Compiler
         $this->var_is_safe = FALSE;
 
         if ($accept_string === NULL && is_array($variable[0])) {
-            $accept_string = $variable[0][0] === 'block';
+            $accept_string = !empty($variable[0]['string'])
+                || $variable[0][0] === 'block';
         }
 
         if (count($variable) > 1) {
             $count  = count($variable);
-            $target = $this->generate_variable_name($variable[0]);
+            if ($accept_string && isset($variable[0]['string'])) {
+                $target = $variable[0];
+            } else {
+                $target = $this->generate_variable_name($variable[0]);
+            }
             
-            if (!Haanga_AST::is_var($target)) {
+            if (!Haanga_AST::is_var($target) && !$accept_string) {
                 /* block.super can't have any filter */
                 throw new Exception("This variable can't have any filter");
             }
 
-            if ($this->isMethod($target['var'], $return)) {
+            if (!empty($target['var']) && $this->isMethod($target['var'], $return)) {
                 $target = $return;
             }
 

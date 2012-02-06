@@ -4,6 +4,6 @@
 {% if 13 & 2 == 0 %}
     Match
 {% endif %}
-{% if 15 | 8 == 15 %}
+{% if 15 || 8 == 15 %}
     Match
 {% endif %}
