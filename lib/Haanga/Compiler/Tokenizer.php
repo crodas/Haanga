@@ -96,6 +96,7 @@ class Haanga_Compiler_Tokenizer
         '<'     => HG_Parser::T_LT,
         '='     => HG_Parser::T_ASSIGN,
         '>'     => HG_Parser::T_GT,
+        '?'     => HG_Parser::T_QUESTION, 
         '['     => HG_Parser::T_BRACKETS_OPEN,
         ']'     => HG_Parser::T_BRACKETS_CLOSE,
         '|'     => HG_Parser::T_PIPE,
