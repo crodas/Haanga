@@ -236,7 +236,7 @@ class Haanga_AST
         } else if ($obj === TRUE) {
             $value = array('expr' => TRUE);
         } else if (is_array($obj)) {
-            foreach (array('op_expr', 'exec', 'var', 'string', 'number', 'constant') as $type) {
+            foreach (array('expr_cond', 'op_expr', 'exec', 'var', 'string', 'number', 'constant') as $type) {
                 if (isset($obj[$type])) {
                     $value = $obj;
                     return;

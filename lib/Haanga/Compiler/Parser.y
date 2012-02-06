@@ -62,6 +62,7 @@
 %right T_NOT.
 %left T_AND.
 %left T_OR.
+%left T_QUESTION T_COLON.
 %nonassoc T_EQ T_NE.
 %nonassoc T_GT T_GE T_LT T_LE.
 %nonassoc T_IN.
@@ -367,6 +368,9 @@ string(A)    ::= T_STRING(B).   { A = B; }
 string(A)    ::= T_INTL T_STRING(B) T_RPARENT. { A = B; }
 
 /* expr */
+expr(A) ::= expr(Z) T_QUESTION expr(B) T_COLON expr(C). {
+    A = array('expr_cond' => Z, 'true' => B, 'false' => C);
+}
 expr(A) ::= T_NOT expr(B). { A = array('op_expr' => 'not', B); }
 expr(A) ::= expr(B) T_AND(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
 expr(A) ::= expr(B) T_OR(X)  expr(C).  { A = array('op_expr' => @X, B, C); }
