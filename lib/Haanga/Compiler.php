@@ -1253,7 +1253,7 @@ class Haanga_Compiler
                 ));
 
                 if (isset($expr)) {
-                    $this_expr = hexpr($expr, '&&', $this_expr);
+                    $this_expr = hexpr($expr, '||', $this_expr);
                 }
 
                 $expr = $this_expr;
