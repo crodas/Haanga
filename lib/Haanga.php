@@ -70,26 +70,6 @@ class Haanga
         /* The class can't be instanced */
     }
 
-    final public static function AutoLoad($class)
-    {
-        static $loaded = array();
-        static $path;
-
-        if (!isset($loaded[$class]) && substr($class, 0, 6) === 'Haanga' && !class_exists($class, false)) {
-            if ($path === NULL) {
-                $path = dirname(__FILE__);
-            }
-            $file = $path.DIRECTORY_SEPARATOR.str_replace('_', DIRECTORY_SEPARATOR, $class).'.php';
-            if (is_file($file)) {
-                require $file;
-            }
-            $loaded[$class] = TRUE;
-            return;
-        }
-
-        return FALSE;
-    }
-
     public static function getTemplateDir()
     {
         return self::$templates_dir; 
@@ -225,7 +205,7 @@ class Haanga
 
             /* load compiler (done just once) */
             if (self::$use_autoload) {
-                spl_autoload_register(array(__CLASS__, 'AutoLoad'));
+                require_once "{$dir}/Haanga/Loader.php";
             }
 
             $compiler = new Haanga_Compiler_Runtime;

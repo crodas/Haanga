@@ -51,7 +51,11 @@ class templateTest extends PHPUnit_Framework_TestCase
     {
         $this->init($test_file, $expected);
         $output = Haanga::Load($test_file, $data, TRUE);
+        try {
         $this->assertEquals($output, $expected);
+        } catch (Exception $e) {
+            print_r(get_included_files());exit;
+        }
     }
 
     /** 

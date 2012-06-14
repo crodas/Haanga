@@ -385,21 +385,25 @@ expr(A) ::= fvar_or_string(B). { A = B; }
 /* Variable name */
 
 varname(A) ::= varpart(B). { A = current($this->compiler->generate_variable_name(B, false)); }
-varpart(A) ::= varname(B) T_OBJ|T_DOT T_ALPHA|T_CUSTOM_TAG|T_CUSTOM_BLOCK(C). { 
+
+varpart(A) ::= varpart(B) T_OBJ|T_DOT varpart_single(C). { 
     if (!is_array(B)) { A = array(B); } 
     else { A = B; }  A[]=array('object' => C);
 }
-varpart(A) ::= varname(B) T_CLASS T_ALPHA|T_CUSTOM_TAG|T_CUSTOM_BLOCK(C). { 
+
+varpart(A) ::= varpart(B) T_CLASS varpart_single(C). { 
     if (!is_array(B)) { A = array(B); } 
     else { A = B; }  A[]=array('class' => '$'.C);
 }
-varpart(A) ::= varname(B) T_BRACKETS_OPEN var_or_string(C) T_BRACKETS_CLOSE. {
+
+varpart(A) ::= varpart(B) T_BRACKETS_OPEN var_or_string(C) T_BRACKETS_CLOSE. {
     if (!is_array(B)) { A = array(B); } 
     else { A = B; }  A[]=C;
 }
-varpart(A) ::= T_ALPHA(B). { A = B; } 
+varpart(A) ::= varpart_single(B). { A = B; }
+
 /* T_BLOCK|T_CUSTOM|T_CUSTOM_BLOCK are also T_ALPHA */
-varpart(A) ::= T_BLOCK|T_CUSTOM_TAG|T_CUSTOM_BLOCK(B). { A = B; } 
+varpart_single(A) ::= T_ALPHA|T_BLOCK|T_CUSTOM_TAG|T_CUSTOM_END|T_CUSTOM_BLOCK(B). { A = B; } 
 
 range(A)  ::= numvar(B) T_DOTDOT numvar(C). { A = array(B, C); }
 

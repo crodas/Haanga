@@ -21,6 +21,7 @@ class TestSuite extends PHPUnit_Framework_TestSuite
     {
         $config = array(
             'cache_dir' => 'tmp/',
+            'autoload' => true,
             'template_dir' => '.',
             'debug' => TRUE,
             'use_hash_filename' => FALSE,
