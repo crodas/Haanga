@@ -658,7 +658,7 @@ class Haanga_Compiler
                 $target = $this->generate_variable_name($variable[0]);
             }
             
-            if (!Haanga_AST::is_var($target) && !$accept_string) {
+            if (!empty($variable[0][0]) && $variable[0][0] == 'block') {
                 /* block.super can't have any filter */
                 throw new Exception("This variable can't have any filter");
             }
