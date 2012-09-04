@@ -254,6 +254,8 @@ class Haanga_Compiler
         }
 
         $parsed = Haanga_Compiler_Tokenizer::init($code, $this, $file);
+        $this->preprocess_ops($parsed);
+
         $code   = "";
         $this->subtemplate = FALSE;
 
@@ -277,7 +279,7 @@ class Haanga_Compiler
                 $body->do_if(hexpr(hexec('function_exists', $func_name), '===', FALSE));
             }
             if (!empty($this->file)) {
-                $body->comment("Generated from ".$this->file);
+                $body->comment("Generated from ".$file);
             }
 
             $body->declare_function($func_name);
@@ -376,6 +378,7 @@ class Haanga_Compiler
         $oldfile    = $this->file;
         $this->file = $file;
         $parsed = Haanga_Compiler_Tokenizer::init($code, $this, $file);
+        $this->preprocess_ops($parsed);
         $body = new Haanga_AST;
         if (isset($parsed[0]) && $parsed[0]['operation'] == 'base') {
             throw new Exception("{% base is not supported on inlines %}");
@@ -444,6 +447,49 @@ class Haanga_Compiler
         $file = $base['string'];
         list($this->subtemplate, $new_code) = $this->compile_required_template($file);
         return $new_code."\n\n";
+    }
+    // }}}
+
+    // preprocess_ops($parsed) {{{
+    /**
+     * Preprocess operations before generating the code.
+     *
+     * This stage is used for stripping extra newlines after Haanga tags.
+     * PHP does the same for its tags, making the produced HTML code clear.
+     * For example, these 3 lines
+     * {% if flag %}
+     * conditional html code
+     * {% endif %}
+     * would produce only one line instead of three.
+     * The exception is regular vars since it's natural for them to be put at the end of the line.
+     *
+     * @param array $parsed parser result
+     * @param bool $strip_eol flag: strip end of line right from the first node
+     * @return array modified parser result
+     */
+    function preprocess_ops(&$parsed, $strip_eol = false)
+    {
+        $eol_len = strlen(PHP_EOL);
+        foreach ($parsed as &$op) {
+            if (!is_array($op) || !isset($op['operation'])) {
+                continue;
+            }
+
+            if ($strip_eol && $op['operation'] == 'html' && strpos($op['html'], PHP_EOL) === 0) {
+                $op['html'] = substr($op['html'], $eol_len);
+            }
+            if (isset($op['body'])) {
+                $this->preprocess_ops($op['body'], true);
+            }
+            if (isset($op['else'])) {
+                $this->preprocess_ops($op['else'], true);
+            }
+            if (isset($op['empty'])) {
+                $this->preprocess_ops($op['empty'], true);
+            }
+
+            $strip_eol = $op['operation'] != 'html' && $op['operation'] != 'print_var';
+        }
     }
     // }}}
 
@@ -532,10 +578,12 @@ class Haanga_Compiler
     }
     // }}}
 
-    // ifequal|ifnot equal <var_filtered|string|number> <var_fitlered|string|number> ... else ... {{{
+    // ifequal|ifnot equal <var_filtered|string|number> <var_filtered|string|number> ... else ... {{{
     protected function generate_op_ifequal($details, &$body)
     {
-        $if['expr'] = hexpr($details[1], $details['cmp'], $details[2])->getArray();
+        $arg1 = $this->is_var_filter($details[1]) ? $this->get_filtered_var($details[1]['var_filter'], $var) : $details[1];
+        $arg2 = $this->is_var_filter($details[2]) ? $this->get_filtered_var($details[2]['var_filter'], $var) : $details[2];
+        $if['expr'] = hexpr($arg1, $details['cmp'], $arg2)->getArray();
         $if['body'] = $details['body'];
         if (isset($details['else'])) {
             $if['else'] =  $details['else'];
@@ -544,7 +592,7 @@ class Haanga_Compiler
     }
     // }}}
 
-    // {% if <expr> %} HTML {% else %} TWO {% endif $} {{{
+    // {% if <expr> %} HTML {% else %} TWO {% endif %} {{{
     protected function generate_op_if($details, &$body)
     {
         if (self::$if_empty && $this->is_var_filter($details['expr']) && count($details['expr']['var_filter']) == 1) {
