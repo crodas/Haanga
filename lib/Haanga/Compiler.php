@@ -645,7 +645,8 @@ class Haanga_Compiler
     {
         $this->var_is_safe = FALSE;
 
-        if ($accept_string === NULL && is_array($variable[0])) {
+        if ($accept_string === NULL && is_array($variable[0]) && 
+            !Haanga_AST::is_exec($variable[0])) {
             $accept_string = !empty($variable[0]['string'])
                 || $variable[0][0] === 'block';
         }
@@ -653,6 +654,8 @@ class Haanga_Compiler
         if (count($variable) > 1) {
             $count  = count($variable);
             if ($accept_string && isset($variable[0]['string'])) {
+                $target = $variable[0];
+            } else if (Haanga_AST::is_exec($variable[0])) {
                 $target = $variable[0];
             } else {
                 $target = $this->generate_variable_name($variable[0]);
@@ -680,6 +683,10 @@ class Haanga_Compiler
             $varname = $args[0];
             $details = $exec;
         } else {
+            if (Haanga_AST::is_exec($variable[0])) {
+                return $variable[0];
+            } 
+
             $details = $this->generate_variable_name($variable[0]);
             $varname = $variable[0];
 

@@ -358,7 +358,9 @@ var_or_string(A) ::= T_TRUE|T_FALSE(B).   { A = trim(@B); }
 var_or_string(A) ::= string(B).     { A = array('string' => B); }
 
 /* filtered variables */
-fvar_or_string(A) ::= filtered_var(B).  { A = array('var_filter' => B); }  
+fvar_or_string(A) ::= filtered_var(B).  {
+    A = array('var_filter' => B); 
+}  
 fvar_or_string(A) ::= number(B).     { A = array('number' => B); }  
 fvar_or_string(A) ::= T_TRUE|T_FALSE(B).   { A = trim(@B); }  
 fvar_or_string(A) ::= string(B).        { A = array('string' => B); }
@@ -384,6 +386,9 @@ expr(A) ::= fvar_or_string(B). { A = B; }
 
 /* Variable name */
 
+varname(A) ::= varpart(B) T_LPARENT T_RPARENT. {
+    A = hexec(B)->getArray();
+}
 varname(A) ::= varpart(B). { A = current($this->compiler->generate_variable_name(B, false)); }
 
 varpart(A) ::= varpart(B) T_OBJ|T_DOT varpart_single(C). { 
