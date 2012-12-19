@@ -389,6 +389,13 @@ expr(A) ::= fvar_or_string(B). { A = B; }
 varname(A) ::= varpart(B) T_LPARENT T_RPARENT. {
     A = hexec(B)->getArray();
 }
+
+varname(A) ::= varpart(B) T_LPARENT params(X) T_RPARENT. {
+    $tmp  = hcode();
+    $args = array_merge(array(B),  X);
+    A =  call_user_func_array(array($tmp, 'exec'), $args);
+}
+
 varname(A) ::= varpart(B). { A = current($this->compiler->generate_variable_name(B, false)); }
 
 varpart(A) ::= varpart(B) T_OBJ|T_DOT varpart_single(C). { 
