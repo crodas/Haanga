@@ -53,7 +53,7 @@ if (!defined('HAANGA_VERSION')) {
 class Haanga
 {
     protected static $cache_dir;
-    protected static $templates_dir='.';
+    protected static $templates_dir=array('.');
     protected static $debug;
     protected static $bootstrap = NULL;
     protected static $check_ttl;
@@ -101,7 +101,7 @@ class Haanga
         		self::$cache_dir = $value;
                 break;
             case 'template_dir':
-        		self::$templates_dir = $value;
+        		self::$templates_dir = (Array)$value;
                 break;
             case 'bootstrap':
                 if (is_callable($value)) {
@@ -256,12 +256,23 @@ class Haanga
     }
     // }}}
 
+    public static function getTemplatePath($file)
+    {
+        foreach (self::$templates_dir as $dir) {
+            $tpl = $dir .'/'.$file;
+            if (is_file($tpl)) {
+                return $tpl;
+            }
+        }
+        throw new \RuntimeException("Cannot find {$file} file  (looked in " . implode(",", self::$templates_dir) . ")");
+    }
+
     // safe_load(string $file, array $vars, bool $return, array $blocks) {{{
     public static function Safe_Load($file, $vars = array(), $return=FALSE, $blocks=array())
     {
         try {
 
-            $tpl = self::$templates_dir.'/'.$file;
+            $tpl = self::getTemplatePath($file);
             if (file_exists($tpl)) {
                 /* call load if the tpl file exists */
                 return self::Load($file, $vars, $return, $blocks);
@@ -298,7 +309,7 @@ class Haanga
 
         self::$has_compiled = FALSE;
 
-        $tpl      = self::$templates_dir.'/'.$file;
+        $tpl      = self::getTemplatePath($file);
         $fnc      = sha1($tpl);
         $callback = "haanga_".$fnc;
 
