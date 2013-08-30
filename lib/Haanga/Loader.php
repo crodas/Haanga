@@ -30,6 +30,7 @@ spl_autoload_register(function ($class) {
   'haanga_extension_filter_default' => '/Extension/Filter/Default.php',
   'haanga_extension_filter_length' => '/Extension/Filter/Length.php',
   'haanga_extension_filter_truncatechars' => '/Extension/Filter/Truncatechars.php',
+  'haanga_extension_filter_linebreaksbr' => '/Extension/Filter/Linebreaksbr.php',
   'haanga_extension_filter_intval' => '/Extension/Filter/Intval.php',
   'haanga_extension_filter_translation' => '/Extension/Filter/Translation.php',
   'haanga_extension_filter_trans' => '/Extension/Filter/Trans.php',
