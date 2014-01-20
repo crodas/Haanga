@@ -49,6 +49,7 @@ spl_autoload_register(function ($class) {
   'haanga_extension_filter_escape' => '/Extension/Filter/Escape.php',
   'haanga_extension_filter_stringformat' => '/Extension/Filter/Stringformat.php',
   'haanga_extension_filter_join' => '/Extension/Filter/Join.php',
+  'haanga_extension_filter_linebreaksbr' => '/Extension/Filter/Linebreaksbr.php',
   'haanga_extension_filter_default' => '/Extension/Filter/Default.php',
   'haanga_extension_filter_dictsort' => '/Extension/Filter/Dictsort.php',
   'haanga_extension_filter_substr' => '/Extension/Filter/Substr.php',
