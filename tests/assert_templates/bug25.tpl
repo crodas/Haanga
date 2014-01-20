@@ -1,5 +1,5 @@
-{% for a in obj.method %}
-    {{ a }}
+{% for a in obj.endpoint %}
+    {{ base.endpoint }}
 
     {% if forloop.last %}
         test
