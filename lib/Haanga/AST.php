@@ -415,6 +415,14 @@ class Haanga_AST
                 $array[] = $value;
             }
         }
+        // fix for static calls {{{
+        if (isset($array[0]['exec']) && is_array($array[0]['exec'])) {
+            $end = $array[0]['exec'];
+            if (isset($end[1]['class'])) {
+                $array[0]['exec'][1]['class'] = substr($end[1]['class'], 1);
+            }
+        }
+        //}}}
         $this->stack[] = $array;
         return $this;
     }
