@@ -669,6 +669,14 @@ class Haanga_Generator_PHP
     }
     // }}}
 
+    /**
+     * Implement PHP use for namespace
+     */
+    protected function php_use($op)
+    {
+        $code = "use {$op['name']};";
+        return $code;
+    }
 }
 
 /*

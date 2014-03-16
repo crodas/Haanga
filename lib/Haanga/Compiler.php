@@ -266,6 +266,14 @@ class Haanga_Compiler
             $code .= $this->get_base_template($base); 
             unset($parsed[0]);
         }
+        /**
+         * Add the namespace
+         */
+        if(($ns=Haanga::getUse())){
+            foreach ($ns as $namespace) {
+                $body->declare_use($namespace);
+            }
+        }
 
         if (defined('HAANGA_VERSION')) {
             $body->decl('HAANGA_VERSION', HAANGA_VERSION);

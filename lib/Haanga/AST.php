@@ -141,6 +141,12 @@ class Haanga_AST
         return $this;
     }
 
+    function declare_use($name)
+    {
+        $this->stack[] = array('op' => 'use', 'name' => $name);
+        return $this;
+    }
+
     function do_return($name)
     {
         $this->getValue($name, $expr);
