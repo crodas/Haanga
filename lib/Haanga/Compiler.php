@@ -1232,7 +1232,9 @@ class Haanga_Compiler
     {
         $var = $this->generate_variable_name($details['var']);
         $this->check_expr($details['expr']);
-        $body->decl_raw($var, $details['expr']);
+        /*user filter allow on set declaration*/
+        $expr = is_object($details['expr'])?$details['expr']->getArray(): $details['expr'];
+        $body->decl_raw($var, $expr);
         $body->decl($this->getScopeVariable($var['var']), $var);
     }
 
