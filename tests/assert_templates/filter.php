@@ -1,2 +1,2 @@
 <?php
-$data = array('var' => 'value');
+$data = array('var' => '"value"');

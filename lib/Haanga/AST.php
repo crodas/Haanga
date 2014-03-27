@@ -531,6 +531,9 @@ function hvar()
 function hvar_ex($args)
 {
     $code = hcode();
+    if (is_object($args)) {
+        return $args->stack[0];
+    }
     return call_user_func_array(array($code, 'v'), $args);
 }
 // }}}
