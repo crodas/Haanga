@@ -1,3 +1,4 @@
+{{ var|default:"foobar" }}
 {{ var|upper }}
 {{ var|upper|lower }}
 {{ var|cut:"u" }}
