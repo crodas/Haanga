@@ -650,6 +650,8 @@ class Haanga_Generator_PHP
                 }
             }
             return $var_str;
+        }elseif($var == 'NULL'){
+            return $var;
         } else {
             return "\$".$var;
         }
