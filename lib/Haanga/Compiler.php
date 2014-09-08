@@ -558,12 +558,16 @@ class Haanga_Compiler
         if (self::$if_empty && $this->is_var_filter($details['expr']) && count($details['expr']['var_filter']) == 1) {
             /* if we are doing if <Variable> it should check 
                if it exists without throw any warning */
+
             $expr = $details['expr'];
-            $expr['var_filter'][] = 'empty';
+            /*PHP 5.4 compatibility*/
+            if(!isset($expr['var_filter'][0][1]['object'])){
+                $expr['var_filter'][] = 'empty';
 
-            $variable = $this->get_filtered_var($expr['var_filter'], $var);
+                $variable = $this->get_filtered_var($expr['var_filter'], $var);
 
-            $details['expr'] = hexpr($variable, '===', FALSE)->getArray();
+                $details['expr'] = hexpr($variable, '===', FALSE)->getArray();
+            }
         }
         $this->check_expr($details['expr']);
         $expr = Haanga_AST::fromArrayGetAST($details['expr']);
