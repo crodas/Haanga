@@ -2,5 +2,5 @@
 
 class Haanga_Extension_Filter_Trans
 {
-    public $php_alias = '_';
+    public $php_alias = '__';
 }

@@ -35,6 +35,7 @@ spl_autoload_register(function ($class) {
   'haanga_extension_filter_trans' => '/Extension/Filter/Trans.php',
   'haanga_extension_filter_upper' => '/Extension/Filter/Upper.php',
   'haanga_extension_filter_date' => '/Extension/Filter/Date.php',
+  'haanga_extension_filter_datef' => '/Extension/Filter/Datef.php',
   'haanga_extension_filter_empty' => '/Extension/Filter/Empty.php',
   'haanga_extension_filter_reverse' => '/Extension/Filter/Reverse.php',
   'haanga_extension_filter_capfirst' => '/Extension/Filter/Capfirst.php',
@@ -81,6 +82,7 @@ spl_autoload_register(function ($class) {
   'haanga_extension_tag_css' => '/Extension/Tag/Css.php',
   'haanga_extension_tag_js' => '/Extension/Tag/Js.php',
   'haanga_extension_tag_def' => '/Extension/Tag/Def.php',
+  'haanga_extension_tag_partial' => '/Extension/Tag/Partial.php',
   'haanga_ast' => '/AST.php',
 );
     // }}}
