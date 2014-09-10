@@ -650,6 +650,8 @@ class Haanga_Generator_PHP
                 }
             }
             return $var_str;
+        }elseif($var == 'NULL'){
+            return $var;
         } else {
             return "\$".$var;
         }
@@ -669,6 +671,14 @@ class Haanga_Generator_PHP
     }
     // }}}
 
+    /**
+     * Implement PHP use for namespace
+     */
+    protected function php_use($op)
+    {
+        $code = "use {$op['name']};";
+        return $code;
+    }
 }
 
 /*

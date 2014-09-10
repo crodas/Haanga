@@ -266,6 +266,14 @@ class Haanga_Compiler
             $code .= $this->get_base_template($base); 
             unset($parsed[0]);
         }
+        /**
+         * Add the namespace
+         */
+        if(($ns=Haanga::getUse())){
+            foreach ($ns as $namespace) {
+                $body->declare_use($namespace);
+            }
+        }
 
         if (defined('HAANGA_VERSION')) {
             $body->decl('HAANGA_VERSION', HAANGA_VERSION);
@@ -550,12 +558,16 @@ class Haanga_Compiler
         if (self::$if_empty && $this->is_var_filter($details['expr']) && count($details['expr']['var_filter']) == 1) {
             /* if we are doing if <Variable> it should check 
                if it exists without throw any warning */
+
             $expr = $details['expr'];
-            $expr['var_filter'][] = 'empty';
+            /*PHP 5.4 compatibility*/
+            if(!isset($expr['var_filter'][0][1]['object'])){
+                $expr['var_filter'][] = 'empty';
 
-            $variable = $this->get_filtered_var($expr['var_filter'], $var);
+                $variable = $this->get_filtered_var($expr['var_filter'], $var);
 
-            $details['expr'] = hexpr($variable, '===', FALSE)->getArray();
+                $details['expr'] = hexpr($variable, '===', FALSE)->getArray();
+            }
         }
         $this->check_expr($details['expr']);
         $expr = Haanga_AST::fromArrayGetAST($details['expr']);
@@ -936,7 +948,7 @@ class Haanga_Compiler
 
         $variable = $this->get_context($variable);
         if (is_array($variable) || is_object($variable)) {
-            return $default ? is_object($variable) : is_object($variable) && !$variable InstanceOf Iterator && !$variable Instanceof ArrayAccess;
+            return $default ? is_object($variable) : is_object($variable) && !$variable InstanceOf Traversable && !$variable Instanceof ArrayAccess;
         }
 
         return $default===NULL ? self::$dot_as_object : $default;
@@ -1224,7 +1236,9 @@ class Haanga_Compiler
     {
         $var = $this->generate_variable_name($details['var']);
         $this->check_expr($details['expr']);
-        $body->decl_raw($var, $details['expr']);
+        /*user filter allow on set declaration*/
+        $expr = is_object($details['expr'])?$details['expr']->getArray(): $details['expr'];
+        $body->decl_raw($var, $expr);
         $body->decl($this->getScopeVariable($var['var']), $var);
     }
 

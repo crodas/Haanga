@@ -65,6 +65,13 @@ class Haanga
 
     public static $has_compiled;
 
+    /**
+     * Store all use declaration on file
+     * example: use \ANamespace\MyClass;
+     */
+    protected static $uses = array();
+
+
     private function __construct()
     {
         /* The class can't be instanced */
@@ -435,6 +442,20 @@ class Haanga
         return $callback($vars, $return, $blocks);
     }
     // }}}
+
+    /**
+     * Add new use (namespace) to the list
+     */
+    static function addUse($ns){
+      self::$uses[] = $ns;
+    }
+
+    /**
+     * Get the use (namespace) array
+     */
+    static function getUse(){
+      return self::$uses;
+    }
 
 }
 
