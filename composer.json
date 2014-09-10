@@ -1,10 +1,10 @@
 {
-    "name": "crodas/Haanga",
-    "description": "Template compiler for PHP, Django-style (as much as possible). Pretty efficent by avoiding to have anything at run-time.",
+    "name": "ashrey/Haanga",
+    "description": "Template compiler for PHP, Django-style, Adapted for KumbiaPHP",
     "authors": [
         {
-            "name": "César D. Rodas",
-            "email": "crodas@php.net"
+            "name": "Alberto Berroteran",
+            "email": "alberrotera at gmail dot com"
         }
     ],
     "require": {
