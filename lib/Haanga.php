@@ -331,8 +331,10 @@ class Haanga
                 $result = call_user_func(self::$check_set, $callback, TRUE, self::$check_ttl);
             }
         } 
+
+        $mtpl = filemtime($tpl);
         
-        if (!is_file($php) || ($check && filemtime($tpl) > filemtime($php))) {
+        if (!is_file($php) || ($check && $mtpl > filemtime($php))) {
             if (!is_file($tpl)) {
                 /* There is no template nor compiled file */
                 throw new Exception("View {$file} doesn't exists");
@@ -394,6 +396,7 @@ class Haanga
                 fwrite($fp, "<?php".$code);
                 flock($fp, LOCK_UN); // release the lock
                 fclose($fp);
+                touch($php, $mtpl, $mtpl);
             } else {
                 /* local eval */
                 eval($code);
