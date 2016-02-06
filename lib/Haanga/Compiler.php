@@ -890,10 +890,10 @@ class Haanga_Compiler
                             }
                             $var = &$var->$name;
                         } else {
-                            if (!isset($var->$part['object'])) {
+                            if (!isset($var->{$part['object']})) {
                                 return NULL;
                             }
-                            $var = &$var->$part['object'];
+                            $var = &$var->{$part['object']};
                         }
                     } else if (is_object($var)) {
                         if (!isset($var->$part)) {
