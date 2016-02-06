@@ -1,7 +1,7 @@
 {
     "name": "crodas/Haanga",
     "description": "Template compiler for PHP, Django-style (as much as possible). Pretty efficent by avoiding to have anything at run-time.",
-    "version": "v1.0.5",
+    "version": "v1.0.6",
     "authors": [
         {
             "name": "César D. Rodas",
