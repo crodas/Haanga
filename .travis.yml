@@ -1,5 +1,5 @@
 language: php
-script: cd tests/; phpunit TestSuite.php
+script: phpunit
 
 php:
   - 5.3
