@@ -261,7 +261,7 @@ class Haanga
         foreach (self::$templates_dir as $dir) {
             $tpl = $dir .'/'.$file;
             if (is_file($tpl)) {
-                return $tpl;
+                return realpath($tpl);
             }
         }
         throw new \RuntimeException("Cannot find {$file} file  (looked in " . implode(",", self::$templates_dir) . ")");

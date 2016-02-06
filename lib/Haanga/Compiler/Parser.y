@@ -171,6 +171,11 @@ alias(A) ::= T_WITH varname(B) T_AS varname(C) T_TAG_CLOSE body(X) T_TAG_OPEN T_
 stmt(A) ::= T_SET varname(C) T_ASSIGN expr(X). { A = array('operation' => 'set', 'var' => C,'expr' => X); }
 stmt(A) ::= regroup(B). { A = B; }
 stmt ::= T_LOAD string(B). {
+    if (is_file(dirname($this->file) . '/' . B)) {
+        B = dirname($this->file) . '/' . B;
+    } else if (is_file(getcwd() . '/' . B)) {
+        B = getcwd() . '/' . B;
+    }
     if (!is_file(B) || !Haanga_Compiler::getOption('enable_load')) {
         $this->error(B." is not a valid file"); 
     } 

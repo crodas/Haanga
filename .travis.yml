@@ -1,9 +1,13 @@
 language: php
-script: cd tests/; phpunit TestSuite.php
+script: phpunit
 
 php:
   - 5.3
   - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
+  - hhvm
   
 before_script:
   - curl -s http://getcomposer.org/installer | php

@@ -1,4 +1,4 @@
-{% load "../contrib/meneame_pagination.php" %}
+{% load "../../contrib/meneame_pagination.php" %}
 {% meneame_pagination page results_per_page total %}
 {% if mnm_prev %}
     <span class="nextprev">&#171; Previous</span>
