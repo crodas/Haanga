@@ -16,6 +16,8 @@ $config = array(
 
 Haanga::Configure($config);
 
+date_default_timezone_set('UTC');
+
 @mkdir(__DIR__ . "/tmp/");
 foreach (glob(__DIR__ . "/tmp/*/*") as $file) {
     @unlink($file);
