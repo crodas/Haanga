@@ -43,6 +43,7 @@ class templateTest extends PHPUnit_Framework_TestCase
         $this->init($test_file, $expected);
         $output = Haanga::Load($test_file, $data, TRUE);
         $this->assertEquals($output, $expected);
+        $this->assertTrue(filemtime(__DIR__ . $test_file) <= filemtime(__DIR__ . '/tmp/assert_templates/' . basename($test_file) . '.php'));
     }
 
     /** 
