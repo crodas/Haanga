@@ -25,19 +25,10 @@ class Foo_Bar {
  */
 class templateTest extends PHPUnit_Framework_TestCase
 {
-    public function testInit()
-    {
-        /* setup */
-        @mkdir("tmp/");
-        foreach (glob("tmp/*/*") as $file) {
-            @unlink($file);
-        }
-        TestSuite::init();
-    }
-
     public function init($test_file, &$expected)
     {
-        if ($test_file == 'assert_templates/strip_whitespace.tpl') {
+        Haanga_Compiler::setOption('allow_exec', true);
+        if ($test_file === '/assert_templates/strip_whitespace.tpl') {
             Haanga_Compiler::setOption('strip_whitespace', TRUE);
             $expected = rtrim($expected). ' '; /* weird output */
         } else {
@@ -59,8 +50,9 @@ class templateTest extends PHPUnit_Framework_TestCase
      */
     public function testLambda($test_file, $data, $expected)
     {
+        chdir(dirname(__DIR__ . '/' . $test_file));
         $this->init($test_file, $expected);
-        $callback = Haanga::compile(file_get_contents($test_file), $data);
+        $callback = Haanga::compile(file_get_contents(__DIR__ . $test_file), $data);
         $output   = $callback($data);
         $this->assertEquals($output, $expected);
     }
@@ -78,37 +70,14 @@ class templateTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(Haanga::$has_compiled);
     }
 
-    /** 
-     * @dataProvider tplProvider 
-     * /
-    public function testCLICompiler($test_file, $data, $expected)
-    {
-        TestSuite::init();
-        $GLOBALS['argv'][1] = $test_file;
-        $GLOBALS['argv'][2] = '--notags';
-
-        ob_start();
-        Haanga_Compiler::main_cli();
-        $code = ob_get_clean();
-
-        eval($code);
-
-        $file     = basename($test_file);
-        $pos      = strpos($file,'.');
-        $function = substr($file, 0, $pos).'_template';
-        $output   = call_user_func($function, $data, TRUE);
-
-        $this->assertEquals($output, $expected);
-    }
-    /* */
-
-    public function tplProvider()
+    public static function tplProvider()
     {
         $datas = array();
-        foreach (glob("assert_templates/*.tpl") as $test_file) {
+        foreach (glob(__DIR__  . "/assert_templates/*.tpl") as $test_file) {
             $data = array();
             $data_file = substr($test_file, 0, -3)."php";
             $expected  = substr($test_file, 0, -3)."html";
+            $test_file = substr($test_file, strlen(__DIR__));
             if (!is_file($expected)) {
                 if (!is_file($expected.".php")) {
                     continue;

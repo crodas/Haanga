@@ -1,4 +1,4 @@
-{% load "../contrib/dummy.php" %}
+{% load "../../contrib/dummy.php" %}
 {% dummy %}
     testing DUMMY TaG
 {% enddummy %}

@@ -9,9 +9,8 @@ class errorTest extends PHPUnit_Framework_TestCase
      * @dataProvider tplProvider
      *  
      */
-    function testInvalidTemplates($tpl)
+    public function testInvalidTemplates($tpl)
     {
-        TestSuite::init();
         Haanga_Compiler::setOption('allow_exec', FALSE);
         try {
             Haanga::Load($tpl);
@@ -22,11 +21,11 @@ class errorTest extends PHPUnit_Framework_TestCase
         }
     }
 
-    public function tplProvider()
+    public static function tplProvider()
     {
         $datas = array();
-        foreach (glob("err_templates/*.tpl") as $err_file) {
-            $datas[] = array($err_file);
+        foreach (glob(__DIR__ . "/err_templates/*.tpl") as $err_file) {
+            $datas[] = array(substr($err_file, strlen(__DIR__)));
         }
 
         return $datas;

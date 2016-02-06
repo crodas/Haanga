@@ -12,8 +12,8 @@
 
     },
     "autoload": {
-        "psr-0": {
-            "Haanga_": "lib/Haanga"
-        }
+        "classmap": [
+            "lib/"
+        ]
     }
 }
