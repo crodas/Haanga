@@ -558,7 +558,6 @@ class Haanga_Compiler_Tokenizer
     static function init($template, $compiler, $file='')
     {
         $lexer  = new Haanga_Compiler_Tokenizer($template, $compiler, $file);
-        file_put_contents('/tmp/foo.php', $file . "\n", FILE_APPEND);
         $parser = new Haanga_Compiler_Parser($lexer, $file);
 
         $parser->compiler = $compiler;
