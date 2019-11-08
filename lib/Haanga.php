@@ -295,7 +295,7 @@ class Haanga
         }
 
         $php = self::$hash_filename ? $fnc : $file;
-        $php = self::$cache_dir.'/'.$php.'.php';
+        $php = self::$cache_dir . '/' . $php .'.php';
 
         $check = TRUE;
 
@@ -321,29 +321,6 @@ class Haanga
                 umask($old);
             }
             
-            $fp = fopen($php, "a+");
-            /* try to block PHP file */
-            if (!flock($fp, LOCK_EX | LOCK_NB)) {
-                /* couldn't block, another process is already compiling */
-                fclose($fp);
-                if (is_file($php)) {
-                    /*
-                    ** if there is an old version of the cache 
-                    ** load it 
-                    */
-                    require $php;
-                    if (is_callable($callback)) {
-                        return $callback($vars, $return, $blocks);
-                    }
-                }
-                /*
-                ** no luck, probably the template is new
-                ** the compilation will be done, but we won't
-                ** save it (we'll use eval instead)
-                */
-                unset($fp);
-            }
-
             /* recompile */
             $compiler = self::getCompiler();
 
@@ -366,15 +343,15 @@ class Haanga
                 throw $e;
             }
 
-            if (isset($fp)) {
-                ftruncate($fp, 0); // truncate file
-                fwrite($fp, "<?php".$code);
-                flock($fp, LOCK_UN); // release the lock
-                fclose($fp);
-            } else {
-                /* local eval */
-                eval($code);
-            }
+            $file = tempnam(sys_get_temp_dir(), 'haanga');
+
+            $fp = fopen($file, 'w+');
+
+            ftruncate($fp, 0); // truncate file
+            fwrite($fp, "<?php" . $code);
+            fclose($fp);
+
+            rename($file, $php);
 
             self::$has_compiled = TRUE;
         }
@@ -382,26 +359,6 @@ class Haanga
         if (!is_callable($callback)) {
             /* Load the cached PHP file */
             require $php;
-            if (!is_callable($callback)) {
-                /* 
-                   really weird case ($php is empty, another process is compiling
-                   the $tpl for the first time), so create a lambda function
-                   for the template.
-
-                   To be safe we're invalidating its time, because its content 
-                   is no longer valid to us
-                 */
-                touch($php, 300, 300);
-                chmod($php, 0777);
-            
-                
-                // compile temporarily
-                $compiler = self::getCompiler();
-                $code = $compiler->compile_file($tpl, FALSE, $vars);
-                eval($code);
-
-                return $callback($vars, $return, $blocks);
-            }
         }
 
         if (!isset($HAANGA_VERSION) || $HAANGA_VERSION != HAANGA_VERSION) {
