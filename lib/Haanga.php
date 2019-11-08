@@ -344,12 +344,7 @@ class Haanga
             }
 
             $file = tempnam(sys_get_temp_dir(), 'haanga');
-
-            $fp = fopen($file, 'w+');
-
-            ftruncate($fp, 0); // truncate file
-            fwrite($fp, "<?php" . $code);
-            fclose($fp);
+            file_put_contents($file, '<?php ' . $code);
 
             rename($file, $php);
 
