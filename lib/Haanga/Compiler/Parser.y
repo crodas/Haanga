@@ -85,7 +85,7 @@ body(A) ::= body(B) code(C). { A=B; A[] = C; }
 body(A) ::= . { A = array(); }
 
 /* List of statements */
-code(A) ::= T_TAG_OPEN stmts(B). { if (count(B)) B['line'] = $this->lex->getLine();  A = B; }
+code(A) ::= T_TAG_OPEN stmts(B). { if (is_array(B) && count(B)) B['line'] = $this->lex->getLine();  A = B; }
 
 code(A) ::= T_HTML(B). {
     A = array('operation' => 'html', 'html' => B, 'line' => $this->lex->getLine() ); 

@@ -1,5 +1,7 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 class Foo_Bar {
     static $Bar = 'haanga';
     static $Arr = array('foo', 'Bar' => 'Foo');
@@ -23,7 +25,7 @@ class Foo_Bar {
 /**
  *  @runTestsInSeparateProcess
  */
-class templateTest extends PHPUnit_Framework_TestCase
+class templateTest extends TestCase
 {
     public function init($test_file, &$expected)
     {
@@ -45,19 +47,6 @@ class templateTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($output, $expected);
         $this->assertTrue(filemtime(__DIR__ . $test_file) <= filemtime(__DIR__ . '/tmp/assert_templates/' . basename($test_file) . '.php'));
     }
-
-    /** 
-     * @dataProvider tplProvider
-     */
-    public function testLambda($test_file, $data, $expected)
-    {
-        chdir(dirname(__DIR__ . '/' . $test_file));
-        $this->init($test_file, $expected);
-        $callback = Haanga::compile(file_get_contents(__DIR__ . $test_file), $data);
-        $output   = $callback($data);
-        $this->assertEquals($output, $expected);
-    }
-
 
     /** 
      * @dataProvider tplProvider
